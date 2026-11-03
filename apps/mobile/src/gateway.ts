@@ -5,9 +5,12 @@ import type { Actor, Command, Input, Task } from './domain.ts';
 export const newId = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
   const n = Math.floor(Math.random() * 16); return (c === 'x' ? n : (n & 3) | 8).toString(16);
 });
+// Une page de flemmes ; nextCursor permet de demander la suivante (null : plus rien).
+export type TaskPage = { tasks: Task[]; nextCursor: string | null };
+export const PAGE_SIZE = 50;
 export interface Gateway {
   actor: Actor;
-  list(): Promise<Task[]>;
+  list(cursor?: string | null): Promise<TaskPage>;
   create(data: Input, requestId: string): Promise<Task>;
   command(taskId: string, action: Command, data: Input, requestId: string): Promise<Task>;
 }
@@ -28,8 +31,8 @@ export class DemoGateway implements Gateway {
     this.persist = persist;
     this.state = saved || { version: 1, tasks: seed(), requests: {} };
   }
-  async list() {
-    return this.state.tasks.filter(t => t.status === 'open' || t.owner.id === this.actor.id || t.offers.some(o => o.brigadier.id === this.actor.id)).map(t => visibleTask(t, this.actor));
+  async list(): Promise<TaskPage> {
+    return { tasks: this.state.tasks.filter(t => t.status === 'open' || t.owner.id === this.actor.id || t.offers.some(o => o.brigadier.id === this.actor.id)).map(t => visibleTask(t, this.actor)), nextCursor: null };
   }
   private async commit(task: Task, request: string): Promise<Task> {
     const next: DemoState = JSON.parse(JSON.stringify(this.state));
@@ -87,11 +90,14 @@ export class RemoteGateway implements Gateway {
     if (!s.access_token || !s.refresh_token || !s.user?.id) throw new Error('Session invalide.');
     await this.tokens.set(s.refresh_token); // Seulement le jeton de renouvellement dans le coffre natif.
     this.access = s.access_token; this.expires = Date.now() + s.expires_in * 1000;
-    this.actor = { id: s.user.id, name: (s.user.email || 'Membre').split('@')[0].slice(0, 40) };
+    // Nom provisoire : le nom affiché fait foi côté serveur (profil), chargé juste après.
+    if (this.actor.id !== s.user.id) this.actor = { id: s.user.id, name: 'Membre' };
   }
-  async login(email: string, password: string) { await this.session(await this.request('/auth/v1/token?grant_type=password', { email: email.trim(), password })); }
+  private async profile() { this.actor = (await this.rpc('me', null, {}, null)).profile; }
+  async login(email: string, password: string) { await this.session(await this.request('/auth/v1/token?grant_type=password', { email: email.trim(), password })); await this.profile(); }
   async signup(email: string, password: string) { await this.request('/auth/v1/signup', { email: email.trim(), password }); }
-  async restore() { if (!(await this.tokens.get())) return false; await this.refresh(); return true; }
+  async restore() { if (!(await this.tokens.get())) return false; await this.refresh(); await this.profile(); return true; }
+  async updateProfile(displayName: string) { this.actor = (await this.rpc('update_profile', null, { displayName }, null)).profile; }
   private async refresh() {
     if (!this.refreshing) this.refreshing = (async () => {
       const token = await this.tokens.get(); if (!token) throw new Error('Connecte-toi pour continuer.');
@@ -105,9 +111,12 @@ export class RemoteGateway implements Gateway {
   }
   private async rpc(action: string, task: string | null, data: Input, requestId: string | null) {
     if (Date.now() > this.expires - 60000) await this.refresh();
-    return this.request('/rest/v1/rpc/flemme_mobile_api', { p_action: action, p_task: task, p_data: { ...data, actorName: this.actor.name }, p_request: requestId }, this.access);
+    return this.request('/rest/v1/rpc/flemme_mobile_api', { p_action: action, p_task: task, p_data: data, p_request: requestId }, this.access);
   }
-  async list(): Promise<Task[]> { return (await this.rpc('list', null, {}, null)).tasks; }
+  async list(cursor: string | null = null): Promise<TaskPage> {
+    const page = await this.rpc('list', null, { limit: PAGE_SIZE, cursor }, null);
+    return { tasks: page.tasks, nextCursor: page.nextCursor ?? null };
+  }
   async create(data: Input, requestId: string): Promise<Task> { return (await this.rpc('create', null, data, requestId)).task; }
   async command(taskId: string, action: Command, data: Input, requestId: string): Promise<Task> { return (await this.rpc(action, taskId, data, requestId)).task; }
 }
