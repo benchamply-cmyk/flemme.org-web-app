@@ -8,9 +8,9 @@ Le site historique flemme.org reste dans le dépôt [FlemmeV2.0](https://github.
 
 | Dossier | Contenu | Publié sur |
 |---|---|---|
-| `apps/web` | Site Vite + React : vitrine (`index.html`) et parcours de l'app dans le navigateur (`app.html`) | https://flemme.org |
+| `apps/web` | Site Vite + React : vitrine (`index.html`), parcours de l'app dans le navigateur (`app.html`), admin de l'équipe (`admin.html`, servie sur /admin) et fonction Netlify `/api/alerte` | https://flemme.org |
 | `apps/mobile` | App Expo SDK 58 (iOS, Android, Expo Go). `src/` contient les règles métier partagées avec le site | Expo Go (pas encore sur les stores) |
-| `apps/mobile/backend` | Schéma Supabase (`install.sql`, RPC `flemme_mobile_api`) et ses tests | Supabase (à installer à la main) |
+| `apps/mobile/backend` | Schéma Supabase (`install.sql`, RPC `flemme_mobile_api`), admin et alertes (`admin.sql`, RPC `flemme_admin_api`, voir `README-admin.md`) et leurs tests | Supabase (à installer à la main) |
 | `docs/` | Organisation Git et historique du dépôt FlemmeV2.0 | — |
 | `netlify.toml` | Configuration du projet Netlify `flemmeorg` (flemme.org) | — |
 | `.github/workflows/` | CI : `web.yml` (typecheck, tests, build) et `mobile.yml` (typecheck, tests, export iOS/Android, tests backend) | — |

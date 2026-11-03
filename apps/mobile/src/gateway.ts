@@ -107,6 +107,12 @@ export class RemoteGateway implements Gateway {
     if (Date.now() > this.expires - 60000) await this.refresh();
     return this.request('/rest/v1/rpc/flemme_mobile_api', { p_action: action, p_task: task, p_data: { ...data, actorName: this.actor.name }, p_request: requestId }, this.access);
   }
+  // Autre fonction RPC exposée, appelée avec la session du membre (page admin du site : flemme_admin_api).
+  async call(fn: string, body: Input) {
+    if (!/^[a-z_]+$/.test(fn)) throw new Error('Fonction inconnue.');
+    if (Date.now() > this.expires - 60000) await this.refresh();
+    return this.request('/rest/v1/rpc/' + fn, body, this.access);
+  }
   async list(): Promise<Task[]> { return (await this.rpc('list', null, {}, null)).tasks; }
   async create(data: Input, requestId: string): Promise<Task> { return (await this.rpc('create', null, data, requestId)).task; }
   async command(taskId: string, action: Command, data: Input, requestId: string): Promise<Task> { return (await this.rpc(action, taskId, data, requestId)).task; }

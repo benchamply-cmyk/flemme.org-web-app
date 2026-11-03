@@ -16,6 +16,23 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
 
+# Page admin : jamais indexée, jamais mise en cache, jamais affichée dans un cadre.
+[[headers]]
+  for = "/admin*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"
+    X-Frame-Options = "DENY"
+
+# Fonctions Netlify (relatif à « base ») : /api/alerte reçoit les alertes envoyées par Supabase.
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
 # Anciennes adresses du site historique (dépôt FlemmeV2.0) : on renvoie vers
 # le nouvel équivalent plutôt qu'une 404. 302 tant que la refonte n'est pas figée.
 [[redirects]]
@@ -35,7 +52,7 @@
 
 [[redirects]]
   from = "/gestionadmin*"
-  to = "/"
+  to = "/admin"
   status = 302
 
 [[redirects]]
