@@ -28,11 +28,11 @@ Sans variables d'environnement, les deux applications tournent en démonstration
 
 ## Publication Netlify
 
-Le projet Netlify `flemme-web-app` doit être relié à ce dépôt. Toute la configuration vient de `netlify.toml` : base `apps/web`, commande `npm run build`, dossier `dist`, Node 22 et en-tête `noindex` tant que c'est une version de test. Netlify publie `main` en production, et la branche `beta` sur sa propre adresse de branche.
+Le projet Netlify `flemme-web-app` est relié à ce dépôt. Toute la configuration vient de `netlify.toml` : base `apps/web`, commande `npm run build`, dossier `dist`, Node 22 et en-tête `noindex` tant que c'est une version de test. Netlify publie `prod` en production (à régler dans Project configuration → Build & deploy → Branches and deploy contexts → Production branch = `prod`) et `preprod` sur son adresse de branche.
 
 ## Travailler sur ce dépôt
 
-Voir [docs/organisation-git.md](docs/organisation-git.md). En bref : on crée des branches courtes `type/sujet` depuis `beta`, les PR vont vers `beta`, et on passe en production par une PR `beta` → `main` en merge commit. Seul Ben fusionne.
+Voir [docs/organisation-git.md](docs/organisation-git.md). En bref : on crée des branches courtes `type/sujet` depuis `preprod`, les PR vont vers `preprod`, et on passe en production par une PR `preprod` → `prod` en merge commit. Seul Ben fusionne.
 
 ## Historique
 

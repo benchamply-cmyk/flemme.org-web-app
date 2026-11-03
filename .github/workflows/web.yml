@@ -1,7 +1,7 @@
 name: Site web (apps/web)
 on:
   push:
-    branches: [main, beta]
+    branches: [prod, preprod]
     paths: ['apps/web/**', 'apps/mobile/src/**', '.github/workflows/web.yml']
   pull_request:
     paths: ['apps/web/**', 'apps/mobile/src/**', '.github/workflows/web.yml']
