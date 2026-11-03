@@ -3,6 +3,12 @@
 Chaque PR ajoute une ligne sous « À venir ». À chaque mise en production (`preprod` → `prod`), ces lignes passent dans une section datée et versionnée.
 
 ## À venir
+- Flemme Manager repris de FlemmeV2.0 dans `apps/manager` (code, SQL Supabase, tests et CI `manager.yml`), avec la procédure pour rebrancher le service Render sur ce dépôt (`docs/manager-render.md`). Scripts de reprise des comptes de l'ancien /espace (`supabase/reprise-espace/`, testés sur le schéma `flemme_v2`, après la PR #9) et procédure (`docs/migration-comptes-espace.md`). Rien n'est encore appliqué sur Render ni sur Supabase.
+
+## v6.1000 — 3 nov. 2026
+
+Première mise en production de ce dépôt sur https://flemme.org, en mode réel (Supabase `yktpabnqkhwcshvjuncs`, PR #15 `preprod` → `prod`).
+
 - Backend Supabase durci : tables `profiles`, `tasks`, `offers`, `messages`, `events` (schéma `flemme_v2`) à la place du document JSONB, nom affiché décidé par le serveur et modifiable dans « Mon compte », reprise des comptes existants et des pseudos de l'ancien espace, liste paginée (« Voir plus »), migrations gérées par la CLI Supabase dans `supabase/` et testées en CI. Rien n'est appliqué automatiquement sur la base de production.
 - Mode réel avec Supabase (projet yktpabnqkhwcshvjuncs) : build bloqué si `VITE_SUPABASE_*` est incomplet ou secret, « Mot de passe oublié ? » et retour des liens e-mail en PKCE pour reprendre les comptes de l'ancien espace, erreurs d'authentification en français, correction de l'appel réseau qui échouait dans le navigateur (« Illegal invocation »), guide `docs/supabase-mise-en-service.md` (après application des migrations `flemme_v2`) avec `supabase/verification.sql`. Rien n'est installé ni réglé automatiquement.
 - Référencement : `robots.txt`, `sitemap.xml` (accueil et pages légales) et page 404 en français pour les adresses introuvables (branche chore/seo-robots-404).
