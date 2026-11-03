@@ -24,7 +24,7 @@ Il faut Node 22.13 ou plus récent (voir `.nvmrc`).
     cd apps/web && npm ci && npm run dev        # http://localhost:5173
     cd apps/mobile && npm ci && npx expo start  # Expo Go
 
-Sans variables d'environnement, les deux applications tournent en démonstration locale avec des données fictives. Pour le mode connecté, voir `apps/web/README.md` et `apps/mobile/README.md` : seules des clés Supabase publiques sont utilisées, jamais `service_role` ni `sb_secret`.
+Sans variables d'environnement, les deux applications tournent en démonstration locale avec des données fictives. Pour le mode connecté, voir `docs/supabase-mise-en-service.md`, `apps/web/README.md` et `apps/mobile/README.md` : seules des clés Supabase publiques sont utilisées, jamais `service_role` ni `sb_secret`.
 
 ## Publication Netlify
 

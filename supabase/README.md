@@ -8,6 +8,7 @@ Le schéma de FLEMME V2 est géré par la [CLI Supabase](https://supabase.com/do
 | `migrations/20261103120000_flemme_v2_tables.sql` | Schéma privé `flemme_v2` : `profiles`, `tasks`, `offers`, `messages`, `events`, `requests`, RLS sans droit direct, profil créé à l'inscription, reprise des comptes existants |
 | `migrations/20261103120100_flemme_v2_api.sql` | Point d'entrée unique `public.flemme_mobile_api` (actions, pagination, profil) |
 | `tests/api.test.mjs` | Tests des migrations sur PostgreSQL embarqué (PGlite) |
+| `verification.sql` | Contrôles en lecture seule sur le projet distant : droits, RLS, profils des comptes repris, historique des migrations (voir `docs/supabase-mise-en-service.md`) |
 
 ## Modèle
 
