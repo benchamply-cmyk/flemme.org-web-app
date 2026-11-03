@@ -2,7 +2,7 @@ import type { Actor, Input, Task } from '../../../mobile/src/domain.ts';
 import { applyCommand, text } from '../../../mobile/src/domain.ts';
 import { demoActors, seed } from '../../../mobile/src/gateway.ts';
 
-// Types renvoyés par public.flemme_admin_api (apps/mobile/backend/admin.sql).
+// Types renvoyés par public.flemme_admin_api (supabase/migrations/20261103130000_flemme_v2_admin.sql).
 export type DisputeStatus = 'open' | 'in_review' | 'resolved';
 export type Overview = {
   tasks: { open: number; assigned: number; completed: number };
@@ -13,7 +13,7 @@ export type Overview = {
 export type ReportRow = { taskId: string; title: string; taskStatus: Task['status']; actor: Actor; text: string; at: string; disputeStatus: DisputeStatus };
 export type DisputeRow = { taskId: string; status: DisputeStatus; resolution: string | null; openedAt: string; updatedAt: string; updatedBy: string | null; task: Task };
 export type UserRow = {
-  id: string; email: string; createdAt: string; lastSignInAt: string | null; confirmed: boolean; admin: boolean;
+  id: string; email: string; displayName: string | null; createdAt: string; lastSignInAt: string | null; confirmed: boolean; admin: boolean;
   tasks: number; offers: number; missions: number; reports: number; suspendedReason: string | null; suspendedAt: string | null;
 };
 export type AlertKind = 'task_created' | 'report' | 'agreement';
@@ -36,13 +36,13 @@ export const when = (s: string | null) => s ? new Date(s).toLocaleString('fr-FR'
 
 export function filterUsers(users: UserRow[], query: string, onlySuspended: boolean) {
   const q = query.trim().toLowerCase();
-  return users.filter(u => (!onlySuspended || u.suspendedReason) && (!q || u.email.toLowerCase().includes(q) || u.id.startsWith(q)));
+  return users.filter(u => (!onlySuspended || u.suspendedReason) && (!q || u.email.toLowerCase().includes(q) || (u.displayName || '').toLowerCase().includes(q) || u.id.startsWith(q)));
 }
 export function filterDisputes(rows: DisputeRow[], view: 'todo' | 'resolved' | 'all') {
   return rows.filter(d => view === 'all' || (view === 'resolved' ? d.status === 'resolved' : d.status !== 'resolved'));
 }
 
-// Démonstration de la page admin, sans Supabase : données fictives, mêmes règles que admin.sql.
+// Démonstration de la page admin, sans Supabase : données fictives, mêmes règles que la migration admin.
 export class DemoAdmin implements AdminSource {
   demo = true;
   email = 'equipe@flemme.example';
@@ -57,11 +57,11 @@ export class DemoAdmin implements AdminSource {
     const assigned = applyCommand(applyCommand(base[0], ben, 'accept', { offerId: 'demo-offer' }, now), ben, 'report', { text: 'Le Brigadier n’est pas passé au créneau prévu et ne répond plus.' }, now);
     this.tasks = [assigned, base[1], base[2]];
     this.disputes = [{ taskId: assigned.id, status: 'open', resolution: null, openedAt: now, updatedAt: now, updatedBy: null, task: assigned }];
-    const user = (a: Actor, email: string, extra: Partial<UserRow> = {}): UserRow => ({ id: a.id, email, createdAt: now, lastSignInAt: now, confirmed: true, admin: false, tasks: 0, offers: 0, missions: 0, reports: 0, suspendedReason: null, suspendedAt: null, ...extra });
+    const user = (a: Actor, email: string, extra: Partial<UserRow> = {}): UserRow => ({ id: a.id, email, displayName: a.name || null, createdAt: now, lastSignInAt: now, confirmed: true, admin: false, tasks: 0, offers: 0, missions: 0, reports: 0, suspendedReason: null, suspendedAt: null, ...extra });
     this.users = [
       user(ben, 'benjamin@exemple.fr', { tasks: 1, reports: 1 }), user(lou, 'lou@exemple.fr', { tasks: 1, offers: 1, missions: 1 }),
       user(camille, 'camille@exemple.fr', { tasks: 1 }), user({ id: 'demo-ancien', name: '' }, 'ancien-espace@exemple.fr', { lastSignInAt: null }),
-      user({ id: 'demo-equipe', name: '' }, this.email, { admin: true }),
+      user({ id: 'demo-equipe', name: 'Équipe FLEMME' }, this.email, { admin: true }),
     ];
     this.alerts = [
       { id: 2, kind: 'report', taskId: assigned.id, payload: { title: assigned.title }, createdAt: now, dispatchedAt: null, error: 'Démonstration : aucun e-mail envoyé' },

@@ -34,7 +34,7 @@ function Bill({ amount }: { amount: number }) {
 
 export default function App() {
   const [gateway, setGateway] = useState<Gateway | null>(null), [actorId, setActorId] = useState('');
-  const [tasks, setTasks] = useState<Task[]>([]), [place, setPlace] = useState<Place>(start);
+  const [tasks, setTasks] = useState<Task[]>([]), [place, setPlace] = useState<Place>(start), [more, setMore] = useState<string | null>(null);
   const [draft, setDraft] = useState<Draft>({}), [busy, setBusy] = useState(false), [ready, setReady] = useState(false);
   const [error, setError] = useState(''), [notice, setNotice] = useState(''), [showHistory, setShowHistory] = useState(false);
   const locked = useRef(false), pending = useRef<{ signature: string; id: string } | null>(null), main = useRef<HTMLElement>(null), flash = useRef('');
@@ -54,9 +54,9 @@ export default function App() {
       if (remoteMode) {
         if (!url || !key) throw new Error('Configuration incomplète : renseigne l’URL et la clé publique Supabase.');
         const g = new RemoteGateway(url, key, tokens); setGateway(g);
-        if (await g.restore()) { setActorId(g.actor.id); setTasks(await g.list()); }
+        if (await g.restore()) { setActorId(g.actor.id); await load(g); }
       } else {
-        const g = new DemoGateway(await readDemo(), s => writeDemo(s)); setGateway(g); setActorId(g.actor.id); setTasks(await g.list());
+        const g = new DemoGateway(await readDemo(), s => writeDemo(s)); setGateway(g); setActorId(g.actor.id); await load(g);
       }
     }); setReady(true);
   }
@@ -73,7 +73,13 @@ export default function App() {
     show(next);
   }
   function back() { if (place.depth > 0) history.back(); else go('home', {}, true); }
-  async function refresh() { if (gateway) await execute(async () => { setTasks(await gateway.list()); }); }
+  // Première page (remplace la liste) ou page suivante (ajoutée à la suite, sans doublon).
+  async function load(g: Gateway, cursor: string | null = null) {
+    const page = await g.list(cursor);
+    setTasks(old => cursor ? [...old, ...page.tasks.filter(t => !old.some(v => v.id === t.id))] : page.tasks); setMore(page.nextCursor);
+  }
+  async function refresh() { if (gateway) await execute(async () => { await load(gateway); }); }
+  async function loadMore() { if (gateway && more) await execute(async () => { await load(gateway, more); }); }
   function updateTask(t: Task) { setTasks(old => [t, ...old.filter(v => v.id !== t.id)]); }
   async function mutate(action: Command | 'create', data: Input, next: Screen = 'detail', message = '') {
     if (!gateway) return;
@@ -103,16 +109,16 @@ export default function App() {
 
   let content: ReactNode;
   if (!ready) content = <p className="muted" role="status">Chargement…</p>;
-  else if (remoteMode && (!gateway || !actorId)) content = <><h1 className="heading">Un peu de flemme ?</h1><p>Connecte-toi pour déposer une tâche ou proposer ton aide.</p>{field('E-mail', 'email')}{field('Mot de passe', 'password', false, false, true)}<Action disabled={busy || !gateway} onClick={() => execute(async () => { const g = gateway as RemoteGateway; await g.login(draft.email || '', draft.password || ''); const list = await g.list(); setActorId(g.actor.id); setTasks(list); setDraft({}); })}>Me connecter</Action><Action secondary disabled={busy || !gateway} onClick={() => execute(async () => { if ((draft.password || '').length < 12) throw new Error('Choisis un mot de passe d’au moins 12 caractères.'); await (gateway as RemoteGateway).signup(draft.email || '', draft.password || ''); setNotice('Vérifie ton e-mail, puis connecte-toi.'); setDraft(d => ({ ...d, password: '' })); })}>Créer un compte</Action>{!gateway && <Action secondary onClick={initialize}>Réessayer</Action>}</>;
+  else if (remoteMode && (!gateway || !actorId)) content = <><h1 className="heading">Un peu de flemme ?</h1><p>Connecte-toi pour déposer une tâche ou proposer ton aide.</p>{field('E-mail', 'email')}{field('Mot de passe', 'password', false, false, true)}<Action disabled={busy || !gateway} onClick={() => execute(async () => { const g = gateway as RemoteGateway; await g.login(draft.email || '', draft.password || ''); await load(g); setActorId(g.actor.id); setDraft({}); })}>Me connecter</Action><Action secondary disabled={busy || !gateway} onClick={() => execute(async () => { if ((draft.password || '').length < 12) throw new Error('Choisis un mot de passe d’au moins 12 caractères.'); await (gateway as RemoteGateway).signup(draft.email || '', draft.password || ''); setNotice('Vérifie ton e-mail, puis connecte-toi.'); setDraft(d => ({ ...d, password: '' })); })}>Créer un compte</Action>{!gateway && <Action secondary onClick={initialize}>Réessayer</Action>}</>;
   else if (!gateway) content = <><h1 className="heading">Chargement interrompu</h1><Action onClick={initialize}>Réessayer sans effacer mes données</Action></>;
-  else if (screen === 'account') content = <><h1 className="heading">Salut {gateway.actor.name}.</h1>{gateway instanceof DemoGateway ? <><p>Démonstration locale. Change de personnage pour tester les deux côtés d’une mission. Aucun échange entre appareils, aucun paiement réel.</p>{demoActors.map(a => <Action secondary key={a.id} disabled={busy} onClick={() => execute(async () => { gateway.actor = a; setActorId(a.id); setTasks(await gateway.list()); pending.current = null; go('home', { taskId: '', offerId: '' }); })}>{a.name}{a.id === actorId ? ' · actif' : ''}</Action>)}</> : <><p>Les comptes, annonces et discussions utilisent le service FLEMME configuré.</p><Action secondary disabled={busy} onClick={() => execute(async () => { try { await (gateway as RemoteGateway).logout(); } finally { setActorId(''); setTasks([]); setDraft({}); pending.current = null; go('home', { taskId: '', offerId: '' }); } })}>Me déconnecter</Action></>}</>;
+  else if (screen === 'account') content = <><h1 className="heading">Salut {gateway.actor.name}.</h1>{gateway instanceof DemoGateway ? <><p>Démonstration locale. Change de personnage pour tester les deux côtés d’une mission. Aucun échange entre appareils, aucun paiement réel.</p>{demoActors.map(a => <Action secondary key={a.id} disabled={busy} onClick={() => execute(async () => { gateway.actor = a; setActorId(a.id); await load(gateway); pending.current = null; go('home', { taskId: '', offerId: '' }); })}>{a.name}{a.id === actorId ? ' · actif' : ''}</Action>)}</> : <><p>Les comptes, annonces et discussions utilisent le service FLEMME configuré.</p>{field('Mon nom affiché', 'displayName')}<Action secondary disabled={busy} onClick={() => execute(async () => { await (gateway as RemoteGateway).updateProfile(draft.displayName || ''); setDraft({}); setNotice('Nom affiché mis à jour.'); })}>Changer mon nom</Action><Action secondary disabled={busy} onClick={() => execute(async () => { try { await (gateway as RemoteGateway).logout(); } finally { setActorId(''); setTasks([]); setMore(null); setDraft({}); pending.current = null; go('home', { taskId: '', offerId: '' }); } })}>Me déconnecter</Action></>}</>;
   else if (screen === 'home') content = <div className="home"><div><p className="eyebrow">Le droit d’avoir la flemme.</p><h1 className="heading">On fait quoi aujourd’hui ?</h1><p className="muted">Déléguer un peu. Aider quelqu’un.</p></div><div className="choices"><button type="button" className="choice" aria-label="Mes flemmes · déposer et suivre mes demandes" onClick={() => go('list', { tab: 'mine' })}><span className="choice-icon" aria-hidden="true">☕</span><span className="choice-title">Mes flemmes</span><span className="choice-hint">Déposer et suivre mes demandes</span></button><button type="button" className="choice secondary" aria-label="Résoudre une flemme · voir les flemmes à résoudre" onClick={() => go('list', { tab: 'find' })}><span className="choice-icon" aria-hidden="true">↗</span><span className="choice-title">Résoudre une flemme</span><span className="choice-hint">Trouver quelqu’un à aider</span></button></div></div>;
   else if (screen === 'new') content = <><h1 className="heading">La flemme de quoi ?</h1><p className="muted">Raconte. Un Brigadier prendra le relais.</p>{field('Ce qu’il faut faire', 'title')}{field('Quelques détails', 'details', true)}{field('Ville ou « À distance »', 'place')}{field('Budget Brigadier · facultatif, hors frais', 'amount', false, true)}<p className="note">Sans expiration. Commission FLEMME de 10 % ajoutée au forfait accepté. Les achats à avancer ne sont pas inclus dans ce premier test.</p><Action disabled={busy} onClick={() => validated(() => { void mutate('create', { title: draft.title, details: draft.details, place: draft.place, budget: parseMoney(draft.amount || '', true) }, 'detail', 'Ta flemme est publiée.'); })}>Publier ma flemme</Action></>;
   else if (screen === 'list') {
     const own = tasks.filter(t => t.owner.id === actorId);
     const helping = tasks.filter(t => t.owner.id !== actorId && t.offers.some(o => o.brigadier.id === actorId));
     const available = tasks.filter(t => t.owner.id !== actorId && t.status === 'open' && !t.offers.some(o => o.brigadier.id === actorId));
-    const reload = <Action secondary disabled={busy} onClick={refresh}>↻ Actualiser</Action>;
+    const reload = <>{more && <Action secondary disabled={busy} onClick={loadMore}>Voir plus de flemmes</Action>}<Action secondary disabled={busy} onClick={refresh}>↻ Actualiser</Action></>;
     content = tab === 'mine' ? <><h1 className="heading">Mes flemmes</h1><p className="muted">Dépose une demande et retrouve tes flemmes en cours.</p><Action onClick={() => go('new')}>＋ Déposer ma flemme</Action><h2 className="section-title">Mes demandes</h2>{own.length ? own.map(taskCard) : <p className="muted">Aucune flemme déposée. Par quoi veux-tu commencer ?</p>}{reload}</> : <><p className="eyebrow">À toi de jouer, Brigadier.</p><h1 className="heading">Résoudre une flemme</h1><p className="muted">Propose ton forfait. Le déposant règle 10 % en plus à FLEMME.</p>{helping.length > 0 && <><h2 className="section-title">Mes propositions et missions</h2>{helping.map(taskCard)}</>}<h2 className="section-title">Flemmes disponibles</h2>{available.length ? available.map(taskCard) : <p className="muted">Aucune nouvelle flemme pour l’instant. Actualise la liste un peu plus tard.</p>}{reload}</>;
   } else if (!task) content = <><h1 className="heading">Flemme indisponible</h1><Action secondary onClick={() => go('list')}>Revenir à la liste</Action></>;
   else if (screen === 'report') content = <><h1 className="heading">Un problème ?</h1><p>Décris les faits. L’accord et les échanges restent conservés. Aucun remboursement n’est déclenché automatiquement.</p>{field('Ce qui s’est passé', 'text', true)}<Action disabled={busy} onClick={() => mutate('report', { text: draft.text }, 'detail', remoteMode ? 'Signalement enregistré pour examen manuel. Aucun remboursement automatique.' : 'Signalement local enregistré. Aucun support réel contacté.')}>Enregistrer le signalement</Action></>;

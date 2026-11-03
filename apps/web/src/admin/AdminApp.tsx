@@ -53,7 +53,7 @@ export default function AdminApp() {
       if (!remoteMode) { await open(new DemoAdmin()); return; }
       if (!url || !key) throw new Error('Configuration incomplète : renseigne l’URL et la clé publique Supabase.');
       const g = new RemoteGateway(url, key, tokenStore('flemme-admin-refresh')); setGateway(g);
-      if (await g.restore()) await open(remoteSource(g, g.actor.name));
+      if (await g.restore()) await open(remoteSource(g, 'Compte admin'));
     }).then(() => setReady(true));
   }, []);
   function show(next: Tab) { setTab(next); setDraft({}); setNotice(''); if (source) void run(() => load(source, next)); }
@@ -117,11 +117,11 @@ export default function AdminApp() {
     const rows = filterUsers(data.users || [], query, onlySuspended);
     content = <>
       <p className="muted">Tous les comptes du projet Supabase, y compris ceux de l’ancien espace client. Un compte suspendu peut encore se connecter et lire ses flemmes, mais ne peut plus rien publier ni modifier.</p>
-      <div className="field"><label htmlFor="u-search">Rechercher un e-mail</label><input id="u-search" type="search" value={query} onChange={e => setQuery(e.target.value)}/></div>
+      <div className="field"><label htmlFor="u-search">Rechercher (e-mail ou nom)</label><input id="u-search" type="search" value={query} onChange={e => setQuery(e.target.value)}/></div>
       <label className="check"><input type="checkbox" checked={onlySuspended} onChange={e => setOnlySuspended(e.target.checked)}/> Seulement les comptes suspendus</label>
       <p className="note">{rows.length} compte(s) affiché(s)</p>
       {data.users && rows.map(u => <div className="card" key={u.id}>
-        <div className="row"><span className="strong">{u.email}</span><span>{u.admin && <span className="tag">Admin</span>} {u.suspendedReason && <span className="tag warn">Suspendu</span>} {!u.confirmed && <span className="tag">E-mail non confirmé</span>}</span></div>
+        <div className="row"><span><span className="strong">{u.email}</span>{u.displayName && <span className="muted"> · {u.displayName}</span>}</span><span>{u.admin && <span className="tag">Admin</span>} {u.suspendedReason && <span className="tag warn">Suspendu</span>} {!u.confirmed && <span className="tag">E-mail non confirmé</span>}</span></div>
         <p className="note">Inscrit le {when(u.createdAt)} · dernière connexion : {when(u.lastSignInAt)}</p>
         <p className="muted">{u.tasks} flemme(s) déposée(s) · {u.offers} proposition(s) · {u.missions} mission(s) · {u.reports} signalement(s)</p>
         {u.suspendedReason ? <><p><span className="strong">Motif : </span>{u.suspendedReason} <span className="note">({when(u.suspendedAt)})</span></p>

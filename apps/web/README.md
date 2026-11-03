@@ -4,7 +4,7 @@ Nouveau site, indépendant du site historique flemme.org (dossier `flemme-web-be
 
 - `index.html` : vitrine (les deux actions, les quatre étapes, un calculateur du prix et ce que la version de test ne fait pas).
 - `app.html` : le parcours de l’app dans le navigateur, avec les mêmes écrans et les mêmes textes que `apps/mobile/App.tsx`.
-- `admin.html` (servie sur /admin) : la page de l’équipe pour les signalements, les litiges, les comptes et les alertes. Sans variables d’environnement, elle affiche une démonstration avec des données fictives. En mode connecté, elle n’ouvre qu’aux comptes admin (voir `../mobile/backend/README-admin.md`).
+- `admin.html` (servie sur /admin) : la page de l’équipe pour les signalements, les litiges, les comptes et les alertes. Sans variables d’environnement, elle affiche une démonstration avec des données fictives. En mode connecté, elle n’ouvre qu’aux comptes admin (voir `../../supabase/README-admin.md`).
 - `netlify/functions/alerte.mjs` : reçoit les alertes envoyées par Supabase et les transmet par e-mail via Resend.
 
 ## Une seule source pour les règles
@@ -30,7 +30,7 @@ Sans variables d’environnement : démonstration locale, avec les trois mêmes 
 
 ## Mode connecté
 
-Même backend que le mobile (`apps/mobile/backend/install.sql`, RPC `flemme_mobile_api`). Copier `.env.example` vers `.env` et renseigner `VITE_SUPABASE_URL` et `VITE_SUPABASE_PUBLISHABLE_KEY` : ce sont les valeurs publiques déjà utilisées pour le mobile. Ajouter l’adresse du site aux URL autorisées de l’authentification Supabase. Aucune clé `service_role` ou `sb_secret`.
+Même backend que le mobile (migrations `supabase/migrations`, RPC `flemme_mobile_api`, voir `supabase/README.md`). Copier `.env.example` vers `.env` et renseigner `VITE_SUPABASE_URL` et `VITE_SUPABASE_PUBLISHABLE_KEY` : ce sont les valeurs publiques déjà utilisées pour le mobile. Ajouter l’adresse du site aux URL autorisées de l’authentification Supabase. Aucune clé `service_role` ou `sb_secret`.
 
 ## Vérifications
 

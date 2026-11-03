@@ -1,5 +1,5 @@
 // FLEMME V2 — alerte e-mail à l'équipe (fonction Netlify, /api/alerte).
-// Appelée par Supabase (pg_net, voir apps/mobile/backend/admin.sql) à chaque nouvelle flemme,
+// Appelée par Supabase (pg_net, voir supabase/migrations/20261103130000_flemme_v2_admin.sql) à chaque nouvelle flemme,
 // accord conclu ou signalement. Envoie l'e-mail via Resend.
 // Variables Netlify : RESEND_API_KEY, ALERTE_SECRET (obligatoires), ALERTE_EMAIL, ALERTE_FROM (facultatives).
 // Les anciens appels du site FlemmeV2.0 (tables demandes/messages) sont ignorés sans erreur.

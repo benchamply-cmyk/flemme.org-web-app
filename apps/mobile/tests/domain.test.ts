@@ -61,7 +61,7 @@ test('déclin conserve la proposition et permet un nouveau forfait', () => {
 test('persistance : un échec disque n’annonce pas une création réussie ; rejeu idempotent', async () => {
   const fail = new DemoGateway(null, async () => { throw new Error('Disque plein'); });
   await assert.rejects(fail.create(input, 'request'), /Disque plein/);
-  assert.equal((await fail.list()).length, 3);
+  assert.equal((await fail.list()).tasks.length, 3);
   let writes = 0;
   const g = new DemoGateway(null, async () => { writes++; });
   const a = await g.create(input, 'request'), b = await g.create(input, 'request');
@@ -69,5 +69,5 @@ test('persistance : un échec disque n’annonce pas une création réussie ; re
   g.actor = brigadier;
   const t = await g.command(a.id, 'offer', { amount: 1005, slot: 'Lundi', scope: 'Tout compris' }, 'offer-request');
   assert.ok(t.offers[0].id);
-  assert.equal((await g.list()).find(x => x.id === a.id)?.offers.length, 1);
+  assert.equal((await g.list()).tasks.find(x => x.id === a.id)?.offers.length, 1);
 });

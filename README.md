@@ -10,10 +10,10 @@ Le site historique flemme.org reste dans le dépôt [FlemmeV2.0](https://github.
 |---|---|---|
 | `apps/web` | Site Vite + React : vitrine (`index.html`), parcours de l'app dans le navigateur (`app.html`), admin de l'équipe (`admin.html`, servie sur /admin) et fonction Netlify `/api/alerte` | https://flemme.org |
 | `apps/mobile` | App Expo SDK 58 (iOS, Android, Expo Go). `src/` contient les règles métier partagées avec le site | Expo Go (pas encore sur les stores) |
-| `apps/mobile/backend` | Schéma Supabase (`install.sql`, RPC `flemme_mobile_api`), admin et alertes (`admin.sql`, RPC `flemme_admin_api`, voir `README-admin.md`) et leurs tests | Supabase (à installer à la main) |
+| `supabase/` | Migrations Supabase CLI (schéma `flemme_v2`, RPC `flemme_mobile_api`, admin et alertes avec la RPC `flemme_admin_api`) et leurs tests, voir `supabase/README.md` | Supabase (`supabase db push`, avec l'accord de Ben pour la prod) |
 | `docs/` | Organisation Git et historique du dépôt FlemmeV2.0 | — |
 | `netlify.toml` | Configuration du projet Netlify `flemmeorg` (flemme.org) | — |
-| `.github/workflows/` | CI : `web.yml` (typecheck, tests, build) et `mobile.yml` (typecheck, tests, export iOS/Android, tests backend) | — |
+| `.github/workflows/` | CI : `web.yml` (typecheck, tests, build) et `mobile.yml` (typecheck, tests, export iOS/Android) et `supabase.yml` (tests des migrations) | — |
 
 Le site n'a pas sa propre copie des règles métier. Il importe `apps/mobile/src/domain.ts` et `apps/mobile/src/gateway.ts`, donc une correction faite d'un côté vaut pour les deux.
 
