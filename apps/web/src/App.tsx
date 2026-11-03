@@ -5,6 +5,8 @@ import { commission, money, parseMoney } from '../../mobile/src/domain.ts';
 import { DemoGateway, RemoteGateway, demoActors, newId } from '../../mobile/src/gateway.ts';
 import type { Gateway } from '../../mobile/src/gateway.ts';
 import { readDemo, tokens, writeDemo } from './storage.ts';
+import { prepareLink, readLinkReturn } from './authLinks.ts';
+import { supabaseConfigProblem } from './supabaseConfig.ts';
 
 // Portage web de apps/mobile/App.tsx : mêmes écrans, mêmes textes, mêmes règles (domain.ts, gateway.ts).
 // Différence web : chaque écran est une entrée d’historique, le bouton Retour du navigateur remplace BackHandler.
@@ -19,6 +21,7 @@ const date = (s: string) => new Date(s).toLocaleString('fr-FR');
 const url = import.meta.env.VITE_SUPABASE_URL || '';
 const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
 const remoteMode = !!(url || key);
+const configProblem = supabaseConfigProblem(url, key);
 // Lien direct depuis la vitrine : app.html#mine ou app.html#find.
 const initialTab = location.hash === '#find' ? 'find' : location.hash === '#mine' ? 'mine' : null;
 const start: Place = { screen: initialTab ? 'list' : 'home', tab: initialTab || 'mine', taskId: '', offerId: '', depth: 0 };
@@ -37,6 +40,8 @@ export default function App() {
   const [tasks, setTasks] = useState<Task[]>([]), [place, setPlace] = useState<Place>(start), [more, setMore] = useState<string | null>(null);
   const [draft, setDraft] = useState<Draft>({}), [busy, setBusy] = useState(false), [ready, setReady] = useState(false);
   const [error, setError] = useState(''), [notice, setNotice] = useState(''), [showHistory, setShowHistory] = useState(false);
+  // Arrivée par un lien « mot de passe oublié » : proposer d’abord de choisir un mot de passe.
+  const [recovering, setRecovering] = useState(false);
   const locked = useRef(false), pending = useRef<{ signature: string; id: string } | null>(null), main = useRef<HTMLElement>(null), flash = useRef('');
   const { screen, tab, taskId, offerId } = place;
   const task = tasks.find(t => t.id === taskId), offer = task?.offers.find(o => o.id === offerId);
@@ -52,9 +57,15 @@ export default function App() {
   async function initialize() {
     await execute(async () => {
       if (remoteMode) {
-        if (!url || !key) throw new Error('Configuration incomplète : renseigne l’URL et la clé publique Supabase.');
+        if (configProblem) throw new Error(configProblem);
         const g = new RemoteGateway(url, key, tokens); setGateway(g);
-        if (await g.restore()) { setActorId(g.actor.id); await load(g); }
+        const link = readLinkReturn(location.search, location.hash);
+        if (link) history.replaceState(history.state, '', location.pathname); // Le code ne sert qu’une fois : on le retire de l’adresse.
+        // Lien expiré ou déjà utilisé : on garde la session éventuelle de l’onglet, puis on affiche l’erreur.
+        const linkError = link && 'error' in link ? link.error : '';
+        if (link && !('error' in link)) { await g.exchangeCode(link.code, link.verifier); setRecovering(link.purpose === 'recovery'); if (link.purpose === 'signup') setNotice('Adresse confirmée. Bienvenue !'); }
+        if ((link && !linkError) || await g.restore()) { setActorId(g.actor.id); await load(g); }
+        if (linkError) throw new Error(linkError);
       } else {
         const g = new DemoGateway(await readDemo(), s => writeDemo(s)); setGateway(g); setActorId(g.actor.id); await load(g);
       }
@@ -99,7 +110,7 @@ export default function App() {
   function validated(fn: () => void) { try { fn(); } catch (e) { setError((e as Error).message); } }
   function field(label: string, name: string, multiline = false, numeric = false, secret = false) {
     const id = 'f-' + name, common = { id, value: draft[name] || '', disabled: busy, onChange: (e: { target: { value: string } }) => setDraft(d => ({ ...d, [name]: e.target.value })) };
-    return <div className="field" key={name}><label htmlFor={id}>{label}</label>{multiline ? <textarea {...common} maxLength={1000}/> : <input {...common} type={secret ? 'password' : name === 'email' ? 'email' : 'text'} inputMode={numeric ? 'decimal' : undefined} placeholder={numeric ? 'En €' : ''} maxLength={name === 'password' ? 200 : 100} autoComplete={name === 'email' ? 'email' : secret ? 'current-password' : 'off'}/>}</div>;
+    return <div className="field" key={name}><label htmlFor={id}>{label}</label>{multiline ? <textarea {...common} maxLength={1000}/> : <input {...common} type={secret ? 'password' : name === 'email' ? 'email' : 'text'} inputMode={numeric ? 'decimal' : undefined} placeholder={numeric ? 'En €' : ''} maxLength={name === 'password' ? 200 : 100} autoComplete={name === 'email' ? 'email' : secret ? (recovering ? 'new-password' : 'current-password') : 'off'}/>}</div>;
   }
   function openTask(t: Task) { go('detail', { taskId: t.id }); }
   function openOffer(o: Offer) { go('offer', { offerId: o.id }); }
@@ -109,8 +120,9 @@ export default function App() {
 
   let content: ReactNode;
   if (!ready) content = <p className="muted" role="status">Chargement…</p>;
-  else if (remoteMode && (!gateway || !actorId)) content = <><h1 className="heading">Un peu de flemme ?</h1><p>Connecte-toi pour déposer une tâche ou proposer ton aide.</p>{field('E-mail', 'email')}{field('Mot de passe', 'password', false, false, true)}<Action disabled={busy || !gateway} onClick={() => execute(async () => { const g = gateway as RemoteGateway; await g.login(draft.email || '', draft.password || ''); await load(g); setActorId(g.actor.id); setDraft({}); })}>Me connecter</Action><Action secondary disabled={busy || !gateway} onClick={() => execute(async () => { if ((draft.password || '').length < 12) throw new Error('Choisis un mot de passe d’au moins 12 caractères.'); await (gateway as RemoteGateway).signup(draft.email || '', draft.password || ''); setNotice('Vérifie ton e-mail, puis connecte-toi.'); setDraft(d => ({ ...d, password: '' })); })}>Créer un compte</Action>{!gateway && <Action secondary onClick={initialize}>Réessayer</Action>}</>;
+  else if (remoteMode && (!gateway || !actorId)) content = <><h1 className="heading">Un peu de flemme ?</h1><p>Connecte-toi pour déposer une tâche ou proposer ton aide.</p><p className="note">Déjà inscrit sur l’ancien espace FLEMME ? Utilise la même adresse e-mail. Si tu te connectais par lien e-mail, Google ou Apple, choisis « Mot de passe oublié ? » pour créer ton mot de passe.</p>{field('E-mail', 'email')}{field('Mot de passe', 'password', false, false, true)}<Action disabled={busy || !gateway} onClick={() => execute(async () => { const g = gateway as RemoteGateway; await g.login(draft.email || '', draft.password || ''); await load(g); setActorId(g.actor.id); setDraft({}); })}>Me connecter</Action><Action secondary disabled={busy || !gateway} onClick={() => execute(async () => { if ((draft.password || '').length < 12) throw new Error('Choisis un mot de passe d’au moins 12 caractères.'); await (gateway as RemoteGateway).signup(draft.email || '', draft.password || '', await prepareLink('signup')); setNotice('Vérifie ton e-mail et ouvre le lien dans ce navigateur.'); setDraft(d => ({ ...d, password: '' })); })}>Créer un compte</Action><Action secondary disabled={busy || !gateway} onClick={() => execute(async () => { if (!(draft.email || '').trim()) throw new Error('Indique ton adresse e-mail, puis choisis « Mot de passe oublié ? ».'); await (gateway as RemoteGateway).recover(draft.email || '', await prepareLink('recovery')); setNotice('Si un compte existe pour cette adresse, un e-mail vient de partir. Ouvre le lien dans ce navigateur pour choisir ton mot de passe.'); setDraft(d => ({ ...d, password: '' })); })}>Mot de passe oublié ?</Action>{!gateway && <Action secondary onClick={initialize}>Réessayer</Action>}</>;
   else if (!gateway) content = <><h1 className="heading">Chargement interrompu</h1><Action onClick={initialize}>Réessayer sans effacer mes données</Action></>;
+  else if (recovering && gateway instanceof RemoteGateway) content = <><h1 className="heading">Choisis ton mot de passe</h1><p>Il te servira à te connecter avec ton adresse e-mail, sur le site comme dans l’app.</p>{field('Nouveau mot de passe', 'password', false, false, true)}<Action disabled={busy} onClick={() => execute(async () => { if ((draft.password || '').length < 12) throw new Error('Choisis un mot de passe d’au moins 12 caractères.'); await gateway.setPassword(draft.password || ''); setRecovering(false); setDraft({}); setNotice('Mot de passe enregistré.'); })}>Enregistrer mon mot de passe</Action><Action secondary disabled={busy} onClick={() => { setRecovering(false); setDraft({}); }}>Plus tard</Action></>;
   else if (screen === 'account') content = <><h1 className="heading">Salut {gateway.actor.name}.</h1>{gateway instanceof DemoGateway ? <><p>Démonstration locale. Change de personnage pour tester les deux côtés d’une mission. Aucun échange entre appareils, aucun paiement réel.</p>{demoActors.map(a => <Action secondary key={a.id} disabled={busy} onClick={() => execute(async () => { gateway.actor = a; setActorId(a.id); await load(gateway); pending.current = null; go('home', { taskId: '', offerId: '' }); })}>{a.name}{a.id === actorId ? ' · actif' : ''}</Action>)}</> : <><p>Les comptes, annonces et discussions utilisent le service FLEMME configuré.</p>{field('Mon nom affiché', 'displayName')}<Action secondary disabled={busy} onClick={() => execute(async () => { await (gateway as RemoteGateway).updateProfile(draft.displayName || ''); setDraft({}); setNotice('Nom affiché mis à jour.'); })}>Changer mon nom</Action><Action secondary disabled={busy} onClick={() => execute(async () => { try { await (gateway as RemoteGateway).logout(); } finally { setActorId(''); setTasks([]); setMore(null); setDraft({}); pending.current = null; go('home', { taskId: '', offerId: '' }); } })}>Me déconnecter</Action></>}</>;
   else if (screen === 'home') content = <div className="home"><div><p className="eyebrow">Le droit d’avoir la flemme.</p><h1 className="heading">On fait quoi aujourd’hui ?</h1><p className="muted">Déléguer un peu. Aider quelqu’un.</p></div><div className="choices"><button type="button" className="choice" aria-label="Mes flemmes · déposer et suivre mes demandes" onClick={() => go('list', { tab: 'mine' })}><span className="choice-icon" aria-hidden="true">☕</span><span className="choice-title">Mes flemmes</span><span className="choice-hint">Déposer et suivre mes demandes</span></button><button type="button" className="choice secondary" aria-label="Résoudre une flemme · voir les flemmes à résoudre" onClick={() => go('list', { tab: 'find' })}><span className="choice-icon" aria-hidden="true">↗</span><span className="choice-title">Résoudre une flemme</span><span className="choice-hint">Trouver quelqu’un à aider</span></button></div></div>;
   else if (screen === 'new') content = <><h1 className="heading">La flemme de quoi ?</h1><p className="muted">Raconte. Un Brigadier prendra le relais.</p>{field('Ce qu’il faut faire', 'title')}{field('Quelques détails', 'details', true)}{field('Ville ou « À distance »', 'place')}{field('Budget Brigadier · facultatif, hors frais', 'amount', false, true)}<p className="note">Sans expiration. Commission FLEMME de 10 % ajoutée au forfait accepté. Les achats à avancer ne sont pas inclus dans ce premier test.</p><Action disabled={busy} onClick={() => validated(() => { void mutate('create', { title: draft.title, details: draft.details, place: draft.place, budget: parseMoney(draft.amount || '', true) }, 'detail', 'Ta flemme est publiée.'); })}>Publier ma flemme</Action></>;
