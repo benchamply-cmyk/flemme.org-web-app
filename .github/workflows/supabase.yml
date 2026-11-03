@@ -1,0 +1,24 @@
+name: Base Supabase (supabase)
+on:
+  push:
+    branches: [prod, preprod]
+    paths: ['supabase/**', 'apps/mobile/src/domain.ts', '.github/workflows/supabase.yml']
+  pull_request:
+    paths: ['supabase/**', 'apps/mobile/src/domain.ts', '.github/workflows/supabase.yml']
+permissions:
+  contents: read
+jobs:
+  migrations:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: supabase/tests
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: supabase/tests/package-lock.json
+      - run: npm ci --ignore-scripts
+      - run: npm test

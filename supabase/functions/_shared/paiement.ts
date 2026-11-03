@@ -1,5 +1,5 @@
 // Logique des fonctions Edge de paiement (Stripe Connect), sans dépendance : tourne sous Deno (Supabase)
-// et sous Node pour les tests (tests/paiement.test.ts). Aucun appel réel à Stripe dans les tests.
+// et sous Node pour les tests (supabase/tests/functions.test.ts). Aucun appel réel à Stripe dans les tests.
 //
 // Secrets à définir dans Supabase (Project Settings > Edge Functions > Secrets), jamais dans le dépôt :
 //   STRIPE_SECRET_KEY      sk_test_… en préprod. Une clé sk_live_/rk_live_ est refusée tant que

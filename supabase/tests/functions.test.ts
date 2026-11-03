@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
-import { checkout, form, onboarding, settings, verifySignature, webhook } from '../supabase/functions/_shared/paiement.ts';
+import { checkout, form, onboarding, settings, verifySignature, webhook } from '../functions/_shared/paiement.ts';
 
 const TASK = '11111111-2222-4333-8444-555555555555';
 const baseEnv: Record<string, string> = {
