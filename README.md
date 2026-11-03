@@ -8,11 +8,11 @@ Le site historique flemme.org reste dans le dépôt [FlemmeV2.0](https://github.
 
 | Dossier | Contenu | Publié sur |
 |---|---|---|
-| `apps/web` | Site Vite + React : vitrine (`index.html`) et parcours de l'app dans le navigateur (`app.html`) | https://flemme-web-app.netlify.app |
+| `apps/web` | Site Vite + React : vitrine (`index.html`) et parcours de l'app dans le navigateur (`app.html`) | https://flemme.org |
 | `apps/mobile` | App Expo SDK 58 (iOS, Android, Expo Go). `src/` contient les règles métier partagées avec le site | Expo Go (pas encore sur les stores) |
 | `apps/mobile/backend` | Schéma Supabase (`install.sql`, RPC `flemme_mobile_api`) et ses tests | Supabase (à installer à la main) |
 | `docs/` | Organisation Git et historique du dépôt FlemmeV2.0 | — |
-| `netlify.toml` | Configuration du projet Netlify `flemme-web-app` | — |
+| `netlify.toml` | Configuration du projet Netlify `flemmeorg` (flemme.org) | — |
 | `.github/workflows/` | CI : `web.yml` (typecheck, tests, build) et `mobile.yml` (typecheck, tests, export iOS/Android, tests backend) | — |
 
 Le site n'a pas sa propre copie des règles métier. Il importe `apps/mobile/src/domain.ts` et `apps/mobile/src/gateway.ts`, donc une correction faite d'un côté vaut pour les deux.
@@ -28,7 +28,7 @@ Sans variables d'environnement, les deux applications tournent en démonstration
 
 ## Publication Netlify
 
-Le projet Netlify `flemme-web-app` est relié à ce dépôt. Toute la configuration vient de `netlify.toml` : base `apps/web`, commande `npm run build`, dossier `dist`, Node 22 et en-tête `noindex` tant que c'est une version de test. Netlify publie `prod` en production (à régler dans Project configuration → Build & deploy → Branches and deploy contexts → Production branch = `prod`) et `preprod` sur son adresse de branche.
+Le projet Netlify `flemmeorg` (domaine flemme.org, avec ses variables d’environnement) est relié à ce dépôt depuis le 03/11/2026, à la place de FlemmeV2.0. Toute la configuration de build vient de `netlify.toml` : base `apps/web`, commande `npm run build`, dossier `dist`, Node 22, et redirection des anciennes adresses. Netlify publie `prod` sur flemme.org et `preprod` sur son adresse de branche. L’ancien projet de test `flemme-web-app` n’est plus nécessaire.
 
 ## Travailler sur ce dépôt
 
