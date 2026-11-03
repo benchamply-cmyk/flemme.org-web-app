@@ -3,12 +3,12 @@ import react from '@vitejs/plugin-react';
 import { fileURLToPath } from 'node:url';
 
 // Deux pages : la vitrine (index.html) et le parcours de l’app (app.html).
-// Les règles métier viennent de ../mobile/src : Vite doit pouvoir lire ce dossier.
+// Les règles métier et l’état de l’app viennent de ../../packages/shared : Vite doit pouvoir lire ce dossier.
 export default defineConfig({
   plugins: [react()],
-  // Sans cela, Vite lirait apps/mobile/tsconfig.json pour domain.ts, qui étend une config Expo absente ici.
+  // Toujours la config TypeScript du site, y compris pour les fichiers de packages/shared.
   tsconfig: './tsconfig.json',
-  server: { fs: { allow: ['..'] } },
+  server: { fs: { allow: ['../..'] } },
   build: {
     rollupOptions: {
       input: {

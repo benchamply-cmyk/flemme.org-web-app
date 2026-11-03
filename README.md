@@ -1,6 +1,6 @@
 # flemme.org-web-app
 
-Nouvelle base de FLEMME. Il y a deux applications : un site web et une app mobile. Elles partagent les mêmes règles métier : deux actions (« Mes flemmes », « Résoudre une flemme »), des Brigadiers qui proposent un forfait, et une commission FLEMME de 10 % ajoutée au forfait accepté.
+Nouvelle base de FLEMME. Il y a deux applications, un site web et une app mobile, et un dossier de code commun (`packages/shared`). Elles partagent les mêmes règles métier : deux actions (« Mes flemmes », « Résoudre une flemme »), des Brigadiers qui proposent un forfait, et une commission FLEMME de 10 % ajoutée au forfait accepté.
 
 Le site historique flemme.org reste dans le dépôt [FlemmeV2.0](https://github.com/benchamply-cmyk/FlemmeV2.0). Ce dépôt-ci repart sur une base propre, avec seulement ce qui sert à la nouvelle version.
 
@@ -9,13 +9,14 @@ Le site historique flemme.org reste dans le dépôt [FlemmeV2.0](https://github.
 | Dossier | Contenu | Publié sur |
 |---|---|---|
 | `apps/web` | Site Vite + React : vitrine (`index.html`) et parcours de l'app dans le navigateur (`app.html`) | https://flemme.org |
-| `apps/mobile` | App Expo SDK 58 (iOS, Android, Expo Go). `src/` contient les règles métier partagées avec le site | Expo Go (pas encore sur les stores) |
+| `apps/mobile` | App Expo SDK 58 (iOS, Android, Expo Go) | Expo Go (pas encore sur les stores) |
+| `packages/shared` | Code commun aux deux apps : règles métier, accès aux données (démo et Supabase), état de l'app, droits et textes. Sans React ni dépendance | — |
 | `apps/mobile/backend` | Schéma Supabase (`install.sql`, RPC `flemme_mobile_api`) et ses tests | Supabase (à installer à la main) |
 | `docs/` | Organisation Git et historique du dépôt FlemmeV2.0 | — |
 | `netlify.toml` | Configuration du projet Netlify `flemmeorg` (flemme.org) | — |
-| `.github/workflows/` | CI : `web.yml` (typecheck, tests, build) et `mobile.yml` (typecheck, tests, export iOS/Android, tests backend) | — |
+| `.github/workflows/` | CI : `web.yml` (typecheck, tests, build) et `mobile.yml` (typecheck, tests, export iOS/Android, tests backend). Les deux se lancent aussi quand `packages/shared` change | — |
 
-Le site n'a pas sa propre copie des règles métier. Il importe `apps/mobile/src/domain.ts` et `apps/mobile/src/gateway.ts`, donc une correction faite d'un côté vaut pour les deux.
+Une seule source pour la logique : le site et l'app importent `packages/shared`, donc une correction faite à cet endroit vaut pour les deux. Chaque app ne garde que son affichage (`App.tsx`, qui choisit l'écran, et un fichier par écran dans `src/ecrans/`), son stockage local et sa navigation. Voir [packages/shared/README.md](packages/shared/README.md).
 
 ## Lancer en local
 
