@@ -21,7 +21,7 @@ Supabase > projet `yktpabnqkhwcshvjuncs` > SQL Editor : coller `supabase/verific
 
 - Requête 1 : toutes les colonnes à `true` (schéma et RPC présents, RPC fermée aux visiteurs, tables non lisibles directement, RLS active).
 - Requête 2 : `sans_profil` doit valoir 0. Elle donne aussi le nombre de comptes **sans mot de passe** (ouverts par lien e-mail, Google ou Apple) : ils devront utiliser « Mot de passe oublié ? » sur le nouveau site.
-- Requête 3 : les versions `20261103120000` et `20261103120100` doivent figurer dans l'historique des migrations. Comme elles ont été appliquées à la main, elles y manquent sans doute : les enregistrer avec `npx supabase migration repair --status applied 20261103120000 20261103120100` (après `supabase link`), sinon un futur `supabase db push` tentera de les rejouer et échouera.
+- Requête 3 : l'historique des migrations doit contenir `20261103120000` et `20261103120100` (le script appliqué le 03/11 les y inscrit) ainsi que `20261014010810` (FlemmeV2.0). Si les deux premières manquaient, les enregistrer avec `npx supabase migration repair --status applied 20261103120000 20261103120100`, sinon un futur `supabase db push` tenterait de les rejouer.
 
 ### 2. Authentification Supabase
 

@@ -25,9 +25,9 @@ from auth.users u left join flemme_v2.profiles p on p.user_id = u.id
 where u.deleted_at is null;
 select provider, count(*) as comptes from auth.identities group by provider order by 2 desc;
 
--- 3. Historique des migrations (appliquées à la main dans l'éditeur SQL le 03/11/2026) :
---    si les deux versions 20261103120000 et 20261103120100 manquent ici, un futur
---    « supabase db push » voudra les rejouer et échouera. Voir supabase/README.md.
+-- 3. Historique des migrations : 20261103120000 et 20261103120100 (inscrites par le script appliqué
+--    le 03/11/2026) et 20261014010810 (FlemmeV2.0). Si les deux premières manquent, un futur
+--    « supabase db push » voudra les rejouer : voir docs/supabase-mise-en-service.md.
 select version, name from supabase_migrations.schema_migrations order by version;
 
 -- 4. Suivi après ouverture : flemmes par statut.
