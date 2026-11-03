@@ -28,7 +28,7 @@ Sans variables d’environnement : démonstration locale, avec les trois mêmes 
 
 ## Mode connecté
 
-Même backend que le mobile (`apps/mobile/backend/install.sql`, RPC `flemme_mobile_api`). Copier `.env.example` vers `.env` et renseigner `VITE_SUPABASE_URL` et `VITE_SUPABASE_PUBLISHABLE_KEY` : ce sont les valeurs publiques déjà utilisées pour le mobile. Ajouter l’adresse du site aux URL autorisées de l’authentification Supabase. Aucune clé `service_role` ou `sb_secret`.
+Même backend que le mobile (migrations `supabase/migrations`, RPC `flemme_mobile_api`, voir `supabase/README.md`). Copier `.env.example` vers `.env` et renseigner `VITE_SUPABASE_URL` et `VITE_SUPABASE_PUBLISHABLE_KEY` : ce sont les valeurs publiques déjà utilisées pour le mobile. Ajouter l’adresse du site aux URL autorisées de l’authentification Supabase. Aucune clé `service_role` ou `sb_secret`.
 
 ## Vérifications
 
