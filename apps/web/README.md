@@ -36,6 +36,6 @@ Même backend que le mobile (`apps/mobile/backend/install.sql`, RPC `flemme_mobi
     npm test
     npm run build
 
-`npm run build` produit `dist/` (site statique). Le `netlify.toml` à la racine du dépôt publie ce dossier sur https://flemme-web-app.netlify.app (base `apps/web`, commande `npm run build`, dossier `dist`, Node 22).
+`npm run build` produit `dist/` (site statique). Le `netlify.toml` à la racine du dépôt publie ce dossier sur https://flemme.org (projet Netlify flemmeorg) (base `apps/web`, commande `npm run build`, dossier `dist`, Node 22).
 
 Limites : identiques à celles du mobile (pas d’encaissement, paiement direct et déclaratif, pas de pagination, pas de synchronisation continue).

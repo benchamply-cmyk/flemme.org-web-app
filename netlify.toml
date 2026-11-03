@@ -1,4 +1,4 @@
-# Netlify : projet « flemme-web-app » (https://flemme-web-app.netlify.app).
+# Netlify : projet « flemmeorg » (https://flemme.org), production = branche prod.
 # Publie le site apps/web. « publish » et « command » sont relatifs à « base ».
 [build]
   base = "apps/web"
@@ -10,10 +10,45 @@
 [build.environment]
   NODE_VERSION = "22"
 
-# Version de test : pas d'indexation par les moteurs de recherche.
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Robots-Tag = "noindex"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Anciennes adresses du site historique (dépôt FlemmeV2.0) : on renvoie vers
+# le nouvel équivalent plutôt qu'une 404. 302 tant que la refonte n'est pas figée.
+[[redirects]]
+  from = "/espace*"
+  to = "/app.html#mine"
+  status = 302
+
+[[redirects]]
+  from = "/manager*"
+  to = "/app.html#mine"
+  status = 302
+
+[[redirects]]
+  from = "/rejoindre*"
+  to = "/app.html#find"
+  status = 302
+
+[[redirects]]
+  from = "/gestionadmin*"
+  to = "/"
+  status = 302
+
+[[redirects]]
+  from = "/services*"
+  to = "/"
+  status = 302
+
+[[redirects]]
+  from = "/demarche*"
+  to = "/"
+  status = 302
+
+[[redirects]]
+  from = "/ambassadeurs*"
+  to = "/"
+  status = 302
