@@ -1,7 +1,7 @@
 {
-  "name": "@flemme/mobile-backend-tests",
+  "name": "@flemme/supabase-tests",
   "private": true,
   "type": "module",
-  "scripts": { "test": "node test.mjs" },
+  "scripts": { "test": "node api.test.mjs" },
   "devDependencies": { "@electric-sql/pglite": "0.3.14" }
 }

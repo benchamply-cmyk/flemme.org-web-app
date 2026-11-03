@@ -29,5 +29,3 @@ jobs:
       - run: npm run export:ios
         env:
           EXPO_OFFLINE: '1'
-      - run: npm ci --ignore-scripts && npm test
-        working-directory: apps/mobile/backend
