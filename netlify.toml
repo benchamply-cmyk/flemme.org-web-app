@@ -9,6 +9,9 @@
 
 [build.environment]
   NODE_VERSION = "22"
+  # Mode réel : VITE_SUPABASE_URL et VITE_SUPABASE_PUBLISHABLE_KEY se règlent dans l'interface Netlify
+  # (Environment variables, par contexte de déploiement), pas ici. Sans elles : démo locale.
+  # Voir docs/supabase-mise-en-service.md.
 
 [[headers]]
   for = "/*"

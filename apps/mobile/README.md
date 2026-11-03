@@ -50,8 +50,8 @@ Sans variables d’environnement : démonstration locale. Le bouton de profil pe
 
 Le connecteur Supabase REST est implémenté ; il n’est activé que si l’URL et la clé publique sont renseignées. Une configuration partielle produit une erreur plutôt qu’une bascule silencieuse vers la démo.
 
-1. Utiliser un projet Supabase de test. Exécuter une fois backend/install.sql depuis son éditeur SQL. Le script transactionnel crée un schéma privé distinct, flemme_mobile_v1, et le seul point d’entrée public flemme_mobile_api. Il ne touche pas aux tables, fonctions ni données du site ou du Manager. Il échoue si ses objets existent déjà plutôt que de les remplacer.
-2. Garder flemme_mobile_v1 hors de la liste des schémas exposés dans Data API. Le schéma public doit être exposé pour la RPC. Les tables privées n’ont aucun droit d’accès direct pour anon/authenticated ; RLS est activée. La RPC vérifie un compte confirmé, les propriétaires et les participants à chaque action.
+1. Projet Supabase : celui de production (`yktpabnqkhwcshvjuncs`, décision du 03/11/2026 ; mise en service du site : `docs/supabase-mise-en-service.md`). Y appliquer les migrations du dossier supabase/ à la racine du dépôt avec la CLI Supabase (voir supabase/README.md). Elles créent un schéma privé distinct, flemme_v2, et le seul point d’entrée public flemme_mobile_api. Elles ne touchent pas aux tables, fonctions ni données du site ou du Manager, et échouent si leurs objets existent déjà plutôt que de les remplacer.
+2. Garder flemme_v2 hors de la liste des schémas exposés dans Data API. Le schéma public doit être exposé pour la RPC. Les tables privées n’ont aucun droit d’accès direct pour anon/authenticated ; RLS est activée. La RPC vérifie un compte confirmé, les propriétaires et les participants à chaque action.
 3. Copier .env.example vers .env et renseigner EXPO_PUBLIC_SUPABASE_URL et EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY avec les valeurs publiques du projet. Aucune clé service_role ou sb_secret ne doit être embarquée. Redémarrer Metro après modification.
 4. Activer l’authentification e-mail/mot de passe et la confirmation d’e-mail dans Supabase. Configurer l’adresse de retour du mail de confirmation ; l’utilisateur revient ensuite se connecter dans l’app. La création de compte et la connexion sont disponibles dans l’application.
 5. Tester avec deux comptes sur deux appareils. Tirer la liste vers le bas pour actualiser les offres, messages et états ; pas de synchronisation continue ni de notifications push.
@@ -73,7 +73,7 @@ La commission est calculée côté serveur et enregistrée dans l’accord, jama
 
 ## Support et mesure du test
 
-Les signalements du mode connecté sont enregistrés en base, sans notification automatique ni interface d’administration mobile. Pour le test accompagné, une personne habilitée doit consulter les documents dans flemme_mobile_v1.tasks depuis l’outil d’administration de la base, puis contacter les participants dans les discussions. L’app ne promet pas de réponse ni de remboursement automatique.
+Les signalements du mode connecté sont enregistrés en base, sans notification automatique ni interface d’administration mobile. Pour le test accompagné, une personne habilitée doit consulter les événements « report » de flemme_v2.events depuis l’outil d’administration de la base, puis contacter les participants dans les discussions. L’app ne promet pas de réponse ni de remboursement automatique.
 
 Les tâches, accords, dates de création, événements et déclarations de paiement permettent d’extraire les taux d’attribution, de réalisation et de paiement confirmé. Le retour d’un utilisateur se mesure sur ses créations et propositions successives. Aucune mesure de paiement bancaire réel n’est disponible tant que l’encaissement n’est pas connecté.
 
@@ -83,15 +83,15 @@ Les tâches, accords, dates de création, événements et déclarations de paiem
     npm test
     npm run export:android
     npm run export:ios
-    cd backend
+    cd ../../supabase/tests
     npm ci
     npm test
 
-Les tests SQL utilisent PostgreSQL embarqué (PGlite), un schéma auth simulé et les rôles anon/authenticated. Ils exécutent le vrai script d’installation et vérifient les refus d’accès, la confidentialité des discussions, la commission calculée côté serveur, l’attribution unique, le rejeu idempotent et les déclarations de paiement. Ce n’est pas une validation du service Supabase déployé.
+Les tests SQL utilisent PostgreSQL embarqué (PGlite), un schéma auth simulé et les rôles anon/authenticated. Ils exécutent les vraies migrations et vérifient les refus d’accès, la confidentialité des discussions, la commission calculée côté serveur, l’attribution unique, le rejeu idempotent et les déclarations de paiement. Ce n’est pas une validation du service Supabase déployé.
 
 Les exports Metro vérifient les bundles natifs ; ils ne remplacent pas les tests sur appareil ni les compilations signées. Aucun projet Supabase n’est modifié automatiquement, aucun build n’est envoyé aux stores et aucune configuration Netlify n’est changée.
 
-Limites du premier test : pas de pagination de la place de marché, pas d’achats avancés, pas de tarification horaire, pas d’annulation automatique, pas de changement de prix après accord. Les identifiants de reprise réseau sont conservés pendant la session d’édition ; après fermeture brutale de l’app, actualiser avant de recréer une tâche. Les snapshots de démonstration restent sur le téléphone jusqu’à désinstallation et ne constituent pas une sauvegarde distante.
+Limites du premier test : pagination simple (50 flemmes par page, bouton « Voir plus »), pas d’achats avancés, pas de tarification horaire, pas d’annulation automatique, pas de changement de prix après accord. Les identifiants de reprise réseau sont conservés pendant la session d’édition ; après fermeture brutale de l’app, actualiser avant de recréer une tâche. Les snapshots de démonstration restent sur le téléphone jusqu’à désinstallation et ne constituent pas une sauvegarde distante.
 
 ## Sources et références — 28/10/2026
 
