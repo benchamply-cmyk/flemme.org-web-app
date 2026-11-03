@@ -44,3 +44,37 @@ test('reprise : les appels concurrents partagent un seul renouvellement du jeton
   });
   await Promise.all([g.list(), g.list()]); assert.equal(refreshes, 1);
 });
+test('comptes repris : mot de passe oublié, retour de lien PKCE et nouveau mot de passe', async () => {
+  let saved: string | null = null;
+  const calls: { path: string; method: string; body: any; headers: any }[] = [];
+  const g = new RemoteGateway('https://example.supabase.co', 'sb_publishable_test', { get: async () => saved, set: async v => { saved = v; }, clear: async () => { saved = null; } }, async (path: any, init: any) => {
+    calls.push({ path, method: init.method, body: JSON.parse(init.body), headers: init.headers });
+    if (path.includes('/logout')) return new Response(null, { status: 204 });
+    if (path.includes('/rpc/')) return new Response(JSON.stringify({ profile: { id: 'a', name: 'Lou.B' } }), { status: 200 });
+    return new Response(JSON.stringify(path.includes('/token') ? { access_token: 'access', refresh_token: 'refresh', expires_in: 3600, user: { id: 'a', email: 'ancien@example.com' } } : {}), { status: 200 });
+  });
+  const link = { redirectTo: 'https://flemme.org/app.html', codeChallenge: 'empreinte' };
+  await g.recover(' ancien@example.com ', link);
+  assert.equal(calls[0].path, 'https://example.supabase.co/auth/v1/recover?redirect_to=https%3A%2F%2Fflemme.org%2Fapp.html');
+  assert.deepEqual(calls[0].body, { email: 'ancien@example.com', code_challenge: 'empreinte', code_challenge_method: 's256' });
+  await g.signup('nouveau@example.com', 'un-long-mot-de-passe', link);
+  assert.equal(calls[1].body.code_challenge, 'empreinte');
+  await g.exchangeCode('code', 'secret');
+  assert.deepEqual(calls[2].body, { auth_code: 'code', code_verifier: 'secret' });
+  assert.equal(saved, 'refresh'); assert.equal(g.actor.id, 'a');
+  // Le nom affiché vient du profil serveur (pseudo de l'ancien espace repris).
+  assert.equal(calls[3].body.p_action, 'me'); assert.equal(g.actor.name, 'Lou.B');
+  await g.setPassword('un-long-mot-de-passe');
+  assert.equal(calls[4].method, 'PUT'); assert.equal(calls[4].headers.Authorization, 'Bearer access');
+  await g.logout(); // Réponse 204 vide : pas d’erreur affichée.
+  assert.equal(saved, null);
+  await g.signup('x@example.com', 'un-long-mot-de-passe');
+  assert.equal(calls[6].path, 'https://example.supabase.co/auth/v1/signup'); assert.equal(calls[6].body.code_challenge, undefined);
+});
+test('erreurs Supabase Auth traduites, clé service_role refusée', async () => {
+  const storage = { get: async () => null, set: async () => {}, clear: async () => {} };
+  const g = new RemoteGateway('https://example.supabase.co', 'public', storage, async () => new Response(JSON.stringify({ code: 400, error_code: 'invalid_credentials', msg: 'Invalid login credentials' }), { status: 400 }));
+  await assert.rejects(g.login('x', 'x'), /E-mail ou mot de passe incorrect/);
+  const serviceRole = 'eyJhbGciOiJIUzI1NiJ9.' + btoa(JSON.stringify({ role: 'service_role' })).replace(/=+$/, '') + '.s';
+  assert.throws(() => new RemoteGateway('https://example.com', serviceRole, storage));
+});

@@ -28,7 +28,11 @@ Sans variables d’environnement : démonstration locale, avec les trois mêmes 
 
 ## Mode connecté
 
-Même backend que le mobile (migrations `supabase/migrations`, RPC `flemme_mobile_api`, voir `supabase/README.md`). Copier `.env.example` vers `.env` et renseigner `VITE_SUPABASE_URL` et `VITE_SUPABASE_PUBLISHABLE_KEY` : ce sont les valeurs publiques déjà utilisées pour le mobile. Ajouter l’adresse du site aux URL autorisées de l’authentification Supabase. Aucune clé `service_role` ou `sb_secret`.
+Même backend que le mobile (migrations `supabase/migrations`, RPC `flemme_mobile_api`, voir `supabase/README.md`). Copier `.env.example` vers `.env` et renseigner `VITE_SUPABASE_URL` et `VITE_SUPABASE_PUBLISHABLE_KEY` : ce sont les valeurs publiques déjà utilisées pour le mobile. Ajouter `…/app.html` aux Redirect URLs de l’authentification Supabase. Aucune clé `service_role` ou `sb_secret`.
+
+Le build échoue si une seule des deux variables est remplie, si l’URL n’est pas en HTTPS ou si la clé est secrète (`src/supabaseConfig.ts`). En mode connecté, l’écran de connexion propose aussi « Mot de passe oublié ? » : c’est ainsi que les comptes de l’ancien espace ouverts par lien e-mail, Google ou Apple se créent un mot de passe. Les liens des e-mails reviennent sur `app.html` en flux PKCE (`src/authLinks.ts`).
+
+Mise en service sur flemme.org (installation SQL, réglages Supabase et Netlify, recette, retour arrière) : `docs/supabase-mise-en-service.md`.
 
 ## Vérifications
 
