@@ -67,7 +67,7 @@ Les jetons d’accès restent en mémoire. Seul le jeton de renouvellement est c
 - Terminer : le déposant confirme la réalisation. Il peut déclarer avoir payé ; le Brigadier peut confirmer la réception. Ces indications restent déclaratives.
 - Désaccord : l’un des deux participants à l’accord peut enregistrer un signalement. Aucune suppression d’offre, de message ou d’historique n’est disponible.
 
-Calcul exclusivement en centimes : commission = arrondi au centime de forfait / 10. Exemple : 40 € au Brigadier, 4 € à FLEMME, total 44 €. Pour 40,05 €, frais de 4,01 €, total 44,06 €. Aucun frais minimal : les forfaits très faibles peuvent donner une commission arrondie à zéro.
+Calcul exclusivement en centimes : commission = arrondi au centime de forfait / 10 (réglage par défaut, configurable : voir `docs/paiement-stripe.md` à la racine du dépôt). Exemple : 40 € au Brigadier, 4 € à FLEMME, total 44 €. Pour 40,05 €, frais de 4,01 €, total 44,06 €. Aucun frais minimal : les forfaits très faibles peuvent donner une commission arrondie à zéro.
 
 La commission est calculée côté serveur et enregistrée dans l’accord, jamais acceptée depuis un total envoyé par le client. Paiement direct au Brigadier et commission séparée correspondent au test accompagné choisi. **Cette version n’encaisse ni la prestation ni les frais FLEMME.** Aucun écran ne prétend qu’une commission est payée. Le branchement d’un prestataire de paiement et ses remboursements constituent une étape distincte avant de percevoir automatiquement les frais.
 

@@ -8,14 +8,41 @@ export type Task = {
   id: string; owner: Actor; title: string; details: string; place: string;
   budget: number | null; status: 'open' | 'assigned' | 'completed';
   createdAt: string; offers: Offer[]; acceptedOfferId?: string;
-  agreement?: { amount: number; commission: number; total: number; slot: string; scope: string; brigadier: Actor };
+  agreement?: Agreement;
   history: { text: string; at: string }[];
   reports: { actor: Actor; text: string; at: string }[];
   paymentDeclared?: boolean; paymentConfirmed?: boolean;
+  // Rempli uniquement par le serveur (webhook Stripe) quand le paiement en ligne est activé.
+  payment?: { method: 'stripe'; status: 'paid'; total: number; commission: number; payout: number; at: string };
 };
+// amount : forfait proposé par le Brigadier. commission : part FLEMME. total : payé par le déposant.
+// payout : reversé au Brigadier. rateBps et model : règle appliquée, figée au moment de l'accord.
+export type Agreement = Price & { slot: string; scope: string; brigadier: Actor };
 export type Command = 'offer' | 'message' | 'accept' | 'decline' | 'complete' | 'declare_payment' | 'confirm_payment' | 'report';
 export type Input = Record<string, unknown>;
-export const commission = (amount: number) => Math.round(amount / 10);
+/*
+ * Commission FLEMME, configurable. Le modèle économique n'est pas encore tranché (roadmap V2) :
+ * - 'ajout' : la commission s'ajoute au forfait du Brigadier (modèle actuel, 10 %).
+ *   Le déposant paie forfait + commission, le Brigadier reçoit tout son forfait.
+ * - 'prelevement' : la commission est prise sur le prix payé par le déposant.
+ *   Exemple « 65 % reversés au Brigadier » : { model: 'prelevement', rateBps: 3500 }.
+ * rateBps est en points de base (1000 = 10 %). Le serveur garde sa propre copie de ce réglage
+ * (table flemme_mobile_v1.settings) ; un test vérifie que les deux restent identiques.
+ */
+export type CommissionModel = 'ajout' | 'prelevement';
+export type CommissionConfig = { model: CommissionModel; rateBps: number };
+export const COMMISSION: CommissionConfig = { model: 'ajout', rateBps: 1000 };
+export type Price = { amount: number; commission: number; total: number; payout: number; rateBps: number; model: CommissionModel };
+export function price(amount: number, config: CommissionConfig = COMMISSION): Price {
+  if (!Number.isSafeInteger(config.rateBps) || config.rateBps < 0 || config.rateBps > 10000) throw new Error('Taux de commission invalide.');
+  const fee = Math.round(amount * config.rateBps / 10000); // centimes entiers, arrondi au centime le plus proche
+  return config.model === 'ajout'
+    ? { amount, commission: fee, total: amount + fee, payout: amount, rateBps: config.rateBps, model: config.model }
+    : { amount, commission: fee, total: amount, payout: amount - fee, rateBps: config.rateBps, model: config.model };
+}
+export const commission = (amount: number, config: CommissionConfig = COMMISSION) => price(amount, config).commission;
+export const rateLabel = (config: Pick<CommissionConfig, 'rateBps'> = COMMISSION) =>
+  new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 2 }).format(config.rateBps / 100) + ' %';
 export function money(amount: number) {
   return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(amount / 100);
 }
@@ -41,7 +68,7 @@ export function createTask(id: string, actor: Actor, data: Input, at: string): T
     budget: data.budget == null ? null : amount(data.budget), status: 'open', createdAt: at,
     offers: [], reports: [], history: [{ text: 'Flemme publiée · sans expiration', at }] };
 }
-export function applyCommand(task: Task, actor: Actor, command: Command, data: Input, at: string): Task {
+export function applyCommand(task: Task, actor: Actor, command: Command, data: Input, at: string, config: CommissionConfig = COMMISSION): Task {
   const t: Task = JSON.parse(JSON.stringify(task));
   const owner = actor.id === t.owner.id;
   const chosen = t.offers.find(o => o.id === t.acceptedOfferId);
@@ -58,9 +85,9 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
   } else if (command === 'accept') {
     if (!owner || t.status !== 'open' || !offer || offer.status !== 'pending') throw new Error('Cette offre ne peut plus être acceptée.');
     t.status = 'assigned'; t.acceptedOfferId = offer.id;
-    t.agreement = { amount: offer.amount, commission: commission(offer.amount), total: offer.amount + commission(offer.amount), slot: offer.slot, scope: offer.scope, brigadier: offer.brigadier };
+    t.agreement = { ...price(offer.amount, config), slot: offer.slot, scope: offer.scope, brigadier: offer.brigadier };
     for (const o of t.offers) if (o.status === 'pending') o.status = o.id === offer.id ? 'accepted' : 'not_selected';
-    event('Accord accepté · forfait et commission de 10 % confirmés');
+    event(`Accord accepté · forfait et commission de ${rateLabel(config)} confirmés`);
   } else if (command === 'decline') {
     if (!owner || t.status !== 'open' || !offer || offer.status !== 'pending') throw new Error('Proposition indisponible.');
     offer.status = 'declined'; event('Proposition déclinée · conservée dans l’historique');

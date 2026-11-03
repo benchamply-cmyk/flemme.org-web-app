@@ -17,6 +17,18 @@ create table flemme_mobile_v1.requests (
   action text not null, task_id uuid, payload jsonb not null, result jsonb not null,
   primary key(actor_id, request_id)
 );
+-- Réglage de la commission FLEMME (une seule ligne). Doit rester identique à COMMISSION dans src/domain.ts
+-- (vérifié par les tests). Modifiable à chaud par un administrateur : seuls les accords conclus ensuite
+-- sont concernés, chaque accord garde le taux et le modèle appliqués.
+--   ajout       : commission ajoutée au forfait du Brigadier (modèle actuel, 1000 = 10 %).
+--   prelevement : commission prise sur le prix payé (ex. 3500 = 65 % reversés au Brigadier).
+create table flemme_mobile_v1.settings (
+  id boolean primary key default true check (id),
+  commission_model text not null default 'ajout' check (commission_model in ('ajout','prelevement')),
+  commission_bps integer not null default 1000 check (commission_bps between 0 and 10000)
+);
+insert into flemme_mobile_v1.settings default values;
+alter table flemme_mobile_v1.settings enable row level security;
 alter table flemme_mobile_v1.tasks enable row level security;
 alter table flemme_mobile_v1.requests enable row level security;
 -- Pas de droits directs ni de politiques permissives : seul le service transactionnel ci-dessous écrit.
@@ -47,7 +59,7 @@ begin
   if doc->'owner'->>'id' = actor::text then return doc; end if;
   result := jsonb_set(result, '{offers}', coalesce((select jsonb_agg(o) from jsonb_array_elements(doc->'offers') o where o->'brigadier'->>'id' = actor::text), '[]'::jsonb));
   if doc->'agreement'->'brigadier'->>'id' is distinct from actor::text then
-    result := result - 'agreement' - 'acceptedOfferId' - 'paymentDeclared' - 'paymentConfirmed';
+    result := result - 'agreement' - 'acceptedOfferId' - 'paymentDeclared' - 'paymentConfirmed' - 'payment';
     result := jsonb_set(result, '{reports}', '[]'::jsonb);
   end if;
   return result;
@@ -61,7 +73,7 @@ declare
   uid uuid := auth.uid(); actor jsonb; doc jsonb; oid uuid; result jsonb; previous record;
   owner boolean; chosen boolean; offer jsonb; offers jsonb; entry jsonb; idx integer; found_idx integer := -1;
   cents integer; fees integer; at text := to_char(clock_timestamp() at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"');
-  event_text text; budget integer; input_name text;
+  event_text text; budget integer; input_name text; cfg record;
 begin
   if uid is null or coalesce((auth.jwt()->>'is_anonymous')::boolean, false) or
     not exists(select 1 from auth.users where id=uid and email_confirmed_at is not null) then
@@ -118,10 +130,17 @@ begin
       if p_action = 'decline' then
         doc := jsonb_set(doc,array['offers',found_idx::text,'status'],'"declined"'::jsonb); event_text := 'Proposition déclinée · historique conservé';
       else
-        cents := (offer->>'amount')::integer; fees := round(cents::numeric/10)::integer;
-        doc := doc || jsonb_build_object('status','assigned','acceptedOfferId',offer->>'id','agreement',jsonb_build_object('amount',cents,'commission',fees,'total',cents+fees,'slot',offer->>'slot','scope',offer->>'scope','brigadier',offer->'brigadier'));
+        -- Prix calculé ici à partir du réglage serveur, jamais depuis un total envoyé par le client.
+        select commission_model, commission_bps into strict cfg from flemme_mobile_v1.settings;
+        cents := (offer->>'amount')::integer; fees := round(cents::numeric*cfg.commission_bps/10000)::integer;
+        doc := doc || jsonb_build_object('status','assigned','acceptedOfferId',offer->>'id','agreement',jsonb_build_object('amount',cents,'commission',fees,
+          'total',case when cfg.commission_model='ajout' then cents+fees else cents end,
+          'payout',case when cfg.commission_model='ajout' then cents else cents-fees end,
+          'rateBps',cfg.commission_bps,'model',cfg.commission_model,
+          'slot',offer->>'slot','scope',offer->>'scope','brigadier',offer->'brigadier'));
         select jsonb_agg(case when o->>'status'='pending' then jsonb_set(o,'{status}',to_jsonb(case when o->>'id'=offer->>'id' then 'accepted' else 'not_selected' end)) else o end) into offers from jsonb_array_elements(doc->'offers') o;
-        doc := jsonb_set(doc,'{offers}',offers); event_text := 'Accord accepté · forfait et commission de 10 % confirmés';
+        doc := jsonb_set(doc,'{offers}',offers);
+        event_text := 'Accord accepté · forfait et commission de ' || replace(trim(trailing '.' from trim(trailing '0' from to_char(cfg.commission_bps/100.0,'FM990.00'))),'.',',') || ' % confirmés';
       end if;
     elsif p_action = 'complete' then
       if not owner or doc->>'status'<>'assigned' then raise exception 'Fin de tâche non autorisée' using errcode='42501'; end if;

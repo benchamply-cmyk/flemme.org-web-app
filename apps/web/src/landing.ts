@@ -1,4 +1,4 @@
-import { commission, money, parseMoney } from '../../mobile/src/domain.ts';
+import { money, parseMoney, price } from '../../mobile/src/domain.ts';
 import './styles.css';
 import './landing.css';
 
@@ -8,7 +8,7 @@ const out = (id: string, value: string) => { document.getElementById(id)!.textCo
 function update() {
   try {
     const amount = parseMoney(input.value) as number;
-    out('cBase', money(amount)); out('cFee', money(commission(amount))); out('cTotal', money(amount + commission(amount))); out('calcError', '');
+    const p = price(amount); out('cBase', money(p.amount)); out('cFee', money(p.commission)); out('cTotal', money(p.total)); out('calcError', '');
     input.removeAttribute('aria-invalid');
   } catch (e) { out('calcError', (e as Error).message); input.setAttribute('aria-invalid', 'true'); }
 }
