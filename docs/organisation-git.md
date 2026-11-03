@@ -6,8 +6,8 @@ Ces règles reprennent celles de FlemmeV2.0 (en place depuis le 20/10/2026) et c
 
 | Branche | Rôle | Déploiement Netlify |
 |---|---|---|
-| `prod` | Production, ce qui est en ligne | https://flemme-web-app.netlify.app |
-| `preprod` | Intégration : toutes les PR y sont fusionnées avant la production | adresse de branche `preprod--flemme-web-app.netlify.app` |
+| `prod` | Production, ce qui est en ligne | https://flemme.org |
+| `preprod` | Intégration : toutes les PR y sont fusionnées avant la production | adresse de branche `preprod--flemmeorg.netlify.app` |
 | `type/sujet` | Travail en cours, branche courte créée depuis `preprod` | aperçu de PR |
 
 Les préfixes autorisés sont `feature/`, `fix/`, `docs/`, `chore/` et `mobile/`. Le sujet est court, en minuscules, avec des tirets, sans date ni barre oblique : par exemple `feature/paiement-forfait` ou `fix/connexion-expo`.
