@@ -63,7 +63,9 @@ export class FlemmeSession {
     const page = await g.list(cursor);
     const old = this.state.tasks;
     this.set({ tasks: cursor ? [...old, ...page.tasks.filter(t => !old.some(v => v.id === t.id))] : page.tasks, more: page.nextCursor });
-    if (!cursor) this.set({ drafts: await g.drafts() });
+    // Les brouillons sont secondaires : une base sans la migration parcours (action « drafts » inconnue)
+    // ne doit jamais empêcher d’afficher les flemmes.
+    if (!cursor) this.set({ drafts: await g.drafts().catch(() => []) });
   }
   async initialize() {
     await this.execute(async () => {
