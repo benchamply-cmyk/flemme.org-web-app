@@ -263,6 +263,9 @@ main {
 .illustration {
   position: relative;
   padding: 15px 10px 15px 0;
+  max-width: 400px;
+  justify-self: center;
+  width: 100%;
 }
 .float-label {
   position: absolute;
@@ -282,11 +285,70 @@ main {
   border: 2px solid var(--ink);
   border-radius: 26px;
   box-shadow: var(--shadow);
-  padding: 25px;
+  padding: 20px;
   transform: rotate(-3deg);
+  cursor: pointer;
+  min-height: 268px;
+}
+.showcase-slide {
+  animation: showcase-in 0.45s ease both;
+}
+@keyframes showcase-in {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.showcase-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 26px;
+}
+.showcase-dots {
+  display: flex;
+  gap: 8px;
+}
+.showcase-dot {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink);
+  background: white;
+  cursor: pointer;
+  transition: width 0.2s ease;
+}
+.showcase-dot[aria-current="true"] {
+  width: 26px;
+  border-radius: 6px;
+  background: var(--violet);
+  border-color: var(--violet);
+}
+.showcase-arrow {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink);
+  background: white;
+  font-weight: 800;
+  cursor: pointer;
+}
+.showcase-arrow:hover {
+  background: var(--blue);
+}
+@media (prefers-reduced-motion: reduce) {
+  .showcase-slide {
+    animation: none;
+  }
 }
 .visual-card .taskname {
-  font-size: 25px;
+  font-size: 21px;
   line-height: 1.15;
   font-weight: 850;
   margin: 20px 0 12px;
@@ -1028,7 +1090,10 @@ details p {
     padding: 19px;
   }
   .visual-card .taskname {
-    font-size: 22px;
+    font-size: 19px;
+  }
+  .visual-card {
+    min-height: 250px;
   }
   .float-label {
     font-size: 10px;

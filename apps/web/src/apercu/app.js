@@ -175,8 +175,43 @@ function page(title, sub, eyebrow = "À toi de jouer") {
 function taskCard(t) {
   return `<a class="card clickable" href="#task/${t.id}"><div class="topline">${badge(t.category)}<span class="muted">${t.icon}</span></div><h3>${esc(t.title)}</h3><p>${esc(t.description.slice(0, 88))}…</p><div class="meta"><span>⌖ ${t.place}</span><span>◷ Environ ${t.delay.toLowerCase()}</span></div><div class="card-bottom"><span><b>${t.budget}</b><br><span class="muted">Budget indicatif</span></span><span class="arrow">↗</span></div></a>`;
 }
+// Exemples fictifs qui défilent dans l’accueil (carrousel).
+const showcase = [
+  { cat: "Administratif", icon: "☕", title: "Ce CV qui attend<br>depuis trois semaines…", place: "À distance", delay: "Environ 3 jours", who: "Sam", reply: "Je peux t’aider. On précise ce dont tu as besoin ?" },
+  { cat: "Maison", icon: "⌂", title: "Cette étagère toujours<br>en pièces détachées…", place: "Lyon · Croix-Rousse", delay: "Demain", who: "Nadia", reply: "J’ai une visseuse et une heure samedi matin." },
+  { cat: "Numérique", icon: "✳", title: "4 000 photos de vacances<br>jamais triées…", place: "À distance", delay: "Environ 1 semaine", who: "Hugo", reply: "Je te propose une sélection de 80 photos, sans doublons." },
+  { cat: "Démarches", icon: "✉", title: "Ce dossier de la CAF<br>qui me fait peur…", place: "À distance", delay: "Environ 1 semaine", who: "Inès", reply: "On le remplit ensemble en visio, pièce par pièce ?" },
+  { cat: "Organisation", icon: "◷", title: "L’anniversaire de Léa<br>dans dix jours…", place: "Paris · 11e", delay: "Environ 1 mois", who: "Malik", reply: "Je peux préparer la liste des courses et le planning." },
+  { cat: "Quotidien", icon: "✦", title: "Ces cartons du<br>déménagement…", place: "Nantes · Centre", delay: "Ce week-end", who: "Chloé", reply: "Deux heures dimanche, ça te va pour commencer ?" },
+];
+let showcaseIndex = 0,
+  showcaseTimer = null,
+  showcasePaused = false;
+function showcaseCard(i) {
+  let x = showcase[i];
+  return `<div class="showcase-slide"><div class="row">${badge("MA FLEMME · " + x.cat.toUpperCase(), "blue")}<span aria-hidden="true">${x.icon}</span></div><div class="taskname">${x.title}</div><div class="mockline"></div><div class="mockline short"></div><div class="meta"><span>${x.place}</span><span>${x.delay}</span></div><div class="mini-reply"><div class="avatar" aria-hidden="true">☺</div><div><p><b>${x.who} · Brigadier</b></p><p>${x.reply}</p></div></div></div>`;
+}
+function showShowcase(i) {
+  let box = $("#showcase");
+  if (!box) return;
+  showcaseIndex = (i + showcase.length) % showcase.length;
+  box.innerHTML = showcaseCard(showcaseIndex);
+  document.querySelectorAll(".showcase-dot").forEach((d, n) => {
+    if (n === showcaseIndex) d.setAttribute("aria-current", "true");
+    else d.removeAttribute("aria-current");
+  });
+}
+function stopShowcase() {
+  clearInterval(showcaseTimer);
+  showcaseTimer = null;
+}
+function startShowcase() {
+  stopShowcase();
+  if (!$("#showcase") || showcasePaused || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  showcaseTimer = setInterval(() => showShowcase(showcaseIndex + 1), 4500);
+}
 function home() {
-  return `<section class="hero"><div><p class="eyebrow">Le droit d’avoir la flemme.</p><h1>La flemme de faire&nbsp;?<br><em>Passe le relais.</em></h1><p class="lead">Ce que tu repousses, quelqu’un peut t’aider à le faire. Décris ta flemme, échange avec un Brigadier et mettez-vous d’accord.</p><div class="actions">${btn('<span class="cta-text"><b>Déléguer ma flemme</b><small>Je décris ce que je repousse</small></span><span class="cta-arrow" aria-hidden="true">↗</span>', "new", "dark cta")}${btn('<span class="cta-text"><b>Résoudre une flemme</b><small>Je propose mon coup de main</small></span><span class="cta-arrow" aria-hidden="true">↗</span>', "find", "cta green")}</div><p class="smallnote">Une demande libre. Un prix discuté ensemble.</p></div><div class="illustration" aria-label="Exemple fictif de mise en relation"><span class="float-label">Un peu moins à faire ✦</span><div class="visual-card"><div class="row">${badge("MA FLEMME", "blue")}<span>☕</span></div><div class="taskname">Ce CV qui attend<br>depuis trois semaines…</div><div class="mockline"></div><div class="mockline short"></div><div class="meta"><span>À distance</span><span>Environ 3 jours</span></div><div class="mini-reply"><div class="avatar">☺</div><div><p><b>Sam · Brigadier</b></p><p>Je peux t’aider. On précise ce dont tu as besoin&nbsp;?</p></div></div></div></div></section><section class="explain"><p><b>Flemme met en relation</b> les personnes qui veulent déléguer une tâche et celles qui souhaitent proposer leur aide.</p><div class="three"><span>Décrire</span><span>Échanger</span><span>S’accorder</span></div></section><section class="soft-panel"><div><h3>Flemmard aujourd’hui. Brigadier demain.</h3><p>Un seul compte, deux espaces. Tu peux déléguer et proposer ton aide, à ton rythme.</p></div>${btn("Découvrir mon espace ↗", "space", "small")}</section>`;
+  return `<section class="hero"><div><p class="eyebrow">Le droit d’avoir la flemme.</p><h1>La flemme de faire&nbsp;?<br><em>Passe le relais.</em></h1><p class="lead">Ce que tu repousses, quelqu’un peut t’aider à le faire. Décris ta flemme, échange avec un Brigadier et mettez-vous d’accord.</p><div class="actions">${btn('<span class="cta-text"><b>Déléguer ma flemme</b><small>Je décris ce que je repousse</small></span><span class="cta-arrow" aria-hidden="true">↗</span>', "new", "dark cta")}${btn('<span class="cta-text"><b>Résoudre une flemme</b><small>Je propose mon coup de main</small></span><span class="cta-arrow" aria-hidden="true">↗</span>', "find", "cta green")}</div><p class="smallnote">Une demande libre. Un prix discuté ensemble.</p></div><div class="illustration" role="region" aria-roledescription="carrousel" aria-label="Exemples fictifs de mises en relation"><span class="float-label">Un peu moins à faire ✦</span><div class="visual-card" id="showcase" aria-live="polite">${showcaseCard(showcaseIndex)}</div><div class="showcase-nav"><button type="button" class="showcase-arrow" id="showcase-prev" aria-label="Exemple précédent">←</button><div class="showcase-dots">${showcase.map((x, i) => `<button type="button" class="showcase-dot" data-i="${i}" aria-label="Exemple ${i + 1} : ${esc(x.cat)}" ${i === showcaseIndex ? 'aria-current="true"' : ""}></button>`).join("")}</div><button type="button" class="showcase-arrow" id="showcase-next" aria-label="Exemple suivant">→</button></div></div></section><section class="explain"><p><b>Flemme met en relation</b> les personnes qui veulent déléguer une tâche et celles qui souhaitent proposer leur aide.</p><div class="three"><span>Décrire</span><span>Échanger</span><span>S’accorder</span></div></section><section class="soft-panel"><div><h3>Flemmard aujourd’hui. Brigadier demain.</h3><p>Un seul compte, deux espaces. Tu peux déléguer et proposer ton aide, à ton rythme.</p></div>${btn("Découvrir mon espace ↗", "space", "small")}</section>`;
 }
 function options(items, value = "", first = "Choisir") {
   return (
@@ -530,8 +565,11 @@ function render() {
     default:
       html = home();
   }
+  stopShowcase();
+  showcasePaused = false;
   $("#main").innerHTML = html;
   bind();
+  startShowcase();
   if (parts[0] === "find") applyFilters();
   if (notice) {
     toast(notice);
@@ -797,6 +835,36 @@ function bind() {
     location.hash = "home";
     location.reload();
   });
+  on("#showcase-prev", "click", () => {
+    showShowcase(showcaseIndex - 1);
+    startShowcase();
+  });
+  on("#showcase-next", "click", () => {
+    showShowcase(showcaseIndex + 1);
+    startShowcase();
+  });
+  document.querySelectorAll(".showcase-dot").forEach((d) =>
+    d.addEventListener("click", () => {
+      showShowcase(Number(d.dataset.i));
+      startShowcase();
+    }),
+  );
+  on("#showcase", "click", () => {
+    showShowcase(showcaseIndex + 1);
+    startShowcase();
+  });
+  let carousel = $(".illustration");
+  if (carousel) {
+    // Pause tant que la souris ou le focus clavier est sur le carrousel.
+    let pause = (on) => () => {
+      showcasePaused = on;
+      on ? stopShowcase() : startShowcase();
+    };
+    carousel.addEventListener("mouseenter", pause(true));
+    carousel.addEventListener("mouseleave", pause(false));
+    carousel.addEventListener("focusin", pause(true));
+    carousel.addEventListener("focusout", pause(false));
+  }
   on("#support-form", "submit", (e) => {
     e.preventDefault();
     let text = $("#support-message").value.trim();
