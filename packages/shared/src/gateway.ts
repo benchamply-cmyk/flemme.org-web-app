@@ -1,6 +1,10 @@
 import { applyCommand, createTask, visibleTask } from './domain.ts';
 import type { Actor, Command, Input, Task } from './domain.ts';
-import type { SavedDraft } from './parcours.ts';
+import type { SavedDraft, SearchFilter, SearchPage } from './parcours.ts';
+import { searchTasks } from './parcours.ts';
+import type { Profile } from './accord.ts';
+import type { FileItem, HelpRequest, Upload } from './aide.ts';
+import { fileInput } from './aide.ts';
 
 // Identifiants de ressources/idempotence uniquement : jamais utilisés comme secrets.
 export const newId = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -14,10 +18,24 @@ export interface Gateway {
   list(cursor?: string | null): Promise<TaskPage>;
   create(data: Input, requestId: string): Promise<Task>;
   command(taskId: string, action: Command, data: Input, requestId: string): Promise<Task>;
+  /** Recherche parmi les flemmes publiées des autres membres (filtres et tri côté serveur). */
+  search(filter: SearchFilter, cursor?: string | null): Promise<SearchPage>;
   /** Brouillons de demande et de candidature, enregistrés sur le compte. */
   drafts(): Promise<SavedDraft[]>;
   saveDraft(draft: Omit<SavedDraft, 'updatedAt'>): Promise<SavedDraft>;
   deleteDraft(id: string): Promise<void>;
+  /** Profil public d’un membre (le sien si `userId` est absent) : présentation, compétences, missions et avis. */
+  profile(userId?: string): Promise<Profile>;
+  saveProfile(data: Input): Promise<Profile>;
+  /** Pièces jointes d’une flemme (déposant et Brigadier retenu). */
+  files(taskId: string): Promise<FileItem[]>;
+  /** Envoie une pièce jointe (taskId) ou la photo de profil (taskId null). */
+  upload(taskId: string | null, file: Upload): Promise<FileItem>;
+  deleteFile(file: FileItem): Promise<void>;
+  /** Adresse temporaire pour ouvrir un fichier du bucket privé. */
+  fileUrl(path: string): Promise<string>;
+  helpList(): Promise<HelpRequest[]>;
+  helpSend(data: Input, requestId: string): Promise<HelpRequest>;
 }
 export const demoActors: Actor[] = [{ id: 'demo-ben', name: 'Benjamin' }, { id: 'demo-lou', name: 'Lou' }, { id: 'demo-camille', name: 'Camille' }];
 export function seed(): Task[] {
@@ -27,7 +45,9 @@ export function seed(): Task[] {
     createTask('demo-meuble', demoActors[2], { title: 'Monter mon meuble IKEA', details: 'Un petit meuble à monter. Outils disponibles. Sans fixation au mur.', place: 'Aix-en-Provence', budget: 3500 }, at),
     createTask('demo-cv', demoActors[1], { title: 'Remettre mon CV au propre', details: 'Une page à remettre en forme. Le contenu est déjà rédigé.', place: 'À distance', budget: null }, at)];
 }
-export type DemoState = { version: 1; tasks: Task[]; requests: Record<string, Task>; drafts?: (SavedDraft & { ownerId: string })[] };
+export type DemoProfile = { bio: string | null; skills: string[]; experience: string | null };
+export type DemoState = { version: 1; tasks: Task[]; requests: Record<string, Task>; drafts?: (SavedDraft & { ownerId: string })[]; profiles?: Record<string, DemoProfile>;
+  help?: (HelpRequest & { ownerId: string })[] };
 export class DemoGateway implements Gateway {
   actor = demoActors[0];
   private state: DemoState;
@@ -55,6 +75,11 @@ export class DemoGateway implements Gateway {
     if (typeof data.draftId === 'string') await this.deleteDraft(data.draftId);
     return task;
   }
+  async search(filter: SearchFilter, cursor: string | null = null): Promise<SearchPage> {
+    const all = searchTasks(this.state.tasks, this.actor.id, filter), start = Number(cursor || 0);
+    return { tasks: all.slice(start, start + PAGE_SIZE).map(t => visibleTask(t, this.actor)), total: all.length,
+      nextCursor: start + PAGE_SIZE < all.length ? String(start + PAGE_SIZE) : null };
+  }
   async drafts(): Promise<SavedDraft[]> {
     return (this.state.drafts || []).filter(d => d.ownerId === this.actor.id).map(({ ownerId: _, ...d }) => d)
       .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
@@ -72,12 +97,54 @@ export class DemoGateway implements Gateway {
   async deleteDraft(id: string) {
     await this.saveDrafts((this.state.drafts || []).filter(x => x.id !== id || x.ownerId !== this.actor.id));
   }
+  async profile(userId = this.actor.id): Promise<Profile> {
+    const who = demoActors.find(a => a.id === userId);
+    if (!who) throw new Error('Profil introuvable');
+    const p = this.state.profiles?.[userId] || { bio: null, skills: [], experience: null };
+    const done = this.state.tasks.filter(t => t.status === 'completed');
+    const reviews = done.flatMap(t => (t.ratings || []).filter(r => r.targetId === userId).map(r => ({
+      rating: r.rating, text: r.text, author: demoActors.find(a => a.id === r.authorId) || { id: r.authorId, name: 'Membre' }, task: t.title, at: r.at })))
+      .sort((a, b) => b.at.localeCompare(a.at));
+    return { id: who.id, name: who.name, ...p, avatar: this.avatars[userId] || null, since: '2026-10-28T08:00:00.000Z',
+      missions: done.filter(t => t.agreement?.brigadier.id === userId).length,
+      rating: reviews.length ? Math.round(reviews.reduce((n, r) => n + r.rating, 0) / reviews.length * 10) / 10 : null, reviews };
+  }
+  async saveProfile(data: Input): Promise<Profile> {
+    const p: DemoProfile = { bio: (data.bio as string | null) ?? null, experience: (data.experience as string | null) ?? null, skills: (data.skills as string[]) || [] };
+    const next: DemoState = { ...this.state, profiles: { ...this.state.profiles, [this.actor.id]: p } };
+    await this.persist(next); this.state = next;
+    return this.profile();
+  }
+  // Démo : fichiers gardés en mémoire le temps de la visite (jamais envoyés, perdus au rechargement).
+  private blobs = new Map<string, { item: FileItem; taskId: string | null; url: string }>();
+  async files(taskId: string) { return [...this.blobs.values()].filter(b => b.taskId === taskId).map(b => b.item); }
+  async upload(taskId: string | null, file: Upload) {
+    const meta = fileInput({ name: file.name, type: file.type, size: file.size }, taskId == null);
+    const id = newId(), item: FileItem = { id, name: meta.name as string, mime: meta.mime as string, size: file.size, path: this.actor.id + '/' + id, owner: this.actor, at: new Date().toISOString() };
+    if (taskId == null) for (const [k, b] of this.blobs) if (b.taskId == null && b.item.owner.id === this.actor.id) this.blobs.delete(k);
+    this.blobs.set(item.path, { item, taskId, url: typeof URL.createObjectURL === 'function' ? URL.createObjectURL(file) : '' });
+    if (taskId == null) this.avatars[this.actor.id] = item.path;
+    return item;
+  }
+  private avatars: Record<string, string> = {};
+  async deleteFile(f: FileItem) { if (f.owner.id !== this.actor.id) throw new Error('Fichier introuvable'); this.blobs.delete(f.path); }
+  async fileUrl(path: string) { const b = this.blobs.get(path); if (!b) throw new Error('Fichier introuvable'); return b.url; }
+  async helpList(): Promise<HelpRequest[]> { return (this.state.help || []).filter(h => h.ownerId === this.actor.id).map(({ ownerId: _, ...h }) => h); }
+  async helpSend(data: Input): Promise<HelpRequest> {
+    const h: HelpRequest = { id: newId(), topic: data.topic as HelpRequest['topic'], text: String(data.text), status: 'open', answer: null,
+      taskId: (data.taskId as string | null) || null, at: new Date().toISOString(), answeredAt: null };
+    const next: DemoState = { ...this.state, help: [{ ...h, ownerId: this.actor.id }, ...(this.state.help || [])] };
+    await this.persist(next); this.state = next;
+    return h;
+  }
   async command(taskId: string, action: Command, data: Input, request: string) {
     const prior = this.state.requests[this.actor.id + ':' + request];
     if (prior) return visibleTask(prior, this.actor);
     const task = this.state.tasks.find(t => t.id === taskId);
     if (!task) throw new Error('Flemme introuvable.');
-    return this.commit(applyCommand(task, this.actor, action, action === 'offer' ? { ...data, id: newId() } : data, new Date().toISOString()), request);
+    const next = await this.commit(applyCommand(task, this.actor, action, action === 'offer' || action === 'apply' ? { ...data, id: newId() } : data, new Date().toISOString()), request);
+    if (action === 'apply' && typeof data.draftId === 'string') await this.deleteDraft(data.draftId);
+    return next;
   }
 }
 
@@ -143,8 +210,8 @@ export class RemoteGateway implements Gateway {
     // Nom provisoire : le nom affiché fait foi côté serveur (profil), chargé juste après.
     if (this.actor.id !== s.user.id) this.actor = { id: s.user.id, name: 'Membre' };
   }
-  private async profile() { this.actor = (await this.rpc('me', null, {}, null)).profile; }
-  async login(email: string, password: string) { await this.session(await this.request('/auth/v1/token?grant_type=password', { email: email.trim(), password })); await this.profile(); }
+  private async loadMe() { this.actor = (await this.rpc('me', null, {}, null)).profile; }
+  async login(email: string, password: string) { await this.session(await this.request('/auth/v1/token?grant_type=password', { email: email.trim(), password })); await this.loadMe(); }
   private link(path: string, o: AuthLinkOptions = {}) { return o.redirectTo ? path + '?redirect_to=' + encodeURIComponent(o.redirectTo) : path; }
   private pkce(o: AuthLinkOptions = {}) { return o.codeChallenge ? { code_challenge: o.codeChallenge, code_challenge_method: 's256' } : {}; }
   async signup(email: string, password: string, o?: AuthLinkOptions) { await this.request(this.link('/auth/v1/signup', o), { email: email.trim(), password, ...this.pkce(o) }); }
@@ -152,12 +219,12 @@ export class RemoteGateway implements Gateway {
   // Supabase répond pareil que l’adresse existe ou non : rien n’indique si un compte existe.
   async recover(email: string, o?: AuthLinkOptions) { await this.request(this.link('/auth/v1/recover', o), { email: email.trim(), ...this.pkce(o) }); }
   // Retour d’un lien e-mail (flux PKCE) : le code à usage unique ne sert qu’avec le secret gardé par ce navigateur.
-  async exchangeCode(code: string, verifier: string) { await this.session(await this.request('/auth/v1/token?grant_type=pkce', { auth_code: code, code_verifier: verifier })); await this.profile(); }
+  async exchangeCode(code: string, verifier: string) { await this.session(await this.request('/auth/v1/token?grant_type=pkce', { auth_code: code, code_verifier: verifier })); await this.loadMe(); }
   async setPassword(password: string) {
     if (Date.now() > this.expires - 60000) await this.refresh();
     await this.request('/auth/v1/user', { password }, this.access, 'PUT');
   }
-  async restore() { if (!(await this.tokens.get())) return false; await this.refresh(); await this.profile(); return true; }
+  async restore() { if (!(await this.tokens.get())) return false; await this.refresh(); await this.loadMe(); return true; }
   async updateProfile(displayName: string) { this.actor = (await this.rpc('update_profile', null, { displayName }, null)).profile; }
   private async refresh() {
     if (!this.refreshing) this.refreshing = (async () => {
@@ -192,9 +259,59 @@ export class RemoteGateway implements Gateway {
     if (typeof url !== 'string' || !/^https:\/\/(checkout|connect)\.stripe\.com\//.test(url)) throw new Error('Lien de paiement invalide.');
     return url;
   }
+  async search(filter: SearchFilter, cursor: string | null = null): Promise<SearchPage> {
+    const clean = Object.fromEntries(Object.entries(filter).filter(([, v]) => v));
+    const page = await this.rpc('search', null, { ...clean, limit: PAGE_SIZE, cursor }, null);
+    return { tasks: page.tasks, total: page.total, nextCursor: page.nextCursor ?? null };
+  }
   async drafts(): Promise<SavedDraft[]> { return (await this.rpc('drafts', null, {}, null)).drafts; }
   async saveDraft(d: Omit<SavedDraft, 'updatedAt'>): Promise<SavedDraft> { return (await this.rpc('draft_save', null, d, null)).draft; }
   async deleteDraft(id: string) { await this.rpc('draft_delete', null, { id }, null); }
+  async profile(userId?: string): Promise<Profile> { return (await this.rpc('profile_get', null, userId ? { userId } : {}, null)).profile; }
+  async saveProfile(data: Input): Promise<Profile> {
+    const p: Profile = (await this.rpc('profile_save', null, data, null)).profile;
+    this.actor = { id: p.id, name: p.name };
+    return p;
+  }
+  async files(taskId: string): Promise<FileItem[]> { return (await this.rpc('file_list', taskId, {}, null)).files; }
+  // Envoi en deux temps : déclaration (file_prepare, qui fixe le chemin et contrôle format et taille), puis dépôt dans le bucket privé.
+  async upload(taskId: string | null, file: Upload): Promise<FileItem> {
+    const prepared = await this.rpc('file_prepare', taskId, fileInput({ name: file.name, type: file.type, size: file.size }, taskId == null), null);
+    const item: FileItem = prepared.file;
+    try { await this.storage('POST', 'object/flemme-fichiers/' + item.path, file, item.mime); }
+    catch (e) { await this.rpc('file_delete', null, { id: item.id }, null).catch(() => {}); throw e; }
+    // Nouvelle photo : l’ancienne est retirée du bucket, puis oubliée.
+    if (prepared.previous) await this.deleteFile(prepared.previous).catch(() => {});
+    return item;
+  }
+  async deleteFile(f: FileItem) {
+    await this.storage('DELETE', 'object/flemme-fichiers/' + f.path);
+    await this.rpc('file_delete', null, { id: f.id }, null);
+  }
+  async fileUrl(path: string) {
+    const r = await this.storage('POST', 'object/sign/flemme-fichiers/' + path, JSON.stringify({ expiresIn: 600 }), 'application/json');
+    if (typeof r.signedURL !== 'string') throw new Error('Lien du fichier indisponible.');
+    return this.url.replace(/\/$/, '') + '/storage/v1' + r.signedURL;
+  }
+  private async storage(method: string, path: string, body?: BodyInit, type?: string) {
+    if (Date.now() > this.expires - 60000) await this.refresh();
+    let response: Response;
+    try { response = await this.transport(this.url.replace(/\/$/, '') + '/storage/v1/' + path.split('/').map(encodeURIComponent).join('/'), { method, body,
+      headers: { apikey: this.key, Authorization: 'Bearer ' + this.access, ...(type ? { 'Content-Type': type } : {}), 'x-upsert': 'false' } }); }
+    catch { throw new Error('Connexion interrompue pendant l’envoi du fichier. Réessaie.'); }
+    const text = await response.text().catch(() => '');
+    if (!response.ok) throw new Error(response.status === 413 ? 'Fichier trop lourd : 10 Mo au plus.' : 'Fichier refusé ou introuvable.');
+    try { return text ? JSON.parse(text) : {}; } catch { return {}; }
+  }
+  async helpList(): Promise<HelpRequest[]> { return (await this.rpc('help_list', null, {}, null)).requests; }
+  async helpSend(data: Input, requestId: string): Promise<HelpRequest> { return (await this.rpc('help_send', null, data, requestId)).request; }
   async create(data: Input, requestId: string): Promise<Task> { return (await this.rpc('create', null, data, requestId)).task; }
-  async command(taskId: string, action: Command, data: Input, requestId: string): Promise<Task> { return (await this.rpc(action, taskId, data, requestId)).task; }
+  async command(taskId: string, action: Command, data: Input, requestId: string): Promise<Task> {
+    try { return (await this.rpc(action, taskId, data, requestId)).task; }
+    catch (e) {
+      // Base pas encore migrée (lot 3 absent) : la candidature part par l’ancienne action, sans résultat promis.
+      if (action !== 'apply' || !/Action inconnue/.test((e as Error).message)) throw e;
+      return (await this.rpc('offer', taskId, { amount: data.amount, slot: data.slot, scope: data.scope }, requestId)).task;
+    }
+  }
 }

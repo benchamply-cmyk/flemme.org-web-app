@@ -37,7 +37,7 @@ const before = await agreed(4005);
 await db.exec('reset role');
 for (const file of files.filter(f => f >= '20261103140000')) await db.exec(await readFile(new URL(file, dir), 'utf8'));
 // Ces tests portent sur le contrat d'origine : la validation des demandes (parcours.test.mjs) est coupée.
-await db.exec('update flemme_v2.settings set moderation_tasks = false');
+await db.exec('update flemme_v2.settings set moderation_tasks = false, moderation_offers = false, moderation_agreements = false');
 await actor(owner);
 let t = (await api('list')).tasks.find(x => x.id === before.id);
 assert.deepEqual([t.agreement.commission, t.agreement.total, t.agreement.payout, t.agreement.rateBps, t.agreement.model], [401, 4406, 4005, 1000, 'ajout']);

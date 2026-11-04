@@ -91,3 +91,14 @@ button.card:hover { box-shadow: var(--shadow); }
 .dictee { display: grid; gap: 6px; justify-items: start; }
 .dictee .btn { width: auto; }
 .card .row .btn { flex: 1 1 auto; }
+.searchbar { display: grid; gap: 8px; }
+.searchbar .row .btn { flex: 1 1 auto; }
+/* Lot 3 : lien vers un profil dans une phrase, case d’acceptation de l’accord, compétences. */
+button.link { background: none; border: 0; padding: 0; color: inherit; text-decoration: underline; cursor: pointer; font: inherit; font-weight: 600; }
+.check { display: flex; gap: 10px; align-items: flex-start; font-weight: 600; margin: 8px 0 12px; }
+.check input { width: 20px; height: 20px; margin-top: 2px; }
+p > .tag + .tag { margin-left: 6px; }
+/* Lot 4 : photo de profil, assistant. */
+.profile-head { display: flex; gap: 14px; align-items: center; }
+.avatar-photo { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; background: var(--ink); color: var(--accent); display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 26px; flex: none; }
+.help-btn { margin-left: auto; margin-right: 8px; }
