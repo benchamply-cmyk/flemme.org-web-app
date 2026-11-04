@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { backLabel, footer, rights } from '../../../packages/shared/src/index.ts';
 import type { Command, Input, Screen } from '../../../packages/shared/src/index.ts';
-import { session, useSession } from './session.ts';
+import { onlinePayment, session, useSession } from './session.ts';
 import { Action } from './ui.tsx';
 import type { Ctx, Draft, FieldOptions, Place } from './ecrans/contexte.ts';
 import { Accueil } from './ecrans/Accueil.tsx';
@@ -20,7 +20,7 @@ import { Signalement } from './ecrans/Signalement.tsx';
 // Différence web : chaque écran est une entrée d’historique, le bouton Retour du navigateur remplace BackHandler.
 
 // Lien direct depuis la vitrine : app.html#mine ou app.html#find.
-const initialTab = location.hash === '#find' ? 'find' : location.hash === '#mine' ? 'mine' : null;
+const initialTab = location.hash === '#find' ? 'find' : location.hash === '#mine' || location.hash.startsWith('#paiement') ? 'mine' : null;
 const start: Place = { screen: initialTab ? 'list' : 'home', tab: initialTab || 'mine', taskId: '', offerId: '', depth: 0 };
 // Écrans ouverts depuis la fiche d’une flemme : combien de pas pour y revenir.
 const aboveDetail: Partial<Record<Screen, number>> = { offer: 1, review: 2, report: 1 };
@@ -90,6 +90,6 @@ export default function App() {
       {content}
       {busy && <p className="muted" role="status">En cours…</p>}
     </main>
-    <p className="foot">{footer(session.remote)}</p>
+    <p className="foot">{footer(session.remote, onlinePayment)}</p>
   </>;
 }

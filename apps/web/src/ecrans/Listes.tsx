@@ -1,5 +1,5 @@
 import type { Task } from '../../../../packages/shared/src/index.ts';
-import { budgetLabel, cardHint, money, partition, taskStatus } from '../../../../packages/shared/src/index.ts';
+import { brigadierPitch, budgetLabel, cardHint, money, partition, taskStatus } from '../../../../packages/shared/src/index.ts';
 import { session } from '../session.ts';
 import { Action } from '../ui.tsx';
 import type { Ctx } from './contexte.ts';
@@ -14,7 +14,7 @@ export function Listes({ state: { tasks, actorId, busy, more }, place, go }: Ctx
   if (place.tab === 'mine') return <><h1 className="heading">Mes flemmes</h1><p className="muted">Dépose une demande et retrouve tes flemmes en cours.</p>
     <Action onClick={() => go('new')}>＋ Déposer ma flemme</Action><h2 className="section-title">Mes demandes</h2>
     {own.length ? own.map(card) : <p className="muted">Aucune flemme déposée. Par quoi veux-tu commencer ?</p>}{reload}</>;
-  return <><p className="eyebrow">À toi de jouer, Brigadier.</p><h1 className="heading">Résoudre une flemme</h1><p className="muted">Propose ton forfait. Le déposant règle 10 % en plus à FLEMME.</p>
+  return <><p className="eyebrow">À toi de jouer, Brigadier.</p><h1 className="heading">Résoudre une flemme</h1><p className="muted">{brigadierPitch()}</p>
     {helping.length > 0 && <><h2 className="section-title">Mes propositions et missions</h2>{helping.map(card)}</>}
     <h2 className="section-title">Flemmes disponibles</h2>
     {available.length ? available.map(card) : <p className="muted">Aucune nouvelle flemme pour l’instant. Actualise la liste un peu plus tard.</p>}{reload}</>;

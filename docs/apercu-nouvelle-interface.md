@@ -44,7 +44,7 @@ L’accueil actuel et l’application connectée sont conservés. La démo ne li
 - Aucun fichier n’est envoyé. Seuls ses noms sont mémorisés. La photo sélectionnée reste en mémoire pendant la session.
 - La conversation conserve des messages locaux sans les transmettre. Le chatbot répond avec un texte prédéfini et la demande d’aide humaine ne contacte personne.
 - Aucune signature juridique réelle, aucun avis réel, aucune vérification de mission réellement effectuée. Le lien entre avis et mission est illustratif.
-- Paiement désactivé : aucun prestataire externe connecté, aucun argent demandé ni encaissé. La commission est **arrêtée** (décision du 3 novembre 2026) : 10 % ajoutés au forfait du Brigadier, payés par le Flemmard, calculés par `commission()` de `packages/shared`. Acompte de 50 %, retenue de 20 % et annulation proportionnelle restent des pistes **non arrêtées**.
+- Paiement désactivé : aucun prestataire externe connecté, aucun argent demandé ni encaissé. La commission est **arrêtée** (décision du 3 novembre 2026) : 10 % ajoutés au forfait du Brigadier, payés par le Flemmard, calculés par `price()` et le réglage `COMMISSION` de `packages/shared` (PR #10). Acompte de 50 %, retenue de 20 % et annulation proportionnelle restent des pistes **non arrêtées**.
 - Un accord et une candidature principaux servent la démonstration. Le modèle de données n’est pas prêt pour une gestion multi-missions réelle.
 - Les textes publics/privés représentent le parcours souhaité : cette page ne vérifie pas les permissions réelles ni les durées de conservation.
 - Aucun premium, badge vérifié/privilégié, annuaire, recommandation automatique ou paiement d’engagement Brigadier n’est ajouté.

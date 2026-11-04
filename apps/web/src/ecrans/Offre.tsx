@@ -1,11 +1,11 @@
-import { commission, date, money, notices, offerStatus } from '../../../../packages/shared/src/index.ts';
+import { date, price, money, notices, offerStatus } from '../../../../packages/shared/src/index.ts';
 import { Action, Bill } from '../ui.tsx';
 import type { Ctx } from './contexte.ts';
 
 // Écrans « offer » (discussion avec un Brigadier) et « review » (récapitulatif avant d’accepter).
 export function Offre({ state: { busy }, place: { screen, offerId }, task, offer, can, draft, field, go, mutate }: Ctx) {
   if (!task || !offer) return null;
-  const total = money(offer.amount + commission(offer.amount));
+  const total = money(price(offer.amount).total);
   return <><h1 className="heading">{screen === 'review' ? 'On se met d’accord ?' : 'L’offre de ' + offer.brigadier.name}</h1><p className="card-title">{task.title}</p><span className="tag">{offerStatus[offer.status]}</span>
     <h2 className="section-title">Ce qui est convenu</h2><p>{offer.scope}</p><p className="muted">{offer.slot}</p><Bill amount={offer.amount}/>
     {screen === 'review'

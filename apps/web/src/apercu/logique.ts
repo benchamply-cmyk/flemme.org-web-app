@@ -1,6 +1,6 @@
 // Règles pures de l’aperçu /apercu.html, séparées de l’affichage pour être testées (tests/apercu.test.ts).
-// La commission vient de packages/shared : l’aperçu affiche le même calcul que l’app connectée.
-import { commission, money } from '../../../../packages/shared/src/domain.ts';
+// La commission (modèle et taux réglés dans COMMISSION) vient de packages/shared : l’aperçu affiche le même calcul que l’app connectée.
+import { money, price, rateLabel } from '../../../../packages/shared/src/domain.ts';
 
 export type Demande = {
   title?: string; description?: string; category?: string; delay?: string; otherDelay?: string;
@@ -58,11 +58,11 @@ export function filterTasks<T extends Flemme>(tasks: T[], f: Filtre): T[] {
  * Modèle retenu le 3 novembre 2026 : 10 % ajoutés au forfait du Brigadier, payés par le Flemmard.
  * Renvoie null si le prix n’est pas un montant positif.
  */
-export function tarif(prix: unknown): { forfait: string; frais: string; total: string } | null {
+export function tarif(prix: unknown): { forfait: string; frais: string; total: string; recu: string; taux: string } | null {
   const n = Number(String(prix ?? '').replace(',', '.'));
   if (!String(prix ?? '').trim() || !Number.isFinite(n) || n <= 0) return null;
-  const c = Math.round(n * 100), f = commission(c);
-  return { forfait: money(c), frais: money(f), total: money(c + f) };
+  const p = price(Math.round(n * 100));
+  return { forfait: money(p.amount), frais: money(p.commission), total: money(p.total), recu: money(p.payout), taux: rateLabel() };
 }
 
 /** Ajoute une transcription à la fin de la description, sans casser le texte déjà saisi. */

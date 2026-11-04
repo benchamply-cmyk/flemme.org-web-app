@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View } from 'react-native';
-import { commission, date, money, notices, offerStatus } from '../../../../packages/shared/src/index.ts';
+import { date, price, money, notices, offerStatus } from '../../../../packages/shared/src/index.ts';
 import { Action, Bill } from '../ui/composants';
 import { styles } from '../ui/styles';
 import type { Ctx } from './contexte';
@@ -8,7 +8,7 @@ import type { Ctx } from './contexte';
 // Écrans « offer » (discussion avec un Brigadier) et « review » (récapitulatif avant d’accepter).
 export function Offre({ state: { busy }, screen, offerId, task, offer, can, draft, field, navigate, mutate }: Ctx) {
   if (!task || !offer) return null;
-  const total = money(offer.amount + commission(offer.amount));
+  const total = money(price(offer.amount).total);
   return <><Text style={styles.heading}>{screen === 'review' ? 'On se met d’accord ?' : 'L’offre de ' + offer.brigadier.name}</Text><Text style={styles.cardTitle}>{task.title}</Text><Text style={styles.tag}>{offerStatus[offer.status]}</Text>
     <Text style={styles.sectionTitle}>Ce qui est convenu</Text><Text style={styles.body}>{offer.scope}</Text><Text style={styles.muted}>{offer.slot}</Text><Bill amount={offer.amount}/>
     {screen === 'review'

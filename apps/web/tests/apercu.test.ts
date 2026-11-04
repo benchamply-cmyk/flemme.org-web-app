@@ -10,6 +10,8 @@ test('aperçu · tarif : 10 % ajoutés au forfait du Brigadier, payés par le Fl
   assert.equal(plain(t?.forfait), '40,00 €');
   assert.equal(plain(t?.frais), '4,00 €');
   assert.equal(plain(t?.total), '44,00 €');
+  assert.equal(plain(t?.recu), '40,00 €');
+  assert.equal(t?.taux, '10 %');
   assert.equal(plain(tarif('12,5')?.total), '13,75 €');
   assert.equal(tarif(''), null);
   assert.equal(tarif('0'), null);

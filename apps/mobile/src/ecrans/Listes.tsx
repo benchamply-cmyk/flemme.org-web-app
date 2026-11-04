@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 import type { Task } from '../../../../packages/shared/src/index.ts';
-import { budgetLabel, cardHint, money, partition, taskStatus } from '../../../../packages/shared/src/index.ts';
+import { brigadierPitch, budgetLabel, cardHint, money, partition, taskStatus } from '../../../../packages/shared/src/index.ts';
 import { session } from '../session';
 import { Action } from '../ui/composants';
 import { styles } from '../ui/styles';
@@ -18,7 +18,7 @@ export function Listes({ state: { tasks, actorId, busy, more }, tab, navigate, o
   if (tab === 'mine') return <><Text style={styles.heading}>Mes flemmes</Text><Text style={styles.muted}>Dépose une demande et retrouve tes flemmes en cours.</Text>
     <Action onPress={() => navigate('new')}>＋ Déposer ma flemme</Action><Text style={styles.sectionTitle}>Mes demandes</Text>
     {own.length ? own.map(card) : <Text style={styles.muted}>Aucune flemme déposée. Par quoi veux-tu commencer ?</Text>}{moreButton}</>;
-  return <><Text style={styles.eyebrow}>À TOI DE JOUER, BRIGADIER.</Text><Text style={styles.heading}>Résoudre une flemme</Text><Text style={styles.muted}>Propose ton forfait. Le déposant règle 10 % en plus à FLEMME.</Text>
+  return <><Text style={styles.eyebrow}>À TOI DE JOUER, BRIGADIER.</Text><Text style={styles.heading}>Résoudre une flemme</Text><Text style={styles.muted}>{brigadierPitch()}</Text>
     {helping.length > 0 && <><Text style={styles.sectionTitle}>Mes propositions et missions</Text>{helping.map(card)}</>}
     <Text style={styles.sectionTitle}>Flemmes disponibles</Text>
     {available.length ? available.map(card) : <Text style={styles.muted}>Aucune nouvelle flemme pour l’instant. Tire la liste vers le bas pour l’actualiser.</Text>}{moreButton}</>;

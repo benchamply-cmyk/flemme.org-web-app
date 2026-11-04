@@ -150,11 +150,11 @@ const delays = [
 const btn = (text, href, cls = "") =>
   `<a class="button ${cls}" href="#${href}">${text}</a>`;
 const badge = (text, cls = "") => `<span class="pill ${cls}">${text}</span>`;
-// Modèle retenu : 10 % ajoutés au forfait du Brigadier (packages/shared, commission()).
+// Modèle retenu : 10 % ajoutés au forfait du Brigadier (packages/shared, price() et COMMISSION).
 function tarifText(price) {
   let t = tarif(price);
   return t
-    ? `Forfait Brigadier <b>${t.forfait}</b> + frais Flemme 10 % <b>${t.frais}</b> = <b>${t.total}</b> payés par le Flemmard. Le Brigadier reçoit ${t.forfait}.`
+    ? `Forfait Brigadier <b>${t.forfait}</b> + frais Flemme ${t.taux} <b>${t.frais}</b> = <b>${t.total}</b> payés par le Flemmard. Le Brigadier reçoit ${t.recu}.`
     : "Indique un prix pour voir le total : forfait du Brigadier + 10 % de frais Flemme, payés par le Flemmard.";
 }
 const tarifBox = (price) =>

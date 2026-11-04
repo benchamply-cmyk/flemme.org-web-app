@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { date, money, notices, offerStatus, parseMoney, paymentStatus, taskStatus } from '../../../../packages/shared/src/index.ts';
+import { date, money, notices, offerStatus, parseMoney, paymentNote, paymentStatus, taskStatus } from '../../../../packages/shared/src/index.ts';
+import { onlinePayment, openStripe } from '../session.ts';
 import { Action, Bill } from '../ui.tsx';
 import type { Ctx } from './contexte.ts';
 
@@ -11,12 +12,13 @@ export function Fiche({ state: { busy }, task, can, draft, field, go, mutate, va
   const preview = (() => { try { const n = parseMoney(draft.amount || ''); return n != null ? <Bill amount={n}/> : null; } catch { return null; } })();
   return <><span className="tag">{taskStatus[task.status]}{task.status === 'open' ? ' · sans expiration' : ''}</span><h1 className="heading">{task.title}</h1><p className="muted">{task.place} · déposée par {task.owner.name}</p><p>{task.details}</p>
     <p className="strong">{task.budget == null ? 'Prix à proposer' : 'Budget indicatif : ' + money(task.budget) + ' hors frais'}</p>
-    {agreement && <><h2 className="section-title">{agreement.brigadier.name} prend le relais</h2><p>{agreement.scope}</p><p className="muted">{agreement.slot}</p><Bill amount={agreement.amount}/>
-      <p className="note">Paiement direct : {money(agreement.amount)} au Brigadier. Commission FLEMME : {money(agreement.commission)} à régler séparément, non encaissée dans cette version.</p>
+    {agreement && <><h2 className="section-title">{agreement.brigadier.name} prend le relais</h2><p>{agreement.scope}</p><p className="muted">{agreement.slot}</p><Bill amount={agreement.amount} agreed={agreement}/>
+      <p className="note">{paymentNote(agreement, onlinePayment, money)}</p>
       {can.canComplete && <Action disabled={busy} onClick={() => mutate('complete', {})}>Confirmer la tâche terminée</Action>}
-      {can.canDeclarePayment && <Action disabled={busy} onClick={() => mutate('declare_payment', {})}>J’ai payé le Brigadier</Action>}
+      {can.canDeclarePayment && onlinePayment && <Action disabled={busy} onClick={() => openStripe('checkout', task.id)}>Payer en ligne · {money(agreement.total)}</Action>}
+      {can.canDeclarePayment && <Action secondary={onlinePayment} disabled={busy} onClick={() => mutate('declare_payment', {})}>J’ai payé le Brigadier{onlinePayment ? ' en direct' : ''}</Action>}
       {can.canConfirmPayment && <Action disabled={busy} onClick={() => mutate('confirm_payment', {})}>Confirmer avoir reçu le paiement</Action>}
-      <p className="muted">{paymentStatus(task)}<br/>Commission : à régler · encaissement non connecté</p></>}
+      <p className="muted">{task.payment ? paymentStatus(task, money) : <>{paymentStatus(task)}<br/>Commission : à régler · encaissement non connecté</>}</p></>}
     {task.offers.length > 0 && <><h2 className="section-title">{can.isOwner ? 'Les propositions' : 'Mes propositions'}</h2>
       {task.offers.map(o => <button type="button" key={o.id} onClick={() => go('offer', { offerId: o.id })} className="card"><span className="row"><span className="strong">{o.brigadier.name}</span><span className="price">{money(o.amount)}</span></span><span>{o.scope}</span><span className="muted">{offerStatus[o.status]}</span><span className="link">Discussion et récapitulatif →</span></button>)}</>}
     {can.canOffer && <><h2 className="section-title">Proposer mon aide</h2>{field('Mon forfait Brigadier', 'amount', { numeric: true })}{preview}{field('Mes disponibilités', 'slot')}{field('Ce qui est inclus et non inclus', 'scope', { multiline: true })}
