@@ -210,7 +210,7 @@ function startShowcase() {
   if (!$("#showcase") || showcasePaused || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   showcaseTimer = setInterval(() => showShowcase(showcaseIndex + 1), 4500);
 }
-// Les 5 étapes du parcours affichées sur l’accueil : [titre, texte, rôle concerné, icône].
+// Les 5 étapes du parcours affichées dans « Comment ça marche » : [titre, texte, rôle concerné, icône].
 const parcours = [
   ["Le Flemmard publie sa flemme", "Il décrit ce qu’il repousse, avec un budget et un délai indicatifs.", "flemmard", "☕"],
   ["Les Brigadiers postulent", "Ceux que la demande inspire proposent de s’en charger.", "brigadier", "✋"],
@@ -219,12 +219,7 @@ const parcours = [
   ["Suivi de la prestation", "Étapes, fichiers et accompagnement jusqu’au résultat.", "deux", "✓"],
 ];
 function home() {
-  return `<section class="hero"><div><p class="eyebrow">Le droit d’avoir la flemme.</p><h1>Passe le relais.<br><em>Ou prends-le.</em></h1><p class="lead">Ce que tu repousses, quelqu’un peut t’aider à le faire. Décris ta flemme, échange avec un Brigadier et mettez-vous d’accord.</p><div class="actions">${btn('<span class="cta-text"><b>Déléguer ma flemme</b><small>Je décris ce que je repousse</small></span><span class="cta-arrow" aria-hidden="true">↗</span>', "new", "dark cta")}${btn('<span class="cta-text"><b>Résoudre une flemme</b><small>Je propose mon coup de main</small></span><span class="cta-arrow" aria-hidden="true">↗</span>', "find", "cta green")}</div><p class="smallnote">Une demande libre. Un prix discuté ensemble.</p></div><div class="illustration" role="region" aria-roledescription="carrousel" aria-label="Exemples fictifs de mises en relation"><span class="float-label">Un peu moins à faire ✦</span><div class="visual-card" id="showcase" aria-live="polite">${showcaseCard(showcaseIndex)}</div><div class="showcase-nav"><button type="button" class="showcase-arrow" id="showcase-prev" aria-label="Exemple précédent">←</button><div class="showcase-dots">${showcase.map((x, i) => `<button type="button" class="showcase-dot" data-i="${i}" aria-label="Exemple ${i + 1} : ${esc(x.cat)}" ${i === showcaseIndex ? 'aria-current="true"' : ""}></button>`).join("")}</div><button type="button" class="showcase-arrow" id="showcase-next" aria-label="Exemple suivant">→</button></div></div></section><section class="parcours-wrap" aria-labelledby="parcours-titre"><div class="section-head"><div><p class="eyebrow">Le parcours</p><h2 id="parcours-titre">De la flemme au coup de main, en 5 étapes.</h2></div>${btn("Comment ça marche ↗", "how", "small ghost")}</div><ol class="parcours">${parcours
-    .map(
-      ([titre, texte, role, icone], i) =>
-        `<li class="etape etape-${role}"><div class="etape-tete"><span class="etape-num">${i + 1}</span><span class="etape-icone" aria-hidden="true">${icone}</span></div><span class="etape-role">${role === "flemmard" ? "Flemmard" : role === "brigadier" ? "Brigadier" : "Les deux"}</span><h3>${titre}</h3><p>${texte}</p></li>`,
-    )
-    .join("")}</ol></section>`;
+  return `<section class="hero"><div><p class="eyebrow">Le droit d’avoir la flemme.</p><h1>Passe le relais.<br><em>Ou prends-le.</em></h1><p class="lead">Ce que tu repousses, quelqu’un peut t’aider à le faire. Décris ta flemme, échange avec un Brigadier et mettez-vous d’accord.</p><div class="actions">${btn('<span class="cta-text"><b>Déléguer ma flemme</b><small>Je décris ce que je repousse</small></span><span class="cta-arrow" aria-hidden="true">↗</span>', "new", "dark cta")}${btn('<span class="cta-text"><b>Résoudre une flemme</b><small>Je propose mon coup de main</small></span><span class="cta-arrow" aria-hidden="true">↗</span>', "find", "cta green")}</div><p class="smallnote">Une demande libre. Un prix discuté ensemble.</p></div><div class="illustration" role="region" aria-roledescription="carrousel" aria-label="Exemples fictifs de mises en relation"><span class="float-label">Un peu moins à faire ✦</span><div class="visual-card" id="showcase" aria-live="polite">${showcaseCard(showcaseIndex)}</div><div class="showcase-nav"><button type="button" class="showcase-arrow" id="showcase-prev" aria-label="Exemple précédent">←</button><div class="showcase-dots">${showcase.map((x, i) => `<button type="button" class="showcase-dot" data-i="${i}" aria-label="Exemple ${i + 1} : ${esc(x.cat)}" ${i === showcaseIndex ? 'aria-current="true"' : ""}></button>`).join("")}</div><button type="button" class="showcase-arrow" id="showcase-next" aria-label="Exemple suivant">→</button></div></div></section>`;
 }
 function options(items, value = "", first = "Choisir") {
   return (
@@ -393,8 +388,17 @@ function agreement(id) {
 function help() {
   return `${lastChat ? `<a class="back" href="#chat/${lastChat}">← Revenir à la conversation</a>` : `<a class="back" href="#home">← Accueil</a>`}${page("Tu n’as pas à rester bloqué.", "Assistant d’abord, personne Flemme ensuite si nécessaire.", "Aide & accompagnement")}<div class="conversation"><div class="chatbox"><div class="chat-head"><div class="avatar">✦</div><div><b>Assistant Flemme · simulation</b><p class="smallnote" style="margin:0">Réponses prédéfinies · aucun chatbot connecté</p></div></div><div class="messages"><div class="message">Je peux t’aider à préciser une demande, préparer un accord ou comprendre une étape. Qu’est-ce qui te bloque ?</div>${supportMessages.map((m) => `<div class="message ${m.mine ? "mine" : ""}">${esc(m.text)}</div>`).join("")}</div><form class="composer" id="support-form">${area("Décris ton besoin", "support-message", "", "required")}<button class="button dark small">Demander de l’aide · démo</button></form></div><aside class="card"><h3>Besoin d’une personne ?</h3><p style="margin:15px 0">Une personne Flemme pourra prendre le relais, initialement le fondateur. Le téléphone support est reporté.</p><button class="button" id="human-help">Solliciter une personne Flemme</button>${supportHuman ? '<div class="info blue" style="margin-top:20px">Demande simulée : aucun message envoyé au fondateur. Statut démo : en attente de prise en charge.</div>' : ""}<p class="smallnote">Aucun délai de réponse garanti.</p></aside></div>`;
 }
+// Le parcours en 5 étapes, en tête de « Comment ça marche ».
+function parcoursSection() {
+  return `<section class="parcours-wrap" aria-labelledby="parcours-titre"><div class="section-head"><div><p class="eyebrow">Le parcours</p><h2 id="parcours-titre">De la flemme au coup de main, en 5 étapes.</h2></div></div><ol class="parcours">${parcours
+    .map(
+      ([titre, texte, role, icone], i) =>
+        `<li class="etape etape-${role}"><div class="etape-tete"><span class="etape-num">${i + 1}</span><span class="etape-icone" aria-hidden="true">${icone}</span></div><span class="etape-role">${role === "flemmard" ? "Flemmard" : role === "brigadier" ? "Brigadier" : "Les deux"}</span><h3>${titre}</h3><p>${texte}</p></li>`,
+    )
+    .join("")}</ol></section>`;
+}
 function how() {
-  return `${page("Moins à porter. Plus clair pour chacun.", "Une mise en relation, des échanges et un accord explicite.", "Comment ça marche")}<div class="detail-layout"><article class="card">${[
+  return `${page("Moins à porter. Plus clair pour chacun.", "Une mise en relation, des échanges et un accord explicite.", "Comment ça marche")}${parcoursSection()}<div class="detail-layout"><article class="card">${[
     [
       "Tu décris ta flemme",
       "Raconte la tâche, choisis un délai approximatif et, si tu veux, un budget. Connecte-toi pour envoyer.",
