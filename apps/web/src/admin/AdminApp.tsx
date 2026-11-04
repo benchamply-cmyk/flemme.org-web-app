@@ -1,20 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { money } from '../../../../packages/shared/src/domain.ts';
+import { CONTRACT_FIELDS } from '../../../../packages/shared/src/accord.ts';
 import { budgetText, categoryLabel, deadlineLabel, modeLabel } from '../../../../packages/shared/src/parcours.ts';
 import { RemoteGateway } from '../../../../packages/shared/src/gateway.ts';
 import { tokenStore } from '../storage.ts';
-import type { AdminAction, AdminSource, AlertRow, DisputeRow, Moderation, Overview, ReportRow, ReviewDecision, UserRow } from './model.ts';
+import type { AdminAction, AdminSource, AlertRow, DisputeRow, Moderation, Overview, ReportRow, ReviewDecision, ReviewQueue, UserRow } from './model.ts';
 import { DemoAdmin, alertLabel, disputeLabel, filterDisputes, filterUsers, logLabel, taskLabel, when } from './model.ts';
 
 // Page admin de flemme.org : signalements, litiges, utilisateurs et alertes.
 // Toutes les données passent par public.flemme_admin_api, qui revérifie le rôle admin en base.
-type Tab = 'overview' | 'moderation' | 'reports' | 'disputes' | 'users' | 'alerts';
-type Data = { overview?: Overview; moderation?: Moderation; reports?: ReportRow[]; disputes?: DisputeRow[]; users?: UserRow[]; alerts?: AlertRow[] };
+type Tab = 'overview' | 'moderation' | 'queue' | 'reports' | 'disputes' | 'users' | 'alerts';
+type Data = { overview?: Overview; moderation?: Moderation; queue?: ReviewQueue; reports?: ReportRow[]; disputes?: DisputeRow[]; users?: UserRow[]; alerts?: AlertRow[] };
 const url = import.meta.env.VITE_SUPABASE_URL || '';
 const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
 const remoteMode = !!(url || key);
-const tabs: [Tab, string][] = [['overview', 'Vue d’ensemble'], ['moderation', 'À valider'], ['reports', 'Signalements'], ['disputes', 'Litiges'], ['users', 'Utilisateurs'], ['alerts', 'Alertes e-mail']];
+const tabs: [Tab, string][] = [['overview', 'Vue d’ensemble'], ['moderation', 'À valider'], ['queue', 'Candidatures et accords'], ['reports', 'Signalements'], ['disputes', 'Litiges'], ['users', 'Utilisateurs'], ['alerts', 'Alertes e-mail']];
 
 function remoteSource(g: RemoteGateway, email: string): AdminSource {
   return { demo: false, email, call: (action: AdminAction, data = {}) => g.call('flemme_admin_api', { p_action: action, p_data: data }) };
@@ -41,13 +42,15 @@ export default function AdminApp() {
     finally { locked.current = false; setBusy(false); }
   }
   async function load(s: AdminSource, which: Tab) {
-    const [field, action]: [keyof Data, AdminAction] = which === 'overview' ? ['overview', 'overview'] : [which, which];
+    const [field, action]: [keyof Data, AdminAction] = which === 'queue' ? ['queue', 'review_queue'] : [which, which];
     const result = await s.call(action);
-    setData(d => ({ ...d, [field]: which === 'overview' || which === 'moderation' ? result : result[which] }));
+    setData(d => ({ ...d, [field]: which === 'overview' || which === 'moderation' || which === 'queue' ? result : result[which] }));
   }
   async function open(s: AdminSource) {
     // Le premier appel vérifie le rôle : un compte non admin reçoit « Accès réservé » et ne voit rien.
     await load(s, 'overview'); setSource(s); await Promise.all((['moderation', 'reports', 'disputes'] as Tab[]).map(t => load(s, t)));
+    // Base sans le lot 3 (accord) : l’onglet reste vide au lieu de bloquer la page.
+    await load(s, 'queue').catch(() => {});
   }
   useEffect(() => {
     void run(async () => {
@@ -108,6 +111,32 @@ export default function AdminApp() {
         </div>
       </div>) : <p className="muted">Aucune demande à valider.</p>}
     </>;
+  } else if (tab === 'queue') {
+    const q = data.queue;
+    const note = (id: string) => draft['q-' + id] || '';
+    content = <>
+      <p className="muted">Les candidatures sont transmises au déposant seulement après ta validation. Les accords écrits ne peuvent être signés qu’après ton contrôle. Une correction ou un refus doit être expliqué : la personne voit ton message.</p>
+      <h2 className="section-title">Candidatures ({q?.offers.length ?? 0})</h2>
+      {q?.offers.length ? q.offers.map(o => <div className="card" key={o.id}>
+        <div className="row"><span className="strong">{o.brigadier.name}</span><span className="price">{money(o.amount)}</span></div>
+        <p className="note">Pour « {o.task.title} » de {o.task.owner.name} · {when(o.createdAt)}</p>
+        <p>{o.scope}</p><p className="muted">{o.slot}</p>{o.result && <p><span className="strong">Résultat promis : </span>{o.result}</p>}
+        <div className="field"><label htmlFor={'q-' + o.id}>Message au Brigadier (obligatoire pour une correction ou un refus)</label><textarea id={'q-' + o.id} maxLength={900} value={note(o.id)} onChange={set('q-' + o.id)} disabled={busy}/></div>
+        <div className="chips">
+          <Button disabled={busy} onClick={() => act('offer_review', { offerId: o.id, decision: 'approve' }, 'Candidature validée et transmise au déposant.', ['queue'])}>Valider et transmettre</Button>
+          <Button secondary disabled={busy} onClick={() => act('offer_review', { offerId: o.id, decision: 'changes', note: note(o.id) }, 'Correction demandée au Brigadier.', ['queue'])}>Demander une correction</Button>
+          <Button secondary disabled={busy} onClick={() => act('offer_review', { offerId: o.id, decision: 'reject', note: note(o.id) }, 'Candidature refusée.', ['queue'])}>Refuser</Button>
+        </div></div>) : <p className="muted">Aucune candidature à valider.</p>}
+      <h2 className="section-title">Accords écrits ({q?.agreements.length ?? 0})</h2>
+      {q?.agreements.length ? q.agreements.map(a => <div className="card" key={a.taskId}>
+        <p className="card-title">{a.title}</p><p className="note">{a.owner.name} et {a.brigadier.name} · forfait {money(a.amount)} · soumis le {when(a.updatedAt)}</p>
+        {CONTRACT_FIELDS.map(c => <p key={c.name}><span className="strong">{c.label} : </span>{a.terms[c.name]}</p>)}
+        <div className="field"><label htmlFor={'q-' + a.taskId}>Message aux deux parties (obligatoire pour une correction)</label><textarea id={'q-' + a.taskId} maxLength={900} value={note(a.taskId)} onChange={set('q-' + a.taskId)} disabled={busy}/></div>
+        <div className="chips">
+          <Button disabled={busy} onClick={() => act('agreement_review', { taskId: a.taskId, decision: 'approve', note: note(a.taskId) || null }, 'Accord contrôlé : les deux parties peuvent signer.', ['queue'])}>Valider · prêt à signer</Button>
+          <Button secondary disabled={busy} onClick={() => act('agreement_review', { taskId: a.taskId, decision: 'changes', note: note(a.taskId) }, 'Correction demandée aux deux parties.', ['queue'])}>Demander une correction</Button>
+        </div></div>) : <p className="muted">Aucun accord à contrôler.</p>}
+    </>;
   } else if (tab === 'reports') content = <>
     <p className="muted">Chaque signalement ouvre (ou rouvre) un litige sur la flemme concernée. Aucun remboursement n’est déclenché automatiquement.</p>
     {data.reports?.length ? data.reports.map((r, i) => <div className="card" key={r.taskId + i}>
@@ -167,7 +196,7 @@ export default function AdminApp() {
       {source && <nav><span className="note">{source.email}</span>{!source.demo && <Button secondary disabled={busy} onClick={logout}>Me déconnecter</Button>}</nav>}</header>
     <main className="admin" aria-busy={busy}>
       {source && <><p className="eyebrow">Exploitation</p><h1 className="heading">Admin FLEMME</h1>
-        <div className="chips" role="tablist" aria-label="Rubriques">{tabs.map(([id, label]) => <button type="button" role="tab" key={id} aria-selected={tab === id} className="chip" onClick={() => show(id)}>{label}{id === 'disputes' && o ? ' (' + (o.disputes.open + o.disputes.in_review) + ')' : id === 'moderation' && data.moderation ? ' (' + data.moderation.tasks.length + ')' : id === 'reports' && data.reports ? ' (' + data.reports.length + ')' : ''}</button>)}
+        <div className="chips" role="tablist" aria-label="Rubriques">{tabs.map(([id, label]) => <button type="button" role="tab" key={id} aria-selected={tab === id} className="chip" onClick={() => show(id)}>{label}{id === 'disputes' && o ? ' (' + (o.disputes.open + o.disputes.in_review) + ')' : id === 'moderation' && data.moderation ? ' (' + data.moderation.tasks.length + ')' : id === 'queue' && data.queue ? ' (' + (data.queue.offers.length + data.queue.agreements.length) + ')' : id === 'reports' && data.reports ? ' (' + data.reports.length + ')' : ''}</button>)}
           <button type="button" className="chip" disabled={busy} onClick={() => show(tab)}>↻ Actualiser</button></div></>}
       {!!error && <div role="alert" className="alert">{error}</div>}
       {!!notice && <p aria-live="polite" className="notice">{notice}</p>}

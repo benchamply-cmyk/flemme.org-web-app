@@ -15,6 +15,13 @@ export const notices = {
   draftSaved: 'Brouillon enregistré sur ton compte.',
   draftDeleted: 'Brouillon supprimé.',
   offerSent: 'Proposition envoyée. La flemme reste ouverte jusqu’à acceptation.',
+  applied: (o?: { review?: string }) => o?.review === 'pending'
+    ? 'Candidature envoyée. L’équipe FLEMME la relit avant de la transmettre au déposant.' : 'Proposition envoyée. La flemme reste ouverte jusqu’à acceptation.',
+  contractSaved: 'Accord enregistré. Relisez-le à deux, puis soumettez-le.',
+  contractSubmitted: (status?: string) => status === 'pending' ? 'Accord soumis : l’équipe FLEMME le contrôle avant la signature.' : 'Accord prêt à signer.',
+  signed: 'Signature enregistrée et horodatée.',
+  reviewSent: 'Merci, ton avis est publié sur le profil de l’autre personne.',
+  profileSaved: 'Profil enregistré.',
   accepted: 'Accord confirmé. Le Brigadier prend le relais.',
   declined: 'Offre déclinée et conservée. Le Brigadier peut proposer un nouveau forfait.',
   checkEmail: 'Vérifie ton e-mail, puis connecte-toi.',

@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { backLabel, footer, money, rights, taskFields } from '../../../packages/shared/src/index.ts';
+import { backLabel, contractFields, footer, money, rights, taskFields } from '../../../packages/shared/src/index.ts';
 import type { Command, Input, Option, Screen, Task } from '../../../packages/shared/src/index.ts';
 import { onlinePayment, session, useSession } from './session.ts';
 import { Action } from './ui.tsx';
 import type { Ctx, Draft, FieldOptions, Place } from './ecrans/contexte.ts';
 import { Accueil } from './ecrans/Accueil.tsx';
+import { Accord } from './ecrans/Accord.tsx';
 import { Compte } from './ecrans/Compte.tsx';
 import { Connexion } from './ecrans/Connexion.tsx';
 import { Fiche } from './ecrans/Fiche.tsx';
@@ -13,6 +14,7 @@ import { Listes } from './ecrans/Listes.tsx';
 import { MotDePasse } from './ecrans/MotDePasse.tsx';
 import { NouvelleFlemme } from './ecrans/NouvelleFlemme.tsx';
 import { Offre } from './ecrans/Offre.tsx';
+import { Profil } from './ecrans/Profil.tsx';
 import { Signalement } from './ecrans/Signalement.tsx';
 
 // Coque web de l’app : navigation, formulaire en cours et choix de l’écran.
@@ -23,12 +25,18 @@ import { Signalement } from './ecrans/Signalement.tsx';
 const initialTab = location.hash === '#find' ? 'find' : location.hash === '#mine' || location.hash.startsWith('#paiement') ? 'mine' : null;
 const start: Place = { screen: initialTab ? 'list' : 'home', tab: initialTab || 'mine', taskId: '', offerId: '', depth: 0 };
 // Écrans ouverts depuis la fiche d’une flemme : combien de pas pour y revenir.
-const aboveDetail: Partial<Record<Screen, number>> = { offer: 1, review: 2, report: 1, edit: 1 };
+const aboveDetail: Partial<Record<Screen, number>> = { offer: 1, review: 2, report: 1, edit: 1, contract: 1 };
 // Formulaire prérempli à l’ouverture d’un écran : modification d’une demande ou reprise d’un brouillon.
 function initialDraft(next: Place): Draft {
-  const { tasks, drafts } = session.getState();
-  if (next.screen === 'edit') { const t = tasks.find(v => v.id === next.taskId); return t ? taskFields(t, money) : {}; }
-  if (next.screen === 'new' && next.draftId) return { ...drafts.find(d => d.id === next.draftId)?.fields };
+  const { tasks, drafts, found, actorId } = session.getState();
+  const t = tasks.find(v => v.id === next.taskId) || found?.tasks.find(v => v.id === next.taskId);
+  if (next.screen === 'edit') return t ? taskFields(t, money) : {};
+  if ((next.screen === 'new' || next.screen === 'detail') && next.draftId) return { ...drafts.find(d => d.id === next.draftId)?.fields };
+  // Candidature à corriger : le Brigadier repart de sa proposition.
+  const o = next.screen === 'offer' ? t?.offers.find(v => v.id === next.offerId && v.brigadier.id === actorId) : undefined;
+  if (o) return { amount: (o.amount / 100).toFixed(2).replace('.', ','), slot: o.slot, scope: o.scope, result: o.result || '' };
+  // Accord écrit : version enregistrée, sinon reprise de la candidature retenue.
+  if (next.screen === 'contract' && t) return t.contract ? contractFields(t.contract) : { scope: t.agreement?.scope || '', deadline: t.agreement?.slot || '' };
   return {};
 }
 
@@ -38,7 +46,7 @@ export default function App() {
   const [place, setPlace] = useState<Place>(start), [draft, setDraft] = useState<Draft>({}), [visit, setVisit] = useState(0);
   const main = useRef<HTMLElement>(null), flash = useRef('');
   const { screen, taskId, offerId } = place;
-  const task = tasks.find(t => t.id === taskId), offer = task?.offers.find(o => o.id === offerId);
+  const task = tasks.find(t => t.id === taskId) || state.found?.tasks.find(t => t.id === taskId), offer = task?.offers.find(o => o.id === offerId);
 
   useEffect(() => {
     history.replaceState(start, '');
@@ -87,12 +95,14 @@ export default function App() {
   else if (!gateway) content = <><h1 className="heading">Chargement interrompu</h1><Action onClick={() => session.initialize()}>Réessayer sans effacer mes données</Action></>;
   else if (recovering && session.remote) content = <MotDePasse {...ctx}/>;
   else if (screen === 'account') content = <Compte {...ctx}/>;
+  else if (screen === 'profile') content = <Profil key={visit} {...ctx}/>;
   else if (screen === 'home') content = <Accueil {...ctx}/>;
   else if (screen === 'new') content = <NouvelleFlemme key={visit} {...ctx}/>;
   else if (screen === 'list') content = <Listes {...ctx}/>;
   else if (!task) content = <><h1 className="heading">Flemme indisponible</h1><Action secondary onClick={() => go('list')}>Revenir à la liste</Action></>;
   else if (screen === 'report') content = <Signalement {...ctx}/>;
   else if (screen === 'edit') content = <NouvelleFlemme key={visit} {...ctx}/>;
+  else if (screen === 'contract') content = <Accord {...ctx}/>;
   else if ((screen === 'offer' || screen === 'review') && offer) content = <Offre {...ctx}/>;
   else content = <Fiche key={visit} {...ctx}/>;
 

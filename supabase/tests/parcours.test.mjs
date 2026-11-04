@@ -26,6 +26,7 @@ for (const file of files.filter(f => f < '20261104120000')) await db.exec(await 
 const old = randomUUID();
 await db.query("insert into flemme_v2.tasks(id, owner_id, title, details, place) values($1,$2,'Ancienne flemme','Avant la validation','Aix')", [old, ids.other]);
 for (const file of files.filter(f => f >= '20261104120000')) await db.exec(await readFile(new URL(file, dir), 'utf8'));
+await db.exec('update flemme_v2.settings set moderation_offers = false, moderation_agreements = false'); // lot 3 : voir accord.test.mjs
 
 const { admin, owner, brigadier, other } = ids;
 async function as(id) {

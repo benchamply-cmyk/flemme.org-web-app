@@ -24,7 +24,11 @@ export function Listes(ctx: Ctx) {
         <span className="row"><button type="button" className="btn small" disabled={busy} onClick={() => go('new', { draftId: d.id })}>Reprendre</button><button type="button" className="btn small secondary" disabled={busy} onClick={() => session.deleteDraft(d.id)}>Supprimer</button></span></div>)}</>}
     <h2 className="section-title">Mes demandes</h2>
     {own.length ? own.map(card) : <p className="muted">Aucune flemme déposée. Par quoi veux-tu commencer ?</p>}{reload}</>;
+  const offerDrafts = drafts.filter(d => d.kind === 'offer');
   return <><p className="eyebrow">À toi de jouer, Brigadier.</p><h1 className="heading">Résoudre une flemme</h1><p className="muted">{brigadierPitch()}</p>
+    {offerDrafts.length > 0 && <><h2 className="section-title">Mes candidatures en brouillon</h2>
+      {offerDrafts.map(d => <div className="card" key={d.id}><span className="card-title">{tasks.find(t => t.id === d.taskId)?.title || 'Candidature'}</span><span className="note">Enregistrée le {date(d.updatedAt)} · visible de toi seul</span>
+        <span className="row"><button type="button" className="btn small" disabled={busy} onClick={() => go('detail', { taskId: d.taskId || '', draftId: d.id })}>Reprendre</button><button type="button" className="btn small secondary" disabled={busy} onClick={() => session.deleteDraft(d.id)}>Supprimer</button></span></div>)}</>}
     {helping.length > 0 && <><h2 className="section-title">Mes propositions et missions</h2>{helping.map(card)}</>}
     <h2 className="section-title">Flemmes disponibles</h2>
     <Recherche {...ctx} card={card} fallback={available} skip={helping}/></>;

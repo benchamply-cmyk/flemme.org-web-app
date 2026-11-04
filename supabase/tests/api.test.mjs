@@ -30,7 +30,7 @@ for (const file of (await readdir(dir)).filter(f => f.endsWith('.sql')).sort()) 
   await db.exec(await readFile(new URL(file, dir), 'utf8'));
 }
 // Ces tests portent sur le contrat d'origine : la validation des demandes (parcours.test.mjs) est coupée.
-await db.exec('update flemme_v2.settings set moderation_tasks = false');
+await db.exec('update flemme_v2.settings set moderation_tasks = false, moderation_offers = false, moderation_agreements = false');
 // Comptes créés après : le déclencheur crée le profil.
 await addUser(users[2], 'camille@example.com', { display_name: '  Camille  ' });
 await addUser(users[3], 'pas-confirme@example.com', null, false);
@@ -138,7 +138,7 @@ await db.exec('reset role; set role anon');
 await assert.rejects(api('list'), /permission denied/);
 await db.exec('reset role');
 const rls = await db.query("select relname, relrowsecurity from pg_class join pg_namespace n on n.oid=relnamespace where n.nspname='flemme_v2' and relkind='r'");
-assert.equal(rls.rows.length, 15); // 6 tables V2 + 5 tables admin + 3 tables paiement (settings, brigadier_accounts, payments) + drafts
+assert.equal(rls.rows.length, 17); // 6 tables V2 + 5 tables admin + 3 tables paiement (settings, brigadier_accounts, payments) + drafts + reviews, agreements
 assert.ok(rls.rows.every(r => r.relrowsecurity));
 
 // Suppression d'un compte : ses flemmes partent, ses messages restent signés « Compte supprimé ».

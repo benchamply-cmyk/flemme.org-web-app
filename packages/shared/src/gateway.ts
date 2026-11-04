@@ -2,6 +2,7 @@ import { applyCommand, createTask, visibleTask } from './domain.ts';
 import type { Actor, Command, Input, Task } from './domain.ts';
 import type { SavedDraft, SearchFilter, SearchPage } from './parcours.ts';
 import { searchTasks } from './parcours.ts';
+import type { Profile } from './accord.ts';
 
 // Identifiants de ressources/idempotence uniquement : jamais utilisés comme secrets.
 export const newId = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -21,6 +22,9 @@ export interface Gateway {
   drafts(): Promise<SavedDraft[]>;
   saveDraft(draft: Omit<SavedDraft, 'updatedAt'>): Promise<SavedDraft>;
   deleteDraft(id: string): Promise<void>;
+  /** Profil public d’un membre (le sien si `userId` est absent) : présentation, compétences, missions et avis. */
+  profile(userId?: string): Promise<Profile>;
+  saveProfile(data: Input): Promise<Profile>;
 }
 export const demoActors: Actor[] = [{ id: 'demo-ben', name: 'Benjamin' }, { id: 'demo-lou', name: 'Lou' }, { id: 'demo-camille', name: 'Camille' }];
 export function seed(): Task[] {
@@ -30,7 +34,8 @@ export function seed(): Task[] {
     createTask('demo-meuble', demoActors[2], { title: 'Monter mon meuble IKEA', details: 'Un petit meuble à monter. Outils disponibles. Sans fixation au mur.', place: 'Aix-en-Provence', budget: 3500 }, at),
     createTask('demo-cv', demoActors[1], { title: 'Remettre mon CV au propre', details: 'Une page à remettre en forme. Le contenu est déjà rédigé.', place: 'À distance', budget: null }, at)];
 }
-export type DemoState = { version: 1; tasks: Task[]; requests: Record<string, Task>; drafts?: (SavedDraft & { ownerId: string })[] };
+export type DemoProfile = { bio: string | null; skills: string[]; experience: string | null };
+export type DemoState = { version: 1; tasks: Task[]; requests: Record<string, Task>; drafts?: (SavedDraft & { ownerId: string })[]; profiles?: Record<string, DemoProfile> };
 export class DemoGateway implements Gateway {
   actor = demoActors[0];
   private state: DemoState;
@@ -80,12 +85,32 @@ export class DemoGateway implements Gateway {
   async deleteDraft(id: string) {
     await this.saveDrafts((this.state.drafts || []).filter(x => x.id !== id || x.ownerId !== this.actor.id));
   }
+  async profile(userId = this.actor.id): Promise<Profile> {
+    const who = demoActors.find(a => a.id === userId);
+    if (!who) throw new Error('Profil introuvable');
+    const p = this.state.profiles?.[userId] || { bio: null, skills: [], experience: null };
+    const done = this.state.tasks.filter(t => t.status === 'completed');
+    const reviews = done.flatMap(t => (t.ratings || []).filter(r => r.targetId === userId).map(r => ({
+      rating: r.rating, text: r.text, author: demoActors.find(a => a.id === r.authorId) || { id: r.authorId, name: 'Membre' }, task: t.title, at: r.at })))
+      .sort((a, b) => b.at.localeCompare(a.at));
+    return { id: who.id, name: who.name, ...p, since: '2026-10-28T08:00:00.000Z',
+      missions: done.filter(t => t.agreement?.brigadier.id === userId).length,
+      rating: reviews.length ? Math.round(reviews.reduce((n, r) => n + r.rating, 0) / reviews.length * 10) / 10 : null, reviews };
+  }
+  async saveProfile(data: Input): Promise<Profile> {
+    const p: DemoProfile = { bio: (data.bio as string | null) ?? null, experience: (data.experience as string | null) ?? null, skills: (data.skills as string[]) || [] };
+    const next: DemoState = { ...this.state, profiles: { ...this.state.profiles, [this.actor.id]: p } };
+    await this.persist(next); this.state = next;
+    return this.profile();
+  }
   async command(taskId: string, action: Command, data: Input, request: string) {
     const prior = this.state.requests[this.actor.id + ':' + request];
     if (prior) return visibleTask(prior, this.actor);
     const task = this.state.tasks.find(t => t.id === taskId);
     if (!task) throw new Error('Flemme introuvable.');
-    return this.commit(applyCommand(task, this.actor, action, action === 'offer' ? { ...data, id: newId() } : data, new Date().toISOString()), request);
+    const next = await this.commit(applyCommand(task, this.actor, action, action === 'offer' || action === 'apply' ? { ...data, id: newId() } : data, new Date().toISOString()), request);
+    if (action === 'apply' && typeof data.draftId === 'string') await this.deleteDraft(data.draftId);
+    return next;
   }
 }
 
@@ -151,8 +176,8 @@ export class RemoteGateway implements Gateway {
     // Nom provisoire : le nom affiché fait foi côté serveur (profil), chargé juste après.
     if (this.actor.id !== s.user.id) this.actor = { id: s.user.id, name: 'Membre' };
   }
-  private async profile() { this.actor = (await this.rpc('me', null, {}, null)).profile; }
-  async login(email: string, password: string) { await this.session(await this.request('/auth/v1/token?grant_type=password', { email: email.trim(), password })); await this.profile(); }
+  private async loadMe() { this.actor = (await this.rpc('me', null, {}, null)).profile; }
+  async login(email: string, password: string) { await this.session(await this.request('/auth/v1/token?grant_type=password', { email: email.trim(), password })); await this.loadMe(); }
   private link(path: string, o: AuthLinkOptions = {}) { return o.redirectTo ? path + '?redirect_to=' + encodeURIComponent(o.redirectTo) : path; }
   private pkce(o: AuthLinkOptions = {}) { return o.codeChallenge ? { code_challenge: o.codeChallenge, code_challenge_method: 's256' } : {}; }
   async signup(email: string, password: string, o?: AuthLinkOptions) { await this.request(this.link('/auth/v1/signup', o), { email: email.trim(), password, ...this.pkce(o) }); }
@@ -160,12 +185,12 @@ export class RemoteGateway implements Gateway {
   // Supabase répond pareil que l’adresse existe ou non : rien n’indique si un compte existe.
   async recover(email: string, o?: AuthLinkOptions) { await this.request(this.link('/auth/v1/recover', o), { email: email.trim(), ...this.pkce(o) }); }
   // Retour d’un lien e-mail (flux PKCE) : le code à usage unique ne sert qu’avec le secret gardé par ce navigateur.
-  async exchangeCode(code: string, verifier: string) { await this.session(await this.request('/auth/v1/token?grant_type=pkce', { auth_code: code, code_verifier: verifier })); await this.profile(); }
+  async exchangeCode(code: string, verifier: string) { await this.session(await this.request('/auth/v1/token?grant_type=pkce', { auth_code: code, code_verifier: verifier })); await this.loadMe(); }
   async setPassword(password: string) {
     if (Date.now() > this.expires - 60000) await this.refresh();
     await this.request('/auth/v1/user', { password }, this.access, 'PUT');
   }
-  async restore() { if (!(await this.tokens.get())) return false; await this.refresh(); await this.profile(); return true; }
+  async restore() { if (!(await this.tokens.get())) return false; await this.refresh(); await this.loadMe(); return true; }
   async updateProfile(displayName: string) { this.actor = (await this.rpc('update_profile', null, { displayName }, null)).profile; }
   private async refresh() {
     if (!this.refreshing) this.refreshing = (async () => {
@@ -208,6 +233,19 @@ export class RemoteGateway implements Gateway {
   async drafts(): Promise<SavedDraft[]> { return (await this.rpc('drafts', null, {}, null)).drafts; }
   async saveDraft(d: Omit<SavedDraft, 'updatedAt'>): Promise<SavedDraft> { return (await this.rpc('draft_save', null, d, null)).draft; }
   async deleteDraft(id: string) { await this.rpc('draft_delete', null, { id }, null); }
+  async profile(userId?: string): Promise<Profile> { return (await this.rpc('profile_get', null, userId ? { userId } : {}, null)).profile; }
+  async saveProfile(data: Input): Promise<Profile> {
+    const p: Profile = (await this.rpc('profile_save', null, data, null)).profile;
+    this.actor = { id: p.id, name: p.name };
+    return p;
+  }
   async create(data: Input, requestId: string): Promise<Task> { return (await this.rpc('create', null, data, requestId)).task; }
-  async command(taskId: string, action: Command, data: Input, requestId: string): Promise<Task> { return (await this.rpc(action, taskId, data, requestId)).task; }
+  async command(taskId: string, action: Command, data: Input, requestId: string): Promise<Task> {
+    try { return (await this.rpc(action, taskId, data, requestId)).task; }
+    catch (e) {
+      // Base pas encore migrée (lot 3 absent) : la candidature part par l’ancienne action, sans résultat promis.
+      if (action !== 'apply' || !/Action inconnue/.test((e as Error).message)) throw e;
+      return (await this.rpc('offer', taskId, { amount: data.amount, slot: data.slot, scope: data.scope }, requestId)).task;
+    }
+  }
 }
