@@ -8,10 +8,10 @@ Le site historique flemme.org reste dans le dépôt [FlemmeV2.0](https://github.
 
 | Dossier | Contenu | Publié sur |
 |---|---|---|
-| `apps/web` | Site Vite + React : vitrine (`index.html`) et parcours de l'app dans le navigateur (`app.html`) | https://flemme.org |
+| `apps/web` | Site Vite + React : vitrine (`index.html`), parcours de l'app dans le navigateur (`app.html`), admin de l'équipe (`admin.html`, servie sur /admin) et fonction Netlify `/api/alerte` | https://flemme.org |
 | `apps/mobile` | App Expo SDK 58 (iOS, Android, Expo Go) | Expo Go (pas encore sur les stores) |
 | `packages/shared` | Code commun au site et à l'app : règles métier, accès aux données (démo et Supabase), état de l'app, droits et textes. Sans React ni dépendance | — |
-| `supabase/` | Migrations Supabase CLI (schéma `flemme_v2`, RPC `flemme_mobile_api`) et leurs tests, voir `supabase/README.md` | Supabase (`supabase db push`, avec l'accord de Ben pour la prod) |
+| `supabase/` | Migrations Supabase CLI (schéma `flemme_v2`, RPC `flemme_mobile_api`, admin et alertes avec la RPC `flemme_admin_api`) et leurs tests, voir `supabase/README.md` | Supabase (`supabase db push`, avec l'accord de Ben pour la prod) |
 | `supabase/reprise-espace` | Scripts de reprise des comptes de l'ancien `/espace` | Supabase (à lancer à la main, voir `docs/migration-comptes-espace.md`) |
 | `apps/manager` | Flemme Manager : API FastAPI d'agents IA et ses schémas Supabase (`apps/manager/supabase/`), repris de FlemmeV2.0 | Render `flemme-manager-v2-api` (à rebrancher, voir `docs/manager-render.md`) |
 | `docs/` | Organisation Git, historique du dépôt FlemmeV2.0, Manager sur Render, reprise des comptes | — |
