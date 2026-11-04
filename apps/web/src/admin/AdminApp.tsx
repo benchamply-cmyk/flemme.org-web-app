@@ -1,19 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { money } from '../../../../packages/shared/src/domain.ts';
+import { budgetText, categoryLabel, deadlineLabel, modeLabel } from '../../../../packages/shared/src/parcours.ts';
 import { RemoteGateway } from '../../../../packages/shared/src/gateway.ts';
 import { tokenStore } from '../storage.ts';
-import type { AdminAction, AdminSource, AlertRow, DisputeRow, Overview, ReportRow, UserRow } from './model.ts';
+import type { AdminAction, AdminSource, AlertRow, DisputeRow, Moderation, Overview, ReportRow, ReviewDecision, UserRow } from './model.ts';
 import { DemoAdmin, alertLabel, disputeLabel, filterDisputes, filterUsers, logLabel, taskLabel, when } from './model.ts';
 
 // Page admin de flemme.org : signalements, litiges, utilisateurs et alertes.
 // Toutes les données passent par public.flemme_admin_api, qui revérifie le rôle admin en base.
-type Tab = 'overview' | 'reports' | 'disputes' | 'users' | 'alerts';
-type Data = { overview?: Overview; reports?: ReportRow[]; disputes?: DisputeRow[]; users?: UserRow[]; alerts?: AlertRow[] };
+type Tab = 'overview' | 'moderation' | 'reports' | 'disputes' | 'users' | 'alerts';
+type Data = { overview?: Overview; moderation?: Moderation; reports?: ReportRow[]; disputes?: DisputeRow[]; users?: UserRow[]; alerts?: AlertRow[] };
 const url = import.meta.env.VITE_SUPABASE_URL || '';
 const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
 const remoteMode = !!(url || key);
-const tabs: [Tab, string][] = [['overview', 'Vue d’ensemble'], ['reports', 'Signalements'], ['disputes', 'Litiges'], ['users', 'Utilisateurs'], ['alerts', 'Alertes e-mail']];
+const tabs: [Tab, string][] = [['overview', 'Vue d’ensemble'], ['moderation', 'À valider'], ['reports', 'Signalements'], ['disputes', 'Litiges'], ['users', 'Utilisateurs'], ['alerts', 'Alertes e-mail']];
 
 function remoteSource(g: RemoteGateway, email: string): AdminSource {
   return { demo: false, email, call: (action: AdminAction, data = {}) => g.call('flemme_admin_api', { p_action: action, p_data: data }) };
@@ -42,11 +43,11 @@ export default function AdminApp() {
   async function load(s: AdminSource, which: Tab) {
     const [field, action]: [keyof Data, AdminAction] = which === 'overview' ? ['overview', 'overview'] : [which, which];
     const result = await s.call(action);
-    setData(d => ({ ...d, [field]: which === 'overview' ? result : result[which] }));
+    setData(d => ({ ...d, [field]: which === 'overview' || which === 'moderation' ? result : result[which] }));
   }
   async function open(s: AdminSource) {
     // Le premier appel vérifie le rôle : un compte non admin reçoit « Accès réservé » et ne voit rien.
-    await load(s, 'overview'); setSource(s); await Promise.all((['reports', 'disputes'] as Tab[]).map(t => load(s, t)));
+    await load(s, 'overview'); setSource(s); await Promise.all((['moderation', 'reports', 'disputes'] as Tab[]).map(t => load(s, t)));
   }
   useEffect(() => {
     void run(async () => {
@@ -86,7 +87,28 @@ export default function AdminApp() {
     <h2 className="section-title">Dernières décisions</h2>
     {o.log.length ? o.log.map(l => <div className="history" key={l.id}><p><span className="strong">{logLabel[l.action] || l.action}</span>{typeof l.details.note === 'string' ? ' · ' + l.details.note : typeof l.details.reason === 'string' ? ' · ' + l.details.reason : ''}</p><span className="note">{when(l.at)} · {l.admin || 'équipe'} · {l.target.slice(0, 8)}</span></div>) : <p className="muted">Aucune décision enregistrée pour l’instant.</p>}
   </>;
-  else if (tab === 'reports') content = <>
+  else if (tab === 'moderation') {
+    const m = data.moderation;
+    const review = (taskId: string, decision: ReviewDecision, message: string) =>
+      act('task_review', { taskId, decision, note: draft['m-' + taskId] || '' }, message, ['moderation']);
+    content = <>
+      <p className="muted">Chaque nouvelle demande, ou demande modifiée, reste privée jusqu’à ta décision. Une correction ou un refus doit être expliqué : le déposant voit ton message. Ce contrôle ne garantit pas le résultat.</p>
+      {m && m.waiting > 0 && <p className="note">{m.waiting} demande(s) attendent une correction de leur déposant.</p>}
+      {m?.tasks.length ? m.tasks.map(t => <div className="card" key={t.id}>
+        <div className="row"><span className="tag">{categoryLabel(t) || 'Sans catégorie'}</span><span className="note">Envoyée le {when(t.updatedAt)} · {t.owner.name}{t.ownerEmail ? ' · ' + t.ownerEmail : ''}</span></div>
+        <p className="card-title">{t.title}</p><p>{t.details}</p>
+        <p className="muted">{[t.place, modeLabel(t), 'Délai : ' + deadlineLabel(t), 'Budget : ' + budgetText(t, money)].filter(Boolean).join(' · ')}</p>
+        {t.address && <p className="note">Adresse privée : {t.address}</p>}
+        <details><summary>Historique ({t.history.length})</summary>{t.history.map((h, i) => <div key={i} className="history"><p>{h.text}</p><span className="note">{when(h.at)}</span></div>)}</details>
+        <div className="field"><label htmlFor={'m-' + t.id}>Message au déposant (obligatoire pour une correction ou un refus)</label><textarea id={'m-' + t.id} maxLength={900} value={draft['m-' + t.id] || ''} onChange={set('m-' + t.id)} disabled={busy}/></div>
+        <div className="chips">
+          <Button disabled={busy} onClick={() => review(t.id, 'publish', 'Demande publiée : elle apparaît dans « Résoudre une flemme ».')}>Valider et publier</Button>
+          <Button secondary disabled={busy} onClick={() => review(t.id, 'changes', 'Correction demandée. Le déposant voit ton message.')}>Demander une correction</Button>
+          <Button secondary disabled={busy} onClick={() => review(t.id, 'reject', 'Demande refusée. Le déposant voit ton message.')}>Refuser</Button>
+        </div>
+      </div>) : <p className="muted">Aucune demande à valider.</p>}
+    </>;
+  } else if (tab === 'reports') content = <>
     <p className="muted">Chaque signalement ouvre (ou rouvre) un litige sur la flemme concernée. Aucun remboursement n’est déclenché automatiquement.</p>
     {data.reports?.length ? data.reports.map((r, i) => <div className="card" key={r.taskId + i}>
       <div className="row"><span className="tag">{disputeLabel[r.disputeStatus]}</span><span className="note">{when(r.at)}</span></div>
@@ -145,7 +167,7 @@ export default function AdminApp() {
       {source && <nav><span className="note">{source.email}</span>{!source.demo && <Button secondary disabled={busy} onClick={logout}>Me déconnecter</Button>}</nav>}</header>
     <main className="admin" aria-busy={busy}>
       {source && <><p className="eyebrow">Exploitation</p><h1 className="heading">Admin FLEMME</h1>
-        <div className="chips" role="tablist" aria-label="Rubriques">{tabs.map(([id, label]) => <button type="button" role="tab" key={id} aria-selected={tab === id} className="chip" onClick={() => show(id)}>{label}{id === 'disputes' && o ? ' (' + (o.disputes.open + o.disputes.in_review) + ')' : id === 'reports' && data.reports ? ' (' + data.reports.length + ')' : ''}</button>)}
+        <div className="chips" role="tablist" aria-label="Rubriques">{tabs.map(([id, label]) => <button type="button" role="tab" key={id} aria-selected={tab === id} className="chip" onClick={() => show(id)}>{label}{id === 'disputes' && o ? ' (' + (o.disputes.open + o.disputes.in_review) + ')' : id === 'moderation' && data.moderation ? ' (' + data.moderation.tasks.length + ')' : id === 'reports' && data.reports ? ' (' + data.reports.length + ')' : ''}</button>)}
           <button type="button" className="chip" disabled={busy} onClick={() => show(tab)}>↻ Actualiser</button></div></>}
       {!!error && <div role="alert" className="alert">{error}</div>}
       {!!notice && <p aria-live="polite" className="notice">{notice}</p>}

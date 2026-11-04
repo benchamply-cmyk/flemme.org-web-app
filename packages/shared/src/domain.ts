@@ -1,3 +1,6 @@
+import type { BudgetRange, Category, Deadline, Review, WorkMode } from './parcours.ts';
+import { BUDGET_RANGES, CATEGORIES, DEADLINES, MODES } from './parcours.ts';
+
 export type Actor = { id: string; name: string };
 export type Offer = {
   id: string; brigadier: Actor; amount: number; slot: string; scope: string;
@@ -12,13 +15,20 @@ export type Task = {
   history: { text: string; at: string }[];
   reports: { actor: Actor; text: string; at: string }[];
   paymentDeclared?: boolean; paymentConfirmed?: boolean;
+  // Parcours complet (migration 20261104120000_flemme_v2_parcours) : absents des flemmes créées avant.
+  category?: Category | null; deadline?: Deadline | null; deadlineNote?: string | null;
+  budgetRange?: BudgetRange | null; mode?: WorkMode | null;
+  /** Adresse précise : seulement pour le déposant et le Brigadier retenu. */
+  address?: string | null;
+  /** Validation par l’équipe : seulement pour le déposant. Absent = publiée. */
+  review?: Review; reviewNote?: string | null;
   // Rempli uniquement par le serveur (webhook Stripe) quand le paiement en ligne est activé.
   payment?: { method: 'stripe'; status: 'paid'; total: number; commission: number; payout: number; at: string };
 };
 // amount : forfait proposé par le Brigadier. commission : part FLEMME. total : payé par le déposant.
 // payout : reversé au Brigadier. rateBps et model : règle appliquée, figée au moment de l'accord.
 export type Agreement = Price & { slot: string; scope: string; brigadier: Actor };
-export type Command = 'offer' | 'message' | 'accept' | 'decline' | 'complete' | 'declare_payment' | 'confirm_payment' | 'report';
+export type Command = 'edit' | 'offer' | 'message' | 'accept' | 'decline' | 'complete' | 'declare_payment' | 'confirm_payment' | 'report';
 export type Input = Record<string, unknown>;
 /*
  * Commission FLEMME, configurable. Le modèle économique n'est pas encore tranché (roadmap V2) :
@@ -63,9 +73,27 @@ function amount(value: unknown): number {
   if (typeof value !== 'number' || !Number.isSafeInteger(value) || value < 1 || value > 1000000) throw new Error('Montant invalide.');
   return value;
 }
+function code<T extends string>(list: readonly { value: T }[], value: unknown, what: string): T | null {
+  if (value == null || value === '') return null;
+  const found = list.find(o => o.value === value);
+  if (!found) throw new Error(what + ' invalide.');
+  return found.value;
+}
+// Mêmes règles que flemme_v2.task_input (serveur). Les anciennes versions n’envoient que title, details, place, budget.
+function taskData(data: Input) {
+  const mode = code(MODES, data.mode, 'Lieu'), deadline = code(DEADLINES, data.deadline, 'Délai');
+  const budget = data.budget == null ? null : amount(data.budget), budgetRange = code(BUDGET_RANGES, data.budgetRange, 'Fourchette');
+  if (budget != null && budgetRange) throw new Error('Choisis un budget libre ou une fourchette, pas les deux.');
+  const note = typeof data.deadlineNote === 'string' && data.deadlineNote.trim() ? text(data.deadlineNote, 100) : null;
+  if (deadline === 'autre' && !note) throw new Error('Précise le délai approximatif.');
+  const given = typeof data.place === 'string' && data.place.trim() ? text(data.place, 100) : null;
+  if (mode !== 'distance' && !given) throw new Error('Indique une ville ou un secteur pour une tâche sur place.');
+  const address = mode === 'sur_place' || mode === 'les_deux' ? (typeof data.address === 'string' && data.address.trim() ? text(data.address, 200) : null) : null;
+  return { title: text(data.title, 100), details: text(data.details), place: given || 'À distance', budget, budgetRange,
+    category: code(CATEGORIES, data.category, 'Catégorie'), deadline, deadlineNote: deadline === 'autre' ? note : null, mode, address };
+}
 export function createTask(id: string, actor: Actor, data: Input, at: string): Task {
-  return { id, owner: actor, title: text(data.title, 100), details: text(data.details), place: text(data.place, 100),
-    budget: data.budget == null ? null : amount(data.budget), status: 'open', createdAt: at,
+  return { id, owner: actor, ...taskData(data), status: 'open', createdAt: at,
     offers: [], reports: [], history: [{ text: 'Flemme publiée · sans expiration', at }] };
 }
 export function applyCommand(task: Task, actor: Actor, command: Command, data: Input, at: string, config: CommissionConfig = COMMISSION): Task {
@@ -74,7 +102,11 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
   const chosen = t.offers.find(o => o.id === t.acceptedOfferId);
   const offer = t.offers.find(o => o.id === data.offerId);
   const event = (value: string) => t.history.push({ text: value, at });
-  if (command === 'offer') {
+  if (command === 'edit') {
+    if (!owner || t.status !== 'open' || t.review === 'rejected' || t.offers.some(o => o.status === 'pending')) throw new Error('Cette demande ne peut plus être modifiée.');
+    Object.assign(t, taskData(data), { reviewNote: null }); event('Demande modifiée');
+  } else if (command === 'offer') {
+    if (t.review && t.review !== 'published' && !owner) throw new Error('Flemme introuvable.');
     if (owner || t.status !== 'open') throw new Error('Cette flemme ne peut pas recevoir cette proposition.');
     if (t.offers.some(o => o.brigadier.id === actor.id && o.status === 'pending')) throw new Error('Tu as déjà une proposition en attente.');
     t.offers.push({ id: text(data.id, 100), brigadier: actor, amount: amount(data.amount), slot: text(data.slot, 100), scope: text(data.scope), status: 'pending', messages: [] });
@@ -109,8 +141,10 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
 export function visibleTask(task: Task, actor: Actor): Task {
   if (task.owner.id === actor.id) return task;
   if (task.status !== 'open' && !task.offers.some(o => o.brigadier.id === actor.id)) throw new Error('Flemme inaccessible.');
+  if (task.review && task.review !== 'published') throw new Error('Flemme inaccessible.');
   const participant = task.agreement?.brigadier.id === actor.id;
   return { ...task, offers: task.offers.filter(o => o.brigadier.id === actor.id),
-    agreement: participant ? task.agreement : undefined,
+    agreement: participant ? task.agreement : undefined, address: participant ? task.address : undefined,
+    review: undefined, reviewNote: undefined,
     reports: task.reports.filter(r => participant || r.actor.id === actor.id) };
 }

@@ -33,8 +33,12 @@ export function alerte(body, site = 'https://flemme.org') {
   if (body.kind === 'report') {
     subject = `Signalement : ${short(p.title)}`; title = 'Un désaccord a été signalé'; button = 'Ouvrir les litiges';
     lines = [['Flemme', p.title], ['Signalé par', p.actor], ['Message', p.text], ['Déposant', p.owner], ['Brigadier', p.brigadier], ref];
-  } else if (body.kind === 'task_created') {
-    subject = `Nouvelle flemme : ${short(p.title)}`; title = 'Nouvelle flemme publiée'; button = 'Ouvrir l’admin';
+  } else if (body.kind === 'task_created' || body.kind === 'task_edited') {
+    // Validation des demandes (migration parcours) : la demande attend une décision dans /admin.
+    const toReview = p.review === 'pending', edited = body.kind === 'task_edited';
+    subject = `${toReview ? (edited ? 'Demande modifiée à valider' : 'Demande à valider') : 'Nouvelle flemme'} : ${short(p.title)}`;
+    title = toReview ? (edited ? 'Une demande modifiée attend ta validation' : 'Une nouvelle demande attend ta validation') : edited ? 'Flemme modifiée' : 'Nouvelle flemme publiée';
+    button = toReview ? 'Valider dans l’admin' : 'Ouvrir l’admin';
     lines = [['Flemme', p.title], ['Lieu', p.place], ['Budget', p.budget == null ? 'Prix à proposer' : euros(p.budget)], ['Déposant', p.owner], ref];
   } else if (body.kind === 'agreement') {
     subject = `Accord conclu : ${short(p.title)}`; title = 'Un accord a été conclu'; button = 'Ouvrir l’admin';

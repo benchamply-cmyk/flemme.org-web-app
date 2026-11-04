@@ -1,5 +1,6 @@
 import type { Agreement, Offer, Task } from './domain.ts';
 import { COMMISSION, rateLabel } from './domain.ts';
+import { budgetText } from './parcours.ts';
 
 // Libellés et messages affichés à l’identique sur le site et dans l’app mobile.
 // Les titres propres à chaque écran restent dans les écrans ; ici, seulement ce qui est calculé ou répété.
@@ -9,6 +10,10 @@ export const date = (iso: string) => new Date(iso).toLocaleString('fr-FR');
 
 export const notices = {
   published: 'Ta flemme est publiée.',
+  sentForReview: 'Demande envoyée. Elle reste privée jusqu’à sa validation par l’équipe FLEMME.',
+  edited: 'Demande modifiée.',
+  draftSaved: 'Brouillon enregistré sur ton compte.',
+  draftDeleted: 'Brouillon supprimé.',
   offerSent: 'Proposition envoyée. La flemme reste ouverte jusqu’à acceptation.',
   accepted: 'Accord confirmé. Le Brigadier prend le relais.',
   declined: 'Offre déclinée et conservée. Le Brigadier peut proposer un nouveau forfait.',
@@ -41,7 +46,8 @@ export function cardHint(task: Task, actorId: string) {
   if (task.owner.id === actorId) return String(task.offers.filter(o => o.status === 'pending').length) + ' proposition(s) · suivre →';
   return task.offers.some(o => o.brigadier.id === actorId) ? 'Ma proposition et le suivi →' : 'Je peux aider →';
 }
-export const budgetLabel = (task: Task, money: (n: number) => string) => task.budget == null ? 'Prix à proposer' : money(task.budget);
+export const budgetLabel = (task: Task, money: (n: number) => string) =>
+  task.budget != null ? money(task.budget) : task.budgetRange ? budgetText(task, money) : 'Prix à proposer';
 
 /** État du paiement direct, déclaratif, affiché sous l’accord. */
 export function paymentStatus(task: Task, money?: (n: number) => string) {

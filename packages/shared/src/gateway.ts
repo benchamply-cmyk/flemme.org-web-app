@@ -1,5 +1,6 @@
 import { applyCommand, createTask, visibleTask } from './domain.ts';
 import type { Actor, Command, Input, Task } from './domain.ts';
+import type { SavedDraft } from './parcours.ts';
 
 // Identifiants de ressources/idempotence uniquement : jamais utilisés comme secrets.
 export const newId = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -13,6 +14,10 @@ export interface Gateway {
   list(cursor?: string | null): Promise<TaskPage>;
   create(data: Input, requestId: string): Promise<Task>;
   command(taskId: string, action: Command, data: Input, requestId: string): Promise<Task>;
+  /** Brouillons de demande et de candidature, enregistrés sur le compte. */
+  drafts(): Promise<SavedDraft[]>;
+  saveDraft(draft: Omit<SavedDraft, 'updatedAt'>): Promise<SavedDraft>;
+  deleteDraft(id: string): Promise<void>;
 }
 export const demoActors: Actor[] = [{ id: 'demo-ben', name: 'Benjamin' }, { id: 'demo-lou', name: 'Lou' }, { id: 'demo-camille', name: 'Camille' }];
 export function seed(): Task[] {
@@ -22,7 +27,7 @@ export function seed(): Task[] {
     createTask('demo-meuble', demoActors[2], { title: 'Monter mon meuble IKEA', details: 'Un petit meuble à monter. Outils disponibles. Sans fixation au mur.', place: 'Aix-en-Provence', budget: 3500 }, at),
     createTask('demo-cv', demoActors[1], { title: 'Remettre mon CV au propre', details: 'Une page à remettre en forme. Le contenu est déjà rédigé.', place: 'À distance', budget: null }, at)];
 }
-export type DemoState = { version: 1; tasks: Task[]; requests: Record<string, Task> };
+export type DemoState = { version: 1; tasks: Task[]; requests: Record<string, Task>; drafts?: (SavedDraft & { ownerId: string })[] };
 export class DemoGateway implements Gateway {
   actor = demoActors[0];
   private state: DemoState;
@@ -46,7 +51,26 @@ export class DemoGateway implements Gateway {
   async create(data: Input, request: string) {
     const prior = this.state.requests[this.actor.id + ':' + request];
     if (prior) return visibleTask(prior, this.actor);
-    return this.commit(createTask(newId(), this.actor, data, new Date().toISOString()), request);
+    const task = await this.commit(createTask(newId(), this.actor, data, new Date().toISOString()), request);
+    if (typeof data.draftId === 'string') await this.deleteDraft(data.draftId);
+    return task;
+  }
+  async drafts(): Promise<SavedDraft[]> {
+    return (this.state.drafts || []).filter(d => d.ownerId === this.actor.id).map(({ ownerId: _, ...d }) => d)
+      .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  }
+  private async saveDrafts(drafts: DemoState['drafts']) {
+    const next: DemoState = { ...this.state, drafts };
+    await this.persist(next); this.state = next;
+  }
+  async saveDraft(d: Omit<SavedDraft, 'updatedAt'>): Promise<SavedDraft> {
+    const saved = { ...d, updatedAt: new Date().toISOString() };
+    const others = (this.state.drafts || []).filter(x => x.id !== d.id || x.ownerId !== this.actor.id);
+    await this.saveDrafts([{ ...saved, ownerId: this.actor.id }, ...others]);
+    return saved;
+  }
+  async deleteDraft(id: string) {
+    await this.saveDrafts((this.state.drafts || []).filter(x => x.id !== id || x.ownerId !== this.actor.id));
   }
   async command(taskId: string, action: Command, data: Input, request: string) {
     const prior = this.state.requests[this.actor.id + ':' + request];
@@ -168,6 +192,9 @@ export class RemoteGateway implements Gateway {
     if (typeof url !== 'string' || !/^https:\/\/(checkout|connect)\.stripe\.com\//.test(url)) throw new Error('Lien de paiement invalide.');
     return url;
   }
+  async drafts(): Promise<SavedDraft[]> { return (await this.rpc('drafts', null, {}, null)).drafts; }
+  async saveDraft(d: Omit<SavedDraft, 'updatedAt'>): Promise<SavedDraft> { return (await this.rpc('draft_save', null, d, null)).draft; }
+  async deleteDraft(id: string) { await this.rpc('draft_delete', null, { id }, null); }
   async create(data: Input, requestId: string): Promise<Task> { return (await this.rpc('create', null, data, requestId)).task; }
   async command(taskId: string, action: Command, data: Input, requestId: string): Promise<Task> { return (await this.rpc(action, taskId, data, requestId)).task; }
 }
