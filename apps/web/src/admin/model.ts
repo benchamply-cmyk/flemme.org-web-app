@@ -1,5 +1,5 @@
 import type { Actor, Input, Task } from '../../../../packages/shared/src/domain.ts';
-import { applyCommand, text } from '../../../../packages/shared/src/domain.ts';
+import { applyCommand, createTask, text } from '../../../../packages/shared/src/domain.ts';
 import { demoActors, seed } from '../../../../packages/shared/src/gateway.ts';
 
 // Types renvoyés par public.flemme_admin_api (supabase/migrations/20261103130000_flemme_v2_admin.sql).
@@ -16,9 +16,14 @@ export type UserRow = {
   id: string; email: string; displayName: string | null; createdAt: string; lastSignInAt: string | null; confirmed: boolean; admin: boolean;
   tasks: number; offers: number; missions: number; reports: number; suspendedReason: string | null; suspendedAt: string | null;
 };
-export type AlertKind = 'task_created' | 'report' | 'agreement';
+export type AlertKind = 'task_created' | 'task_edited' | 'report' | 'agreement';
+// Validation des demandes (supabase/migrations/20261104120000_flemme_v2_parcours.sql).
+export type ModerationTask = Task & { ownerEmail: string | null; updatedAt: string };
+export type Moderation = { tasks: ModerationTask[]; waiting: number };
+export type ReviewDecision = 'publish' | 'changes' | 'reject';
 export type AlertRow = { id: number; kind: AlertKind; taskId: string; payload: Record<string, unknown>; createdAt: string; dispatchedAt: string | null; error: string | null };
-export type AdminAction = 'overview' | 'reports' | 'disputes' | 'users' | 'alerts' | 'alert_retry' | 'dispute_update' | 'user_suspend' | 'user_restore';
+export type AdminAction = 'overview' | 'reports' | 'disputes' | 'users' | 'alerts' | 'alert_retry' | 'dispute_update' | 'user_suspend' | 'user_restore'
+  | 'moderation' | 'task_review';
 
 export interface AdminSource {
   demo: boolean;
@@ -28,8 +33,9 @@ export interface AdminSource {
 
 export const disputeLabel: Record<DisputeStatus, string> = { open: 'À traiter', in_review: 'Pris en charge', resolved: 'Clos' };
 export const taskLabel: Record<Task['status'], string> = { open: 'Ouverte', assigned: 'Attribuée', completed: 'Terminée' };
-export const alertLabel: Record<AlertKind, string> = { task_created: 'Nouvelle flemme', report: 'Signalement', agreement: 'Accord conclu' };
+export const alertLabel: Record<AlertKind, string> = { task_created: 'Nouvelle flemme', task_edited: 'Demande modifiée', report: 'Signalement', agreement: 'Accord conclu' };
 export const logLabel: Record<string, string> = {
+  task_publish: 'Demande publiée', task_changes: 'Correction demandée', task_reject: 'Demande refusée',
   dispute_in_review: 'Litige pris en charge', dispute_resolved: 'Litige clos', user_suspend: 'Compte suspendu', user_restore: 'Compte rétabli',
 };
 export const when = (s: string | null) => s ? new Date(s).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' }) : 'jamais';
@@ -47,6 +53,7 @@ export class DemoAdmin implements AdminSource {
   demo = true;
   email = 'equipe@flemme.example';
   private tasks: Task[];
+  private queue: ModerationTask[];
   private disputes: DisputeRow[];
   private users: UserRow[];
   private log: Overview['log'] = [];
@@ -56,6 +63,8 @@ export class DemoAdmin implements AdminSource {
     const base = seed();
     const assigned = applyCommand(applyCommand(base[0], ben, 'accept', { offerId: 'demo-offer' }, now), ben, 'report', { text: 'Le Brigadier n’est pas passé au créneau prévu et ne répond plus.' }, now);
     this.tasks = [assigned, base[1], base[2]];
+    const waiting = createTask('demo-attente', camille, { title: 'Trier mes papiers administratifs', details: 'Deux boîtes de courriers à classer, avec mon employeur Dupont SA en copie de certains.', category: 'administratif', deadline: '1_mois', mode: 'sur_place', place: 'Aix-en-Provence', address: '12 rue de la Paix', budgetRange: '50_200' }, now);
+    this.queue = [{ ...waiting, review: 'pending', ownerEmail: 'camille@exemple.fr', updatedAt: now, history: [{ text: 'Demande envoyée · privée jusqu’à sa validation par l’équipe FLEMME', at: now }] }];
     this.disputes = [{ taskId: assigned.id, status: 'open', resolution: null, openedAt: now, updatedAt: now, updatedBy: null, task: assigned }];
     const user = (a: Actor, email: string, extra: Partial<UserRow> = {}): UserRow => ({ id: a.id, email, displayName: a.name || null, createdAt: now, lastSignInAt: now, confirmed: true, admin: false, tasks: 0, offers: 0, missions: 0, reports: 0, suspendedReason: null, suspendedAt: null, ...extra });
     this.users = [
@@ -81,6 +90,18 @@ export class DemoAdmin implements AdminSource {
     });
     if (action === 'reports') return clone({ reports: this.tasks.flatMap(t => t.reports.map(r => ({ taskId: t.id, title: t.title, taskStatus: t.status, actor: r.actor, text: r.text, at: r.at, disputeStatus: this.disputes.find(d => d.taskId === t.id)?.status || 'open' }))) });
     if (action === 'disputes') return clone({ disputes: this.disputes });
+    if (action === 'moderation') return clone({ tasks: this.queue.filter(t => t.review === 'pending'), waiting: count(this.queue, t => t.review === 'changes_requested') });
+    if (action === 'task_review') {
+      const t = this.queue.find(x => x.id === data.taskId); if (!t) throw new Error('Demande introuvable');
+      if (t.review !== 'pending') throw new Error('Cette demande n\'attend plus de validation');
+      const decision = data.decision as ReviewDecision;
+      if (!['publish', 'changes', 'reject'].includes(decision)) throw new Error('Décision invalide');
+      const note = decision === 'publish' ? null : text(data.note, 900);
+      t.review = decision === 'publish' ? 'published' : decision === 'changes' ? 'changes_requested' : 'rejected'; t.reviewNote = note;
+      if (decision === 'publish') this.tasks.push(t);
+      this.journal('task_' + decision, t.id, { note, title: t.title });
+      return clone({ task: t });
+    }
     if (action === 'users') return clone({ users: this.users });
     if (action === 'alerts') return clone({ alerts: this.alerts });
     if (action === 'alert_retry') {

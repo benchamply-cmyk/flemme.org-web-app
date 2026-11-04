@@ -22,6 +22,8 @@ async function setup(withOwner) {
     await db.query('insert into auth.users(id,email,email_confirmed_at) values($1,$2,now())', [ids[k], emails[k]]);
   const dir = new URL('../migrations/', import.meta.url);
   for (const file of (await readdir(dir)).filter(f => f.endsWith('.sql')).sort()) await db.exec(await readFile(new URL(file, dir), 'utf8'));
+  // Ces tests portent sur le contrat d'origine : la validation des demandes (parcours.test.mjs) est coupée.
+  await db.exec('update flemme_v2.settings set moderation_tasks = false');
   return { db, ids };
 }
 

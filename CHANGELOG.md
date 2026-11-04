@@ -3,6 +3,7 @@
 Chaque PR ajoute une ligne sous « À venir ». À chaque mise en production (`preprod` → `prod`), ces lignes passent dans une section datée et versionnée.
 
 ## À venir
+- Parcours complet de l’aperçu rendu réel dans l’app connectée (brouillon) : dépôt enrichi (catégorie, délai, budget libre ou fourchette, à distance ou sur place, adresse privée), dictée du navigateur, brouillons enregistrés sur le compte, validation des demandes par l’équipe dans /admin (« À valider »). Nouvelle migration `20261104120000_flemme_v2_parcours`, non appliquée.
 - Paiement (brouillon) : commission FLEMME configurable (modèle « ajout » à 10 % ou « prélèvement », taux figé dans chaque accord) et encaissement en ligne avec Stripe Connect (migration `20261103140000_flemme_v2_commission_paiement`, fonctions Edge dans `supabase/functions`), désactivé tant que `VITE_PAIEMENT_EN_LIGNE` n’est pas à « oui ». Voir `docs/paiement-stripe.md`.
 - Exploitation minimale : page admin /admin (vue d’ensemble, signalements, litiges, utilisateurs dont ceux de l’ancien espace, alertes) et alertes e-mail (nouvelle flemme, accord, signalement) via Supabase pg_net, la fonction Netlify /api/alerte et Resend. Nouvelle migration `supabase/migrations/20261103130000_flemme_v2_admin.sql` (voir `supabase/README-admin.md`).
 - Une seule source pour le site et l’app : nouveau dossier `packages/shared` (règles métier, accès aux données, état de l’app, droits et textes communs, avec leurs tests), et découpage des deux `App.tsx` en un fichier par écran (`src/ecrans/`). Aucun changement visible pour l’utilisateur.

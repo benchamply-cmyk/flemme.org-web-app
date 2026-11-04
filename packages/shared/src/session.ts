@@ -2,6 +2,7 @@ import type { Actor, Command, Input, Task } from './domain.ts';
 import { DemoGateway, RemoteGateway, newId } from './gateway.ts';
 import type { AuthLinkOptions, DemoState, Gateway, TokenStorage } from './gateway.ts';
 import { notices } from './textes.ts';
+import type { SavedDraft } from './parcours.ts';
 
 // État et actions de l’app, sans React ni DOM : le site et le mobile s’y abonnent (useSyncExternalStore)
 // et ne gardent que l’affichage et la navigation. Toute la logique d’envoi (verrou, idempotence, erreurs) est ici.
@@ -12,6 +13,8 @@ export type SessionState = {
   /** Arrivée par un lien « mot de passe oublié » : proposer d’abord de choisir un mot de passe. */
   recovering: boolean;
   busy: boolean; ready: boolean; error: string; notice: string;
+  /** Brouillons de la personne connectée (demandes et candidatures). */
+  drafts: SavedDraft[];
 };
 /** Ce que le démarrage propre à une plateforme a obtenu (ex. retour d’un lien e-mail sur le web). */
 export type StartResult = { signedIn: boolean; error?: string; recovering?: boolean; notice?: string };
@@ -30,7 +33,7 @@ const shortPassword = 'Choisis un mot de passe d’au moins 12 caractères.';
 export class FlemmeSession {
   readonly remote: boolean;
   private options: SessionOptions;
-  private state: SessionState = { gateway: null, actorId: '', tasks: [], more: null, recovering: false, busy: false, ready: false, error: '', notice: '' };
+  private state: SessionState = { gateway: null, actorId: '', tasks: [], more: null, recovering: false, busy: false, ready: false, error: '', notice: '', drafts: [] };
   private listeners = new Set<() => void>();
   private locked = false;
   // Identifiant de requête réutilisé tant que la même action est retentée : un double envoi ne crée rien en double.
@@ -60,6 +63,7 @@ export class FlemmeSession {
     const page = await g.list(cursor);
     const old = this.state.tasks;
     this.set({ tasks: cursor ? [...old, ...page.tasks.filter(t => !old.some(v => v.id === t.id))] : page.tasks, more: page.nextCursor });
+    if (!cursor) this.set({ drafts: await g.drafts() });
   }
   async initialize() {
     await this.execute(async () => {
@@ -125,7 +129,7 @@ export class FlemmeSession {
   async logout(done: () => void) {
     await this.execute(async () => {
       try { await this.remoteGateway().logout(); }
-      finally { this.pending = null; this.set({ actorId: '', tasks: [], more: null }); done(); }
+      finally { this.pending = null; this.set({ actorId: '', tasks: [], more: null, drafts: [] }); done(); }
     });
   }
   /** Démo locale : changer de personnage pour tester les deux côtés d’une mission. */
@@ -134,6 +138,24 @@ export class FlemmeSession {
     if (!(g instanceof DemoGateway)) return;
     await this.execute(async () => {
       g.actor = actor; this.set({ actorId: actor.id }); await this.load(g); this.pending = null; done();
+    });
+  }
+  /** Enregistre (ou remplace) un brouillon sur le compte. `id` absent : nouveau brouillon. */
+  async saveDraft(draft: { id?: string; kind: SavedDraft['kind']; taskId?: string | null; fields: Record<string, string> }, done: (d: SavedDraft) => void) {
+    const g = this.state.gateway;
+    if (!g) return;
+    await this.execute(async () => {
+      const saved = await g.saveDraft({ id: draft.id || newId(), kind: draft.kind, taskId: draft.taskId ?? null, fields: draft.fields });
+      this.set({ drafts: [saved, ...this.state.drafts.filter(d => d.id !== saved.id)], notice: notices.draftSaved });
+      done(saved);
+    });
+  }
+  async deleteDraft(id: string) {
+    const g = this.state.gateway;
+    if (!g) return;
+    await this.execute(async () => {
+      await g.deleteDraft(id);
+      this.set({ drafts: this.state.drafts.filter(d => d.id !== id), notice: notices.draftDeleted });
     });
   }
   /** Crée une flemme ou applique une action. `done` reçoit la flemme à jour, avant l’affichage du message. */
@@ -146,6 +168,8 @@ export class FlemmeSession {
       const t = action === 'create' ? await g.create(data, this.pending.id) : await g.command(taskId, action, data, this.pending.id);
       this.pending = null;
       this.set({ tasks: [t, ...this.state.tasks.filter(v => v.id !== t.id)] });
+      // Le serveur supprime le brouillon envoyé (draftId) : la liste locale suit.
+      if (typeof data.draftId === 'string') this.set({ drafts: this.state.drafts.filter(d => d.id !== data.draftId) });
       done(t);
     });
   }
