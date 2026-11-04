@@ -1,6 +1,7 @@
 import { applyCommand, createTask, visibleTask } from './domain.ts';
 import type { Actor, Command, Input, Task } from './domain.ts';
-import type { SavedDraft } from './parcours.ts';
+import type { SavedDraft, SearchFilter, SearchPage } from './parcours.ts';
+import { searchTasks } from './parcours.ts';
 
 // Identifiants de ressources/idempotence uniquement : jamais utilisés comme secrets.
 export const newId = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -14,6 +15,8 @@ export interface Gateway {
   list(cursor?: string | null): Promise<TaskPage>;
   create(data: Input, requestId: string): Promise<Task>;
   command(taskId: string, action: Command, data: Input, requestId: string): Promise<Task>;
+  /** Recherche parmi les flemmes publiées des autres membres (filtres et tri côté serveur). */
+  search(filter: SearchFilter, cursor?: string | null): Promise<SearchPage>;
   /** Brouillons de demande et de candidature, enregistrés sur le compte. */
   drafts(): Promise<SavedDraft[]>;
   saveDraft(draft: Omit<SavedDraft, 'updatedAt'>): Promise<SavedDraft>;
@@ -54,6 +57,11 @@ export class DemoGateway implements Gateway {
     const task = await this.commit(createTask(newId(), this.actor, data, new Date().toISOString()), request);
     if (typeof data.draftId === 'string') await this.deleteDraft(data.draftId);
     return task;
+  }
+  async search(filter: SearchFilter, cursor: string | null = null): Promise<SearchPage> {
+    const all = searchTasks(this.state.tasks, this.actor.id, filter), start = Number(cursor || 0);
+    return { tasks: all.slice(start, start + PAGE_SIZE).map(t => visibleTask(t, this.actor)), total: all.length,
+      nextCursor: start + PAGE_SIZE < all.length ? String(start + PAGE_SIZE) : null };
   }
   async drafts(): Promise<SavedDraft[]> {
     return (this.state.drafts || []).filter(d => d.ownerId === this.actor.id).map(({ ownerId: _, ...d }) => d)
@@ -191,6 +199,11 @@ export class RemoteGateway implements Gateway {
     const { url } = await this.request('/functions/v1/stripe-' + kind, kind === 'checkout' ? { taskId } : {}, this.access);
     if (typeof url !== 'string' || !/^https:\/\/(checkout|connect)\.stripe\.com\//.test(url)) throw new Error('Lien de paiement invalide.');
     return url;
+  }
+  async search(filter: SearchFilter, cursor: string | null = null): Promise<SearchPage> {
+    const clean = Object.fromEntries(Object.entries(filter).filter(([, v]) => v));
+    const page = await this.rpc('search', null, { ...clean, limit: PAGE_SIZE, cursor }, null);
+    return { tasks: page.tasks, total: page.total, nextCursor: page.nextCursor ?? null };
   }
   async drafts(): Promise<SavedDraft[]> { return (await this.rpc('drafts', null, {}, null)).drafts; }
   async saveDraft(d: Omit<SavedDraft, 'updatedAt'>): Promise<SavedDraft> { return (await this.rpc('draft_save', null, d, null)).draft; }

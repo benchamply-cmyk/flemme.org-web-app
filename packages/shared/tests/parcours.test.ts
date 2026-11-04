@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { applyCommand, createTask, money, visibleTask } from '../src/domain.ts';
 import { FlemmeSession } from '../src/session.ts';
-import { BUDGET_RANGES, CATEGORIES, DEADLINES, MODES, appendDictation, budgetText, canEdit, deadlineLabel, taskFields, taskInput } from '../src/parcours.ts';
+import { BUDGET_RANGES, CATEGORIES, DEADLINES, MODES, appendDictation, searchTasks, budgetText, canEdit, deadlineLabel, taskFields, taskInput } from '../src/parcours.ts';
 
 const sql = readFileSync(new URL('../../../supabase/migrations/20261104120000_flemme_v2_parcours.sql', import.meta.url), 'utf8');
 const owner = { id: 'o', name: 'Ondine' }, other = { id: 'b', name: 'Basile' }, at = '2026-11-04T10:00:00.000Z';
@@ -79,4 +79,27 @@ test('parcours : une base sans la migration parcours n’empêche pas de charger
   assert.equal(s.getState().error, '');
   assert.ok(s.getState().tasks.length > 0);
   assert.deepEqual(s.getState().drafts, []);
+});
+
+test('parcours : recherche locale, mêmes règles que flemme_v2.search_tasks', () => {
+  const mk = (id: string, f: Record<string, string>, by = other) => createTask(id, by, taskInput({ ...form, ...f }), at);
+  const tasks = [
+    mk('armoire', { title: 'Monter une armoire', category: 'maison', mode: 'sur_place', place: 'Lyon 4e', deadline: 'urgent', amount: '60' }),
+    mk('papiers', { title: 'Classer mes papiers', budgetRange: '10_50', deadline: '1_mois' }),
+    mk('site', { title: 'Refaire mon site', category: 'numerique', mode: 'les_deux', place: 'Lyon', deadline: '1_semaine', amount: '300' }),
+    mk('chien', { title: 'Promener le chien', details: 'Une ARMOIRE pour le chien', mode: 'sur_place', place: 'Aix', deadline: '' }),
+    mk('moi', { title: 'Ma propre armoire' }, owner),
+    { ...mk('attente', { title: 'Armoire en attente' }), review: 'pending' as const },
+  ];
+  const ids = (f: Parameters<typeof searchTasks>[2]) => searchTasks(tasks, owner.id, f).map(t => t.id);
+  assert.deepEqual(ids({ q: 'armoire' }).sort(), ['armoire', 'chien']);
+  assert.deepEqual(ids({ place: 'lyon', sort: 'deadline' }), ['armoire', 'site']);
+  assert.deepEqual(ids({ mode: 'sur_place' }).sort(), ['armoire', 'chien', 'site']);
+  assert.deepEqual(ids({ budget: 'moins_50' }), ['papiers']);
+  assert.deepEqual(ids({ budget: '50_200' }), ['armoire']);
+  assert.deepEqual(ids({ budget: 'plus_200' }), ['site']);
+  assert.deepEqual(ids({ budget: 'a_discuter' }), ['chien']);
+  assert.deepEqual(ids({ sort: 'budget' }), ['papiers', 'armoire', 'site', 'chien']);
+  assert.deepEqual(ids({ sort: 'deadline' }), ['armoire', 'site', 'papiers', 'chien']);
+  assert.equal(tasks.length, 6); // la liste reçue n’est pas modifiée
 });

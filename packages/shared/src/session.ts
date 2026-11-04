@@ -2,7 +2,7 @@ import type { Actor, Command, Input, Task } from './domain.ts';
 import { DemoGateway, RemoteGateway, newId } from './gateway.ts';
 import type { AuthLinkOptions, DemoState, Gateway, TokenStorage } from './gateway.ts';
 import { notices } from './textes.ts';
-import type { SavedDraft } from './parcours.ts';
+import type { SavedDraft, SearchFilter, SearchPage } from './parcours.ts';
 
 // État et actions de l’app, sans React ni DOM : le site et le mobile s’y abonnent (useSyncExternalStore)
 // et ne gardent que l’affichage et la navigation. Toute la logique d’envoi (verrou, idempotence, erreurs) est ici.
@@ -15,6 +15,8 @@ export type SessionState = {
   busy: boolean; ready: boolean; error: string; notice: string;
   /** Brouillons de la personne connectée (demandes et candidatures). */
   drafts: SavedDraft[];
+  /** Résultats de « Résoudre une flemme » pour les filtres `filter` (null : pas encore cherché). */
+  found: SearchPage | null; filter: SearchFilter;
 };
 /** Ce que le démarrage propre à une plateforme a obtenu (ex. retour d’un lien e-mail sur le web). */
 export type StartResult = { signedIn: boolean; error?: string; recovering?: boolean; notice?: string };
@@ -33,7 +35,7 @@ const shortPassword = 'Choisis un mot de passe d’au moins 12 caractères.';
 export class FlemmeSession {
   readonly remote: boolean;
   private options: SessionOptions;
-  private state: SessionState = { gateway: null, actorId: '', tasks: [], more: null, recovering: false, busy: false, ready: false, error: '', notice: '', drafts: [] };
+  private state: SessionState = { gateway: null, actorId: '', tasks: [], more: null, recovering: false, busy: false, ready: false, error: '', notice: '', drafts: [], found: null, filter: {} };
   private listeners = new Set<() => void>();
   private locked = false;
   // Identifiant de requête réutilisé tant que la même action est retentée : un double envoi ne crée rien en double.
@@ -87,6 +89,15 @@ export class FlemmeSession {
     });
     this.set({ ready: true });
   }
+  /** Nouvelle recherche (remplace les résultats) ; `more` ajoute la page suivante. */
+  async search(filter: SearchFilter, more = false) {
+    const g = this.state.gateway, found = this.state.found;
+    if (!g || (more && !found?.nextCursor)) return;
+    await this.execute(async () => {
+      const page = await g.search(filter, more ? found!.nextCursor : null);
+      this.set({ filter, found: more && found ? { ...page, tasks: [...found.tasks, ...page.tasks.filter(t => !found.tasks.some(v => v.id === t.id))] } : page });
+    });
+  }
   async refresh() { const g = this.state.gateway; if (g) await this.execute(() => this.load(g)); }
   async loadMore() { const g = this.state.gateway, more = this.state.more; if (g && more) await this.execute(() => this.load(g, more)); }
 
@@ -131,7 +142,7 @@ export class FlemmeSession {
   async logout(done: () => void) {
     await this.execute(async () => {
       try { await this.remoteGateway().logout(); }
-      finally { this.pending = null; this.set({ actorId: '', tasks: [], more: null, drafts: [] }); done(); }
+      finally { this.pending = null; this.set({ actorId: '', tasks: [], more: null, drafts: [], found: null, filter: {} }); done(); }
     });
   }
   /** Démo locale : changer de personnage pour tester les deux côtés d’une mission. */
@@ -139,7 +150,7 @@ export class FlemmeSession {
     const g = this.state.gateway;
     if (!(g instanceof DemoGateway)) return;
     await this.execute(async () => {
-      g.actor = actor; this.set({ actorId: actor.id }); await this.load(g); this.pending = null; done();
+      g.actor = actor; this.set({ actorId: actor.id, found: null }); await this.load(g); this.pending = null; done();
     });
   }
   /** Enregistre (ou remplace) un brouillon sur le compte. `id` absent : nouveau brouillon. */
@@ -170,6 +181,9 @@ export class FlemmeSession {
       const t = action === 'create' ? await g.create(data, this.pending.id) : await g.command(taskId, action, data, this.pending.id);
       this.pending = null;
       this.set({ tasks: [t, ...this.state.tasks.filter(v => v.id !== t.id)] });
+      // Une proposition envoyée sort la flemme des résultats « disponibles ».
+      const found = this.state.found;
+      if (found?.tasks.some(v => v.id === t.id)) this.set({ found: { ...found, tasks: found.tasks.map(v => v.id === t.id ? t : v) } });
       // Le serveur supprime le brouillon envoyé (draftId) : la liste locale suit.
       if (typeof data.draftId === 'string') this.set({ drafts: this.state.drafts.filter(d => d.id !== data.draftId) });
       done(t);

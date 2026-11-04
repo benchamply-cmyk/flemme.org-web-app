@@ -136,5 +136,43 @@ await as(owner);
 const legacy = (await api('create', null, { title: 'Monter un meuble', details: 'Petit meuble', place: 'Aix', budget: 3500 })).task;
 assert.equal(legacy.place, 'Aix'); assert.equal(legacy.category, null); assert.equal(legacy.mode, null);
 
+// 10. Recherche « Résoudre une flemme » : uniquement les flemmes publiées, ouvertes, des autres membres.
+await as(other);
+const mk = async data => (await api('create', null, { details: 'Détails', category: 'maison', mode: 'distance', ...data })).task;
+const meuble = await mk({ title: 'Monter une armoire', mode: 'sur_place', place: 'Lyon 4e', deadline: 'urgent', budget: 6000 });
+const papiers = await mk({ title: 'Classer mes papiers', category: 'administratif', deadline: '1_mois', budgetRange: '10_50' });
+const site = await mk({ title: 'Refaire mon site', category: 'numerique', mode: 'les_deux', place: 'Lyon', deadline: '1_semaine', budget: 30000 });
+const libre = await mk({ title: 'Promener le chien', details: 'Une ARMOIRE pour le chien', place: 'Aix', mode: 'sur_place' });
+await as(brigadier);
+const find = async (f = {}) => (await api('search', null, f));
+const titles = async f => (await find(f)).tasks.map(t => t.title);
+let all = await find({ limit: 100 });
+assert.ok(all.tasks.every(t => t.status === 'open' && t.owner.id !== brigadier));
+assert.ok(!all.tasks.some(t => t.id === remote.id)); // refusée
+assert.deepEqual(await titles({ q: 'armoire' }), ['Promener le chien', 'Monter une armoire']);
+assert.deepEqual(await titles({ category: 'administratif', q: 'papiers' }), ['Classer mes papiers']);
+assert.deepEqual(await titles({ place: 'lyon' }), ['Refaire mon site', 'Monter une armoire']);
+assert.deepEqual((await titles({ mode: 'sur_place', q: 'o' })).filter(x => [meuble.title, site.title, libre.title].includes(x)).sort(), [libre.title, meuble.title, site.title].sort());
+assert.deepEqual(await titles({ budget: 'moins_50', q: 'papiers' }), ['Classer mes papiers']);
+assert.deepEqual(await titles({ budget: '50_200', q: 'armoire' }), ['Monter une armoire']);
+assert.deepEqual(await titles({ budget: 'plus_200' }), ['Refaire mon site']);
+assert.ok((await titles({ budget: 'a_discuter' })).includes('Promener le chien'));
+assert.deepEqual(await titles({ deadline: 'urgent' }), ['Monter une armoire']);
+const byDeadline = (await titles({ sort: 'deadline', limit: 100 }));
+assert.ok(byDeadline.indexOf('Monter une armoire') < byDeadline.indexOf('Refaire mon site'));
+assert.ok(byDeadline.indexOf('Refaire mon site') < byDeadline.indexOf('Classer mes papiers'));
+const byBudget = (await titles({ sort: 'budget', limit: 100 }));
+assert.ok(byBudget.indexOf('Classer mes papiers') < byBudget.indexOf('Monter une armoire'));
+assert.ok(byBudget.indexOf('Monter une armoire') < byBudget.indexOf('Refaire mon site'));
+// Pagination par rang : chaque flemme une fois, dans l'ordre, puis plus de curseur.
+const seenIds = []; let cursor = null;
+do { const page = await find({ sort: 'budget', limit: 2, cursor }); seenIds.push(...page.tasks.map(t => t.id)); cursor = page.nextCursor; assert.equal(page.total, all.total); } while (cursor);
+assert.deepEqual(seenIds, (await find({ sort: 'budget', limit: 100 })).tasks.map(t => t.id));
+assert.equal((await find({ q: 'introuvable-xyz' })).total, 0);
+assert.equal((await find({ cursor: '999' })).tasks.length, 0);
+await assert.rejects(find({ sort: 'prix' }), /Tri invalide/);
+await assert.rejects(find({ cursor: 'abc' }), /Curseur invalide/);
+await assert.rejects(find({ limit: 101 }), /Taille de page/);
+
 await db.close();
-console.log('OK SQL parcours : flemmes existantes publiées, dépôt enrichi contrôlé, brouillons privés sans doublon, validation admin (correction, refus, publication), modification renvoyée en validation, adresse privée, alertes, journal, contrat d’origine.');
+console.log('OK SQL parcours : flemmes existantes publiées, dépôt enrichi contrôlé, brouillons privés sans doublon, validation admin (correction, refus, publication), modification renvoyée en validation, adresse privée, alertes, journal, contrat d’origine, recherche (mots clés, filtres, tris, pagination).');

@@ -3,6 +3,7 @@
 Chaque PR ajoute une ligne sous « À venir ». À chaque mise en production (`preprod` → `prod`), ces lignes passent dans une section datée et versionnée.
 
 ## À venir
+- Parcours lot 2 : recherche « Résoudre une flemme » par mots clés, filtres (catégorie, lieu, ville, budget, délai) et tri (récentes, délai, budget), faits par le serveur avec pagination. Nouvelle migration `20261104130000_flemme_v2_recherche` (additive), non appliquée.
 - Correctif : l’app connectée affiche de nouveau les flemmes quand la base n’a pas encore la migration `20261104120000_flemme_v2_parcours` (le chargement des brouillons ne bloque plus la liste).
 - Aperçu `/apercu.html`, retours de Ben sur l’artefact : titre « Passe le relais. Ou prends-le. », parcours en 5 étapes sur l’accueil (publication, candidatures, échange privé, contrat, suivi), espaces réduits, textes de « Comment ça marche » revus.
 - Aperçu interactif séparé `/apercu.html` de la future interface : accueil, dépôt, recherche, espaces Flemmard/Brigadier, conversations, candidatures et accords simulés ; données locales isolées, sans connexion aux services ni paiement réel.

@@ -91,3 +91,5 @@ button.card:hover { box-shadow: var(--shadow); }
 .dictee { display: grid; gap: 6px; justify-items: start; }
 .dictee .btn { width: auto; }
 .card .row .btn { flex: 1 1 auto; }
+.searchbar { display: grid; gap: 8px; }
+.searchbar .row .btn { flex: 1 1 auto; }
