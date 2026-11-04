@@ -3,6 +3,8 @@ import type { Actor, Command, Input, Task } from './domain.ts';
 import type { SavedDraft, SearchFilter, SearchPage } from './parcours.ts';
 import { searchTasks } from './parcours.ts';
 import type { Profile } from './accord.ts';
+import type { FileItem, HelpRequest, Upload } from './aide.ts';
+import { fileInput } from './aide.ts';
 
 // Identifiants de ressources/idempotence uniquement : jamais utilisés comme secrets.
 export const newId = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -25,6 +27,15 @@ export interface Gateway {
   /** Profil public d’un membre (le sien si `userId` est absent) : présentation, compétences, missions et avis. */
   profile(userId?: string): Promise<Profile>;
   saveProfile(data: Input): Promise<Profile>;
+  /** Pièces jointes d’une flemme (déposant et Brigadier retenu). */
+  files(taskId: string): Promise<FileItem[]>;
+  /** Envoie une pièce jointe (taskId) ou la photo de profil (taskId null). */
+  upload(taskId: string | null, file: Upload): Promise<FileItem>;
+  deleteFile(file: FileItem): Promise<void>;
+  /** Adresse temporaire pour ouvrir un fichier du bucket privé. */
+  fileUrl(path: string): Promise<string>;
+  helpList(): Promise<HelpRequest[]>;
+  helpSend(data: Input, requestId: string): Promise<HelpRequest>;
 }
 export const demoActors: Actor[] = [{ id: 'demo-ben', name: 'Benjamin' }, { id: 'demo-lou', name: 'Lou' }, { id: 'demo-camille', name: 'Camille' }];
 export function seed(): Task[] {
@@ -35,7 +46,8 @@ export function seed(): Task[] {
     createTask('demo-cv', demoActors[1], { title: 'Remettre mon CV au propre', details: 'Une page à remettre en forme. Le contenu est déjà rédigé.', place: 'À distance', budget: null }, at)];
 }
 export type DemoProfile = { bio: string | null; skills: string[]; experience: string | null };
-export type DemoState = { version: 1; tasks: Task[]; requests: Record<string, Task>; drafts?: (SavedDraft & { ownerId: string })[]; profiles?: Record<string, DemoProfile> };
+export type DemoState = { version: 1; tasks: Task[]; requests: Record<string, Task>; drafts?: (SavedDraft & { ownerId: string })[]; profiles?: Record<string, DemoProfile>;
+  help?: (HelpRequest & { ownerId: string })[] };
 export class DemoGateway implements Gateway {
   actor = demoActors[0];
   private state: DemoState;
@@ -93,7 +105,7 @@ export class DemoGateway implements Gateway {
     const reviews = done.flatMap(t => (t.ratings || []).filter(r => r.targetId === userId).map(r => ({
       rating: r.rating, text: r.text, author: demoActors.find(a => a.id === r.authorId) || { id: r.authorId, name: 'Membre' }, task: t.title, at: r.at })))
       .sort((a, b) => b.at.localeCompare(a.at));
-    return { id: who.id, name: who.name, ...p, since: '2026-10-28T08:00:00.000Z',
+    return { id: who.id, name: who.name, ...p, avatar: this.avatars[userId] || null, since: '2026-10-28T08:00:00.000Z',
       missions: done.filter(t => t.agreement?.brigadier.id === userId).length,
       rating: reviews.length ? Math.round(reviews.reduce((n, r) => n + r.rating, 0) / reviews.length * 10) / 10 : null, reviews };
   }
@@ -102,6 +114,28 @@ export class DemoGateway implements Gateway {
     const next: DemoState = { ...this.state, profiles: { ...this.state.profiles, [this.actor.id]: p } };
     await this.persist(next); this.state = next;
     return this.profile();
+  }
+  // Démo : fichiers gardés en mémoire le temps de la visite (jamais envoyés, perdus au rechargement).
+  private blobs = new Map<string, { item: FileItem; taskId: string | null; url: string }>();
+  async files(taskId: string) { return [...this.blobs.values()].filter(b => b.taskId === taskId).map(b => b.item); }
+  async upload(taskId: string | null, file: Upload) {
+    const meta = fileInput({ name: file.name, type: file.type, size: file.size }, taskId == null);
+    const id = newId(), item: FileItem = { id, name: meta.name as string, mime: meta.mime as string, size: file.size, path: this.actor.id + '/' + id, owner: this.actor, at: new Date().toISOString() };
+    if (taskId == null) for (const [k, b] of this.blobs) if (b.taskId == null && b.item.owner.id === this.actor.id) this.blobs.delete(k);
+    this.blobs.set(item.path, { item, taskId, url: typeof URL.createObjectURL === 'function' ? URL.createObjectURL(file) : '' });
+    if (taskId == null) this.avatars[this.actor.id] = item.path;
+    return item;
+  }
+  private avatars: Record<string, string> = {};
+  async deleteFile(f: FileItem) { if (f.owner.id !== this.actor.id) throw new Error('Fichier introuvable'); this.blobs.delete(f.path); }
+  async fileUrl(path: string) { const b = this.blobs.get(path); if (!b) throw new Error('Fichier introuvable'); return b.url; }
+  async helpList(): Promise<HelpRequest[]> { return (this.state.help || []).filter(h => h.ownerId === this.actor.id).map(({ ownerId: _, ...h }) => h); }
+  async helpSend(data: Input): Promise<HelpRequest> {
+    const h: HelpRequest = { id: newId(), topic: data.topic as HelpRequest['topic'], text: String(data.text), status: 'open', answer: null,
+      taskId: (data.taskId as string | null) || null, at: new Date().toISOString(), answeredAt: null };
+    const next: DemoState = { ...this.state, help: [{ ...h, ownerId: this.actor.id }, ...(this.state.help || [])] };
+    await this.persist(next); this.state = next;
+    return h;
   }
   async command(taskId: string, action: Command, data: Input, request: string) {
     const prior = this.state.requests[this.actor.id + ':' + request];
@@ -239,6 +273,38 @@ export class RemoteGateway implements Gateway {
     this.actor = { id: p.id, name: p.name };
     return p;
   }
+  async files(taskId: string): Promise<FileItem[]> { return (await this.rpc('file_list', taskId, {}, null)).files; }
+  // Envoi en deux temps : déclaration (file_prepare, qui fixe le chemin et contrôle format et taille), puis dépôt dans le bucket privé.
+  async upload(taskId: string | null, file: Upload): Promise<FileItem> {
+    const prepared = await this.rpc('file_prepare', taskId, fileInput({ name: file.name, type: file.type, size: file.size }, taskId == null), null);
+    const item: FileItem = prepared.file;
+    try { await this.storage('POST', 'object/flemme-fichiers/' + item.path, file, item.mime); }
+    catch (e) { await this.rpc('file_delete', null, { id: item.id }, null).catch(() => {}); throw e; }
+    // Nouvelle photo : l’ancienne est retirée du bucket, puis oubliée.
+    if (prepared.previous) await this.deleteFile(prepared.previous).catch(() => {});
+    return item;
+  }
+  async deleteFile(f: FileItem) {
+    await this.storage('DELETE', 'object/flemme-fichiers/' + f.path);
+    await this.rpc('file_delete', null, { id: f.id }, null);
+  }
+  async fileUrl(path: string) {
+    const r = await this.storage('POST', 'object/sign/flemme-fichiers/' + path, JSON.stringify({ expiresIn: 600 }), 'application/json');
+    if (typeof r.signedURL !== 'string') throw new Error('Lien du fichier indisponible.');
+    return this.url.replace(/\/$/, '') + '/storage/v1' + r.signedURL;
+  }
+  private async storage(method: string, path: string, body?: BodyInit, type?: string) {
+    if (Date.now() > this.expires - 60000) await this.refresh();
+    let response: Response;
+    try { response = await this.transport(this.url.replace(/\/$/, '') + '/storage/v1/' + path.split('/').map(encodeURIComponent).join('/'), { method, body,
+      headers: { apikey: this.key, Authorization: 'Bearer ' + this.access, ...(type ? { 'Content-Type': type } : {}), 'x-upsert': 'false' } }); }
+    catch { throw new Error('Connexion interrompue pendant l’envoi du fichier. Réessaie.'); }
+    const text = await response.text().catch(() => '');
+    if (!response.ok) throw new Error(response.status === 413 ? 'Fichier trop lourd : 10 Mo au plus.' : 'Fichier refusé ou introuvable.');
+    try { return text ? JSON.parse(text) : {}; } catch { return {}; }
+  }
+  async helpList(): Promise<HelpRequest[]> { return (await this.rpc('help_list', null, {}, null)).requests; }
+  async helpSend(data: Input, requestId: string): Promise<HelpRequest> { return (await this.rpc('help_send', null, data, requestId)).request; }
   async create(data: Input, requestId: string): Promise<Task> { return (await this.rpc('create', null, data, requestId)).task; }
   async command(taskId: string, action: Command, data: Input, requestId: string): Promise<Task> {
     try { return (await this.rpc(action, taskId, data, requestId)).task; }

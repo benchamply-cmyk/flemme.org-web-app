@@ -62,3 +62,9 @@ test('alerte : candidature et accord écrit à valider (lot 3)', () => {
   const doc = alerte({ source: 'flemme_v2', kind: 'agreement_review', task_id: 'abc', payload: { title: 'Monter une étagère', owner: 'Ondine', brigadier: 'Basile' } });
   assert.match(doc!.subject, /^Accord écrit à contrôler/);
 });
+
+test('alerte : demande d’aide humaine (lot 4), sans flemme', () => {
+  const help = alerte({ source: 'flemme_v2', kind: 'help', task_id: null, payload: { topic: 'compte', text: 'Je ne reçois pas l’e-mail', user: 'Lou', title: null } });
+  assert.match(help!.subject, /^Demande d’aide : Je ne reçois pas/);
+  assert.match(help!.text, /Membre : Lou/);
+});

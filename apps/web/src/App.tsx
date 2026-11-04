@@ -7,6 +7,7 @@ import { Action } from './ui.tsx';
 import type { Ctx, Draft, FieldOptions, Place } from './ecrans/contexte.ts';
 import { Accueil } from './ecrans/Accueil.tsx';
 import { Accord } from './ecrans/Accord.tsx';
+import { Aide } from './ecrans/Aide.tsx';
 import { Compte } from './ecrans/Compte.tsx';
 import { Connexion } from './ecrans/Connexion.tsx';
 import { Fiche } from './ecrans/Fiche.tsx';
@@ -96,6 +97,7 @@ export default function App() {
   else if (recovering && session.remote) content = <MotDePasse {...ctx}/>;
   else if (screen === 'account') content = <Compte {...ctx}/>;
   else if (screen === 'profile') content = <Profil key={visit} {...ctx}/>;
+  else if (screen === 'help') content = <Aide key={visit} {...ctx}/>;
   else if (screen === 'home') content = <Accueil {...ctx}/>;
   else if (screen === 'new') content = <NouvelleFlemme key={visit} {...ctx}/>;
   else if (screen === 'list') content = <Listes {...ctx}/>;
@@ -107,7 +109,7 @@ export default function App() {
   else content = <Fiche key={visit} {...ctx}/>;
 
   return <>
-    <header className="top"><a href="./" aria-label="FLEMME · retour à la présentation"><img src={import.meta.env.BASE_URL + 'flemme-logo.png'} alt="FLEMME"/></a>{actorId !== '' && <button type="button" className="avatar" aria-label="Mon compte" onClick={() => go('account')}>{gateway?.actor.name.slice(0, 1).toUpperCase()}</button>}</header>
+    <header className="top"><a href="./" aria-label="FLEMME · retour à la présentation"><img src={import.meta.env.BASE_URL + 'flemme-logo.png'} alt="FLEMME"/></a>{actorId !== '' && <button type="button" className="btn small secondary help-btn" onClick={() => go('help')}>Aide</button>}{actorId !== '' && <button type="button" className="avatar" aria-label="Mon compte" onClick={() => go('account')}>{gateway?.actor.name.slice(0, 1).toUpperCase()}</button>}</header>
     <main ref={main} tabIndex={-1} className="app" aria-busy={busy}>
       {screen !== 'home' && actorId !== '' && <Action secondary onClick={back}>{backLabel(screen)}</Action>}
       {!!error && <div role="alert" className="alert">{error}</div>}

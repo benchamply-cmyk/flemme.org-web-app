@@ -67,6 +67,8 @@ export function signatureInput(name: string | undefined, accept: boolean): Input
 
 export type Profile = {
   id: string; name: string; bio: string | null; skills: string[]; experience: string | null; since: string;
+  /** Chemin de la photo dans le bucket privé (lot 4) ; l’app demande une adresse signée. */
+  avatar?: string | null;
   missions: number; rating: number | null;
   reviews: { rating: number; text: string | null; author: Actor; task: string; at: string }[];
 };

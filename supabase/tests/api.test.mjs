@@ -138,7 +138,7 @@ await db.exec('reset role; set role anon');
 await assert.rejects(api('list'), /permission denied/);
 await db.exec('reset role');
 const rls = await db.query("select relname, relrowsecurity from pg_class join pg_namespace n on n.oid=relnamespace where n.nspname='flemme_v2' and relkind='r'");
-assert.equal(rls.rows.length, 17); // 6 tables V2 + 5 tables admin + 3 tables paiement (settings, brigadier_accounts, payments) + drafts + reviews, agreements
+assert.equal(rls.rows.length, 19); // 6 tables V2 + 5 tables admin + 3 tables paiement (settings, brigadier_accounts, payments) + drafts + reviews, agreements + files, help_requests
 assert.ok(rls.rows.every(r => r.relrowsecurity));
 
 // Suppression d'un compte : ses flemmes partent, ses messages restent signés « Compte supprimé ».

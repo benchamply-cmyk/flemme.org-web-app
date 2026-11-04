@@ -49,6 +49,9 @@ export function alerte(body, site = 'https://flemme.org') {
   } else if (body.kind === 'agreement_review') {
     subject = `Accord écrit à contrôler : ${short(p.title)}`; title = 'Un accord écrit attend ton contrôle'; button = 'Contrôler dans l’admin';
     lines = [['Flemme', p.title], ['Déposant', p.owner], ['Brigadier', p.brigadier], ref];
+  } else if (body.kind === 'help') {
+    subject = `Demande d’aide : ${short(p.text)}`; title = 'Un membre demande de l’aide'; button = 'Répondre dans l’admin';
+    lines = [['Membre', p.user], ['Sujet', p.topic], ['Message', p.text], ['Flemme', p.title]];
   } else return null;
   return { subject, html: html(title, lines, site, button), text: text(title, lines, site) };
 }

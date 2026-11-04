@@ -2,12 +2,12 @@ import type { Task } from './domain.ts';
 
 // Navigation et droits d’affichage communs aux deux interfaces.
 // Le site garde l’historique du navigateur, le mobile le bouton Retour Android : seul le parcours est partagé.
-export type Screen = 'home' | 'list' | 'new' | 'edit' | 'detail' | 'offer' | 'review' | 'report' | 'account' | 'contract' | 'profile';
+export type Screen = 'home' | 'list' | 'new' | 'edit' | 'detail' | 'offer' | 'review' | 'report' | 'account' | 'contract' | 'profile' | 'help';
 export type Tab = 'mine' | 'find';
 
 /** Écran parent, utilisé par le bouton « Retour » du mobile. */
 export function parentScreen(screen: Screen): Screen {
-  if (screen === 'list' || screen === 'account') return 'home';
+  if (screen === 'list' || screen === 'account' || screen === 'help') return 'home';
   if (screen === 'review') return 'offer';
   if (screen === 'offer' || screen === 'report' || screen === 'edit' || screen === 'contract') return 'detail';
   if (screen === 'profile') return 'account';

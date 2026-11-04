@@ -4,6 +4,7 @@ import type { AuthLinkOptions, DemoState, Gateway, TokenStorage } from './gatewa
 import { notices } from './textes.ts';
 import type { SavedDraft, SearchFilter, SearchPage } from './parcours.ts';
 import type { Profile } from './accord.ts';
+import type { FileItem, HelpRequest, Upload } from './aide.ts';
 
 // État et actions de l’app, sans React ni DOM : le site et le mobile s’y abonnent (useSyncExternalStore)
 // et ne gardent que l’affichage et la navigation. Toute la logique d’envoi (verrou, idempotence, erreurs) est ici.
@@ -20,6 +21,10 @@ export type SessionState = {
   found: SearchPage | null; filter: SearchFilter;
   /** Dernier profil public ouvert (le sien ou celui d’un autre membre). */
   profile: Profile | null;
+  /** Pièces jointes chargées, par flemme. */
+  files: Record<string, FileItem[]>;
+  /** Mes demandes d’aide à l’équipe (null : pas encore chargées). */
+  help: HelpRequest[] | null;
 };
 /** Ce que le démarrage propre à une plateforme a obtenu (ex. retour d’un lien e-mail sur le web). */
 export type StartResult = { signedIn: boolean; error?: string; recovering?: boolean; notice?: string };
@@ -38,7 +43,7 @@ const shortPassword = 'Choisis un mot de passe d’au moins 12 caractères.';
 export class FlemmeSession {
   readonly remote: boolean;
   private options: SessionOptions;
-  private state: SessionState = { gateway: null, actorId: '', tasks: [], more: null, recovering: false, busy: false, ready: false, error: '', notice: '', drafts: [], found: null, filter: {}, profile: null };
+  private state: SessionState = { gateway: null, actorId: '', tasks: [], more: null, recovering: false, busy: false, ready: false, error: '', notice: '', drafts: [], found: null, filter: {}, profile: null, files: {}, help: null };
   private listeners = new Set<() => void>();
   private locked = false;
   // Identifiant de requête réutilisé tant que la même action est retentée : un double envoi ne crée rien en double.
@@ -145,7 +150,7 @@ export class FlemmeSession {
   async logout(done: () => void) {
     await this.execute(async () => {
       try { await this.remoteGateway().logout(); }
-      finally { this.pending = null; this.set({ actorId: '', tasks: [], more: null, drafts: [], found: null, filter: {}, profile: null }); done(); }
+      finally { this.pending = null; this.set({ actorId: '', tasks: [], more: null, drafts: [], found: null, filter: {}, profile: null, files: {}, help: null }); done(); }
     });
   }
   /** Démo locale : changer de personnage pour tester les deux côtés d’une mission. */
@@ -153,7 +158,7 @@ export class FlemmeSession {
     const g = this.state.gateway;
     if (!(g instanceof DemoGateway)) return;
     await this.execute(async () => {
-      g.actor = actor; this.set({ actorId: actor.id, found: null, profile: null }); await this.load(g); this.pending = null; done();
+      g.actor = actor; this.set({ actorId: actor.id, found: null, profile: null, files: {}, help: null }); await this.load(g); this.pending = null; done();
     });
   }
   /** Charge un profil public (le sien si `userId` est absent). */
@@ -167,6 +172,53 @@ export class FlemmeSession {
     const g = this.state.gateway;
     if (!g) return;
     await this.execute(async () => { this.set({ profile: await g.saveProfile(data), notice: notices.profileSaved }); done(); });
+  }
+  async loadFiles(taskId: string) {
+    const g = this.state.gateway;
+    if (!g) return;
+    // Secondaire, comme les brouillons : une base sans le lot 4 ne doit pas afficher d’erreur sur chaque fiche.
+    const list = await g.files(taskId).catch(() => []);
+    this.set({ files: { ...this.state.files, [taskId]: list } });
+  }
+  /** Pièce jointe (taskId) ou photo de profil (taskId null). */
+  async upload(taskId: string | null, file: Upload) {
+    const g = this.state.gateway;
+    if (!g) return;
+    await this.execute(async () => {
+      const item = await g.upload(taskId, file);
+      if (taskId) this.set({ files: { ...this.state.files, [taskId]: [...(this.state.files[taskId] || []), item] }, notice: notices.fileSent });
+      else { const p = this.state.profile; this.set({ profile: p && p.id === this.state.actorId ? { ...p, avatar: item.path } : p, notice: notices.avatarSaved }); }
+    });
+  }
+  async deleteFile(taskId: string, file: FileItem) {
+    const g = this.state.gateway;
+    if (!g) return;
+    await this.execute(async () => {
+      await g.deleteFile(file);
+      this.set({ files: { ...this.state.files, [taskId]: (this.state.files[taskId] || []).filter(f => f.id !== file.id) }, notice: notices.fileDeleted });
+    });
+  }
+  /** Adresse temporaire d’un fichier, ou null (erreur affichée). */
+  async fileUrl(path: string): Promise<string | null> {
+    const g = this.state.gateway;
+    if (!g) return null;
+    try { return await g.fileUrl(path); } catch (e) { this.set({ error: message(e) }); return null; }
+  }
+  async loadHelp() {
+    const g = this.state.gateway;
+    if (!g) return;
+    await this.execute(async () => { this.set({ help: await g.helpList() }); });
+  }
+  async sendHelp(data: Input, done: () => void) {
+    const g = this.state.gateway;
+    if (!g) return;
+    await this.execute(async () => {
+      const signature = JSON.stringify([this.state.actorId, 'help', data]);
+      if (this.pending?.signature !== signature) this.pending = { signature, id: newId() };
+      const h = await g.helpSend(data, this.pending.id);
+      this.pending = null;
+      this.set({ help: [h, ...(this.state.help || []).filter(x => x.id !== h.id)], notice: notices.helpSent }); done();
+    });
   }
   /** Enregistre (ou remplace) un brouillon sur le compte. `id` absent : nouveau brouillon. */
   async saveDraft(draft: { id?: string; kind: SavedDraft['kind']; taskId?: string | null; fields: Record<string, string> }, done: (d: SavedDraft) => void) {

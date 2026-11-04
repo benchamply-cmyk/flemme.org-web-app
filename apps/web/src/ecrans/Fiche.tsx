@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { CONTRACT_FIELDS, OFFER_FIELDS, budgetText, canEdit, categoryLabel, contractStatusLabel, date, deadlineLabel, modeLabel, money, notices, offerInput, offerReviewLabel, offerStatus, parseMoney, paymentNote, paymentStatus, reviewInput, reviewLabel, signatureInput, stars, taskStatus } from '../../../../packages/shared/src/index.ts';
 import { onlinePayment, openStripe, session } from '../session.ts';
 import { Action, Bill } from '../ui.tsx';
+import { Pieces } from './Pieces.tsx';
 import type { Ctx } from './contexte.ts';
 
 // Fiche d’une flemme : accord, paiement déclaratif, propositions, signalements et historique.
-export function Fiche({ state: { busy, actorId }, place, task, can, draft, field, go, mutate, validated, keepDraft }: Ctx) {
+export function Fiche({ state: { busy, actorId, files }, place, task, can, draft, field, go, mutate, validated, keepDraft }: Ctx) {
   const [showHistory, setShowHistory] = useState(false), [accept, setAccept] = useState(false), [rating, setRating] = useState('');
   if (!task) return null;
   const { agreement } = task;
@@ -50,6 +51,7 @@ export function Fiche({ state: { busy, actorId }, place, task, can, draft, field
       <p className="note">L’équipe FLEMME relit chaque candidature avant de la transmettre au déposant.</p>
       <Action disabled={busy} onClick={() => validated(() => { void mutate('apply', { ...offerInput(draft), draftId: place.draftId || null }, 'detail', t => notices.applied(t.offers.find(o => o.brigadier.id === actorId && o.status === 'pending'))); })}>Envoyer ma candidature</Action>
       <Action secondary disabled={busy} onClick={() => session.saveDraft({ id: place.draftId, kind: 'offer', taskId: task.id, fields: Object.fromEntries(OFFER_FIELDS.filter(k => draft[k]).map(k => [k, draft[k]])) }, d => keepDraft(d.id))}>Enregistrer le brouillon</Action></>}
+    {(can.isOwner || can.isBrigadier) && <Pieces task={task} actorId={actorId} files={files[task.id]} busy={busy}/>}
     {can.canReport && <Action secondary disabled={busy} onClick={() => go('report')}>Signaler un désaccord</Action>}
     {task.reports.map((r, i) => <div className="bubble" key={i}><span className="strong">Signalement de {r.actor.name}</span><span>{r.text}</span><span className="note">En attente d’examen manuel · {date(r.at)}</span></div>)}
     <Action secondary onClick={() => setShowHistory(!showHistory)}>{showHistory ? 'Masquer l’historique' : 'Voir l’historique conservé'}</Action>

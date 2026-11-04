@@ -2,6 +2,7 @@ import type { Actor, Input, Task } from '../../../../packages/shared/src/domain.
 import { applyCommand, createTask, text } from '../../../../packages/shared/src/domain.ts';
 import { demoActors, seed } from '../../../../packages/shared/src/gateway.ts';
 import type { Contract } from '../../../../packages/shared/src/accord.ts';
+import type { HelpRequest } from '../../../../packages/shared/src/aide.ts';
 
 // Types renvoyés par public.flemme_admin_api (supabase/migrations/20261103130000_flemme_v2_admin.sql).
 export type DisputeStatus = 'open' | 'in_review' | 'resolved';
@@ -17,7 +18,9 @@ export type UserRow = {
   id: string; email: string; displayName: string | null; createdAt: string; lastSignInAt: string | null; confirmed: boolean; admin: boolean;
   tasks: number; offers: number; missions: number; reports: number; suspendedReason: string | null; suspendedAt: string | null;
 };
-export type AlertKind = 'task_created' | 'task_edited' | 'report' | 'agreement' | 'offer_review' | 'agreement_review';
+export type AlertKind = 'task_created' | 'task_edited' | 'report' | 'agreement' | 'offer_review' | 'agreement_review' | 'help';
+// Lot 4 (20261104150000_flemme_v2_fichiers_aide.sql) : demandes d’aide humaine.
+export type HelpRow = HelpRequest & { user: Actor; email: string | null; title: string | null };
 // Lot 3 (supabase/migrations/20261104140000_flemme_v2_accord.sql) : candidatures et accords écrits à contrôler.
 export type QueueOffer = { id: string; task: { id: string; title: string; owner: Actor }; brigadier: Actor; amount: number; slot: string; scope: string; result: string | null; createdAt: string };
 export type QueueAgreement = Contract & { taskId: string; title: string; owner: Actor; brigadier: Actor; amount: number };
@@ -28,7 +31,7 @@ export type Moderation = { tasks: ModerationTask[]; waiting: number };
 export type ReviewDecision = 'publish' | 'changes' | 'reject';
 export type AlertRow = { id: number; kind: AlertKind; taskId: string; payload: Record<string, unknown>; createdAt: string; dispatchedAt: string | null; error: string | null };
 export type AdminAction = 'overview' | 'reports' | 'disputes' | 'users' | 'alerts' | 'alert_retry' | 'dispute_update' | 'user_suspend' | 'user_restore'
-  | 'moderation' | 'task_review' | 'review_queue' | 'offer_review' | 'agreement_review';
+  | 'moderation' | 'task_review' | 'review_queue' | 'offer_review' | 'agreement_review' | 'help_queue' | 'help_answer';
 
 export interface AdminSource {
   demo: boolean;
@@ -38,11 +41,12 @@ export interface AdminSource {
 
 export const disputeLabel: Record<DisputeStatus, string> = { open: 'À traiter', in_review: 'Pris en charge', resolved: 'Clos' };
 export const taskLabel: Record<Task['status'], string> = { open: 'Ouverte', assigned: 'Attribuée', completed: 'Terminée' };
-export const alertLabel: Record<AlertKind, string> = { task_created: 'Nouvelle flemme', task_edited: 'Demande modifiée', report: 'Signalement', agreement: 'Accord conclu', offer_review: 'Candidature à valider', agreement_review: 'Accord écrit à contrôler' };
+export const alertLabel: Record<AlertKind, string> = { task_created: 'Nouvelle flemme', task_edited: 'Demande modifiée', report: 'Signalement', agreement: 'Accord conclu', offer_review: 'Candidature à valider', agreement_review: 'Accord écrit à contrôler', help: 'Demande d’aide' };
 export const logLabel: Record<string, string> = {
   task_publish: 'Demande publiée', task_changes: 'Correction demandée', task_reject: 'Demande refusée',
   offer_approve: 'Candidature validée', offer_changes: 'Correction de candidature demandée', offer_reject: 'Candidature refusée',
   agreement_approve: 'Accord contrôlé', agreement_changes: 'Correction d’accord demandée',
+  help_answered: 'Demande d’aide répondue', help_closed: 'Demande d’aide close',
   dispute_in_review: 'Litige pris en charge', dispute_resolved: 'Litige clos', user_suspend: 'Compte suspendu', user_restore: 'Compte rétabli',
 };
 export const when = (s: string | null) => s ? new Date(s).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' }) : 'jamais';
@@ -65,6 +69,8 @@ export class DemoAdmin implements AdminSource {
   private users: UserRow[];
   private log: Overview['log'] = [];
   private alerts: AlertRow[];
+  private help: HelpRow[] = [{ id: 'demo-aide', topic: 'compte', text: 'Je ne reçois pas l’e-mail de confirmation.', status: 'open', answer: null, taskId: null,
+    at: '2026-11-03T09:00:00.000Z', answeredAt: null, user: demoActors[1], email: 'lou@flemme.example', title: null }];
   constructor(now = new Date().toISOString()) {
     const [ben, lou, camille] = demoActors;
     const base = seed();
@@ -113,6 +119,13 @@ export class DemoAdmin implements AdminSource {
     if (action === 'review_queue') return clone({ offers: [], agreements: [] });
     if (action === 'offer_review') throw new Error('Candidature introuvable');
     if (action === 'agreement_review') throw new Error('Accord introuvable');
+    if (action === 'help_queue') return clone({ requests: this.help });
+    if (action === 'help_answer') {
+      const h = this.help.find(x => x.id === data.id); if (!h) throw new Error('Demande introuvable');
+      if (data.status === 'closed') { h.status = 'closed'; this.journal('help_closed', h.id, {}); }
+      else { h.answer = text(data.answer, 2000); h.status = 'answered'; h.answeredAt = new Date().toISOString(); this.journal('help_answered', h.id, { note: h.answer }); }
+      return clone({ ok: true });
+    }
     if (action === 'users') return clone({ users: this.users });
     if (action === 'alerts') return clone({ alerts: this.alerts });
     if (action === 'alert_retry') {

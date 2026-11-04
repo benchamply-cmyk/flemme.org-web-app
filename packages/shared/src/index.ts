@@ -7,3 +7,4 @@ export * from './textes.ts';
 export * from './brand.ts';
 export * from './parcours.ts';
 export * from './accord.ts';
+export * from './aide.ts';
