@@ -29,10 +29,21 @@ Les préfixes autorisés sont `feature/`, `fix/`, `docs/`, `chore/` et `mobile/`
 - **Des noms de branche simples.** Pas de `claude/project-thread-…`, pas de date, pas de `/` dans le sujet (`BetaVersion/V4.1000-coveredServices-20/10/2016`).
 - **Tags homogènes :** `v5.1000` et pas `V.5.1000`.
 
+## Incident du 04/11/2026 : branche `prod` supprimée
+
+- 05:17 : PR #24 `preprod` → `prod` fusionnée en **squash** (contraire à la règle ci-dessus). flemme.org publie le commit `4c9bf8c`.
+- 05:18-05:19 : pour réaligner, PR #25 ouverte **depuis `prod` vers `preprod`** puis fusionnée. La suppression automatique des branches fusionnées a alors effacé `prod`, qui était la branche source de la PR. Même risque avec #18 la veille.
+- Rien n'est perdu : `prod` a été recréée sur son dernier commit `7b87ed6`, dont le contenu est identique à celui en ligne et à `preprod`.
+
+À retenir :
+
+- **Ne jamais ouvrir de PR dont la branche source est `prod` ou `preprod` vers une autre branche que `prod`.** Pour réaligner `preprod` sur `prod` après un incident, passer par une branche `chore/realigner-preprod`.
+- La règle « pas de suppression » sur `prod` et `preprod` (ruleset ci-dessous) empêche ce cas, même avec la suppression automatique activée.
+
 ## Réglages GitHub à faire (Ben)
 
 - ~~Renommer `main` en `prod` et créer `preprod`~~ (fait par Ben le 03/11/2026). Mettre `preprod` en branche par défaut, pour que les nouvelles PR la visent d'office.
 - Netlify : Production branch = `prod`, et activer les déploiements de branche pour `preprod`.
-- Créer un ruleset sur `prod` et `preprod` : PR obligatoire, pas de suppression, pas de force push, CI `Site web (apps/web)` requise.
+- **Urgent (04/11)** : créer un ruleset sur `prod` et `preprod` : PR obligatoire, **pas de suppression** (Restrict deletions), pas de force push, CI `Site web (apps/web)` requise. Settings → Rules → Rulesets → New branch ruleset, cibles `prod` et `preprod`.
 - Activer la suppression automatique des branches fusionnées.
-- Dans « Pull requests », n'autoriser que les merge commits (désactiver squash et rebase).
+- Dans « Pull requests », n'autoriser que les merge commits (désactiver squash et rebase). Pas encore fait : #24 a été squashée le 04/11.
