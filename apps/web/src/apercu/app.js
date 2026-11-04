@@ -210,8 +210,21 @@ function startShowcase() {
   if (!$("#showcase") || showcasePaused || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   showcaseTimer = setInterval(() => showShowcase(showcaseIndex + 1), 4500);
 }
+// Les 5 étapes du parcours affichées sur l’accueil : [titre, texte, rôle concerné, icône].
+const parcours = [
+  ["Le Flemmard publie sa flemme", "Il décrit ce qu’il repousse, avec un budget et un délai indicatifs.", "flemmard", "☕"],
+  ["Les Brigadiers postulent", "Ceux que la demande inspire proposent de s’en charger.", "brigadier", "✋"],
+  ["Mise en relation en privé", "Une conversation s’ouvre : questions, précisions, prix négocié.", "deux", "✉"],
+  ["Préparation d’un contrat", "Résultat attendu, délai, prix et conditions, acceptés par les deux.", "deux", "✍"],
+  ["Suivi de la prestation", "Étapes, fichiers et accompagnement jusqu’au résultat.", "deux", "✓"],
+];
 function home() {
-  return `<section class="hero"><div><p class="eyebrow">Le droit d’avoir la flemme.</p><h1>La flemme de faire&nbsp;?<br><em>Passe le relais.</em></h1><p class="lead">Ce que tu repousses, quelqu’un peut t’aider à le faire. Décris ta flemme, échange avec un Brigadier et mettez-vous d’accord.</p><div class="actions">${btn('<span class="cta-text"><b>Déléguer ma flemme</b><small>Je décris ce que je repousse</small></span><span class="cta-arrow" aria-hidden="true">↗</span>', "new", "dark cta")}${btn('<span class="cta-text"><b>Résoudre une flemme</b><small>Je propose mon coup de main</small></span><span class="cta-arrow" aria-hidden="true">↗</span>', "find", "cta green")}</div><p class="smallnote">Une demande libre. Un prix discuté ensemble.</p></div><div class="illustration" role="region" aria-roledescription="carrousel" aria-label="Exemples fictifs de mises en relation"><span class="float-label">Un peu moins à faire ✦</span><div class="visual-card" id="showcase" aria-live="polite">${showcaseCard(showcaseIndex)}</div><div class="showcase-nav"><button type="button" class="showcase-arrow" id="showcase-prev" aria-label="Exemple précédent">←</button><div class="showcase-dots">${showcase.map((x, i) => `<button type="button" class="showcase-dot" data-i="${i}" aria-label="Exemple ${i + 1} : ${esc(x.cat)}" ${i === showcaseIndex ? 'aria-current="true"' : ""}></button>`).join("")}</div><button type="button" class="showcase-arrow" id="showcase-next" aria-label="Exemple suivant">→</button></div></div></section><section class="explain"><p><b>Flemme met en relation</b> les personnes qui veulent déléguer une tâche et celles qui souhaitent proposer leur aide.</p><div class="three"><span>Décrire</span><span>Échanger</span><span>S’accorder</span></div></section>`;
+  return `<section class="hero"><div><p class="eyebrow">Le droit d’avoir la flemme.</p><h1>Passe le relais.<br><em>Ou prends-le.</em></h1><p class="lead">Ce que tu repousses, quelqu’un peut t’aider à le faire. Décris ta flemme, échange avec un Brigadier et mettez-vous d’accord.</p><div class="actions">${btn('<span class="cta-text"><b>Déléguer ma flemme</b><small>Je décris ce que je repousse</small></span><span class="cta-arrow" aria-hidden="true">↗</span>', "new", "dark cta")}${btn('<span class="cta-text"><b>Résoudre une flemme</b><small>Je propose mon coup de main</small></span><span class="cta-arrow" aria-hidden="true">↗</span>', "find", "cta green")}</div><p class="smallnote">Une demande libre. Un prix discuté ensemble.</p></div><div class="illustration" role="region" aria-roledescription="carrousel" aria-label="Exemples fictifs de mises en relation"><span class="float-label">Un peu moins à faire ✦</span><div class="visual-card" id="showcase" aria-live="polite">${showcaseCard(showcaseIndex)}</div><div class="showcase-nav"><button type="button" class="showcase-arrow" id="showcase-prev" aria-label="Exemple précédent">←</button><div class="showcase-dots">${showcase.map((x, i) => `<button type="button" class="showcase-dot" data-i="${i}" aria-label="Exemple ${i + 1} : ${esc(x.cat)}" ${i === showcaseIndex ? 'aria-current="true"' : ""}></button>`).join("")}</div><button type="button" class="showcase-arrow" id="showcase-next" aria-label="Exemple suivant">→</button></div></div></section><section class="explain"><p><b>Flemme met en relation</b> les personnes qui veulent déléguer une tâche et celles qui souhaitent proposer leur aide.</p></section><section class="parcours-wrap" aria-labelledby="parcours-titre"><div class="section-head"><div><p class="eyebrow">Le parcours</p><h2 id="parcours-titre">De la flemme au coup de main, en 5 étapes.</h2></div>${btn("Comment ça marche ↗", "how", "small ghost")}</div><ol class="parcours">${parcours
+    .map(
+      ([titre, texte, role, icone], i) =>
+        `<li class="etape etape-${role}"><div class="etape-tete"><span class="etape-num">${i + 1}</span><span class="etape-icone" aria-hidden="true">${icone}</span></div><span class="etape-role">${role === "flemmard" ? "Flemmard" : role === "brigadier" ? "Brigadier" : "Les deux"}</span><h3>${titre}</h3><p>${texte}</p></li>`,
+    )
+    .join("")}</ol></section>`;
 }
 function options(items, value = "", first = "Choisir") {
   return (
@@ -387,12 +400,12 @@ function how() {
       "Raconte la tâche, choisis un délai approximatif et, si tu veux, un budget. Connecte-toi pour envoyer.",
     ],
     [
-      "Flemme examine la demande",
-      "La demande reste privée avant validation admin. Si une précision manque, tu peux corriger la demande.",
+      "Les Brigadiers proposent",
+      "Les Brigadiers étudient ta demande et proposent de s’en charger : ils postulent à ton annonce.",
     ],
     [
       "Vous échangez en privé",
-      "Le Brigadier pose ses questions ou prépare une candidature. Le prix se négocie entre vous. La candidature passe par un examen admin.",
+      "Une conversation privée se crée entre vous. Le Brigadier pose ses questions pour bien comprendre la demande et confirmer sa candidature. Le prix se négocie entre vous. La candidature passe par un examen admin.",
     ],
     [
       "Vous préparez un accord",
