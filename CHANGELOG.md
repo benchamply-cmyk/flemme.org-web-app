@@ -3,6 +3,7 @@
 Chaque PR ajoute une ligne sous « À venir ». À chaque mise en production (`preprod` → `prod`), ces lignes passent dans une section datée et versionnée.
 
 ## À venir
+- Correctif : l’app connectée affiche de nouveau les flemmes quand la base n’a pas encore la migration `20261104120000_flemme_v2_parcours` (le chargement des brouillons ne bloque plus la liste).
 - Aperçu `/apercu.html`, retours de Ben sur l’artefact : titre « Passe le relais. Ou prends-le. », parcours en 5 étapes sur l’accueil (publication, candidatures, échange privé, contrat, suivi), espaces réduits, textes de « Comment ça marche » revus.
 - Aperçu interactif séparé `/apercu.html` de la future interface : accueil, dépôt, recherche, espaces Flemmard/Brigadier, conversations, candidatures et accords simulés ; données locales isolées, sans connexion aux services ni paiement réel.
 - Aperçu `/apercu.html` après revue : frais Flemme de 10 % ajoutés au forfait affichés partout (calcul partagé avec l’app), règles de l’aperçu testées, doublons de demandes et de brouillons corrigés, demande conservée pendant la connexion, réinitialisation de la démo.

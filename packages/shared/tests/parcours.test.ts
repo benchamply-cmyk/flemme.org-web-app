@@ -69,3 +69,14 @@ test('parcours : brouillons de la démo, sans doublon, supprimés à l’envoi',
   assert.equal(s.getState().drafts.length, 0);
   assert.equal(s.getState().tasks[0].title, form.title);
 });
+
+test('parcours : une base sans la migration parcours n’empêche pas de charger les flemmes', async () => {
+  const s = new FlemmeSession({ url: '', key: '', tokens: { get: async () => null, set: async () => {}, clear: async () => {} }, readDemo: async () => null, writeDemo: async () => {} });
+  await s.initialize();
+  const g = s.getState().gateway!;
+  g.drafts = async () => { throw new Error('Identifiant de requête requis'); };
+  await s.refresh();
+  assert.equal(s.getState().error, '');
+  assert.ok(s.getState().tasks.length > 0);
+  assert.deepEqual(s.getState().drafts, []);
+});
