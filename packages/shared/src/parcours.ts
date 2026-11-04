@@ -92,3 +92,37 @@ export function appendDictation(existing: string, transcript: string): string {
   const base = existing.trimEnd();
   return base ? `${base}\n${transcript}` : transcript;
 }
+
+/** Filtres de « Résoudre une flemme ». Mêmes règles que flemme_v2.search_tasks (serveur). */
+export type SearchFilter = { q?: string; category?: string; mode?: string; place?: string; budget?: string; deadline?: string; sort?: string };
+export type SearchPage = { tasks: Task[]; total: number; nextCursor: string | null };
+export const BUDGET_FILTERS = [
+  { value: 'moins_50', label: 'Moins de 50 €' }, { value: '50_200', label: '50 à 200 €' },
+  { value: 'plus_200', label: 'Plus de 200 €' }, { value: 'a_discuter', label: 'À discuter' },
+] as const satisfies readonly Option[];
+export const SORTS = [
+  { value: 'recent', label: 'Les plus récentes' }, { value: 'deadline', label: 'Délai le plus proche' }, { value: 'budget', label: 'Budget croissant' },
+] as const satisfies readonly Option[];
+export const SEARCH_FIELDS = ['q', 'category', 'mode', 'place', 'budget', 'deadline', 'sort'] as const;
+const rank = (t: Task) => { const i = DEADLINES.findIndex(d => d.value === t.deadline); return i < 0 ? 9 : i + 1; };
+const value = (t: Task) => t.budget ?? ({ moins_10: 500, '10_50': 3000, '50_200': 12500, plus_200: 20001 } as Record<string, number>)[t.budgetRange || ''] ?? Infinity;
+/** Recherche locale (démo) : ne modifie pas la liste reçue. */
+export function searchTasks(tasks: Task[], actorId: string, f: SearchFilter): Task[] {
+  const q = f.q?.trim().toLowerCase(), place = f.place?.trim().toLowerCase();
+  const budget = (t: Task) => {
+    const v = value(t);
+    if (f.budget === 'a_discuter') return t.budget == null && !t.budgetRange;
+    if (f.budget === 'moins_50') return v < 5000;
+    if (f.budget === '50_200') return v >= 5000 && v <= 20000;
+    if (f.budget === 'plus_200') return v > 20000 && v !== Infinity;
+    return true;
+  };
+  return tasks.filter(t => t.status === 'open' && (!t.review || t.review === 'published') && t.owner.id !== actorId
+      && (!q || `${t.title} ${t.details} ${t.place} ${t.category || ''}`.toLowerCase().includes(q))
+      && (!f.category || t.category === f.category)
+      && (!f.mode || t.mode === f.mode || t.mode === 'les_deux' || (f.mode === 'distance' && !t.mode && t.place === 'À distance'))
+      && (!place || t.place.toLowerCase().includes(place))
+      && (!f.deadline || t.deadline === f.deadline) && budget(t))
+    .sort((a, b) => (f.sort === 'deadline' ? rank(a) - rank(b) : 0) || (f.sort === 'budget' ? value(a) - value(b) : 0)
+      || b.createdAt.localeCompare(a.createdAt) || b.id.localeCompare(a.id));
+}

@@ -54,3 +54,17 @@ test('alerte : demande à valider (création et modification)', () => {
   const published = alerte({ source: 'flemme_v2', kind: 'task_created', task_id: 'abc', payload: { title: 'X', review: 'published' } });
   assert.match(published!.subject, /^Nouvelle flemme/);
 });
+
+test('alerte : candidature et accord écrit à valider (lot 3)', () => {
+  const offer = alerte({ source: 'flemme_v2', kind: 'offer_review', task_id: 'abc', payload: { title: 'Monter une étagère', brigadier: 'Basile', amount: 4200, owner: 'Ondine' } });
+  assert.match(offer!.subject, /^Candidature à valider : Monter une étagère/);
+  assert.match(offer!.text, /Forfait proposé : 42/);
+  const doc = alerte({ source: 'flemme_v2', kind: 'agreement_review', task_id: 'abc', payload: { title: 'Monter une étagère', owner: 'Ondine', brigadier: 'Basile' } });
+  assert.match(doc!.subject, /^Accord écrit à contrôler/);
+});
+
+test('alerte : demande d’aide humaine (lot 4), sans flemme', () => {
+  const help = alerte({ source: 'flemme_v2', kind: 'help', task_id: null, payload: { topic: 'compte', text: 'Je ne reçois pas l’e-mail', user: 'Lou', title: null } });
+  assert.match(help!.subject, /^Demande d’aide : Je ne reçois pas/);
+  assert.match(help!.text, /Membre : Lou/);
+});

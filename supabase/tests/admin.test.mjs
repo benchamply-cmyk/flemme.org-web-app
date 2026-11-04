@@ -23,7 +23,7 @@ async function setup(withOwner) {
   const dir = new URL('../migrations/', import.meta.url);
   for (const file of (await readdir(dir)).filter(f => f.endsWith('.sql')).sort()) await db.exec(await readFile(new URL(file, dir), 'utf8'));
   // Ces tests portent sur le contrat d'origine : la validation des demandes (parcours.test.mjs) est coupée.
-  await db.exec('update flemme_v2.settings set moderation_tasks = false');
+  await db.exec('update flemme_v2.settings set moderation_tasks = false, moderation_offers = false, moderation_agreements = false');
   return { db, ids };
 }
 
