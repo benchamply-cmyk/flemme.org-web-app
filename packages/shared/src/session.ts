@@ -1,25 +1,36 @@
 import type { Actor, Command, Input, Task } from './domain.ts';
 import { DemoGateway, RemoteGateway, newId } from './gateway.ts';
-import type { DemoState, Gateway, TokenStorage } from './gateway.ts';
+import type { AuthLinkOptions, DemoState, Gateway, TokenStorage } from './gateway.ts';
 import { notices } from './textes.ts';
 
 // État et actions de l’app, sans React ni DOM : le site et le mobile s’y abonnent (useSyncExternalStore)
 // et ne gardent que l’affichage et la navigation. Toute la logique d’envoi (verrou, idempotence, erreurs) est ici.
 export type SessionState = {
   gateway: Gateway | null; actorId: string; tasks: Task[];
+  /** Curseur de la page suivante de flemmes (null : tout est chargé). */
+  more: string | null;
+  /** Arrivée par un lien « mot de passe oublié » : proposer d’abord de choisir un mot de passe. */
+  recovering: boolean;
   busy: boolean; ready: boolean; error: string; notice: string;
 };
+/** Ce que le démarrage propre à une plateforme a obtenu (ex. retour d’un lien e-mail sur le web). */
+export type StartResult = { signedIn: boolean; error?: string; recovering?: boolean; notice?: string };
 export type SessionOptions = {
   url: string; key: string; tokens: TokenStorage;
   readDemo: () => Promise<DemoState | null>; writeDemo: (s: DemoState) => Promise<void>;
   transport?: typeof fetch;
+  /** Problème de configuration détecté par la plateforme (affiché tel quel). */
+  configProblem?: string;
+  /** Étape facultative avant de reprendre la session enregistrée (web : retour d’un lien e-mail). */
+  onStart?: (g: RemoteGateway) => Promise<StartResult>;
 };
 const message = (e: unknown) => e instanceof Error ? e.message : 'Une erreur est survenue.';
+const shortPassword = 'Choisis un mot de passe d’au moins 12 caractères.';
 
 export class FlemmeSession {
   readonly remote: boolean;
   private options: SessionOptions;
-  private state: SessionState = { gateway: null, actorId: '', tasks: [], busy: false, ready: false, error: '', notice: '' };
+  private state: SessionState = { gateway: null, actorId: '', tasks: [], more: null, recovering: false, busy: false, ready: false, error: '', notice: '' };
   private listeners = new Set<() => void>();
   private locked = false;
   // Identifiant de requête réutilisé tant que la même action est retentée : un double envoi ne crée rien en double.
@@ -32,6 +43,7 @@ export class FlemmeSession {
   subscribe = (listener: () => void) => { this.listeners.add(listener); return () => { this.listeners.delete(listener); }; };
   getState = () => this.state;
   private set(patch: Partial<SessionState>) { this.state = { ...this.state, ...patch }; for (const l of this.listeners) l(); }
+  private remoteGateway() { return this.state.gateway as RemoteGateway; }
   clearMessages() { if (this.state.error || this.state.notice) this.set({ error: '', notice: '' }); }
   notify(notice: string) { this.set({ notice }); }
   fail(error: string) { this.set({ error }); }
@@ -43,41 +55,77 @@ export class FlemmeSession {
     try { await fn(); } catch (e) { this.set({ error: message(e) }); }
     finally { this.locked = false; this.set({ busy: false }); }
   }
+  /** Première page (remplace la liste) ou page suivante (ajoutée à la suite, sans doublon). */
+  private async load(g: Gateway, cursor: string | null = null) {
+    const page = await g.list(cursor);
+    const old = this.state.tasks;
+    this.set({ tasks: cursor ? [...old, ...page.tasks.filter(t => !old.some(v => v.id === t.id))] : page.tasks, more: page.nextCursor });
+  }
   async initialize() {
     await this.execute(async () => {
-      const { url, key, tokens, readDemo, writeDemo, transport } = this.options;
+      const { url, key, tokens, readDemo, writeDemo, transport, configProblem, onStart } = this.options;
       if (this.remote) {
+        if (configProblem) throw new Error(configProblem);
         if (!url || !key) throw new Error('Configuration incomplète : renseigne l’URL et la clé publique Supabase.');
         const g = new RemoteGateway(url, key, tokens, transport); this.set({ gateway: g });
-        if (await g.restore()) this.set({ actorId: g.actor.id, tasks: await g.list() });
+        const start: StartResult = onStart ? await onStart(g) : { signedIn: false };
+        if (start.recovering) this.set({ recovering: true });
+        if (start.notice) this.set({ notice: start.notice });
+        // Lien expiré ou déjà utilisé : on garde la session éventuelle, puis on affiche l’erreur.
+        if (start.signedIn || await g.restore()) { this.set({ actorId: g.actor.id }); await this.load(g); }
+        if (start.error) throw new Error(start.error);
       } else {
         const g = new DemoGateway(await readDemo(), writeDemo);
-        this.set({ gateway: g, actorId: g.actor.id, tasks: await g.list() });
+        this.set({ gateway: g, actorId: g.actor.id }); await this.load(g);
       }
     });
     this.set({ ready: true });
   }
-  async refresh() { const g = this.state.gateway; if (g) await this.execute(async () => { this.set({ tasks: await g.list() }); }); }
+  async refresh() { const g = this.state.gateway; if (g) await this.execute(() => this.load(g)); }
+  async loadMore() { const g = this.state.gateway, more = this.state.more; if (g && more) await this.execute(() => this.load(g, more)); }
 
   async login(email: string, password: string, done: () => void) {
     await this.execute(async () => {
-      const g = this.state.gateway as RemoteGateway;
-      await g.login(email, password); const tasks = await g.list();
-      this.set({ actorId: g.actor.id, tasks }); done();
+      const g = this.remoteGateway();
+      await g.login(email, password); await this.load(g);
+      this.set({ actorId: g.actor.id }); done();
     });
   }
-  async signup(email: string, password: string, done: () => void) {
+  /** `link` prépare le lien de confirmation envoyé par e-mail (web) ; `notice` remplace le message par défaut. */
+  async signup(email: string, password: string, done: () => void, o: { link?: () => Promise<AuthLinkOptions>; notice?: string } = {}) {
     await this.execute(async () => {
-      if (password.length < 12) throw new Error('Choisis un mot de passe d’au moins 12 caractères.');
-      await (this.state.gateway as RemoteGateway).signup(email, password);
-      this.set({ notice: notices.checkEmail }); done();
+      if (password.length < 12) throw new Error(shortPassword);
+      await this.remoteGateway().signup(email, password, o.link ? await o.link() : undefined);
+      this.set({ notice: o.notice || notices.checkEmail }); done();
+    });
+  }
+  /** Mot de passe oublié, ou jamais créé (comptes repris de l’ancien espace). */
+  async recover(email: string, link: () => Promise<AuthLinkOptions>, done: () => void) {
+    await this.execute(async () => {
+      if (!email.trim()) throw new Error('Indique ton adresse e-mail, puis choisis « Mot de passe oublié ? ».');
+      await this.remoteGateway().recover(email, await link());
+      this.set({ notice: notices.recoverSent }); done();
+    });
+  }
+  async setPassword(password: string, done: () => void) {
+    await this.execute(async () => {
+      if (password.length < 12) throw new Error(shortPassword);
+      await this.remoteGateway().setPassword(password);
+      this.set({ recovering: false, notice: notices.passwordSaved }); done();
+    });
+  }
+  skipRecovery() { this.set({ recovering: false }); }
+  async updateProfile(displayName: string, done: () => void) {
+    await this.execute(async () => {
+      await this.remoteGateway().updateProfile(displayName);
+      this.set({ notice: notices.nameUpdated }); done();
     });
   }
   /** `done` est appelé même si la déconnexion distante échoue : la session locale est toujours effacée. */
   async logout(done: () => void) {
     await this.execute(async () => {
-      try { await (this.state.gateway as RemoteGateway).logout(); }
-      finally { this.pending = null; this.set({ actorId: '', tasks: [] }); done(); }
+      try { await this.remoteGateway().logout(); }
+      finally { this.pending = null; this.set({ actorId: '', tasks: [], more: null }); done(); }
     });
   }
   /** Démo locale : changer de personnage pour tester les deux côtés d’une mission. */
@@ -85,8 +133,7 @@ export class FlemmeSession {
     const g = this.state.gateway;
     if (!(g instanceof DemoGateway)) return;
     await this.execute(async () => {
-      g.actor = actor; const tasks = await g.list(); this.pending = null;
-      this.set({ actorId: actor.id, tasks }); done();
+      g.actor = actor; this.set({ actorId: actor.id }); await this.load(g); this.pending = null; done();
     });
   }
   /** Crée une flemme ou applique une action. `done` reçoit la flemme à jour, avant l’affichage du message. */

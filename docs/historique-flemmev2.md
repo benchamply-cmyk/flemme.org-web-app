@@ -1,14 +1,14 @@
 # Historique du dépôt FlemmeV2.0
 
-Ce document décrit [benchamply-cmyk/FlemmeV2.0](https://github.com/benchamply-cmyk/FlemmeV2.0) dans son état au 3 novembre 2026. Ce dépôt-ci en reprend `apps/web` et `apps/mobile`, tout le reste y est resté.
+Ce document décrit [benchamply-cmyk/FlemmeV2.0](https://github.com/benchamply-cmyk/FlemmeV2.0) dans son état au 3 novembre 2026. Ce dépôt-ci en reprend `apps/web`, `apps/mobile` et le Flemme Manager (`apps/manager`), le reste y est resté.
 
 ## Ce que contient FlemmeV2.0
 
 | Dossier | Contenu | Repris ici ? |
 |---|---|---|
 | `flemme-web-beta/` | Site historique flemme.org (HTML/CSS/JS, Netlify Forms, `/espace`, `/gestionadmin`, Decap CMS) | Non, il reste en production depuis FlemmeV2.0 |
-| `flemme-managerV1/` | Flemme Manager : agents IA, API sur Render (`flemme-manager-v2-api`) | Non |
-| `supabase/` | Schémas SQL de l'espace client et du Manager | Non |
+| `flemme-managerV1/` | Flemme Manager : agents IA, API sur Render (`flemme-manager-v2-api`) | **Oui**, dans `apps/manager` |
+| `supabase/` | Schémas SQL de l'espace client et du Manager | SQL du Manager : **oui**, dans `apps/manager/supabase`. Espace client : non (ses comptes sont repris, voir `migration-comptes-espace.md`) |
 | `apps/mobile/` | App Expo SDK 58 et backend Supabase | **Oui** |
 | `apps/web/` | Nouveau site Vite + React aligné sur l'app | **Oui** |
 | `apercu/`, `flemme-web-V2.2/`, fichiers V2.0 à la racine | Outils d'aperçu et anciennes versions | Non (obsolètes) |

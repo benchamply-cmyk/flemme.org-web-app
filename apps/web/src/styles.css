@@ -1,4 +1,4 @@
-/* Identité partagée avec apps/mobile/src/brand.ts (palette V5 glacier de flemme.org). */
+/* Identité partagée avec packages/shared/src/brand.ts (palette V5 glacier de flemme.org). */
 :root {
   --paper: #e3eeff; --ink: #16131f; --surface: #ffffff; --soft: #f3f7ff; --muted: #3f3a55;
   --accent: #a5ccff; --glacier-deep: #4f86d9; --violet: #3a2fa0; --green: #57d68d;

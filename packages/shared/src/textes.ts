@@ -12,6 +12,9 @@ export const notices = {
   accepted: 'Accord confirmé. Le Brigadier prend le relais.',
   declined: 'Offre déclinée et conservée. Le Brigadier peut proposer un nouveau forfait.',
   checkEmail: 'Vérifie ton e-mail, puis connecte-toi.',
+  recoverSent: 'Si un compte existe pour cette adresse, un e-mail vient de partir. Ouvre le lien dans ce navigateur pour choisir ton mot de passe.',
+  passwordSaved: 'Mot de passe enregistré.',
+  nameUpdated: 'Nom affiché mis à jour.',
   report: (remote: boolean) => remote ? 'Signalement enregistré pour examen manuel. Aucun remboursement automatique.' : 'Signalement local enregistré. Aucun support réel contacté.',
 };
 export const footer = (remote: boolean) => remote ? 'Test accompagné · paiements directs' : 'Démo locale · données fictives · aucun paiement';

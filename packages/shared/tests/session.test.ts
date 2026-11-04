@@ -67,7 +67,7 @@ test('déconnexion : la session locale est effacée même si le serveur ne répo
   const transport = (async (path: string) => {
     calls++;
     if (path.includes('/logout')) throw new Error('offline');
-    return new Response(JSON.stringify(path.includes('/token') ? { access_token: 'a', refresh_token: 'r', expires_in: 3600, user: { id: 'u', email: 'u@example.com' } } : { tasks: [] }));
+    return new Response(JSON.stringify(path.includes('/token') ? { access_token: 'a', refresh_token: 'r', expires_in: 3600, user: { id: 'u', email: 'u@example.com' } } : { tasks: [], nextCursor: null, profile: { id: 'u', name: 'U' } }));
   }) as unknown as typeof fetch;
   let saved: string | null = null;
   const s = new FlemmeSession({ url: 'https://example.supabase.co', key: 'public', tokens: { get: async () => saved, set: async v => { saved = v; }, clear: async () => { saved = null; } }, readDemo: async () => null, writeDemo: async () => {}, transport });
@@ -77,4 +77,50 @@ test('déconnexion : la session locale est effacée même si le serveur ne répo
   let out = false;
   await s.logout(() => { out = true; });
   assert.ok(out); assert.equal(s.getState().actorId, ''); assert.equal(saved, null); assert.match(s.getState().error, /Connexion interrompue/); assert.ok(calls >= 3);
+});
+
+// Faux serveur Supabase : deux pages de flemmes, profil, mot de passe.
+function server(log: string[] = []) {
+  const task = (id: string) => ({ id, owner: { id: 'x', name: 'X' }, title: id, details: '', place: '', budget: null, status: 'open', createdAt: '', offers: [], history: [], reports: [] });
+  return (async (path: string, init: RequestInit) => {
+    const body = init.body ? JSON.parse(String(init.body)) : {};
+    log.push(body.p_action || path.replace(/^https:\/\/[^/]+/, ''));
+    if (path.includes('/token')) return new Response(JSON.stringify({ access_token: 'a', refresh_token: 'r', expires_in: 3600, user: { id: 'u', email: 'u@example.com' } }));
+    if (body.p_action === 'list') return new Response(JSON.stringify(body.p_data.cursor ? { tasks: [task('t2'), task('t1')], nextCursor: null } : { tasks: [task('t1')], nextCursor: 'p2' }));
+    if (body.p_action === 'update_profile') return new Response(JSON.stringify({ profile: { id: 'u', name: body.p_data.displayName } }));
+    return new Response(JSON.stringify({ profile: { id: 'u', name: 'U' } }));
+  }) as unknown as typeof fetch;
+}
+const remote = (o: Partial<ConstructorParameters<typeof FlemmeSession>[0]> = {}) => {
+  let saved: string | null = null;
+  return new FlemmeSession({ url: 'https://example.supabase.co', key: 'public', tokens: { get: async () => saved, set: async v => { saved = v; }, clear: async () => { saved = null; } }, readDemo: async () => null, writeDemo: async () => {}, transport: server(), ...o });
+};
+test('pagination : la page suivante s’ajoute sans doublon, puis plus rien à charger', async () => {
+  const s = remote(); await s.initialize();
+  await s.login('u@example.com', 'motdepasse-long', () => {});
+  assert.deepEqual(s.getState().tasks.map(t => t.id), ['t1']); assert.equal(s.getState().more, 'p2');
+  await s.loadMore();
+  assert.deepEqual(s.getState().tasks.map(t => t.id), ['t1', 't2']); assert.equal(s.getState().more, null);
+  await s.refresh(); assert.deepEqual(s.getState().tasks.map(t => t.id), ['t1']);
+});
+test('retour d’un lien « mot de passe oublié » : connecté, choix du mot de passe proposé puis enregistré', async () => {
+  const s = remote({ onStart: async g => { await g.exchangeCode('code', 'secret'); return { signedIn: true, recovering: true }; } });
+  await s.initialize();
+  assert.equal(s.getState().actorId, 'u'); assert.equal(s.getState().recovering, true);
+  await s.setPassword('court', () => {}); assert.match(s.getState().error, /12 caractères/); assert.equal(s.getState().recovering, true);
+  let done = false; await s.setPassword('un-long-mot-de-passe', () => { done = true; });
+  assert.ok(done); assert.equal(s.getState().recovering, false); assert.equal(s.getState().notice, 'Mot de passe enregistré.');
+});
+test('lien expiré : erreur affichée, sans perdre la session déjà ouverte ; configuration refusée', async () => {
+  const s = remote({ onStart: async () => ({ signedIn: false, error: 'Ce lien a expiré.' }) });
+  await s.initialize(); assert.equal(s.getState().error, 'Ce lien a expiré.'); assert.equal(s.getState().actorId, '');
+  const bad = remote({ configProblem: 'Clé secrète refusée.' }); await bad.initialize();
+  assert.equal(bad.getState().error, 'Clé secrète refusée.'); assert.equal(bad.getState().gateway, null);
+});
+test('mot de passe oublié et nom affiché', async () => {
+  const s = remote(); await s.initialize();
+  await s.recover('  ', async () => ({}), () => {}); assert.match(s.getState().error, /Indique ton adresse/);
+  await s.recover('u@example.com', async () => ({ redirectTo: 'https://flemme.org/app.html' }), () => {}); assert.match(s.getState().notice, /un e-mail vient de partir/);
+  await s.login('u@example.com', 'motdepasse-long', () => {});
+  await s.updateProfile('Ben', () => {}); assert.equal(s.getState().gateway!.actor.name, 'Ben'); assert.equal(s.getState().notice, 'Nom affiché mis à jour.');
 });

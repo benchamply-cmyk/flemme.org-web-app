@@ -10,6 +10,7 @@ import { Compte } from './ecrans/Compte.tsx';
 import { Connexion } from './ecrans/Connexion.tsx';
 import { Fiche } from './ecrans/Fiche.tsx';
 import { Listes } from './ecrans/Listes.tsx';
+import { MotDePasse } from './ecrans/MotDePasse.tsx';
 import { NouvelleFlemme } from './ecrans/NouvelleFlemme.tsx';
 import { Offre } from './ecrans/Offre.tsx';
 import { Signalement } from './ecrans/Signalement.tsx';
@@ -26,7 +27,7 @@ const aboveDetail: Partial<Record<Screen, number>> = { offer: 1, review: 2, repo
 
 export default function App() {
   const state = useSession();
-  const { gateway, actorId, busy, ready, error, notice, tasks } = state;
+  const { gateway, actorId, busy, ready, error, notice, tasks, recovering } = state;
   const [place, setPlace] = useState<Place>(start), [draft, setDraft] = useState<Draft>({}), [visit, setVisit] = useState(0);
   const main = useRef<HTMLElement>(null), flash = useRef('');
   const { screen, taskId, offerId } = place;
@@ -58,7 +59,7 @@ export default function App() {
   }
   function field(label: string, name: string, { multiline = false, numeric = false, secret = false }: FieldOptions = {}) {
     const id = 'f-' + name, common = { id, value: draft[name] || '', disabled: busy, onChange: (e: { target: { value: string } }) => setDraft(d => ({ ...d, [name]: e.target.value })) };
-    return <div className="field" key={name}><label htmlFor={id}>{label}</label>{multiline ? <textarea {...common} maxLength={1000}/> : <input {...common} type={secret ? 'password' : name === 'email' ? 'email' : 'text'} inputMode={numeric ? 'decimal' : undefined} placeholder={numeric ? 'En €' : ''} maxLength={name === 'password' ? 200 : 100} autoComplete={name === 'email' ? 'email' : secret ? 'current-password' : 'off'}/>}</div>;
+    return <div className="field" key={name}><label htmlFor={id}>{label}</label>{multiline ? <textarea {...common} maxLength={1000}/> : <input {...common} type={secret ? 'password' : name === 'email' ? 'email' : 'text'} inputMode={numeric ? 'decimal' : undefined} placeholder={numeric ? 'En €' : ''} maxLength={name === 'password' ? 200 : 100} autoComplete={name === 'email' ? 'email' : secret ? (recovering ? 'new-password' : 'current-password') : 'off'}/>}</div>;
   }
   const ctx: Ctx = {
     state, place, draft, task, offer, can: rights(task, actorId), field, go, mutate,
@@ -70,6 +71,7 @@ export default function App() {
   if (!ready) content = <p className="muted" role="status">Chargement…</p>;
   else if (session.remote && (!gateway || !actorId)) content = <Connexion {...ctx}/>;
   else if (!gateway) content = <><h1 className="heading">Chargement interrompu</h1><Action onClick={() => session.initialize()}>Réessayer sans effacer mes données</Action></>;
+  else if (recovering && session.remote) content = <MotDePasse {...ctx}/>;
   else if (screen === 'account') content = <Compte {...ctx}/>;
   else if (screen === 'home') content = <Accueil {...ctx}/>;
   else if (screen === 'new') content = <NouvelleFlemme {...ctx}/>;
