@@ -1,4 +1,12 @@
 "use strict";
+import {
+  FOURCHETTES,
+  appendDictation,
+  budgetLabel,
+  filterTasks,
+  tarif,
+  validateRequest as checkRequest,
+} from "./logique.ts";
 const $ = (s) => document.querySelector(s),
   esc = (s) =>
     String(s ?? "").replace(
@@ -50,7 +58,8 @@ let route = "",
   draftId = null,
   notice = "",
   supportMessages = [],
-  supportHuman = false;
+  supportHuman = false,
+  lastChat = null;
 const tasks = [
   {
     id: "1",
@@ -141,6 +150,15 @@ const delays = [
 const btn = (text, href, cls = "") =>
   `<a class="button ${cls}" href="#${href}">${text}</a>`;
 const badge = (text, cls = "") => `<span class="pill ${cls}">${text}</span>`;
+// Modèle retenu : 10 % ajoutés au forfait du Brigadier (packages/shared, commission()).
+function tarifText(price) {
+  let t = tarif(price);
+  return t
+    ? `Forfait Brigadier <b>${t.forfait}</b> + frais Flemme 10 % <b>${t.frais}</b> = <b>${t.total}</b> payés par le Flemmard. Le Brigadier reçoit ${t.forfait}.`
+    : "Indique un prix pour voir le total : forfait du Brigadier + 10 % de frais Flemme, payés par le Flemmard.";
+}
+const tarifBox = (price) =>
+  `<div class="info blue" id="tarif" aria-live="polite">${tarifText(price)}</div>`;
 function toast(t) {
   $("#toast").textContent = t;
   $("#toast").classList.add("show");
@@ -181,36 +199,13 @@ function select(label, name, items, value = "", first = "Choisir") {
   return `<div class="field"><label for="${name}">${label}</label><select id="${name}" name="${name}">${options(items, value, first)}</select></div>`;
 }
 function newRequest() {
-  return `<a class="back" href="#space/flemmard/drafts">← Mes brouillons</a>${page(draftId ? "Reprendre ma flemme" : "La flemme de quoi ?", "Pas besoin d’un brief parfait. Commence avec tes mots.", "Déléguer ma flemme")}<div class="form-layout"><form id="request-form" class="form-panel">${field("Un titre pour ta flemme", "title", draft.title || "", "text", 'required maxlength="120" placeholder="Ex. Remettre mon CV au propre"')}${area("Raconte ce dont tu as besoin", "description", draft.description || "", 'required placeholder="La tâche, ce que tu attends, ce qui te bloque…"')}<div class="row" style="margin-bottom:22px"><button type="button" class="button small ghost" id="dictate">◉ Dicter · simulation</button><span class="muted" style="font-size:11px">Transcription modifiable · micro non activé</span></div><div class="fields">${select("Catégorie", "category", categories, draft.category)}${select("Délai approximatif", "delay", delays, draft.delay, "À discuter")}${field("Si « Autre », précise le délai", "otherDelay", draft.otherDelay || "")}${field("Budget libre en € · facultatif", "budget", draft.budget || "", "number", 'min="0" step="0.01" placeholder="À discuter"')}${select("Ou une fourchette · facultatif", "range", ["0 à moins de 10 €", "10 à moins de 50 €", "50 à 200 €", "Plus de 200 €"], draft.range, "À discuter")}${select("Où se déroule la tâche ?", "mode", ["À distance", "Sur place", "Les deux"], draft.mode || "À distance")}<div id="location-fields" class="field full" ${!draft.mode || draft.mode === "À distance" ? "hidden" : ""}>${field("Ville / secteur · public", "city", draft.city || "", "text", 'placeholder="Ex. Lyon · Croix-Rousse"')}${field("Adresse précise · privée", "address", draft.address || "")}<small>L’adresse précise est réservée aux échanges privés. Elle n’apparaît pas sur la fiche publique.</small></div></div><div class="field"><label for="files">Ajouter des fichiers</label><input id="files" type="file" name="files" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"><small>PDF, JPEG, PNG, Word · 10 Mo max. par fichier dans cet aperçu. Autres formats à cadrer. Seuls les noms sont mémorisés ; aucun fichier n’est envoyé.${draft.fileNames ? "<br>Fichiers précédemment sélectionnés : " + esc(draft.fileNames) : ""}</small></div><p id="form-error" class="error" role="alert"></p><div class="actions"><button class="button dark" type="submit">Envoyer pour validation ↗</button><button class="button" type="button" id="save-draft">Enregistrer le brouillon</button></div><p class="smallnote">${state.signed ? "Compte démo connecté." : "Connexion ou création de compte requise pour envoyer."} Ta demande reste privée jusqu’à validation admin.</p></form><aside class="stack"><div class="card"><p class="eyebrow">Tu gardes la main</p><h3>Une demande. Puis une discussion.</h3><ol class="checklist"><li><b>01 · Décris ta flemme</b>Budget et délai indicatifs, à préciser ensemble.</li><li><b>02 · Examen avant publication</b>Flemme peut demander une correction. Ce contrôle ne garantit pas le résultat.</li><li><b>03 · Échange en privé</b>Choisis à qui parler et négocie le prix.</li><li><b>04 · Prépare un accord</b>Définissez le résultat, les délais et les conditions.</li></ol></div><div class="info">N’ajoute pas d’informations sensibles dans la partie publique. Tu pourras transmettre les détails utiles dans la conversation.</div>${btn("Besoin d’un coup de main ?", "help", "small ghost")}</aside></div>`;
+  return `<a class="back" href="#space/flemmard/drafts">← Mes brouillons</a>${page(draftId !== null || draft.from ? "Reprendre ma flemme" : "La flemme de quoi ?", "Pas besoin d’un brief parfait. Commence avec tes mots.", "Déléguer ma flemme")}<div class="form-layout"><form id="request-form" class="form-panel">${field("Un titre pour ta flemme", "title", draft.title || "", "text", 'required maxlength="120" placeholder="Ex. Remettre mon CV au propre"')}${area("Raconte ce dont tu as besoin", "description", draft.description || "", 'required placeholder="La tâche, ce que tu attends, ce qui te bloque…"')}<div class="row" style="margin-bottom:22px"><button type="button" class="button small ghost" id="dictate">◉ Dicter · simulation</button><span class="muted" style="font-size:11px">Transcription modifiable · micro non activé</span></div><div class="fields">${select("Catégorie", "category", categories, draft.category)}${select("Délai approximatif", "delay", delays, draft.delay, "À discuter")}${field("Si « Autre », précise le délai", "otherDelay", draft.otherDelay || "")}${field("Budget libre en € · facultatif", "budget", draft.budget || "", "number", 'min="0" step="0.01" placeholder="À discuter"')}${select("Ou une fourchette · facultatif", "range", FOURCHETTES, draft.range, "À discuter")}${select("Où se déroule la tâche ?", "mode", ["À distance", "Sur place", "Les deux"], draft.mode || "À distance")}<div id="location-fields" class="field full" ${!draft.mode || draft.mode === "À distance" ? "hidden" : ""}>${field("Ville / secteur · public", "city", draft.city || "", "text", 'placeholder="Ex. Lyon · Croix-Rousse"')}${field("Adresse précise · privée", "address", draft.address || "")}<small>L’adresse précise est réservée aux échanges privés. Elle n’apparaît pas sur la fiche publique.</small></div></div><div class="field"><label for="files">Ajouter des fichiers</label><input id="files" type="file" name="files" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"><small>PDF, JPEG, PNG, Word · 10 Mo max. par fichier dans cet aperçu. Autres formats à cadrer. Seuls les noms sont mémorisés ; aucun fichier n’est envoyé.${draft.fileNames ? "<br>Fichiers précédemment sélectionnés : " + esc(draft.fileNames) : ""}</small></div><p id="form-error" class="error" role="alert"></p><div class="actions"><button class="button dark" type="submit">Envoyer pour validation ↗</button><button class="button" type="button" id="save-draft">Enregistrer le brouillon</button></div><p class="smallnote">${state.signed ? "Compte démo connecté." : "Connexion ou création de compte requise pour envoyer."} Ta demande reste privée jusqu’à validation admin.</p></form><aside class="stack"><div class="card"><p class="eyebrow">Tu gardes la main</p><h3>Une demande. Puis une discussion.</h3><ol class="checklist"><li><b>01 · Décris ta flemme</b>Budget et délai indicatifs, à préciser ensemble.</li><li><b>02 · Examen avant publication</b>Flemme peut demander une correction. Ce contrôle ne garantit pas le résultat.</li><li><b>03 · Échange en privé</b>Choisis à qui parler et négocie le prix.</li><li><b>04 · Prépare un accord</b>Définissez le résultat, les délais et les conditions.</li></ol></div><div class="info">N’ajoute pas d’informations sensibles dans la partie publique. Tu pourras transmettre les détails utiles dans la conversation.</div>${btn("Besoin d’un coup de main ?", "help", "small ghost")}</aside></div>`;
 }
 function find() {
-  return `${page("Une flemme à résoudre ?", "Choisis une demande qui te parle. Les détails et le prix se discutent en privé.", "Espace ouvert aux coups de main")}<div class="searchbar"><input id="search" aria-label="Rechercher une flemme" placeholder="Un mot, une compétence, une envie…" value="${esc(filter.q || "")}"><button id="filter-toggle" class="button" aria-expanded="${filter.open ? "true" : "false"}" aria-controls="filters">☷ Filtres</button><select id="sort" aria-label="Trier les demandes" style="max-width:210px"><option value="delay">Délai le plus proche</option><option value="budget" ${filter.sort === "budget" ? "selected" : ""}>Budget croissant</option></select></div><div id="filters" class="filterbox" ${filter.open ? "" : "hidden"}>${select("Catégorie", "filter-category", categories, filter.category, "Toutes")}${field("Localisation", "filter-city", filter.city || "")}${select("Budget indicatif", "filter-price", ["Moins de 50 €", "50 à 200 €", "Plus de 200 €", "À discuter"], filter.price, "Tous")}${select("Délai approximatif", "filter-delay", delays, filter.delay, "Tous")}<button class="button small ghost" id="clear-filters">Réinitialiser les filtres</button></div><p id="count" class="smallnote" style="margin-bottom:18px"></p><div class="grid" id="results">${tasks.map(taskCard).join("")}</div><p class="smallnote">Exemples fictifs · Seules les demandes validées sont visibles ici. Prix indicatifs, sans frais établis.</p>`;
+  return `${page("Une flemme à résoudre ?", "Choisis une demande qui te parle. Les détails et le prix se discutent en privé.", "Espace ouvert aux coups de main")}<div class="searchbar"><input id="search" aria-label="Rechercher une flemme" placeholder="Un mot, une compétence, une envie…" value="${esc(filter.q || "")}"><button id="filter-toggle" class="button" aria-expanded="${filter.open ? "true" : "false"}" aria-controls="filters">☷ Filtres</button><select id="sort" aria-label="Trier les demandes" style="max-width:210px"><option value="delay">Délai le plus proche</option><option value="budget" ${filter.sort === "budget" ? "selected" : ""}>Budget croissant</option></select></div><div id="filters" class="filterbox" ${filter.open ? "" : "hidden"}>${select("Catégorie", "filter-category", categories, filter.category, "Toutes")}${field("Localisation", "filter-city", filter.city || "")}${select("Budget indicatif", "filter-price", ["Moins de 50 €", "50 à 200 €", "Plus de 200 €", "À discuter"], filter.price, "Tous")}${select("Délai approximatif", "filter-delay", delays, filter.delay, "Tous")}<button class="button small ghost" id="clear-filters">Réinitialiser les filtres</button></div><p id="count" class="smallnote" style="margin-bottom:18px"></p><div class="grid" id="results">${tasks.map(taskCard).join("")}</div><p class="smallnote">Exemples fictifs · Seules les demandes validées sont visibles ici. Prix indicatifs hors frais Flemme : 10 % s’ajoutent au forfait convenu.</p>`;
 }
 function applyFilters() {
-  let result = tasks.filter(
-    (t) =>
-      (!filter.q ||
-        (t.title + " " + t.description + " " + t.category)
-          .toLowerCase()
-          .includes(filter.q.toLowerCase())) &&
-      (!filter.category || t.category === filter.category) &&
-      (!filter.city ||
-        t.place.toLowerCase().includes(filter.city.toLowerCase())) &&
-      (!filter.delay || t.delay.toLowerCase() === filter.delay.toLowerCase()) &&
-      (!filter.price ||
-        (filter.price === "À discuter"
-          ? t.price === null
-          : filter.price === "Moins de 50 €"
-            ? t.price !== null && t.price < 50
-            : filter.price === "50 à 200 €"
-              ? t.price >= 50 && t.price <= 200
-              : t.price > 200)),
-  );
-  result.sort((a, b) =>
-    filter.sort === "budget"
-      ? (a.price ?? Infinity) - (b.price ?? Infinity)
-      : a.rank - b.rank,
-  );
+  let result = filterTasks(tasks, filter);
   $("#results").innerHTML = result.length
     ? result.map(taskCard).join("")
     : '<div class="card empty">Aucune flemme pour ces critères. Essaie d’élargir les filtres.</div>';
@@ -258,23 +253,26 @@ function workspace(role, tab) {
         ...menu.slice(2),
       ]
     : menu;
-  return `<div class="row"><div class="pagehead"><p class="eyebrow">Même compte · rôle actif : ${brig ? "Brigadier" : "Flemmard"}</p><h1>Espace ${brig ? "Brigadier" : "Flemmard"}</h1></div><div class="role-switch" aria-label="Changer d’espace"><a href="#space/flemmard/overview" class="${brig ? "" : "active"}">☕ Flemmard</a><a href="#space/brigadier/overview" class="${brig ? "active" : ""}">↗ Brigadier</a></div></div><div class="workspace"><nav class="sidebar" aria-label="Menu espace ${role}">${items.map(([id, label]) => `<a class="${tab === id ? "active" : ""}" href="#${id === "account" ? "account" : id === "help" ? "help" : "space/" + role + "/" + id}">${label}</a>`).join("")}</nav><section>${workspaceContent(role, tab)}</section></div>`;
+  return `<div class="row"><div class="pagehead"><p class="eyebrow">Même compte · rôle actif : ${brig ? "Brigadier" : "Flemmard"}</p><h1>Espace ${brig ? "Brigadier" : "Flemmard"}</h1></div><div class="role-switch" role="group" aria-label="Changer d’espace"><a href="#space/flemmard/overview" class="${brig ? "" : "active"}" ${brig ? "" : 'aria-current="page"'}>☕ Flemmard</a><a href="#space/brigadier/overview" class="${brig ? "active" : ""}" ${brig ? 'aria-current="page"' : ""}>↗ Brigadier</a></div></div><div class="workspace"><nav class="sidebar" aria-label="Menu espace ${role}">${items.map(([id, label]) => `<a class="${tab === id ? "active" : ""}" ${tab === id ? 'aria-current="page"' : ""} href="#${id === "account" ? "account" : id === "help" ? "help" : "space/" + role + "/" + id}">${label}</a>`).join("")}</nav><section>${workspaceContent(role, tab)}</section></div>`;
 }
 function requestRows() {
   return (
     state.requests
       .map(
         (r, i) =>
-          `<div class="listitem"><div><h3>${esc(r.title)}</h3><p>${esc(r.status || "En attente de validation admin")} · Privée</p></div>${btn("Modifier", "edit/" + i, "small ghost")}</div>`,
+          `<div class="listitem"><div><h3>${esc(r.title)}</h3><p>${esc(r.status || "En attente de validation admin")} · Privée · ${esc(budgetLabel(r))} · ${esc(r.delay === "Autre" ? r.otherDelay : r.delay || "Délai à discuter")}</p></div>${btn("Modifier", "edit/" + i, "small ghost")}</div>`,
       )
       .join("") +
-    `<div class="listitem"><div><h3>Organiser mes documents administratifs</h3><p>Correction demandée · Préciser le résultat attendu · Privée</p></div>${btn("Corriger", "correct", "small ghost")}</div><div class="listitem"><div><h3>Remettre mon CV au propre</h3><p>Publiée · Discussion en cours · Exemple fictif</p></div>${btn("Voir les échanges", "chat/1", "small ghost")}</div>`
+    (state.correctionSent
+      ? ""
+      : `<div class="listitem"><div><h3>Organiser mes documents administratifs</h3><p>Correction demandée · Préciser le résultat attendu · Privée</p></div>${btn("Corriger", "correct", "small ghost")}</div>`) +
+    `<div class="listitem"><div><h3>Remettre mon CV au propre</h3><p>Publiée · Discussion en cours · Exemple fictif</p></div>${btn("Voir les échanges", "chat/1", "small ghost")}</div>`
   );
 }
 function workspaceContent(role, tab) {
   let brig = role === "brigadier";
   if (tab === "overview")
-    return `<div class="metrics"><div class="metric"><b>${brig ? "2" : state.requests.length + 2}</b><span>${brig ? "Candidatures" : "Demandes suivies"}</span></div><div class="metric"><b>1</b><span>Prochaine action</span></div><div class="metric"><b>${draftsFor(role).length}</b><span>Brouillons</span></div></div><div class="info blue"><b>Ta prochaine action</b><p>${brig ? "Complète ton profil et précise les livrables de ta candidature." : "Précise le résultat attendu pour ta demande en correction."}</p>${btn(brig ? "Compléter mon profil" : "Corriger ma demande", brig ? "space/brigadier/profile" : "correct", "small")}</div><div class="card"><div class="section-head"><h3>${brig ? "Mes candidatures récentes" : "Mes demandes"}</h3>${btn(brig ? "Explorer" : "＋ Ajouter", "" + (brig ? "find" : "new"), "small ghost")}</div>${brig ? applicationRows() : requestRows()}</div>`;
+    return `<div class="metrics"><div class="metric"><b>${brig ? "2" : state.requests.length + 2}</b><span>${brig ? "Candidatures" : "Demandes suivies"}</span></div><div class="metric"><b>1</b><span>Prochaine action</span></div><div class="metric"><b>${draftsFor(role).length}</b><span>Brouillons</span></div></div><div class="info blue"><b>Ta prochaine action</b><p>${brig ? "Complète ton profil et précise les livrables de ta candidature." : state.correctionSent ? "Ta demande corrigée attend un nouvel examen. Tu peux en déposer une autre." : "Précise le résultat attendu pour ta demande en correction."}</p>${btn(brig ? "Compléter mon profil" : state.correctionSent ? "Déléguer une flemme" : "Corriger ma demande", brig ? "space/brigadier/profile" : state.correctionSent ? "new" : "correct", "small")}</div><div class="card"><div class="section-head"><h3>${brig ? "Mes candidatures récentes" : "Mes demandes"}</h3>${btn(brig ? "Explorer" : "＋ Ajouter", "" + (brig ? "find" : "new"), "small ghost")}</div>${brig ? applicationRows() : requestRows()}</div>`;
   if (tab === "requests")
     return `<div class="section-head"><h2>Mes demandes</h2>${btn("＋ Ajouter une demande", "new", "small dark")}</div><div class="card">${requestRows()}</div>`;
   if (tab === "drafts")
@@ -322,6 +320,7 @@ function login(next) {
 function chat(id) {
   let t = tasks.find((t) => t.id === id) || tasks[0];
   selected = t.id;
+  lastChat = t.id;
   let other = state.role === "flemmard" ? "Sam" : t.author,
     otherRole = state.role === "flemmard" ? "Brigadier" : "Flemmard",
     myRole = state.role === "flemmard" ? "Flemmard" : "Brigadier";
@@ -333,18 +332,18 @@ function chat(id) {
     )
     .join(
       "",
-    )}</div><form id="message-form" class="composer">${area("Ton message privé", "message", "", 'required placeholder="Une question, une précision, une proposition…"')}<div class="row"><button class="button dark small">Envoyer · simulation</button><label class="button small ghost" for="chat-file">＋ Fichier</label><input type="file" id="chat-file" hidden></div><p class="smallnote" id="chat-file-name"></p></form></div><aside class="stack"><div class="card"><p class="eyebrow">Le fil de la mission</p><h3>On avance à votre rythme.</h3><ol class="checklist"><li><b>1 · Échanger</b>Questions et négociation en privé.</li><li><b>2 · Candidature</b>${esc(state.applicationStatus || "À préparer · examen admin requis")}${btn("Préparer ma candidature", "application", "small ghost")}</li><li><b>3 · Accord</b>${esc(state.agreement.status || "À définir ensemble")}${btn("Préparer un accord", "agreement/" + id, "small blue")}</li><li><b>4 · Paiement futur</b>Prestataire externe et modalités à définir. Aucun encaissement.</li></ol></div><div class="support"><b>Un doute ou un blocage ?</b><p>Commence avec l’assistant, puis demande une personne Flemme.</p>${btn("Ouvrir l’accompagnement", "help", "small")}</div></aside></div>`;
+    )}</div><form id="message-form" class="composer">${area("Ton message privé", "message", "", 'required placeholder="Une question, une précision, une proposition…"')}<div class="row"><button class="button dark small">Envoyer · simulation</button><label class="button small ghost" for="chat-file">＋ Fichier</label><input type="file" id="chat-file" hidden></div><p class="smallnote" id="chat-file-name"></p></form></div><aside class="stack"><div class="card"><p class="eyebrow">Le fil de la mission</p><h3>On avance à votre rythme.</h3><ol class="checklist"><li><b>1 · Échanger</b>Questions et négociation en privé.</li><li><b>2 · Candidature</b>${esc(state.applicationStatus || "À préparer · examen admin requis")}${btn("Préparer ma candidature", "application", "small ghost")}</li><li><b>3 · Accord</b>${esc(state.agreement.status || "À définir ensemble")}${btn("Préparer un accord", "agreement/" + id, "small blue")}</li><li><b>4 · Paiement futur</b>Forfait convenu + 10 % de frais Flemme, payés par le Flemmard. Prestataire externe à brancher : aucun encaissement ici.</li></ol></div><div class="support"><b>Un doute ou un blocage ?</b><p>Commence avec l’assistant, puis demande une personne Flemme.</p>${btn("Ouvrir l’accompagnement", "help", "small")}</div></aside></div>`;
 }
 function application() {
   let d = state.application || {};
-  return `<a class="back" href="#chat/${selected}">← Revenir à la conversation</a>${page("Proposer mon aide", "Ta candidature reste à examiner avant d’être transmise.", "Espace Brigadier")}<div class="form-layout"><form id="application-form" class="form-panel">${area("Ce qui est inclus et le résultat proposé", "scope", d.scope || "", "required")}${field("Disponibilités / délai approximatif", "slot", d.slot || "", "text", "required")}${field("Prix proposé en € · à négocier", "price", d.price || "", "number", 'min="0" step="0.01" required')}<div class="info amber">Correction demandée dans cet exemple : précise le nombre de retours inclus. Le contrôle admin ne garantit pas la qualité de la prestation.</div><div class="actions"><button class="button dark">Envoyer pour examen admin</button><button type="button" class="button" id="draft-application">Sauvegarder le brouillon</button></div></form><div class="card"><h3>Pas d’engagement financier ici.</h3><p style="margin-top:15px">Aucun paiement d’engagement Brigadier. Le prix est discuté entre les deux utilisateurs ; les frais éventuels restent à définir.</p></div></div>`;
+  return `<a class="back" href="#chat/${selected}">← Revenir à la conversation</a>${page("Proposer mon aide", "Ta candidature reste à examiner avant d’être transmise.", "Espace Brigadier")}<div class="form-layout"><form id="application-form" class="form-panel">${area("Ce qui est inclus et le résultat proposé", "scope", d.scope || "", "required")}${field("Disponibilités / délai approximatif", "slot", d.slot || "", "text", "required")}${field("Prix proposé en € · à négocier", "price", d.price || "", "number", 'min="0" step="0.01" required')}${tarifBox(d.price)}<div class="info amber">Correction demandée dans cet exemple : précise le nombre de retours inclus. Le contrôle admin ne garantit pas la qualité de la prestation.</div><div class="actions"><button class="button dark">Envoyer pour examen admin</button><button type="button" class="button" id="draft-application">Sauvegarder le brouillon</button></div></form><div class="card"><h3>Pas d’engagement financier ici.</h3><p style="margin-top:15px">Aucun paiement d’engagement Brigadier. Le prix est discuté entre les deux utilisateurs. Tu reçois le forfait convenu ; les frais Flemme de 10 % s’y ajoutent côté Flemmard.</p></div></div>`;
 }
 function agreement(id) {
   let a = state.agreement;
-  return `<a class="back" href="#chat/${id}">← Revenir à la conversation</a>${page("On se met d’accord sur quoi ?", "Une trame à compléter ensemble avant toute prestation.", "Préparation de l’accord")}<div class="form-layout"><form id="agreement-form" class="form-panel"><div class="info amber">Simulation uniquement. Aucune signature juridique réelle. Les conditions financières et le futur prestataire de paiement restent à définir.</div>${area("Tâche et résultat attendu", "scope", a.scope || "Remettre le CV au propre dans un document modifiable.", "required")}${area("Qualité et critères d’acceptation", "quality", a.quality || "Informations relues ensemble, mise en page lisible, un retour inclus.", "required")}${field("Délai convenu", "deadline", a.deadline || "À convenir ensemble", "text", "required")}${field("Prix négocié en €", "price", a.price || "40", "number", 'min="0" step="0.01" required')}${area("Annulation et remboursement", "cancellation", a.cancellation || "À définir ensemble avant de signer. Aucune règle ni remboursement automatique dans cet aperçu.", "required")}${area("Confidentialité et fichiers", "confidentiality", a.confidentiality || "Documents partagés uniquement pour la tâche. Durée de conservation et modalités à préciser.", "required")}<div class="info">Commission éventuelle (10 %, dont répartition 5/5), acompte 50 %, retenue 20 % et délai d’annulation proportionnel : <b>pistes non arrêtées</b>. Aucun montant n’est exigé.</div><div class="actions"><button class="button dark">Soumettre au contrôle admin · démo</button><button class="button" type="button" id="save-agreement">Sauvegarder le brouillon</button></div><div class="status-track"><span class="done"></span><span class="${a.status ? "done" : ""}"></span><span></span></div><p class="smallnote">Statut : ${esc(a.status || "Brouillon à compléter")}</p></form><aside class="stack"><div class="card"><h3>Les étapes avant la mission</h3><ol class="checklist"><li><b>Préparation conjointe</b>Résultat, qualité, délai, prix et conditions.</li><li><b>Contrôle admin</b>Correction possible, sans garantie de résultat.</li><li><b>Signature représentée</b>Un parcours de démonstration distinct de toute signature juridique.</li></ol><button class="button small" id="simulate-review" ${a.status ? "" : "disabled"}>Simuler le retour admin</button></div>${a.reviewed ? `<div class="card"><h3>Retour admin simulé</h3><p style="margin:15px 0">Trame examinée pour cette démo. Précisez les conditions d’annulation avant toute utilisation réelle.</p><button class="button blue" id="simulate-sign">Représenter les deux signatures</button><p class="smallnote">${a.signed ? "Deux signatures représentées · aucune valeur juridique réelle." : "Aucune signature juridique ne sera créée."}</p></div>` : ""}<div class="card"><h3>Paiement · emplacement futur</h3><p style="margin-top:15px">Un prestataire externe pourra être proposé ici et dans la conversation. Modalités à définir.</p><button class="button small" disabled style="margin-top:15px">Paiement non disponible</button></div></aside></div>`;
+  return `<a class="back" href="#chat/${id}">← Revenir à la conversation</a>${page("On se met d’accord sur quoi ?", "Une trame à compléter ensemble avant toute prestation.", "Préparation de l’accord")}<div class="form-layout"><form id="agreement-form" class="form-panel"><div class="info amber">Simulation uniquement. Aucune signature juridique réelle. Le futur prestataire de paiement reste à choisir.</div>${area("Tâche et résultat attendu", "scope", a.scope || "Remettre le CV au propre dans un document modifiable.", "required")}${area("Qualité et critères d’acceptation", "quality", a.quality || "Informations relues ensemble, mise en page lisible, un retour inclus.", "required")}${field("Délai convenu", "deadline", a.deadline || "À convenir ensemble", "text", "required")}${field("Prix négocié en € · forfait du Brigadier", "price", a.price || "40", "number", 'min="0" step="0.01" required')}${tarifBox(a.price || "40")}${area("Annulation et remboursement", "cancellation", a.cancellation || "À définir ensemble avant de signer. Aucune règle ni remboursement automatique dans cet aperçu.", "required")}${area("Confidentialité et fichiers", "confidentiality", a.confidentiality || "Documents partagés uniquement pour la tâche. Durée de conservation et modalités à préciser.", "required")}<div class="info">Commission <b>retenue</b> : 10 % ajoutés au forfait. Acompte 50 %, retenue 20 % et délai d’annulation proportionnel : <b>pistes non arrêtées</b>. Aucun montant n’est exigé.</div><div class="actions"><button class="button dark">Soumettre au contrôle admin · démo</button><button class="button" type="button" id="save-agreement">Sauvegarder le brouillon</button></div><div class="status-track"><span class="done"></span><span class="${a.status ? "done" : ""}"></span><span></span></div><p class="smallnote">Statut : ${esc(a.status || "Brouillon à compléter")}</p></form><aside class="stack"><div class="card"><h3>Les étapes avant la mission</h3><ol class="checklist"><li><b>Préparation conjointe</b>Résultat, qualité, délai, prix et conditions.</li><li><b>Contrôle admin</b>Correction possible, sans garantie de résultat.</li><li><b>Signature représentée</b>Un parcours de démonstration distinct de toute signature juridique.</li></ol><button class="button small" id="simulate-review" ${a.status ? "" : "disabled"}>Simuler le retour admin</button></div>${a.reviewed ? `<div class="card"><h3>Retour admin simulé</h3><p style="margin:15px 0">Trame examinée pour cette démo. Précisez les conditions d’annulation avant toute utilisation réelle.</p><button class="button blue" id="simulate-sign">Représenter les deux signatures</button><p class="smallnote">${a.signed ? "Deux signatures représentées · aucune valeur juridique réelle." : "Aucune signature juridique ne sera créée."}</p></div>` : ""}<div class="card"><h3>Paiement · emplacement futur</h3><p style="margin-top:15px">Un prestataire externe pourra être proposé ici et dans la conversation. Montant prévu : forfait + 10 % de frais Flemme.</p><button class="button small" disabled style="margin-top:15px">Paiement non disponible</button></div></aside></div>`;
 }
 function help() {
-  return `<a class="back" href="#chat/${selected}">← Revenir à la conversation</a>${page("Tu n’as pas à rester bloqué.", "Assistant d’abord, personne Flemme ensuite si nécessaire.", "Aide & accompagnement")}<div class="conversation"><div class="chatbox"><div class="chat-head"><div class="avatar">✦</div><div><b>Assistant Flemme · simulation</b><p class="smallnote" style="margin:0">Réponses prédéfinies · aucun chatbot connecté</p></div></div><div class="messages"><div class="message">Je peux t’aider à préciser une demande, préparer un accord ou comprendre une étape. Qu’est-ce qui te bloque ?</div>${supportMessages.map((m) => `<div class="message ${m.mine ? "mine" : ""}">${esc(m.text)}</div>`).join("")}</div><form class="composer" id="support-form">${area("Décris ton besoin", "support-message", "", "required")}<button class="button dark small">Demander de l’aide · démo</button></form></div><aside class="card"><h3>Besoin d’une personne ?</h3><p style="margin:15px 0">Une personne Flemme pourra prendre le relais, initialement le fondateur. Le téléphone support est reporté.</p><button class="button" id="human-help">Solliciter une personne Flemme</button>${supportHuman ? '<div class="info blue" style="margin-top:20px">Demande simulée : aucun message envoyé au fondateur. Statut démo : en attente de prise en charge.</div>' : ""}<p class="smallnote">Aucun délai de réponse garanti.</p></aside></div>`;
+  return `${lastChat ? `<a class="back" href="#chat/${lastChat}">← Revenir à la conversation</a>` : `<a class="back" href="#home">← Accueil</a>`}${page("Tu n’as pas à rester bloqué.", "Assistant d’abord, personne Flemme ensuite si nécessaire.", "Aide & accompagnement")}<div class="conversation"><div class="chatbox"><div class="chat-head"><div class="avatar">✦</div><div><b>Assistant Flemme · simulation</b><p class="smallnote" style="margin:0">Réponses prédéfinies · aucun chatbot connecté</p></div></div><div class="messages"><div class="message">Je peux t’aider à préciser une demande, préparer un accord ou comprendre une étape. Qu’est-ce qui te bloque ?</div>${supportMessages.map((m) => `<div class="message ${m.mine ? "mine" : ""}">${esc(m.text)}</div>`).join("")}</div><form class="composer" id="support-form">${area("Décris ton besoin", "support-message", "", "required")}<button class="button dark small">Demander de l’aide · démo</button></form></div><aside class="card"><h3>Besoin d’une personne ?</h3><p style="margin:15px 0">Une personne Flemme pourra prendre le relais, initialement le fondateur. Le téléphone support est reporté.</p><button class="button" id="human-help">Solliciter une personne Flemme</button>${supportHuman ? '<div class="info blue" style="margin-top:20px">Demande simulée : aucun message envoyé au fondateur. Statut démo : en attente de prise en charge.</div>' : ""}<p class="smallnote">Aucun délai de réponse garanti.</p></aside></div>`;
 }
 function how() {
   return `${page("Moins à porter. Plus clair pour chacun.", "Une mise en relation, des échanges et un accord explicite.", "Comment ça marche")}<div class="detail-layout"><article class="card">${[
@@ -385,7 +384,7 @@ function faq() {
     ],
     [
       "Qui fixe le prix ?",
-      "Les utilisateurs discutent et négocient le prix entre eux. Le budget de la demande est facultatif : s’il est vide, il apparaît « À discuter ».",
+      "Les utilisateurs discutent et négocient le prix entre eux. Le budget de la demande est facultatif : s’il est vide, il apparaît « À discuter ». Flemme ajoute 10 % de frais au forfait convenu, payés par le Flemmard : le Brigadier reçoit le forfait entier.",
     ],
     [
       "Ma demande est-elle immédiatement publique ?",
@@ -401,7 +400,7 @@ function faq() {
     ],
     [
       "Puis-je payer ou signer dans cet aperçu ?",
-      "Non. Les signatures sont représentées sans valeur juridique réelle. Aucun paiement n’est connecté. Prestataire, frais et modalités restent à définir.",
+      "Non. Les signatures sont représentées sans valeur juridique réelle. Aucun paiement n’est connecté. Les frais sont fixés (10 % ajoutés au forfait) ; le prestataire de paiement et les modalités d’acompte restent à définir.",
     ],
     [
       "Flemme garantit-il la prestation ?",
@@ -419,7 +418,7 @@ function privacy() {
   return `${page("Le bon détail, au bon endroit.", "", "Confidentialité")}<div class="card prose"><h2>Public pour se repérer</h2><p>Après validation, le titre, la description, la catégorie, le délai approximatif, le budget indicatif, la ville ou le secteur permettent de comprendre une demande. Évite d’y mettre des informations sensibles.</p><h2>Privé pour avancer</h2><p>Adresse précise, conversations, documents et accord sont prévus dans le parcours privé. Cette maquette représente leur emplacement, sans tester de contrôle d’accès réel.</p><h2>Dans cet aperçu local</h2><p>Les données fictives et les saisies sont enregistrées dans ce navigateur. Aucun compte réel, message externe, téléversement de fichier ou paiement n’est effectué. La photo de profil éventuelle n’est affichée que pendant la session.</p><div class="info amber">Il s’agit d’une explication du parcours envisagé, pas d’une politique juridique finalisée. Les droits d’accès, la conservation des données et les formats de fichiers devront être cadrés avant une mise en service.</div></div>`;
 }
 function account() {
-  return `${page("Mon compte", "Un compte partagé par les espaces Flemmard et Brigadier.", "Paramètres")}<div class="form-layout"><form id="account-form" class="form-panel">${field("Nom affiché", "account-name", state.profile.name)}<div class="info">Identité de démonstration. E-mail, mot de passe, récupération et authentification ne sont pas connectés.</div><button class="button dark">Enregistrer localement</button></form><div class="card"><h3>Mes deux espaces</h3><div class="stack" style="margin-top:20px">${btn("Espace Flemmard", "space/flemmard/overview")}${btn("Espace Brigadier", "space/brigadier/overview")}</div><p class="smallnote">${state.signed ? "Connecté au compte démo" : "Exploration sans connexion réelle"}</p></div></div>`;
+  return `${page("Mon compte", "Un compte partagé par les espaces Flemmard et Brigadier.", "Paramètres")}<div class="form-layout"><form id="account-form" class="form-panel">${field("Nom affiché", "account-name", state.profile.name)}<div class="info">Identité de démonstration. E-mail, mot de passe, récupération et authentification ne sont pas connectés.</div><button class="button dark">Enregistrer localement</button></form><div class="card"><h3>Mes deux espaces</h3><div class="stack" style="margin-top:20px">${btn("Espace Flemmard", "space/flemmard/overview")}${btn("Espace Brigadier", "space/brigadier/overview")}</div><p class="smallnote">${state.signed ? "Connecté au compte démo" : "Exploration sans connexion réelle"}</p></div><div class="card"><h3>Repartir de zéro</h3><p style="margin:15px 0">Efface les demandes, brouillons, messages et accords de cet aperçu dans ce navigateur.</p><button class="button small" type="button" id="reset-demo">Réinitialiser la démo</button></div></div>`;
 }
 function correct() {
   draft = {
@@ -428,8 +427,9 @@ function correct() {
       "Je veux trier mes documents et préparer des dossiers faciles à retrouver.",
     category: "Administratif",
     mode: "À distance",
+    from: "correction",
   };
-  draftId = "correction";
+  draftId = null;
   return (
     `<div class="info amber"><b>Correction demandée · démo</b><p>Précise le volume de documents et le résultat attendu. La demande reste privée avant un nouvel examen.</p></div>` +
     newRequest()
@@ -444,6 +444,8 @@ function render() {
       html = home();
       break;
     case "new":
+      draft = {};
+      draftId = null;
       html = newRequest();
       break;
     case "correct":
@@ -451,14 +453,14 @@ function render() {
       break;
     case "edit": {
       let r = state.requests[Number(parts[1])];
-      draft = r ? { ...r } : {};
-      draftId = "request-" + parts[1];
+      draft = r ? { ...r, from: "request-" + parts[1] } : {};
+      draftId = null;
       html = newRequest();
       break;
     }
     case "draft":
       draft = { ...state.drafts[Number(parts[1])] };
-      draftId = Number(parts[1]);
+      draftId = state.drafts[Number(parts[1])] ? Number(parts[1]) : null;
       html = newRequest();
       break;
     case "find":
@@ -477,8 +479,10 @@ function render() {
       html = chat(parts[1] || "1");
       break;
     case "application":
-      if (parts[1]?.startsWith("draft-"))
-        state.application = state.drafts[Number(parts[1].slice(6))];
+      if (parts[1]?.startsWith("draft-")) {
+        state.applicationDraft = Number(parts[1].slice(6));
+        state.application = state.drafts[state.applicationDraft];
+      }
       html = application();
       break;
     case "agreement":
@@ -548,21 +552,11 @@ function readRequest() {
     d.city = "";
     d.address = "";
   }
+  if (draft.from) d.from = draft.from;
   return d;
 }
 function validateRequest(d) {
-  if (!d.title.trim() || !d.description.trim())
-    return "Titre et description sont nécessaires.";
-  if (!d.category) return "Choisis une catégorie.";
-  if (d.delay === "Autre" && !d.otherDelay.trim())
-    return "Précise le délai approximatif.";
-  if (d.mode !== "À distance" && !d.city.trim())
-    return "Indique une ville ou un secteur pour une tâche sur place.";
-  if (d.budget !== "" && d.range)
-    return "Choisis un budget libre ou une fourchette, pas les deux.";
-  if ([...$("#files").files].some((f) => f.size > 10 * 1024 * 1024))
-    return "Un fichier dépasse 10 Mo. Choisis un fichier plus petit pour cet aperçu.";
-  return "";
+  return checkRequest(d, [...$("#files").files]);
 }
 function saveDraft() {
   let d = readRequest();
@@ -582,16 +576,28 @@ function submitRequest() {
   }
   draft = { ...d };
   if (!state.signed) {
+    // Gardée dans le navigateur : un rechargement de l’écran de connexion ne perd pas la demande.
+    state.pending = { draft: d };
+    persist();
     go("login/submit-request");
     return;
   }
   finishRequest();
 }
 function finishRequest() {
-  let record = { ...draft, status: "En attente de validation admin" };
-  if (typeof draftId === "string" && draftId.startsWith("request-"))
-    state.requests[Number(draftId.slice(8))] = record;
+  let src = state.pending?.draft || draft;
+  delete state.pending;
+  if (!src.title) {
+    persist();
+    go("new");
+    return;
+  }
+  let { from, ...data } = src,
+    record = { ...data, status: "En attente de validation admin" },
+    index = from?.startsWith("request-") ? Number(from.slice(8)) : -1;
+  if (index >= 0 && state.requests[index]) state.requests[index] = record;
   else state.requests.push(record);
+  if (from === "correction") state.correctionSent = true;
   persist();
   draft = {};
   draftId = null;
@@ -608,9 +614,10 @@ function bind() {
   });
   on("#save-draft", "click", saveDraft);
   on("#dictate", "click", () => {
-    $("#description").value =
-      ($("#description").value ? "\n" + $("#description").value + "\n" : "") +
-      "Exemple de transcription : j’aimerais de l’aide pour remettre mon CV au propre, avec une version modifiable et une relecture.";
+    $("#description").value = appendDictation(
+      $("#description").value,
+      "Exemple de transcription : j’aimerais de l’aide pour remettre mon CV au propre, avec une version modifiable et une relecture.",
+    );
     toast(
       "Transcription d’exemple insérée. Tu peux la modifier. Aucun micro utilisé.",
     );
@@ -724,11 +731,17 @@ function bind() {
   });
   on("#draft-application", "click", () => {
     state.application = getForm("#application-form");
-    state.drafts.push({
+    let record = {
       ...state.application,
       kind: "application",
       title: "Candidature · Remettre mon CV au propre",
-    });
+    };
+    if (state.drafts[state.applicationDraft]?.kind === "application")
+      state.drafts[state.applicationDraft] = record;
+    else {
+      state.drafts.push(record);
+      state.applicationDraft = state.drafts.length - 1;
+    }
     persist();
     toast("Brouillon de candidature enregistré localement.");
   });
@@ -765,6 +778,18 @@ function bind() {
     render();
     toast("Signatures représentées. Aucun contrat juridiquement signé.");
   });
+  for (let form of ["#agreement-form", "#application-form"])
+    on(form + " [name=price]", "input", (e) => {
+      $("#tarif").innerHTML = tarifText(e.target.value);
+    });
+  on("#reset-demo", "click", () => {
+    if (!confirm("Effacer toutes les données de cet aperçu dans ce navigateur ?")) return;
+    try {
+      localStorage.removeItem(key);
+    } catch {}
+    location.hash = "home";
+    location.reload();
+  });
   on("#support-form", "submit", (e) => {
     e.preventDefault();
     let text = $("#support-message").value.trim();
@@ -795,11 +820,6 @@ document.addEventListener("click", (e) => {
     e.preventDefault();
     $("#main").focus();
     return;
-  }
-  let a = e.target.closest('a[href="#new"]');
-  if (a) {
-    draft = {};
-    draftId = null;
   }
 });
 render();

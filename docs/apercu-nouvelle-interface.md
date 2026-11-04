@@ -44,10 +44,19 @@ L’accueil actuel et l’application connectée sont conservés. La démo ne li
 - Aucun fichier n’est envoyé. Seuls ses noms sont mémorisés. La photo sélectionnée reste en mémoire pendant la session.
 - La conversation conserve des messages locaux sans les transmettre. Le chatbot répond avec un texte prédéfini et la demande d’aide humaine ne contacte personne.
 - Aucune signature juridique réelle, aucun avis réel, aucune vérification de mission réellement effectuée. Le lien entre avis et mission est illustratif.
-- Paiement désactivé : aucun prestataire externe connecté, aucun argent demandé ni encaissé. Commission éventuelle de 10 % (dont répartition 5/5), acompte de 50 %, retenue de 20 % et annulation proportionnelle restent des pistes **non arrêtées**.
+- Paiement désactivé : aucun prestataire externe connecté, aucun argent demandé ni encaissé. La commission est **arrêtée** (décision du 3 novembre 2026) : 10 % ajoutés au forfait du Brigadier, payés par le Flemmard, calculés par `commission()` de `packages/shared`. Acompte de 50 %, retenue de 20 % et annulation proportionnelle restent des pistes **non arrêtées**.
 - Un accord et une candidature principaux servent la démonstration. Le modèle de données n’est pas prêt pour une gestion multi-missions réelle.
 - Les textes publics/privés représentent le parcours souhaité : cette page ne vérifie pas les permissions réelles ni les durées de conservation.
 - Aucun premium, badge vérifié/privilégié, annuaire, recommandation automatique ou paiement d’engagement Brigadier n’est ajouté.
+
+## Améliorations après revue (PR suivante)
+
+- **Modèle économique aligné** : la candidature, l’accord, la conversation, la recherche et la FAQ affichent « forfait + 10 % de frais Flemme = total payé par le Flemmard », recalculé à la saisie du prix, avec la même fonction que l’app connectée.
+- **Règles testables** : budget affiché, contrôle du dépôt, recherche/filtres/tri, calcul du tarif et dictée sont dans `apps/web/src/apercu/logique.ts`, couverts par `apps/web/tests/apercu.test.ts`.
+- **Corrections** : modifier une demande puis enregistrer un brouillon et envoyer ne crée plus de doublon ; la demande en attente survit à un rechargement de l’écran de connexion (avant : demande vide enregistrée) ; la demande « correction demandée » disparaît une fois corrigée ; un brouillon de candidature repris n’est plus dupliqué à chaque sauvegarde ; la dictée ajoute le texte à la fin sans saut de ligne parasite ; « Déléguer ma flemme » repart toujours d’un formulaire vide, même par l’historique du navigateur ; l’aide ne propose « Revenir à la conversation » que si une conversation a été ouverte.
+- **Lisibilité** : les demandes envoyées affichent leur budget et leur délai.
+- **Démo** : bouton « Réinitialiser la démo » dans Mon compte.
+- **Accessibilité** : `aria-current` sur l’espace et l’onglet actifs, bascule de rôle déclarée comme groupe.
 
 ## Vérification
 
