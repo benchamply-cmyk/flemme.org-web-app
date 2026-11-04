@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta
+      name="description"
+      content="Démonstration interactive de la future interface Flemme. Données fictives, aucun paiement réel."
+    />
+    <meta name="theme-color" content="#e3eeff" />
+    <title>FLEMME · aperçu de la nouvelle version</title>
+    <link rel="stylesheet" href="/src/apercu/style.css" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Aller au contenu</a>
+    <div class="demo-bar">
+      APERÇU INTERACTIF <span>• Données fictives • Aucun paiement réel</span>
+    </div>
+    <header>
+      <a href="#home" aria-label="Accueil Flemme"
+        ><img src="/flemme-logo.png" alt="FLEMME"
+      /></a>
+      <nav aria-label="Navigation principale">
+        <a href="#how">Comment ça marche</a
+        ><a href="#faq">Questions fréquentes</a
+        ><a class="button dark small" href="#space"
+          >Mon espace <span>↗</span></a
+        >
+      </nav>
+    </header>
+    <main id="main" tabindex="-1"></main>
+    <footer>
+      <a href="#home"><b>FLEMME.</b></a
+      ><span>Le droit d’avoir la flemme.</span
+      ><a href="#privacy">Confidentialité</a
+      ><a href="#help">Aide & accompagnement</a
+      ><span class="micro">Aperçu du 4 novembre 2026</span>
+    </footer>
+    <div id="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="/src/apercu/app.js"></script>
+  </body>
+</html>
