@@ -4,6 +4,10 @@ Chaque PR ajoute une ligne sous « À venir ». À chaque mise en production (`p
 
 ## À venir
 
+## v6.3000 — 4 nov. 2026
+
+Mise en production de `preprod` (PR `preprod` → `prod`). Aucune migration de base de données.
+
 - Vitrine (`index.html`) et accueil de l’app alignés sur l’aperçu validé par Ben : titre « Passe le relais. Ou prends-le. », nouveau paragraphe, deux grands boutons (Déléguer ma flemme / Résoudre une flemme), 6 exemples qui défilent, parcours en 5 étapes dans « Comment ça marche », phrase « Flemme met en relation… » en pied de page.
 
 ## v6.2000 — 4 nov. 2026
