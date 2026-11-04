@@ -24,5 +24,7 @@ export const styles = StyleSheet.create({
   field: { gap: 7, marginTop: 6 }, label: { color: colors.ink, fontSize: 14, fontWeight: '600' }, input: { backgroundColor: colors.soft, borderRadius: 14, borderColor: colors.border, borderWidth: 2, padding: 13, color: colors.ink, fontSize: 16, minHeight: 48 }, textarea: { minHeight: 100, textAlignVertical: 'top' },
   note: { color: colors.muted, fontSize: 12, lineHeight: 18 }, divider: { height: 1, backgroundColor: colors.border }, bubble: { backgroundColor: colors.soft, borderRadius: 15, padding: 16, gap: 8 }, history: { borderLeftWidth: 2, borderColor: colors.accent, paddingLeft: 14 },
   nav: { borderTopWidth: 1, borderColor: colors.border, padding: 10, flexDirection: 'row', gap: 8 }, navItem: { flex: 1, borderRadius: 14, minHeight: 48, paddingHorizontal: 6, justifyContent: 'center', alignItems: 'center' }, navSelected: { backgroundColor: colors.accent }, navText: { color: colors.ink, fontSize: 12, fontWeight: '600', textAlign: 'center' },
+  option: { borderRadius: 16, borderWidth: 2, borderColor: colors.border, padding: 12, minHeight: 48, justifyContent: 'center', backgroundColor: colors.surface },
+  optionSelected: { backgroundColor: colors.accent, borderColor: colors.ink },
   footer: { textAlign: 'center', fontSize: 11, color: colors.muted, paddingBottom: 4 }, error: { padding: 14, backgroundColor: '#f8e9e4', borderRadius: 12 }, notice: { padding: 14, backgroundColor: colors.accent, borderColor: colors.ink, borderWidth: 1, borderRadius: 12, color: colors.ink, fontSize: 14 },
 });

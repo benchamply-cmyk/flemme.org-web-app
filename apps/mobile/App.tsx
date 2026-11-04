@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, BackHandler, Image, KeyboardAvoidingView, Platform, Pressable, RefreshControl, ScrollView, Text, TextInput, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { backLabel, colors, footer, parentScreen, rights } from '../../packages/shared/src/index.ts';
-import type { Command, Input, Screen, Tab } from '../../packages/shared/src/index.ts';
+import { backLabel, colors, footer, parentScreen, rights, taskFields, money } from '../../packages/shared/src/index.ts';
+import type { Command, Input, Option, Screen, Tab, Task } from '../../packages/shared/src/index.ts';
 import { session, useSession } from './src/session';
 import { Action } from './src/ui/composants';
 import { styles } from './src/ui/styles';
@@ -21,6 +21,7 @@ import { Signalement } from './src/ecrans/Signalement';
 // Règles, état et textes partagés : packages/shared. Écrans : src/ecrans. Pendant web : apps/web/src/App.tsx.
 function Mobile() {
   const state = useSession();
+  const scroll = useRef<React.ComponentRef<typeof ScrollView>>(null);
   const { gateway, actorId, busy, ready, error, notice, tasks } = state;
   const [tab, setTab] = useState<Tab>('mine'), [screen, setScreen] = useState<Screen>('home');
   const [taskId, setTaskId] = useState(''), [offerId, setOfferId] = useState('');
@@ -29,17 +30,26 @@ function Mobile() {
 
   useEffect(() => { void session.initialize(); }, []);
   // `visit` remonte l’écran à chaque navigation : son état local (historique déplié…) repart de zéro.
-  function navigate(next: Screen) { setScreen(next); setDraft({}); setVisit(v => v + 1); session.clearMessages(); }
+  function navigate(next: Screen) { setScreen(next); setDraft(next === 'edit' && task ? taskFields(task, money) : {}); setVisit(v => v + 1); session.clearMessages(); }
+  useEffect(() => { scroll.current?.scrollTo({ y: 0, animated: false }); }, [visit]);
   function back() { navigate(parentScreen(screen)); }
   useEffect(() => { const s = BackHandler.addEventListener('hardwareBackPress', () => { if (screen === 'home') return false; back(); return true; }); return () => s.remove(); }, [screen]);
-  async function mutate(action: Command | 'create', data: Input, next: Screen = 'detail', message = '') {
-    await session.mutate(action, taskId, data, t => { setTaskId(t.id); navigate(next); session.notify(message); });
+  async function mutate(action: Command | 'create', data: Input, next: Screen = 'detail', message: string | ((task: Task) => string) = '') {
+    await session.mutate(action, taskId, data, t => { setTaskId(t.id); navigate(next); session.notify(typeof message === 'function' ? message(t) : message); });
   }
-  function field(label: string, name: string, { multiline = false, numeric = false, secret = false }: FieldOptions = {}) {
-    return <View style={styles.field} key={name}><Text style={styles.label}>{label}</Text><TextInput accessibilityLabel={label} value={draft[name] || ''} onChangeText={value => setDraft(d => ({ ...d, [name]: value }))} placeholder={numeric ? 'En €' : ''} placeholderTextColor={colors.muted} multiline={multiline} maxLength={multiline ? 1000 : name === 'password' ? 200 : 100} keyboardType={numeric ? 'decimal-pad' : name === 'email' ? 'email-address' : 'default'} autoCapitalize={secret || name === 'email' ? 'none' : 'sentences'} autoCorrect={!secret && name !== 'email'} secureTextEntry={secret} editable={!busy} style={[styles.input, multiline && styles.textarea]}/></View>;
+  function field(label: string, name: string, { multiline = false, numeric = false, secret = false, hint = '', max }: FieldOptions = {}) {
+    return <View style={styles.field} key={name}><Text style={styles.label}>{label}</Text><TextInput accessibilityLabel={label} value={draft[name] || ''} onChangeText={value => setDraft(d => ({ ...d, [name]: value }))} placeholder={hint || (numeric ? 'En €' : '')} placeholderTextColor={colors.muted} multiline={multiline} maxLength={max ?? (multiline ? 1000 : name === 'password' ? 200 : 100)} keyboardType={numeric ? 'decimal-pad' : name === 'email' ? 'email-address' : 'default'} autoCapitalize={secret || name === 'email' ? 'none' : 'sentences'} autoCorrect={!secret && name !== 'email'} secureTextEntry={secret} editable={!busy} style={[styles.input, multiline && styles.textarea]}/></View>;
+  }
+  function choice(label: string, name: string, options: readonly Option[], empty?: string) {
+    const value = draft[name] || (name === 'mode' ? 'distance' : '');
+    const items = empty ? [{ value: '', label: empty }, ...options] : options;
+    return <View style={styles.field} accessibilityLabel={label}><Text style={styles.label}>{label}</Text><View style={styles.row}>
+      {items.map(o => <Pressable key={o.value} accessibilityRole="radio" accessibilityLabel={o.label} accessibilityState={{ checked: value === o.value, disabled: busy }} disabled={busy} onPress={() => setDraft(d => ({ ...d, [name]: o.value, ...(name === 'budgetRange' && o.value ? { amount: '' } : {}) }))} style={[styles.option, value === o.value && styles.optionSelected]}><Text style={styles.strong}>{o.label}</Text></Pressable>)}
+    </View></View>;
   }
   const ctx: Ctx = {
-    state, screen, tab, offerId, draft, task, offer, can: rights(task, actorId), field, navigate, mutate,
+    state, screen, tab, offerId, draft, task, offer, can: rights(task, actorId), field, choice, navigate, mutate,
+    resumeDraft: saved => { navigate('new'); setDraft({ ...saved.fields }); },
     openList: next => { setTab(next); navigate('list'); },
     openTask: t => { setTaskId(t.id); navigate('detail'); },
     openOffer: o => { setOfferId(o.id); navigate('offer'); },
@@ -54,7 +64,7 @@ function Mobile() {
   else if (!gateway) content = <><Text style={styles.heading}>Chargement interrompu</Text><Action onPress={() => session.initialize()}>Réessayer sans effacer mes données</Action></>;
   else if (screen === 'account') content = <Compte {...ctx}/>;
   else if (screen === 'home') content = <Accueil {...ctx}/>;
-  else if (screen === 'new') content = <NouvelleFlemme {...ctx}/>;
+  else if ((screen === 'new' || screen === 'edit')) content = <NouvelleFlemme key={visit} {...ctx}/>;
   else if (screen === 'list') content = <Listes {...ctx}/>;
   else if (!task) content = <><Text style={styles.heading}>Flemme indisponible</Text><Action secondary onPress={() => navigate('list')}>Revenir à la liste</Action></>;
   else if (screen === 'report') content = <Signalement {...ctx}/>;
@@ -63,7 +73,7 @@ function Mobile() {
 
   return <SafeAreaView style={styles.safe} edges={['top', 'left', 'right', 'bottom']}><StatusBar style="dark"/><KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
     <View style={styles.header}><Image source={require('./assets/flemme-logo.png')} accessibilityLabel="FLEMME" resizeMode="contain" style={styles.brandLogo}/>{actorId !== '' && <Pressable accessibilityRole="button" accessibilityLabel="Mon compte" onPress={() => navigate('account')} style={styles.avatar}><Text style={styles.strong}>{gateway?.actor.name.slice(0, 1).toUpperCase()}</Text></Pressable>}</View>
-    <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled" refreshControl={screen === 'list' && actorId ? <RefreshControl refreshing={busy} onRefresh={() => session.refresh()} tintColor={colors.ink}/> : undefined}>
+    <ScrollView ref={scroll} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled" refreshControl={screen === 'list' && actorId ? <RefreshControl refreshing={busy} onRefresh={() => session.refresh()} tintColor={colors.ink}/> : undefined}>
       {screen !== 'home' && actorId !== '' && <Action secondary onPress={back}>{backLabel(screen)}</Action>}
       {!!error && <View accessibilityRole="alert" style={styles.error}><Text style={styles.body}>{error}</Text></View>}
       {!!notice && <Text accessibilityLiveRegion="polite" style={styles.notice}>{notice}</Text>}
