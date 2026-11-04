@@ -157,6 +157,64 @@ main {
   padding: 10px 18px;
   font-size: 12px;
 }
+/* Boutons d’appel de l’accueil : un par rôle, plus grands, avec une précision sous le libellé. */
+.button.cta {
+  min-height: 72px;
+  padding: 14px 16px 14px 26px;
+  gap: 22px;
+  justify-content: space-between;
+  text-align: left;
+  font-size: 18px;
+  box-shadow: var(--shadow);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.button.cta:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 8px 0 var(--violet);
+}
+.button.cta:active {
+  transform: translate(3px, 4px);
+  box-shadow: 2px 2px 0 var(--violet);
+}
+.button.cta.green {
+  background: var(--green);
+}
+.cta-text {
+  display: grid;
+  gap: 3px;
+}
+.cta-text b {
+  font-weight: 850;
+  letter-spacing: -0.2px;
+}
+.cta-text small {
+  font-size: 12.5px;
+  font-weight: 500;
+  opacity: 0.8;
+}
+.cta-arrow {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--blue);
+  color: var(--ink);
+  font-size: 18px;
+}
+.button.cta.green .cta-arrow {
+  background: var(--ink);
+  color: var(--green);
+}
+@media (prefers-reduced-motion: reduce) {
+  .button.cta,
+  .button.cta:hover,
+  .button.cta:active {
+    transition: none;
+    transform: none;
+  }
+}
 .button.ghost {
   border: 1px solid #c0bed1;
   background: transparent;
@@ -954,6 +1012,11 @@ details p {
   }
   .hero .actions .button {
     width: 100%;
+  }
+  .button.cta {
+    font-size: 17px;
+    min-height: 68px;
+    padding: 12px 12px 12px 22px;
   }
   .illustration {
     max-width: 360px;
