@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
-import { date, money, notices, offerStatus, parseMoney, paymentNote, paymentStatus, taskStatus } from '../../../../packages/shared/src/index.ts';
+import { budgetText, canEdit, categoryLabel, deadlineLabel, modeLabel, reviewLabel, date, money, notices, offerStatus, parseMoney, paymentNote, paymentStatus, taskStatus } from '../../../../packages/shared/src/index.ts';
 import { Action, Bill } from '../ui/composants';
 import { styles } from '../ui/styles';
 import type { Ctx } from './contexte';
 
 // Fiche d’une flemme : accord, paiement déclaratif, propositions, signalements et historique.
-export function Fiche({ state: { busy }, task, can, draft, field, navigate, openOffer, mutate, validated }: Ctx) {
+export function Fiche({ state: { busy, actorId }, task, can, draft, field, navigate, openOffer, mutate, validated }: Ctx) {
   const [showHistory, setShowHistory] = useState(false);
   if (!task) return null;
   const { agreement } = task;
   const preview = (() => { try { const n = parseMoney(draft.amount || ''); return n != null ? <Bill amount={n}/> : null; } catch { return null; } })();
-  return <><Text style={styles.tag}>{taskStatus[task.status]}{task.status === 'open' ? ' · sans expiration' : ''}</Text><Text style={styles.heading}>{task.title}</Text><Text style={styles.muted}>{task.place} · déposée par {task.owner.name}</Text><Text style={styles.body}>{task.details}</Text>
-    <Text style={styles.strong}>{task.budget == null ? 'Prix à proposer' : 'Budget indicatif : ' + money(task.budget) + ' hors frais'}</Text>
+  return <><Text style={styles.tag}>{taskStatus[task.status]}{task.status === 'open' ? ' · sans expiration' : ''}</Text><Text style={styles.heading}>{task.title}</Text><Text style={styles.muted}>{[categoryLabel(task), task.place, modeLabel(task)].filter(Boolean).join(' · ')} · déposée par {task.owner.name}</Text><Text style={styles.body}>{task.details}</Text>
+    {can.isOwner && task.review && task.review !== 'published' && <View accessibilityRole="alert" style={styles.notice}><Text style={styles.strong}>{reviewLabel[task.review]}</Text>{!!task.reviewNote && <Text style={styles.body}>{task.reviewNote}</Text>}{task.review === 'pending' && <Text style={styles.note}>Personne d’autre ne la voit pour l’instant.</Text>}</View>}
+    <Text style={styles.strong}>Budget indicatif : {budgetText(task, money)} · Délai : {deadlineLabel(task)}</Text>
+    {!!task.address && (can.isOwner || can.isBrigadier) && <Text style={styles.note}>Adresse précise · privée : {task.address}</Text>}
+    {canEdit(task, actorId) && <Action secondary disabled={busy} onPress={() => navigate('edit')}>{task.review === 'changes_requested' ? 'Corriger ma demande' : 'Modifier ma demande'}</Action>}
     {agreement && <><Text style={styles.sectionTitle}>{agreement.brigadier.name} prend le relais</Text><Text style={styles.body}>{agreement.scope}</Text><Text style={styles.muted}>{agreement.slot}</Text><Bill amount={agreement.amount} agreed={agreement}/>
       <Text style={styles.note}>{paymentNote(agreement, false, money)}</Text>
       {can.canComplete && <Action disabled={busy} onPress={() => mutate('complete', {})}>Confirmer la tâche terminée</Action>}
