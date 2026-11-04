@@ -782,8 +782,15 @@ function bind() {
     on(form + " [name=price]", "input", (e) => {
       $("#tarif").innerHTML = tarifText(e.target.value);
     });
-  on("#reset-demo", "click", () => {
-    if (!confirm("Effacer toutes les données de cet aperçu dans ce navigateur ?")) return;
+  on("#reset-demo", "click", (e) => {
+    // Confirmation dans la page : confirm() est bloqué dans certains cadres (artefact, aperçus intégrés).
+    let b = e.currentTarget;
+    if (!b.dataset.armed) {
+      b.dataset.armed = "1";
+      b.textContent = "Confirmer : tout effacer";
+      b.classList.add("dark");
+      return;
+    }
     try {
       localStorage.removeItem(key);
     } catch {}
