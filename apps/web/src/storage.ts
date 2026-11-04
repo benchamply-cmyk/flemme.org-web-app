@@ -1,5 +1,5 @@
-import type { DemoState, TokenStorage } from '../../mobile/src/gateway.ts';
-import { newId } from '../../mobile/src/gateway.ts';
+import type { DemoState, TokenStorage } from '../../../packages/shared/src/gateway.ts';
+import { newId } from '../../../packages/shared/src/gateway.ts';
 
 // Équivalent navigateur de apps/mobile/src/storage.ts.
 // Démo : mêmes snapshots additifs que le mobile, dans localStorage au lieu de fichiers.
@@ -36,9 +36,10 @@ export async function writeDemo(state: DemoState, store: Storage = localStorage)
 
 // Le mobile garde le jeton de renouvellement dans SecureStore. Le navigateur n’a pas de coffre :
 // sessionStorage limite son exposition à l’onglet ouvert (reconnexion après fermeture).
-const tokenKey = 'flemme-web-refresh';
-export const tokens: TokenStorage = {
+// La page admin a sa propre clé : se déconnecter de l’une ne ferme pas l’autre.
+export const tokenStore = (tokenKey: string): TokenStorage => ({
   get: async () => sessionStorage.getItem(tokenKey),
   set: async value => sessionStorage.setItem(tokenKey, value),
   clear: async () => sessionStorage.removeItem(tokenKey),
-};
+});
+export const tokens = tokenStore('flemme-web-refresh');

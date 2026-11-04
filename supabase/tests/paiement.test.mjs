@@ -1,4 +1,4 @@
-// Tests de la migration commission + paiement en ligne (20261103130000) sur PGlite, sans Stripe ni réseau.
+// Tests de la migration commission + paiement en ligne (20261103140000) sur PGlite, sans Stripe ni réseau.
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
@@ -17,7 +17,7 @@ const [owner, brigadier, other, unconfirmed] = [randomUUID(), randomUUID(), rand
 const dir = new URL('../migrations/', import.meta.url);
 const files = (await readdir(dir)).filter(f => f.endsWith('.sql')).sort();
 // Une flemme acceptée AVANT la migration doit garder ses 10 % ajoutés.
-for (const file of files.filter(f => f < '20261103130000')) await db.exec(await readFile(new URL(file, dir), 'utf8'));
+for (const file of files.filter(f => f < '20261103140000')) await db.exec(await readFile(new URL(file, dir), 'utf8'));
 for (const [i, id] of [owner, brigadier, other, unconfirmed].entries())
   await db.query('insert into auth.users values($1,$2,null,$3)', [id, `m${i}@example.com`, i === 3 ? null : new Date()]);
 
@@ -35,14 +35,14 @@ async function agreed(amount) {
 }
 const before = await agreed(4005);
 await db.exec('reset role');
-for (const file of files.filter(f => f >= '20261103130000')) await db.exec(await readFile(new URL(file, dir), 'utf8'));
+for (const file of files.filter(f => f >= '20261103140000')) await db.exec(await readFile(new URL(file, dir), 'utf8'));
 await actor(owner);
 let t = (await api('list')).tasks.find(x => x.id === before.id);
 assert.deepEqual([t.agreement.commission, t.agreement.total, t.agreement.payout, t.agreement.rateBps, t.agreement.model], [401, 4406, 4005, 1000, 'ajout']);
 
-// Réglage serveur identique à COMMISSION de apps/mobile/src/domain.ts.
+// Réglage serveur identique à COMMISSION de packages/shared/src/domain.ts.
 await db.exec('reset role');
-const domain = await readFile(new URL('../../apps/mobile/src/domain.ts', import.meta.url), 'utf8');
+const domain = await readFile(new URL('../../packages/shared/src/domain.ts', import.meta.url), 'utf8');
 const [, model, bps] = domain.match(/COMMISSION: CommissionConfig = \{ model: '(\w+)', rateBps: (\d+) \}/);
 assert.deepEqual((await db.query('select commission_model, commission_bps from flemme_v2.settings')).rows, [{ commission_model: model, commission_bps: Number(bps) }]);
 await assert.rejects(db.query('insert into flemme_v2.settings(id) values(false)'));

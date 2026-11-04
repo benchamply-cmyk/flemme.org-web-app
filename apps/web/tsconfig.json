@@ -11,5 +11,5 @@
     "skipLibCheck": true,
     "types": ["vite/client"]
   },
-  "include": ["src", "../mobile/src/domain.ts", "../mobile/src/gateway.ts"]
+  "include": ["src", "../../packages/shared/src"]
 }

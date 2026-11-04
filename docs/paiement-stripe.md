@@ -5,8 +5,8 @@ Statut : **brouillon, rien n'est branché**. Aucun compte Stripe n'a été cré�
 ## Ce que fait cette version
 
 1. **La commission est configurable.** Un seul réglage, en deux endroits qui doivent rester identiques (un test le vérifie) :
-   - `COMMISSION` dans `apps/mobile/src/domain.ts`, pour l'affichage (vitrine, app web, app mobile) ;
-   - la table `flemme_v2.settings` (migration `supabase/migrations/20261103130000_flemme_v2_commission_paiement.sql`), qui fait foi au moment de l'accord.
+   - `COMMISSION` dans `packages/shared/src/domain.ts`, pour l'affichage (vitrine, app web, app mobile) ;
+   - la table `flemme_v2.settings` (migration `supabase/migrations/20261103140000_flemme_v2_commission_paiement.sql`), qui fait foi au moment de l'accord.
 
    Deux modèles sont prévus :
 
@@ -32,7 +32,7 @@ FLEMME ne touche jamais la part du Brigadier : c'est Stripe, établissement de p
 
 | Fichier | Rôle |
 |---|---|
-| `supabase/migrations/20261103130000_flemme_v2_commission_paiement.sql` | Table `settings`, taux figé sur chaque flemme, comptes Stripe des Brigadiers, sessions de paiement, RPC `flemme_paiement_api` réservée à `service_role` |
+| `supabase/migrations/20261103140000_flemme_v2_commission_paiement.sql` | Table `settings`, taux figé sur chaque flemme, comptes Stripe des Brigadiers, sessions de paiement, RPC `flemme_paiement_api` réservée à `service_role` |
 | `supabase/functions/` | Fonctions Edge `stripe-onboarding`, `stripe-checkout`, `stripe-webhook` (logique dans `_shared/paiement.ts`) |
 | `supabase/tests/paiement.test.mjs` | Tests SQL de la migration (PGlite) : accords existants, réglage, droits, montants, webhook rejoué, doublon |
 | `supabase/tests/functions.test.ts` | Tests des fonctions avec un faux Stripe : signature, montants, refus, idempotence |

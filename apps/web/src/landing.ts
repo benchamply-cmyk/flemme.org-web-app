@@ -1,4 +1,4 @@
-import { money, parseMoney, price } from '../../mobile/src/domain.ts';
+import { money, parseMoney, price } from '../../../packages/shared/src/domain.ts';
 import './styles.css';
 import './landing.css';
 

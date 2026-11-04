@@ -1,11 +1,11 @@
 -- FLEMME V2 : commission configurable et encaissement en ligne avec Stripe Connect.
--- Additif, après 20261103120100_flemme_v2_api.sql. Sans changement de réglage, le comportement reste
+-- Additif, après 20261103130000_flemme_v2_admin.sql (le type d'événement « admin » est conservé). Sans changement de réglage, le comportement reste
 -- identique : commission de 10 % ajoutée au forfait (décision de Ben du 03/11/2026).
 -- Le paiement en ligne ne sert que si les fonctions Edge de supabase/functions sont déployées
 -- (voir docs/paiement-stripe.md). Sinon le paiement direct déclaratif continue comme avant.
 
 -- 1. Réglage de la commission (une seule ligne). Doit rester identique à COMMISSION dans
---    apps/mobile/src/domain.ts (vérifié par supabase/tests/paiement.test.mjs).
+--    packages/shared/src/domain.ts (vérifié par supabase/tests/paiement.test.mjs).
 --      ajout       : commission ajoutée au forfait du Brigadier (1000 = 10 %).
 --      prelevement : commission prise sur le forfait (3500 = 65 % reversés au Brigadier).
 --    Un changement ne vaut que pour les accords conclus ensuite.
@@ -51,7 +51,7 @@ create unique index payments_one_paid on flemme_v2.payments (task_id) where stat
 create index payments_task on flemme_v2.payments (task_id, created_at desc);
 alter table flemme_v2.events drop constraint events_kind_check;
 alter table flemme_v2.events add constraint events_kind_check check (kind in ('create', 'offer', 'message', 'accept', 'decline',
-  'complete', 'declare_payment', 'confirm_payment', 'report', 'online_payment'));
+  'complete', 'declare_payment', 'confirm_payment', 'report', 'admin', 'online_payment'));
 
 alter table flemme_v2.settings enable row level security;
 alter table flemme_v2.brigadier_accounts enable row level security;
@@ -355,8 +355,8 @@ begin
   raise exception 'Action inconnue';
 end $$;
 
-revoke all on all functions in schema flemme_v2 from public, anon, authenticated;
-grant execute on function flemme_v2.execute(text, uuid, jsonb, uuid) to authenticated;
+-- Seules les nouvelles fonctions sont fermées : les droits existants (execute, admin_execute...) restent tels quels.
+revoke all on function flemme_v2.rate_label(integer), flemme_v2.paiement(text, jsonb) from public, anon, authenticated;
 
 -- Point d'entrée PostgREST des fonctions Edge : ni anon ni authenticated.
 create function public.flemme_paiement_api(p_action text, p_data jsonb default '{}')

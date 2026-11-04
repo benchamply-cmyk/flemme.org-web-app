@@ -1,0 +1,13 @@
+{
+  "name": "@flemme/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Règles métier, accès aux données et état de l’app, communs à apps/web et apps/mobile.",
+  "scripts": {
+    "test": "node --experimental-strip-types --test tests/*.test.ts"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  }
+}

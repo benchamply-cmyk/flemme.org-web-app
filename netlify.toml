@@ -4,17 +4,37 @@
   base = "apps/web"
   command = "npm run build"
   publish = "dist"
-  # Ne reconstruit que si le site ou les règles partagées de l'app mobile ont changé.
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ../mobile/src ../../netlify.toml"
+  # Ne reconstruit que si le site ou le code partagé avec l'app mobile (packages/shared) ont changé.
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ../../packages/shared ../../netlify.toml"
 
 [build.environment]
   NODE_VERSION = "22"
+  # Mode réel : VITE_SUPABASE_URL et VITE_SUPABASE_PUBLISHABLE_KEY se règlent dans l'interface Netlify
+  # (Environment variables, par contexte de déploiement), pas ici. Sans elles : démo locale.
+  # Voir docs/supabase-mise-en-service.md.
 
 [[headers]]
   for = "/*"
   [headers.values]
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Page admin : jamais indexée, jamais mise en cache, jamais affichée dans un cadre.
+[[headers]]
+  for = "/admin*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"
+    X-Frame-Options = "DENY"
+
+# Fonctions Netlify (relatif à « base ») : /api/alerte reçoit les alertes envoyées par Supabase.
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
 
 # Anciennes adresses du site historique (dépôt FlemmeV2.0) : on renvoie vers
 # le nouvel équivalent plutôt qu'une 404. 302 tant que la refonte n'est pas figée.
@@ -35,7 +55,7 @@
 
 [[redirects]]
   from = "/gestionadmin*"
-  to = "/"
+  to = "/admin"
   status = 302
 
 [[redirects]]
