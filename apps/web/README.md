@@ -3,11 +3,11 @@
 Nouveau site, indépendant du site historique flemme.org (dossier `flemme-web-beta` du dépôt FlemmeV2.0), qui reprend le modèle de `apps/mobile` : deux actions (« Mes flemmes », « Résoudre une flemme »), des Brigadiers qui proposent un forfait et une commission FLEMME de 10 % ajoutée au forfait accepté.
 
 - `index.html` : vitrine (les deux actions, les quatre étapes, un calculateur du prix et ce que la version de test ne fait pas).
-- `app.html` : le parcours de l’app dans le navigateur, avec les mêmes écrans et les mêmes textes que `apps/mobile/App.tsx`.
+- `app.html` : le parcours de l’app dans le navigateur, avec les mêmes écrans et les mêmes textes que l’app mobile. `src/App.tsx` gère la navigation et choisit l’écran ; chaque écran est un fichier de `src/ecrans/`, avec le même nom que son pendant mobile.
 
 ## Une seule source pour les règles
 
-Le site n’a pas sa propre copie des règles métier. Il importe directement `../mobile/src/domain.ts` (montants, commission, droits, historique) et `../mobile/src/gateway.ts` (démo locale et connecteur Supabase). Toute correction faite pour le mobile s’applique donc au site, et inversement. Seul le stockage diffère (`src/storage.ts`) :
+Le site n’a pas sa propre copie des règles métier. Il importe `../../packages/shared` : montants, commission et droits (`domain.ts`), démo locale et connecteur Supabase (`gateway.ts`), état de l’app et envoi des actions (`session.ts`), parcours (`ecrans.ts`) et textes calculés (`textes.ts`). Toute correction faite là s’applique au site et au mobile. Seuls le stockage (`src/storage.ts`) et la navigation diffèrent :
 
 | | Mobile | Web |
 |---|---|---|
@@ -37,7 +37,7 @@ Mise en service sur flemme.org (installation SQL, réglages Supabase et Netlify,
 ## Vérifications
 
     npm run typecheck
-    npm test
+    npm test          # tests du site et de packages/shared
     npm run build
 
 `npm run build` produit `dist/` (site statique). Le `netlify.toml` à la racine du dépôt publie ce dossier sur https://flemme.org (projet Netlify flemmeorg) (base `apps/web`, commande `npm run build`, dossier `dist`, Node 22).

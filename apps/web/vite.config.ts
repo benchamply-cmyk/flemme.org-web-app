@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { supabaseConfigProblem } from './src/supabaseConfig.ts';
 
 // Deux pages : la vitrine (index.html) et le parcours de l’app (app.html).
-// Les règles métier viennent de ../mobile/src : Vite doit pouvoir lire ce dossier.
+// Les règles métier et l’état de l’app viennent de ../../packages/shared : Vite doit pouvoir lire ce dossier.
 export default defineConfig(({ command, mode }) => {
   // VITE_SUPABASE_* viennent de .env en local, des variables d’environnement Netlify en ligne.
   // Au build, une configuration à moitié remplie ou une clé secrète arrête tout : rien n’est publié.
@@ -13,9 +13,9 @@ export default defineConfig(({ command, mode }) => {
   if (problem && command === 'build') throw new Error(problem);
   return {
     plugins: [react()],
-    // Sans cela, Vite lirait apps/mobile/tsconfig.json pour domain.ts, qui étend une config Expo absente ici.
+    // Toujours la config TypeScript du site, y compris pour les fichiers de packages/shared.
     tsconfig: './tsconfig.json',
-    server: { fs: { allow: ['..'] } },
+    server: { fs: { allow: ['../..'] } },
     build: {
       rollupOptions: {
         input: {

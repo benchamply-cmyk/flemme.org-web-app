@@ -1,4 +1,4 @@
-import { isSecretKey } from '../../mobile/src/gateway.ts';
+import { isSecretKey } from '../../../packages/shared/src/gateway.ts';
 
 // Vérifie VITE_SUPABASE_URL et VITE_SUPABASE_PUBLISHABLE_KEY.
 // Utilisé au build (vite.config.ts : le build échoue) et dans l’app (message à l’écran).

@@ -1,5 +1,5 @@
-import type { DemoState, TokenStorage } from '../../mobile/src/gateway.ts';
-import { newId } from '../../mobile/src/gateway.ts';
+import type { DemoState, TokenStorage } from '../../../packages/shared/src/gateway.ts';
+import { newId } from '../../../packages/shared/src/gateway.ts';
 
 // Équivalent navigateur de apps/mobile/src/storage.ts.
 // Démo : mêmes snapshots additifs que le mobile, dans localStorage au lieu de fichiers.

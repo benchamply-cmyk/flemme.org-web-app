@@ -3,6 +3,7 @@
 Chaque PR ajoute une ligne sous « À venir ». À chaque mise en production (`preprod` → `prod`), ces lignes passent dans une section datée et versionnée.
 
 ## À venir
+- Une seule source pour le site et l’app : nouveau dossier `packages/shared` (règles métier, accès aux données, état de l’app, droits et textes communs, avec leurs tests), et découpage des deux `App.tsx` en un fichier par écran (`src/ecrans/`). Aucun changement visible pour l’utilisateur.
 - Flemme Manager repris de FlemmeV2.0 dans `apps/manager` (code, SQL Supabase, tests et CI `manager.yml`), avec la procédure pour rebrancher le service Render sur ce dépôt (`docs/manager-render.md`). Scripts de reprise des comptes de l'ancien /espace (`supabase/reprise-espace/`, testés sur le schéma `flemme_v2`, après la PR #9) et procédure (`docs/migration-comptes-espace.md`). Rien n'est encore appliqué sur Render ni sur Supabase.
 
 ## v6.1000 — 3 nov. 2026
