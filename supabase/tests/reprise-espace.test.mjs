@@ -8,7 +8,7 @@ const db = new PGlite();
 const script = name => readFile(new URL('../reprise-espace/' + name, import.meta.url), 'utf8');
 // Sous-ensemble de Supabase et de l'ancien espace (FlemmeV2.0/supabase/espace.sql).
 await db.exec(`
-  create role anon; create role authenticated; create schema auth;
+  create role anon; create role authenticated; create role service_role; create schema auth;
   create table auth.users(id uuid primary key, email text, raw_user_meta_data jsonb, email_confirmed_at timestamptz,
     encrypted_password text, last_sign_in_at timestamptz);
   create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;

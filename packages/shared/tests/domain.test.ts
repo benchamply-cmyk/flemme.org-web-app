@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { applyCommand, commission, createTask, parseMoney, visibleTask } from '../src/domain.ts';
+import { COMMISSION, applyCommand, commission, createTask, parseMoney, price, rateLabel, visibleTask } from '../src/domain.ts';
 import { DemoGateway, demoActors } from '../src/gateway.ts';
 const [owner, brigadier, stranger] = demoActors;
 const at = '2026-10-28T10:00:00.000Z';
@@ -35,7 +35,7 @@ test('acceptation unique, prix figé et autres offres conservées', () => {
   assert.throws(() => applyCommand(t, brigadier, 'accept', { offerId: 'o' }, at));
   t = applyCommand(t, owner, 'accept', { offerId: 'o' }, at);
   assert.equal(t.status, 'assigned');
-  assert.deepEqual(t.agreement, { amount: 4000, commission: 400, total: 4400, slot: 'Samedi', scope: 'Déplacement inclus', brigadier });
+  assert.deepEqual(t.agreement, { amount: 4000, commission: 400, total: 4400, payout: 4000, rateBps: 1000, model: 'ajout', slot: 'Samedi', scope: 'Déplacement inclus', brigadier });
   assert.equal(t.offers.length, 2); assert.equal(t.offers[1].status, 'not_selected');
   assert.throws(() => applyCommand(t, owner, 'accept', { offerId: 'o2' }, at));
   assert.throws(() => applyCommand(t, stranger, 'offer', { id: 'o3', amount: 1000 }, at));
@@ -70,4 +70,18 @@ test('persistance : un échec disque n’annonce pas une création réussie ; re
   const t = await g.command(a.id, 'offer', { amount: 1005, slot: 'Lundi', scope: 'Tout compris' }, 'offer-request');
   assert.ok(t.offers[0].id);
   assert.equal((await g.list()).tasks.find(x => x.id === a.id)?.offers.length, 1);
+});
+test('commission configurable : ajout (actuel) ou prélèvement, figée dans l’accord', () => {
+  assert.deepEqual(COMMISSION, { model: 'ajout', rateBps: 1000 });
+  assert.equal(rateLabel(), '10 %');
+  assert.deepEqual(price(4005), { amount: 4005, commission: 401, total: 4406, payout: 4005, rateBps: 1000, model: 'ajout' });
+  // Hypothèse « 65 % reversés au Brigadier » : FLEMME prélève 35 % du prix payé.
+  const brigade = { model: 'prelevement' as const, rateBps: 3500 };
+  assert.deepEqual(price(4000, brigade), { amount: 4000, commission: 1400, total: 4000, payout: 2600, rateBps: 3500, model: 'prelevement' });
+  assert.equal(rateLabel(brigade), '35 %'); assert.equal(rateLabel({ rateBps: 1250 }), '12,5 %');
+  assert.equal(price(4000, { model: 'ajout', rateBps: 0 }).total, 4000);
+  for (const rateBps of [-1, 10001, 12.5]) assert.throws(() => price(4000, { model: 'ajout', rateBps }));
+  const t = applyCommand(proposed(), owner, 'accept', { offerId: 'o' }, at, brigade);
+  assert.equal(t.agreement?.payout, 2600); assert.equal(t.agreement?.total, 4000);
+  assert.match(t.history.at(-1)!.text, /35 %/);
 });

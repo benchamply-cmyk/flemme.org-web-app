@@ -160,6 +160,14 @@ export class RemoteGateway implements Gateway {
     if (Date.now() > this.expires - 60000) await this.refresh();
     return this.request('/rest/v1/rpc/' + fn, body, this.access);
   }
+  // Paiement en ligne (Stripe Connect) via les fonctions Edge : renvoie l'adresse Stripe à ouvrir.
+  // 'onboarding' : le Brigadier active ses paiements. 'checkout' : le déposant paie une tâche terminée.
+  async paymentLink(kind: 'onboarding' | 'checkout', taskId?: string): Promise<string> {
+    if (Date.now() > this.expires - 60000) await this.refresh();
+    const { url } = await this.request('/functions/v1/stripe-' + kind, kind === 'checkout' ? { taskId } : {}, this.access);
+    if (typeof url !== 'string' || !/^https:\/\/(checkout|connect)\.stripe\.com\//.test(url)) throw new Error('Lien de paiement invalide.');
+    return url;
+  }
   async create(data: Input, requestId: string): Promise<Task> { return (await this.rpc('create', null, data, requestId)).task; }
   async command(taskId: string, action: Command, data: Input, requestId: string): Promise<Task> { return (await this.rpc(action, taskId, data, requestId)).task; }
 }

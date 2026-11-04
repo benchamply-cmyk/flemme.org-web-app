@@ -2,9 +2,9 @@ name: Base Supabase (supabase)
 on:
   push:
     branches: [prod, preprod]
-    paths: ['supabase/**', '.github/workflows/supabase.yml']
+    paths: ['supabase/**', 'packages/shared/src/domain.ts', '.github/workflows/supabase.yml']
   pull_request:
-    paths: ['supabase/**', '.github/workflows/supabase.yml']
+    paths: ['supabase/**', 'packages/shared/src/domain.ts', '.github/workflows/supabase.yml']
 permissions:
   contents: read
 jobs:
