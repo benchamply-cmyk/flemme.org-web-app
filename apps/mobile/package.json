@@ -8,7 +8,7 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "test": "node --experimental-strip-types --test ../../packages/shared/tests/*.test.ts",
     "export:ios": "expo export --platform ios",
     "export:android": "expo export --platform android"
   },

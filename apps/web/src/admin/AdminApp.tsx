@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { money } from '../../../mobile/src/domain.ts';
-import { RemoteGateway } from '../../../mobile/src/gateway.ts';
+import { money } from '../../../../packages/shared/src/domain.ts';
+import { RemoteGateway } from '../../../../packages/shared/src/gateway.ts';
 import { tokenStore } from '../storage.ts';
 import type { AdminAction, AdminSource, AlertRow, DisputeRow, Overview, ReportRow, UserRow } from './model.ts';
 import { DemoAdmin, alertLabel, disputeLabel, filterDisputes, filterUsers, logLabel, taskLabel, when } from './model.ts';

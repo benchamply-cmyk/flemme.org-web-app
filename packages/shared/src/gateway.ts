@@ -59,6 +59,29 @@ export class DemoGateway implements Gateway {
 
 export interface TokenStorage { get(): Promise<string | null>; set(value: string): Promise<void>; clear(): Promise<void> }
 type Session = { access_token: string; refresh_token: string; expires_in: number; user: { id: string; email: string } };
+// Codes d’erreur stables de Supabase Auth, traduits pour l’utilisateur.
+const authErrors: Record<string, string> = {
+  invalid_credentials: 'E-mail ou mot de passe incorrect.',
+  email_not_confirmed: 'Confirme d’abord ton adresse avec le lien reçu par e-mail.',
+  user_already_exists: 'Un compte existe déjà avec cette adresse : connecte-toi, ou choisis « Mot de passe oublié ? ».',
+  email_address_invalid: 'Cette adresse e-mail n’est pas valide.',
+  weak_password: 'Mot de passe trop faible : choisis-en un plus long.',
+  same_password: 'C’est déjà ton mot de passe actuel.',
+  over_email_send_rate_limit: 'Trop d’e-mails envoyés pour l’instant. Réessaie un peu plus tard ou utilise le dernier e-mail reçu.',
+  over_request_rate_limit: 'Trop de tentatives. Patiente une minute avant de réessayer.',
+  otp_expired: 'Ce lien a expiré ou a déjà servi. Demande-en un nouveau.',
+  flow_state_expired: 'Ce lien a expiré. Demande-en un nouveau.',
+  flow_state_not_found: 'Ce lien a été ouvert dans un autre navigateur que celui de la demande. Redemande-le depuis ce navigateur.',
+  access_denied: 'Connexion annulée.',
+};
+export const authMessage = (code: string | null | undefined, fallback: string) => (code && authErrors[code]) || fallback;
+// Clé « anon » historique (JWT) : refuser une clé service_role collée par erreur, elle finirait dans le code public.
+const jwtRole = (key: string) => {
+  try { return String(JSON.parse(atob(key.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))).role || ''); } catch { return ''; }
+};
+export const isSecretKey = (key: string) => key.startsWith('sb_secret_') || jwtRole(key) === 'service_role';
+// Liens envoyés par e-mail (inscription, mot de passe oublié) : page de retour et empreinte PKCE facultatives.
+export type AuthLinkOptions = { redirectTo?: string; codeChallenge?: string };
 export class RemoteGateway implements Gateway {
   actor: Actor = { id: '', name: '' };
   private access = '';
@@ -68,21 +91,24 @@ export class RemoteGateway implements Gateway {
   private key: string;
   private tokens: TokenStorage;
   private transport: typeof fetch;
-  constructor(url: string, key: string, tokens: TokenStorage, transport: typeof fetch = fetch) {
+  // fetch enveloppé : appelé comme méthode (this.transport), le fetch natif du navigateur lève « Illegal invocation ».
+  constructor(url: string, key: string, tokens: TokenStorage, transport: typeof fetch = (input, init) => fetch(input, init)) {
     this.url = url; this.key = key; this.tokens = tokens; this.transport = transport;
     if (!/^https:\/\//.test(url)) throw new Error('La connexion Supabase doit utiliser HTTPS.');
-    if (!key || key.startsWith('sb_secret_')) throw new Error('Utilise uniquement une clé Supabase publique.');
+    if (!key || isSecretKey(key)) throw new Error('Utilise uniquement une clé Supabase publique.');
   }
-  private async request(path: string, body: unknown, token = '') {
+  private async request(path: string, body: unknown, token = '', method = 'POST') {
     const controller = new AbortController(); const timeout = setTimeout(() => controller.abort(), 15000);
     let response: Response;
-    try { response = await this.transport(this.url.replace(/\/$/, '') + path, { method: 'POST', headers: { apikey: this.key, 'Content-Type': 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) }, body: JSON.stringify(body), signal: controller.signal }); }
+    try { response = await this.transport(this.url.replace(/\/$/, '') + path, { method, headers: { apikey: this.key, 'Content-Type': 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) }, body: JSON.stringify(body), signal: controller.signal }); }
     catch { throw new Error('Connexion interrompue. Réessaie : ton action ne sera pas dupliquée.'); }
     finally { clearTimeout(timeout); }
-    const result = await response.json();
+    // Certaines réponses sont vides (déconnexion : 204) : ne pas les prendre pour une erreur.
+    let result: any = {};
+    try { const text = await response.text(); if (text) result = JSON.parse(text); } catch { if (response.ok) throw new Error('Réponse illisible du service.'); }
     if (!response.ok) {
       if (response.status === 401 || response.status === 403) throw new Error('Session ou accès refusé. Reconnecte-toi si nécessaire.');
-      throw new Error(result.message || result.msg || 'Le service est indisponible.');
+      throw new Error(authMessage(result.error_code || result.code, result.message || result.msg || 'Le service est indisponible.'));
     }
     return result;
   }
@@ -95,7 +121,18 @@ export class RemoteGateway implements Gateway {
   }
   private async profile() { this.actor = (await this.rpc('me', null, {}, null)).profile; }
   async login(email: string, password: string) { await this.session(await this.request('/auth/v1/token?grant_type=password', { email: email.trim(), password })); await this.profile(); }
-  async signup(email: string, password: string) { await this.request('/auth/v1/signup', { email: email.trim(), password }); }
+  private link(path: string, o: AuthLinkOptions = {}) { return o.redirectTo ? path + '?redirect_to=' + encodeURIComponent(o.redirectTo) : path; }
+  private pkce(o: AuthLinkOptions = {}) { return o.codeChallenge ? { code_challenge: o.codeChallenge, code_challenge_method: 's256' } : {}; }
+  async signup(email: string, password: string, o?: AuthLinkOptions) { await this.request(this.link('/auth/v1/signup', o), { email: email.trim(), password, ...this.pkce(o) }); }
+  // Mot de passe oublié, ou jamais créé (anciens comptes ouverts par lien e-mail, Google ou Apple).
+  // Supabase répond pareil que l’adresse existe ou non : rien n’indique si un compte existe.
+  async recover(email: string, o?: AuthLinkOptions) { await this.request(this.link('/auth/v1/recover', o), { email: email.trim(), ...this.pkce(o) }); }
+  // Retour d’un lien e-mail (flux PKCE) : le code à usage unique ne sert qu’avec le secret gardé par ce navigateur.
+  async exchangeCode(code: string, verifier: string) { await this.session(await this.request('/auth/v1/token?grant_type=pkce', { auth_code: code, code_verifier: verifier })); await this.profile(); }
+  async setPassword(password: string) {
+    if (Date.now() > this.expires - 60000) await this.refresh();
+    await this.request('/auth/v1/user', { password }, this.access, 'PUT');
+  }
   async restore() { if (!(await this.tokens.get())) return false; await this.refresh(); await this.profile(); return true; }
   async updateProfile(displayName: string) { this.actor = (await this.rpc('update_profile', null, { displayName }, null)).profile; }
   private async refresh() {

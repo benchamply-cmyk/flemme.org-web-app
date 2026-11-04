@@ -4,11 +4,14 @@
   base = "apps/web"
   command = "npm run build"
   publish = "dist"
-  # Ne reconstruit que si le site ou les règles partagées de l'app mobile ont changé.
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ../mobile/src ../../netlify.toml"
+  # Ne reconstruit que si le site ou le code partagé avec l'app mobile (packages/shared) ont changé.
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ../../packages/shared ../../netlify.toml"
 
 [build.environment]
   NODE_VERSION = "22"
+  # Mode réel : VITE_SUPABASE_URL et VITE_SUPABASE_PUBLISHABLE_KEY se règlent dans l'interface Netlify
+  # (Environment variables, par contexte de déploiement), pas ici. Sans elles : démo locale.
+  # Voir docs/supabase-mise-en-service.md.
 
 [[headers]]
   for = "/*"

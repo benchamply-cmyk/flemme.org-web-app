@@ -1,5 +1,9 @@
 # FLEMME mobile — bêta native
 
+## Organisation du code — 03/11/2026
+
+Les règles métier, l’accès aux données (démo et Supabase), l’état de l’app et les textes communs sont dans `packages/shared`, partagé avec le site. Ici restent `App.tsx` (navigation, bouton Retour Android, choix de l’écran), un fichier par écran dans `src/ecrans/`, les composants et styles natifs dans `src/ui/`, et le stockage natif (`src/storage.ts`). `metro.config.js` autorise Metro à lire `packages/shared`. `npm test` lance les tests de `packages/shared`.
+
 Implémentation iOS et Android de la maquette mobile validée dans la conversation du 28 octobre 2026 : deux onglets, vert sauge pastel #d8e7ce, budget facultatif et commission FLEMME de 10 % ajoutée au forfait du Brigadier.
 
 ## Correction Expo Go du 28/10/2026
@@ -14,7 +18,7 @@ Sources vérifiées le 28/10/2026 : https://docs.expo.dev/workflow/upgrading-exp
 
 Le thème natif reprend les valeurs finales du CSS du site : bleu glacier #a5ccff, fond #e3eeff, surface douce #f3f7ff, encre #16131f, violet #3a2fa0 et bleu profond #4f86d9. Les variables historiques vertes du CSS sont surchargées par la version V5 ; ce sont bien les valeurs finales qui sont utilisées. Source : https://github.com/benchamply-cmyk/FlemmeV2.0/blob/beta/flemme-web-beta/styles.css ; aspect également vérifié sur https://flemme.org/ le 28/10/2026.
 
-src/brand.ts centralise la palette et le fond statique à dégradés lilas, rose, aqua et glacier. Les contours sombres, ombres violettes décalées, boutons pilules et titres en capitales reprennent les traitements du site. Le navigateur utilise Archivo via Google Fonts ; le natif utilise des caractères système condensés disponibles sur iOS/Android, sans téléchargement de police ni nouvelle dépendance.
+packages/shared/src/brand.ts (anciennement src/brand.ts) centralise la palette et le fond statique à dégradés lilas, rose, aqua et glacier. Les contours sombres, ombres violettes décalées, boutons pilules et titres en capitales reprennent les traitements du site. Le navigateur utilise Archivo via Google Fonts ; le natif utilise des caractères système condensés disponibles sur iOS/Android, sans téléchargement de police ni nouvelle dépendance.
 
 assets/flemme-logo.png est une adaptation sur fond transparent du logo sticker de la planche fournie par l’utilisateur (lettrage noir, vert, contour blanc et ombre violette). assets/flemme-icon.png est sa déclinaison carrée opaque sur fond glacier/lilas, référencée par expo.icon. Les deux images sont dérivées du visuel fourni avec l’outil d’image ; elles ne constituent pas des fichiers vectoriels originaux. Le logo conserve son vert ; la couleur d’action de l’interface devient le bleu glacier.
 
@@ -50,7 +54,7 @@ Sans variables d’environnement : démonstration locale. Le bouton de profil pe
 
 Le connecteur Supabase REST est implémenté ; il n’est activé que si l’URL et la clé publique sont renseignées. Une configuration partielle produit une erreur plutôt qu’une bascule silencieuse vers la démo.
 
-1. Utiliser un projet Supabase de test et y appliquer les migrations du dossier supabase/ à la racine du dépôt avec la CLI Supabase (voir supabase/README.md). Elles créent un schéma privé distinct, flemme_v2, et le seul point d’entrée public flemme_mobile_api. Elles ne touchent pas aux tables, fonctions ni données du site ou du Manager, et échouent si leurs objets existent déjà plutôt que de les remplacer.
+1. Projet Supabase : celui de production (`yktpabnqkhwcshvjuncs`, décision du 03/11/2026 ; mise en service du site : `docs/supabase-mise-en-service.md`). Y appliquer les migrations du dossier supabase/ à la racine du dépôt avec la CLI Supabase (voir supabase/README.md). Elles créent un schéma privé distinct, flemme_v2, et le seul point d’entrée public flemme_mobile_api. Elles ne touchent pas aux tables, fonctions ni données du site ou du Manager, et échouent si leurs objets existent déjà plutôt que de les remplacer.
 2. Garder flemme_v2 hors de la liste des schémas exposés dans Data API. Le schéma public doit être exposé pour la RPC. Les tables privées n’ont aucun droit d’accès direct pour anon/authenticated ; RLS est activée. La RPC vérifie un compte confirmé, les propriétaires et les participants à chaque action.
 3. Copier .env.example vers .env et renseigner EXPO_PUBLIC_SUPABASE_URL et EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY avec les valeurs publiques du projet. Aucune clé service_role ou sb_secret ne doit être embarquée. Redémarrer Metro après modification.
 4. Activer l’authentification e-mail/mot de passe et la confirmation d’e-mail dans Supabase. Configurer l’adresse de retour du mail de confirmation ; l’utilisateur revient ensuite se connecter dans l’app. La création de compte et la connexion sont disponibles dans l’application.

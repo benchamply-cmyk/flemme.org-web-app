@@ -2,9 +2,9 @@ name: App mobile (apps/mobile)
 on:
   push:
     branches: [prod, preprod]
-    paths: ['apps/mobile/**', '.github/workflows/mobile.yml']
+    paths: ['apps/mobile/**', 'packages/shared/**', '.github/workflows/mobile.yml']
   pull_request:
-    paths: ['apps/mobile/**', '.github/workflows/mobile.yml']
+    paths: ['apps/mobile/**', 'packages/shared/**', '.github/workflows/mobile.yml']
 permissions:
   contents: read
 jobs:

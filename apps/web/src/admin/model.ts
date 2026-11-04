@@ -1,6 +1,6 @@
-import type { Actor, Input, Task } from '../../../mobile/src/domain.ts';
-import { applyCommand, text } from '../../../mobile/src/domain.ts';
-import { demoActors, seed } from '../../../mobile/src/gateway.ts';
+import type { Actor, Input, Task } from '../../../../packages/shared/src/domain.ts';
+import { applyCommand, text } from '../../../../packages/shared/src/domain.ts';
+import { demoActors, seed } from '../../../../packages/shared/src/gateway.ts';
 
 // Types renvoyés par public.flemme_admin_api (supabase/migrations/20261103130000_flemme_v2_admin.sql).
 export type DisputeStatus = 'open' | 'in_review' | 'resolved';
