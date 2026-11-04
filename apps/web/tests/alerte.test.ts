@@ -44,3 +44,13 @@ test('fonction : secret requis, Resend appelé une fois avec le bon destinataire
     assert.deepEqual(calls[0].body.to, ['equipe@example.org', 'ben@example.org']);
   } finally { globalThis.fetch = realFetch; process.env = env; }
 });
+
+test('alerte : demande à valider (création et modification)', () => {
+  const created = alerte({ source: 'flemme_v2', kind: 'task_created', task_id: 'abc', payload: { title: 'Trier mes papiers', place: 'Lyon', budget: null, owner: 'Camille', review: 'pending' } });
+  assert.match(created!.subject, /^Demande à valider : Trier mes papiers/);
+  assert.match(created!.html, /Valider dans l’admin/);
+  const edited = alerte({ source: 'flemme_v2', kind: 'task_edited', task_id: 'abc', payload: { title: 'Trier mes papiers', review: 'pending' } });
+  assert.match(edited!.subject, /^Demande modifiée à valider/);
+  const published = alerte({ source: 'flemme_v2', kind: 'task_created', task_id: 'abc', payload: { title: 'X', review: 'published' } });
+  assert.match(published!.subject, /^Nouvelle flemme/);
+});

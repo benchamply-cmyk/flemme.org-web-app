@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { backLabel, footer, rights } from '../../../packages/shared/src/index.ts';
-import type { Command, Input, Screen } from '../../../packages/shared/src/index.ts';
+import { backLabel, footer, money, rights, taskFields } from '../../../packages/shared/src/index.ts';
+import type { Command, Input, Option, Screen, Task } from '../../../packages/shared/src/index.ts';
 import { onlinePayment, session, useSession } from './session.ts';
 import { Action } from './ui.tsx';
 import type { Ctx, Draft, FieldOptions, Place } from './ecrans/contexte.ts';
@@ -23,7 +23,14 @@ import { Signalement } from './ecrans/Signalement.tsx';
 const initialTab = location.hash === '#find' ? 'find' : location.hash === '#mine' || location.hash.startsWith('#paiement') ? 'mine' : null;
 const start: Place = { screen: initialTab ? 'list' : 'home', tab: initialTab || 'mine', taskId: '', offerId: '', depth: 0 };
 // Écrans ouverts depuis la fiche d’une flemme : combien de pas pour y revenir.
-const aboveDetail: Partial<Record<Screen, number>> = { offer: 1, review: 2, report: 1 };
+const aboveDetail: Partial<Record<Screen, number>> = { offer: 1, review: 2, report: 1, edit: 1 };
+// Formulaire prérempli à l’ouverture d’un écran : modification d’une demande ou reprise d’un brouillon.
+function initialDraft(next: Place): Draft {
+  const { tasks, drafts } = session.getState();
+  if (next.screen === 'edit') { const t = tasks.find(v => v.id === next.taskId); return t ? taskFields(t, money) : {}; }
+  if (next.screen === 'new' && next.draftId) return { ...drafts.find(d => d.id === next.draftId)?.fields };
+  return {};
+}
 
 export default function App() {
   const state = useSession();
@@ -40,15 +47,16 @@ export default function App() {
     return () => removeEventListener('popstate', onPop);
   }, []);
   // `visit` remonte l’écran à chaque navigation : son état local (historique déplié…) repart de zéro.
-  function show(next: Place) { setPlace(next); setDraft({}); setVisit(v => v + 1); session.clearMessages(); main.current?.focus(); scrollTo(0, 0); }
+  function show(next: Place) { setPlace(next); setDraft(initialDraft(next)); setVisit(v => v + 1); session.clearMessages(); main.current?.focus(); scrollTo(0, 0); }
   function go(screen: Screen, change: Partial<Place> = {}, replace = false) {
     const next = { ...place, ...change, screen, depth: replace ? place.depth : place.depth + 1 };
     if (replace) history.replaceState(next, ''); else history.pushState(next, '');
     show(next);
   }
   function back() { if (place.depth > 0) history.back(); else go('home', {}, true); }
-  async function mutate(action: Command | 'create', data: Input, next: Screen = 'detail', message = '') {
+  async function mutate(action: Command | 'create', data: Input, next: Screen = 'detail', text: string | ((t: Task) => string) = '') {
     await session.mutate(action, taskId, data, t => {
+      const message = typeof text === 'function' ? text(t) : text;
       // Après création, l’écran « nouvelle flemme » est remplacé : Retour ramène à la liste, pas au formulaire vide.
       // Accord, refus ou signalement : on revient à la fiche déjà dans l’historique au lieu d’empiler une copie,
       // pour que Retour mène ensuite à la liste, comme sur le mobile.
@@ -57,12 +65,18 @@ export default function App() {
       go(next, { taskId: t.id }, action === 'create' || next === place.screen); session.notify(message);
     });
   }
-  function field(label: string, name: string, { multiline = false, numeric = false, secret = false }: FieldOptions = {}) {
-    const id = 'f-' + name, common = { id, value: draft[name] || '', disabled: busy, onChange: (e: { target: { value: string } }) => setDraft(d => ({ ...d, [name]: e.target.value })) };
-    return <div className="field" key={name}><label htmlFor={id}>{label}</label>{multiline ? <textarea {...common} maxLength={1000}/> : <input {...common} type={secret ? 'password' : name === 'email' ? 'email' : 'text'} inputMode={numeric ? 'decimal' : undefined} placeholder={numeric ? 'En €' : ''} maxLength={name === 'password' ? 200 : 100} autoComplete={name === 'email' ? 'email' : secret ? (recovering ? 'new-password' : 'current-password') : 'off'}/>}</div>;
+  function field(label: string, name: string, { multiline = false, numeric = false, secret = false, max, hint }: FieldOptions = {}) {
+    const id = 'f-' + name, common = { id, value: draft[name] || '', disabled: busy, 'aria-describedby': hint ? id + '-aide' : undefined, onChange: (e: { target: { value: string } }) => setDraft(d => ({ ...d, [name]: e.target.value })) };
+    return <div className="field" key={name}><label htmlFor={id}>{label}</label>{multiline ? <textarea {...common} maxLength={max || 1000}/> : <input {...common} type={secret ? 'password' : name === 'email' ? 'email' : 'text'} inputMode={numeric ? 'decimal' : undefined} placeholder={numeric ? 'En €' : ''} maxLength={max || (name === 'password' ? 200 : 100)} autoComplete={name === 'email' ? 'email' : secret ? (recovering ? 'new-password' : 'current-password') : 'off'}/>}{hint && <small id={id + '-aide'} className="note">{hint}</small>}</div>;
   }
+  function choice(label: string, name: string, options: readonly Option[], empty?: string) {
+    const id = 'f-' + name;
+    return <div className="field" key={name}><label htmlFor={id}>{label}</label><select id={id} value={draft[name] || ''} disabled={busy} onChange={e => setDraft(d => ({ ...d, [name]: e.target.value }))}>{empty != null && <option value="">{empty}</option>}{options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}</select></div>;
+  }
+  function keepDraft(id: string) { const next = { ...place, draftId: id }; history.replaceState(next, ''); setPlace(next); }
   const ctx: Ctx = {
-    state, place, draft, task, offer, can: rights(task, actorId), field, go, mutate,
+    state, place, draft, task, offer, can: rights(task, actorId), field, choice, go, mutate, keepDraft,
+    fill: values => setDraft(d => ({ ...d, ...values })),
     validated: fn => { try { fn(); } catch (e) { session.fail((e as Error).message); } },
     clearDraft: names => setDraft(d => names ? Object.fromEntries(Object.entries(d).filter(([k]) => !names.includes(k))) : {}),
   };
@@ -74,10 +88,11 @@ export default function App() {
   else if (recovering && session.remote) content = <MotDePasse {...ctx}/>;
   else if (screen === 'account') content = <Compte {...ctx}/>;
   else if (screen === 'home') content = <Accueil {...ctx}/>;
-  else if (screen === 'new') content = <NouvelleFlemme {...ctx}/>;
+  else if (screen === 'new') content = <NouvelleFlemme key={visit} {...ctx}/>;
   else if (screen === 'list') content = <Listes {...ctx}/>;
   else if (!task) content = <><h1 className="heading">Flemme indisponible</h1><Action secondary onClick={() => go('list')}>Revenir à la liste</Action></>;
   else if (screen === 'report') content = <Signalement {...ctx}/>;
+  else if (screen === 'edit') content = <NouvelleFlemme key={visit} {...ctx}/>;
   else if ((screen === 'offer' || screen === 'review') && offer) content = <Offre {...ctx}/>;
   else content = <Fiche key={visit} {...ctx}/>;
 

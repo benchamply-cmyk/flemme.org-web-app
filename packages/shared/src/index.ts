@@ -5,3 +5,4 @@ export * from './session.ts';
 export * from './ecrans.ts';
 export * from './textes.ts';
 export * from './brand.ts';
+export * from './parcours.ts';
