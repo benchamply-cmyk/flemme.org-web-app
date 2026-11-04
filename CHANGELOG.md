@@ -4,6 +4,7 @@ Chaque PR ajoute une ligne sous « À venir ». À chaque mise en production (`p
 
 ## À venir
 - Aperçu interactif séparé `/apercu.html` de la future interface : accueil, dépôt, recherche, espaces Flemmard/Brigadier, conversations, candidatures et accords simulés ; données locales isolées, sans connexion aux services ni paiement réel.
+- Exploitation minimale : page admin /admin (vue d’ensemble, signalements, litiges, utilisateurs dont ceux de l’ancien espace, alertes) et alertes e-mail (nouvelle flemme, accord, signalement) via Supabase pg_net, la fonction Netlify /api/alerte et Resend. Nouvelle migration `supabase/migrations/20261103130000_flemme_v2_admin.sql` (voir `supabase/README-admin.md`).
 - Une seule source pour le site et l’app : nouveau dossier `packages/shared` (règles métier, accès aux données, état de l’app, droits et textes communs, avec leurs tests), et découpage des deux `App.tsx` en un fichier par écran (`src/ecrans/`). Aucun changement visible pour l’utilisateur.
 - Flemme Manager repris de FlemmeV2.0 dans `apps/manager` (code, SQL Supabase, tests et CI `manager.yml`), avec la procédure pour rebrancher le service Render sur ce dépôt (`docs/manager-render.md`). Scripts de reprise des comptes de l'ancien /espace (`supabase/reprise-espace/`, testés sur le schéma `flemme_v2`, après la PR #9) et procédure (`docs/migration-comptes-espace.md`). Rien n'est encore appliqué sur Render ni sur Supabase.
 
