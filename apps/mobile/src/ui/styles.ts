@@ -1,0 +1,30 @@
+import { Platform, StyleSheet } from 'react-native';
+import { colors, brandBackground } from '../../../../packages/shared/src/index.ts';
+
+export const styles = StyleSheet.create({
+  flex: { flex: 1 }, safe: { flex: 1, backgroundColor: colors.paper, backgroundImage: brandBackground }, header: { paddingHorizontal: 22, paddingVertical: 8, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  brandLogo: { width: 172, height: 72 },
+  logo: { fontSize: 30, fontWeight: '800', letterSpacing: -1.5, color: colors.ink }, avatar: { width: 44, height: 44, borderRadius: 22, backgroundColor: colors.surface, borderWidth: 2, borderColor: colors.ink, justifyContent: 'center', alignItems: 'center' },
+  content: { padding: 20, paddingTop: 8, gap: 12, maxWidth: 560, width: '100%', alignSelf: 'center', flexGrow: 1 },
+  home: { flex: 1, justifyContent: 'center', gap: 30, paddingVertical: 24 },
+  homeIntro: { gap: 8 }, homeChoices: { gap: 18, paddingRight: 6, paddingBottom: 8 },
+  homeChoice: { backgroundColor: colors.accent, borderColor: colors.ink, borderWidth: 2.5, boxShadow: '5px 6px 0 #3a2fa0', borderRadius: 26, padding: 22, minHeight: 142, justifyContent: 'center', gap: 9 },
+  homeChoiceSecondary: { backgroundColor: colors.surface },
+  homeIcon: { color: colors.ink, fontSize: 25 }, homeChoiceTitle: { color: colors.ink, fontSize: 25, fontWeight: '900', lineHeight: 30, letterSpacing: .3, textTransform: 'uppercase', fontFamily: Platform.OS === 'ios' ? 'HelveticaNeue-CondensedBlack' : Platform.OS === 'android' ? 'sans-serif-condensed' : 'Archivo' },
+  homeChoiceHint: { color: colors.ink, fontSize: 14, lineHeight: 20 },
+  heading: { color: colors.ink, fontWeight: '900', fontSize: 34, lineHeight: 37, letterSpacing: .2, textTransform: 'uppercase', fontFamily: Platform.OS === 'ios' ? 'HelveticaNeue-CondensedBlack' : Platform.OS === 'android' ? 'sans-serif-condensed' : 'Archivo', marginVertical: 8 },
+  body: { color: colors.ink, fontSize: 16, lineHeight: 23, flexShrink: 1 }, muted: { color: colors.muted, fontSize: 14, lineHeight: 21 },
+  strong: { color: colors.ink, fontWeight: '700', fontSize: 15, flexShrink: 1 }, price: { color: colors.ink, fontSize: 18, fontWeight: '700' },
+  eyebrow: { color: colors.violet, fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace', fontSize: 11, letterSpacing: 1.4, fontWeight: '700' }, hero: { backgroundColor: colors.accent, borderRadius: 24, padding: 22, gap: 14 },
+  button: { backgroundColor: colors.ink, borderRadius: 999, paddingVertical: 15, paddingHorizontal: 16, minHeight: 48, justifyContent: 'center', marginVertical: 3 },
+  buttonText: { color: colors.accent, textTransform: 'uppercase', letterSpacing: .4, fontSize: 15, fontWeight: '700', textAlign: 'center' }, secondary: { backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 2 }, secondaryText: { color: colors.ink },
+  card: { borderRadius: 24, borderColor: colors.border, borderWidth: 2, backgroundColor: colors.surface, padding: 17, gap: 12 }, cardTitle: { fontSize: 18, fontWeight: '700', color: colors.ink, lineHeight: 24 },
+  sectionTitle: { fontSize: 20, fontWeight: '800', textTransform: 'uppercase', color: colors.ink, marginTop: 18 }, row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' },
+  tag: { fontSize: 12, backgroundColor: colors.ink, color: colors.accent, padding: 7, borderRadius: 7, alignSelf: 'flex-start', overflow: 'hidden' }, link: { color: colors.ink, fontWeight: '600', fontSize: 14, paddingVertical: 7 },
+  field: { gap: 7, marginTop: 6 }, label: { color: colors.ink, fontSize: 14, fontWeight: '600' }, input: { backgroundColor: colors.soft, borderRadius: 14, borderColor: colors.border, borderWidth: 2, padding: 13, color: colors.ink, fontSize: 16, minHeight: 48 }, textarea: { minHeight: 100, textAlignVertical: 'top' },
+  note: { color: colors.muted, fontSize: 12, lineHeight: 18 }, divider: { height: 1, backgroundColor: colors.border }, bubble: { backgroundColor: colors.soft, borderRadius: 15, padding: 16, gap: 8 }, history: { borderLeftWidth: 2, borderColor: colors.accent, paddingLeft: 14 },
+  nav: { borderTopWidth: 1, borderColor: colors.border, padding: 10, flexDirection: 'row', gap: 8 }, navItem: { flex: 1, borderRadius: 14, minHeight: 48, paddingHorizontal: 6, justifyContent: 'center', alignItems: 'center' }, navSelected: { backgroundColor: colors.accent }, navText: { color: colors.ink, fontSize: 12, fontWeight: '600', textAlign: 'center' },
+  option: { borderRadius: 16, borderWidth: 2, borderColor: colors.border, padding: 12, minHeight: 48, justifyContent: 'center', backgroundColor: colors.surface },
+  optionSelected: { backgroundColor: colors.accent, borderColor: colors.ink },
+  footer: { textAlign: 'center', fontSize: 11, color: colors.muted, paddingBottom: 4 }, error: { padding: 14, backgroundColor: '#f8e9e4', borderRadius: 12 }, notice: { padding: 14, backgroundColor: colors.accent, borderColor: colors.ink, borderWidth: 1, borderRadius: 12, color: colors.ink, fontSize: 14 },
+});

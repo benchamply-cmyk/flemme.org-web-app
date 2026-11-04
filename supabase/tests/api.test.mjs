@@ -6,7 +6,7 @@ import { randomUUID } from 'node:crypto';
 const { PGlite } = await import(process.env.PGLITE_MODULE_URL || '@electric-sql/pglite');
 const db = new PGlite();
 await db.exec([
-  'create role anon; create role authenticated;',
+  'create role anon; create role authenticated; create role service_role;',
   'create schema auth;',
   'create table auth.users(id uuid primary key, email text, raw_user_meta_data jsonb, email_confirmed_at timestamptz);',
   "create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;",
@@ -29,6 +29,8 @@ const dir = new URL('../migrations/', import.meta.url);
 for (const file of (await readdir(dir)).filter(f => f.endsWith('.sql')).sort()) {
   await db.exec(await readFile(new URL(file, dir), 'utf8'));
 }
+// Ces tests portent sur le contrat d'origine : la validation des demandes (parcours.test.mjs) est coupée.
+await db.exec('update flemme_v2.settings set moderation_tasks = false');
 // Comptes créés après : le déclencheur crée le profil.
 await addUser(users[2], 'camille@example.com', { display_name: '  Camille  ' });
 await addUser(users[3], 'pas-confirme@example.com', null, false);
@@ -90,7 +92,8 @@ await actor(users[0]);
 assert.equal((await api('list')).tasks[0].offers.length, 2);
 const acceptRequest = randomUUID();
 t = (await api('accept', t.id, { offerId, commission: 0, total: 1 }, acceptRequest)).task;
-assert.deepEqual([t.agreement.amount, t.agreement.commission, t.agreement.total], [4005, 401, 4406]);
+assert.deepEqual([t.agreement.amount, t.agreement.commission, t.agreement.total, t.agreement.payout, t.agreement.rateBps, t.agreement.model], [4005, 401, 4406, 4005, 1000, 'ajout']);
+assert.match(t.history.at(-1).text, /commission de 10 % confirmés/);
 assert.equal(t.agreement.brigadier.name, 'Lou.B'); assert.equal(t.acceptedOfferId, offerId);
 assert.equal(t.offers[1].status, 'not_selected'); assert.equal(t.offers[0].messages[0].text, 'Message privé');
 assert.equal(t.offers[0].messages[0].actor.name, 'Lou.B');
@@ -135,7 +138,7 @@ await db.exec('reset role; set role anon');
 await assert.rejects(api('list'), /permission denied/);
 await db.exec('reset role');
 const rls = await db.query("select relname, relrowsecurity from pg_class join pg_namespace n on n.oid=relnamespace where n.nspname='flemme_v2' and relkind='r'");
-assert.equal(rls.rows.length, 6);
+assert.equal(rls.rows.length, 15); // 6 tables V2 + 5 tables admin + 3 tables paiement (settings, brigadier_accounts, payments) + drafts
 assert.ok(rls.rows.every(r => r.relrowsecurity));
 
 // Suppression d'un compte : ses flemmes partent, ses messages restent signés « Compte supprimé ».

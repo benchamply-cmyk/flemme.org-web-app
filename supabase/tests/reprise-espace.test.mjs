@@ -8,7 +8,7 @@ const db = new PGlite();
 const script = name => readFile(new URL('../reprise-espace/' + name, import.meta.url), 'utf8');
 // Sous-ensemble de Supabase et de l'ancien espace (FlemmeV2.0/supabase/espace.sql).
 await db.exec(`
-  create role anon; create role authenticated; create schema auth;
+  create role anon; create role authenticated; create role service_role; create schema auth;
   create table auth.users(id uuid primary key, email text, raw_user_meta_data jsonb, email_confirmed_at timestamptz,
     encrypted_password text, last_sign_in_at timestamptz);
   create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
@@ -48,6 +48,8 @@ assert.equal(contacts.find(c => c.email === 'alice@exemple.fr').pseudo, 'alice_4
 
 const dir = new URL('../migrations/', import.meta.url);
 for (const file of (await readdir(dir)).filter(f => f.endsWith('.sql')).sort()) await db.exec(await readFile(new URL(file, dir), 'utf8'));
+// Ces tests portent sur le contrat d'origine : la validation des demandes (parcours.test.mjs) est coupée.
+await db.exec('update flemme_v2.settings set moderation_tasks = false');
 
 const reprise = await script('03-reprise-demandes.sql');
 assert.match(reprise.trimEnd(), /\nrollback;$/);

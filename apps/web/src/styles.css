@@ -1,4 +1,4 @@
-/* Identité partagée avec apps/mobile/src/brand.ts (palette V5 glacier de flemme.org). */
+/* Identité partagée avec packages/shared/src/brand.ts (palette V5 glacier de flemme.org). */
 :root {
   --paper: #e3eeff; --ink: #16131f; --surface: #ffffff; --soft: #f3f7ff; --muted: #3f3a55;
   --accent: #a5ccff; --glacier-deep: #4f86d9; --violet: #3a2fa0; --green: #57d68d;
@@ -60,7 +60,7 @@ button.card:hover { box-shadow: var(--shadow); }
 .history { border-left: 2px solid var(--accent); padding-left: 14px; }
 .field { display: grid; gap: 7px; margin-top: 6px; }
 .field label { font-size: 14px; font-weight: 600; }
-.field input, .field textarea { background: var(--soft); border-radius: 14px; border: 2px solid var(--ink); padding: 13px; font-size: 16px; min-height: 48px; width: 100%; }
+.field input, .field textarea, .field select { background: var(--soft); border-radius: 14px; border: 2px solid var(--ink); padding: 13px; font-size: 16px; min-height: 48px; width: 100%; }
 .field textarea { min-height: 100px; resize: vertical; }
 .alert { padding: 14px; background: var(--error); border-radius: 12px; }
 .notice { padding: 14px; background: var(--accent); border: 1px solid var(--ink); border-radius: 12px; font-size: 14px; }
@@ -83,3 +83,11 @@ button.card:hover { box-shadow: var(--shadow); }
 .home { display: grid; gap: 30px; align-content: center; min-height: 60vh; padding: 24px 0; }
 .home .choices { padding-right: 6px; }
 .avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--surface); border: 2px solid var(--ink); font-weight: 700; cursor: pointer; }
+
+/* Parcours complet : listes déroulantes, demandes en attente, dictée, filtres */
+.field select { appearance: auto; }
+.field small { display: block; }
+.tag.warn { background: var(--accent); color: var(--ink); border: 1px solid var(--ink); }
+.dictee { display: grid; gap: 6px; justify-items: start; }
+.dictee .btn { width: auto; }
+.card .row .btn { flex: 1 1 auto; }

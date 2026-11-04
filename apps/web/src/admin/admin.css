@@ -1,0 +1,19 @@
+/* Page admin : même identité que l’app, en plus large (jusqu’à 1080 px). */
+.admin { display: grid; gap: 12px; align-content: start; max-width: 1080px; margin: 0 auto; padding: 8px 20px 20px; min-height: calc(100vh - 150px); }
+.admin p { margin: 0; }
+.admin .narrow { display: grid; gap: 12px; max-width: 480px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { min-height: 40px; padding: 8px 14px; border-radius: 999px; border: 2px solid var(--ink); background: var(--surface); font-size: 14px; font-weight: 600; cursor: pointer; }
+.chip[aria-selected="true"], .chip[aria-pressed="true"] { background: var(--ink); color: var(--accent); }
+.chip:disabled { opacity: .55; cursor: default; }
+.stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.stat { border: 2px solid var(--ink); border-radius: 18px; background: var(--surface); padding: 14px; display: grid; gap: 4px; }
+.stat.warn { background: var(--error); }
+.stat-value { font-size: 30px; font-weight: 900; line-height: 1; }
+.tag.warn { background: #b3261e; color: #fff; }
+.card.focus { box-shadow: var(--shadow); }
+.check { display: flex; gap: 8px; align-items: center; font-size: 14px; }
+.check input { width: 20px; height: 20px; }
+details summary { cursor: pointer; font-weight: 600; font-size: 14px; padding: 6px 0; }
+details .history { margin-top: 8px; }
+.top nav .note { overflow-wrap: anywhere; }

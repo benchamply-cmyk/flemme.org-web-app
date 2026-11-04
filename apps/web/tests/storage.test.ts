@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readDemo, writeDemo } from '../src/storage.ts';
-import { seed } from '../../mobile/src/gateway.ts';
+import { seed } from '../../../packages/shared/src/gateway.ts';
 
 // Storage minimal en mémoire, avec une limite pour simuler un localStorage plein.
 function memory(limit = Infinity): Storage {

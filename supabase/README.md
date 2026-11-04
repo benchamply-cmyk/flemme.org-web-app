@@ -7,8 +7,12 @@ Le schéma de FLEMME V2 est géré par la [CLI Supabase](https://supabase.com/do
 | `config.toml` | Configuration de la pile locale (`supabase start`) |
 | `migrations/20261103120000_flemme_v2_tables.sql` | Schéma privé `flemme_v2` : `profiles`, `tasks`, `offers`, `messages`, `events`, `requests`, RLS sans droit direct, profil créé à l'inscription, reprise des comptes existants |
 | `migrations/20261103120100_flemme_v2_api.sql` | Point d'entrée unique `public.flemme_mobile_api` (actions, pagination, profil) |
-| `tests/api.test.mjs` | Tests des migrations sur PostgreSQL embarqué (PGlite) |
+| `migrations/20261103130000_flemme_v2_admin.sql` | Admin et alertes e-mail : `admins`, `disputes`, `suspensions`, `admin_log`, `alerts`, RPC `public.flemme_admin_api` (voir `README-admin.md`) |
+| `migrations/20261103140000_flemme_v2_commission_paiement.sql` | Commission configurable (`settings`, taux figé par flemme) et paiement en ligne Stripe Connect (`brigadier_accounts`, `payments`, RPC `flemme_paiement_api` réservée à `service_role`), voir `docs/paiement-stripe.md` |
+| `functions/` | Fonctions Edge Stripe (`stripe-onboarding`, `stripe-checkout`, `stripe-webhook`) |
+| `tests/api.test.mjs`, `tests/admin.test.mjs` | Tests des migrations sur PostgreSQL embarqué (PGlite) |
 | `verification.sql` | Contrôles en lecture seule sur le projet distant : droits, RLS, profils des comptes repris, historique des migrations (voir `docs/supabase-mise-en-service.md`) |
+| `tests/paiement.test.mjs`, `tests/functions.test.ts` | Tests de la migration de paiement (PGlite) et des fonctions Edge (faux Stripe) |
 
 ## Modèle
 
@@ -34,7 +38,7 @@ Un seul appel : `POST /rest/v1/rpc/flemme_mobile_api` avec `{ p_action, p_task, 
 | `list` | `{ limit?: 1..100 (20 par défaut), cursor?: string }` | `{ tasks, nextCursor }` ; `nextCursor` vaut `null` sur la dernière page |
 | `create`, `offer`, `message`, `accept`, `decline`, `complete`, `declare_payment`, `confirm_payment`, `report` | comme avant | `{ task }` ; `p_request` obligatoire |
 
-La forme d'une flemme est le type `Task` de `apps/mobile/src/domain.ts`. Le tri de `list` est stable (date de création puis identifiant) et le curseur est opaque : le renvoyer tel quel.
+La forme d'une flemme est le type `Task` de `packages/shared/src/domain.ts`. Le tri de `list` est stable (date de création puis identifiant) et le curseur est opaque : le renvoyer tel quel.
 
 ## Travailler en local
 

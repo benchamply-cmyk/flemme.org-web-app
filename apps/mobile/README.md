@@ -1,5 +1,9 @@
 # FLEMME mobile — bêta native
 
+## Organisation du code — 03/11/2026
+
+Les règles métier, l’accès aux données (démo et Supabase), l’état de l’app et les textes communs sont dans `packages/shared`, partagé avec le site. Ici restent `App.tsx` (navigation, bouton Retour Android, choix de l’écran), un fichier par écran dans `src/ecrans/`, les composants et styles natifs dans `src/ui/`, et le stockage natif (`src/storage.ts`). `metro.config.js` autorise Metro à lire `packages/shared`. `npm test` lance les tests de `packages/shared`.
+
 Implémentation iOS et Android de la maquette mobile validée dans la conversation du 28 octobre 2026 : deux onglets, vert sauge pastel #d8e7ce, budget facultatif et commission FLEMME de 10 % ajoutée au forfait du Brigadier.
 
 ## Correction Expo Go du 28/10/2026
@@ -14,7 +18,7 @@ Sources vérifiées le 28/10/2026 : https://docs.expo.dev/workflow/upgrading-exp
 
 Le thème natif reprend les valeurs finales du CSS du site : bleu glacier #a5ccff, fond #e3eeff, surface douce #f3f7ff, encre #16131f, violet #3a2fa0 et bleu profond #4f86d9. Les variables historiques vertes du CSS sont surchargées par la version V5 ; ce sont bien les valeurs finales qui sont utilisées. Source : https://github.com/benchamply-cmyk/FlemmeV2.0/blob/beta/flemme-web-beta/styles.css ; aspect également vérifié sur https://flemme.org/ le 28/10/2026.
 
-src/brand.ts centralise la palette et le fond statique à dégradés lilas, rose, aqua et glacier. Les contours sombres, ombres violettes décalées, boutons pilules et titres en capitales reprennent les traitements du site. Le navigateur utilise Archivo via Google Fonts ; le natif utilise des caractères système condensés disponibles sur iOS/Android, sans téléchargement de police ni nouvelle dépendance.
+packages/shared/src/brand.ts (anciennement src/brand.ts) centralise la palette et le fond statique à dégradés lilas, rose, aqua et glacier. Les contours sombres, ombres violettes décalées, boutons pilules et titres en capitales reprennent les traitements du site. Le navigateur utilise Archivo via Google Fonts ; le natif utilise des caractères système condensés disponibles sur iOS/Android, sans téléchargement de police ni nouvelle dépendance.
 
 assets/flemme-logo.png est une adaptation sur fond transparent du logo sticker de la planche fournie par l’utilisateur (lettrage noir, vert, contour blanc et ombre violette). assets/flemme-icon.png est sa déclinaison carrée opaque sur fond glacier/lilas, référencée par expo.icon. Les deux images sont dérivées du visuel fourni avec l’outil d’image ; elles ne constituent pas des fichiers vectoriels originaux. Le logo conserve son vert ; la couleur d’action de l’interface devient le bleu glacier.
 
@@ -67,7 +71,7 @@ Les jetons d’accès restent en mémoire. Seul le jeton de renouvellement est c
 - Terminer : le déposant confirme la réalisation. Il peut déclarer avoir payé ; le Brigadier peut confirmer la réception. Ces indications restent déclaratives.
 - Désaccord : l’un des deux participants à l’accord peut enregistrer un signalement. Aucune suppression d’offre, de message ou d’historique n’est disponible.
 
-Calcul exclusivement en centimes : commission = arrondi au centime de forfait / 10. Exemple : 40 € au Brigadier, 4 € à FLEMME, total 44 €. Pour 40,05 €, frais de 4,01 €, total 44,06 €. Aucun frais minimal : les forfaits très faibles peuvent donner une commission arrondie à zéro.
+Calcul exclusivement en centimes : commission = arrondi au centime de forfait / 10 (réglage par défaut, configurable : voir `docs/paiement-stripe.md` à la racine du dépôt). Exemple : 40 € au Brigadier, 4 € à FLEMME, total 44 €. Pour 40,05 €, frais de 4,01 €, total 44,06 €. Aucun frais minimal : les forfaits très faibles peuvent donner une commission arrondie à zéro.
 
 La commission est calculée côté serveur et enregistrée dans l’accord, jamais acceptée depuis un total envoyé par le client. Paiement direct au Brigadier et commission séparée correspondent au test accompagné choisi. **Cette version n’encaisse ni la prestation ni les frais FLEMME.** Aucun écran ne prétend qu’une commission est payée. Le branchement d’un prestataire de paiement et ses remboursements constituent une étape distincte avant de percevoir automatiquement les frais.
 

@@ -1,4 +1,4 @@
-import { authMessage } from '../../mobile/src/gateway.ts';
+import { authMessage } from '../../../packages/shared/src/gateway.ts';
 
 // Liens envoyés par e-mail (confirmation d’inscription, mot de passe oublié), en flux PKCE :
 // le lien ne contient qu’un code à usage unique, inutilisable sans le secret gardé ici.

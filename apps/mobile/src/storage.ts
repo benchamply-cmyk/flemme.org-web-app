@@ -1,7 +1,7 @@
 import * as FS from 'expo-file-system/legacy';
 import * as SecureStore from 'expo-secure-store';
-import type { DemoState } from './gateway';
-import { newId } from './gateway';
+import type { DemoState } from '../../../packages/shared/src/gateway.ts';
+import { newId } from '../../../packages/shared/src/gateway.ts';
 
 const directory = FS.documentDirectory + 'flemme-mobile-demo/';
 // Snapshots additifs : une mutation crée un nouveau fichier ; aucune ancienne donnée supprimée.
