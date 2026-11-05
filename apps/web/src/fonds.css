@@ -12,15 +12,19 @@ html:not([data-fond]) .fond { display: none; }
 
 /* 1. Glacier : bleus diffus, très doux */
 html[data-fond="glacier"] { --fa1: #f5f9ff; --fa2: #e1ecff; --fb1: #e8f2ff; --fb2: #fdfeff; --hi: #ffffff; --blob1: #bcd5ff; --blob2: #d6e6ff; --blob3: #cdeefa; --blur: 48px; }
-/* 2. Relief : formes blanches en relief, ombres bleutées */
-html[data-fond="relief"] { --fa1: #ffffff; --fa2: #e8f0fd; --fb1: #edf4ff; --fb2: #dbe7fa; --hi: #ffffff; --blob1: #f2f7ff; --blob2: #eaf2ff; --blob3: #e3edfd; --blur: 0px;
-  --relief: inset 22px 26px 48px rgba(255, 255, 255, .95), inset -26px -30px 60px rgba(79, 134, 217, .2), 26px 40px 80px rgba(58, 98, 170, .16); }
-/* 3. Horizon : ciel bleu en haut, blanc en bas, qui s’inverse en descendant */
-html[data-fond="horizon"] { --fa1: #c9defd; --fa2: #ffffff; --fb1: #ffffff; --fb2: #c6dcfb; --hi: #ffffff; --blob1: #e4efff; --blob2: #f4f8ff; --blob3: #d3e5ff; --blur: 26px; }
-/* 4. Givre : blanc bleuté, fines stries et reliefs légers */
-html[data-fond="givre"] { --fa1: #fbfdff; --fa2: #edf3fb; --fb1: #f1f6fd; --fb2: #e0eaf7; --hi: #ffffff; --blob1: #dce8f6; --blob2: #ebf2fb; --blob3: #d2e2f3; --blur: 6px;
-  --relief: inset 10px 12px 24px rgba(255, 255, 255, .9), 14px 22px 50px rgba(79, 110, 160, .12);
-  --texture: repeating-linear-gradient(118deg, rgba(255, 255, 255, .5) 0 1.5px, transparent 1.5px 26px); }
+/* Variantes de Glacier (choix de Ben du 5 novembre 2026) */
+/* 1b. Glacier clair : plus blanc, bleus très légers */
+html[data-fond="glacier-clair"] { --fa1: #ffffff; --fa2: #edf4ff; --fb1: #f3f8ff; --fb2: #ffffff; --hi: #ffffff; --blob1: #d3e3ff; --blob2: #e5eeff; --blob3: #daf1fa; --blur: 60px; }
+/* 1c. Glacier profond : bleus plus présents */
+html[data-fond="glacier-profond"] { --fa1: #eaf2ff; --fa2: #cddfff; --fb1: #d7e6ff; --fb2: #f1f6ff; --hi: #f4f8ff; --blob1: #9cc0ff; --blob2: #b9d3ff; --blob3: #a5dcf2; --blur: 54px; }
+/* 1d. Glacier aurore : bleu avec une touche de lavande et de menthe */
+html[data-fond="glacier-aurore"] { --fa1: #f5f8ff; --fa2: #e2ebff; --fb1: #eeefff; --fb2: #f1fbfa; --hi: #ffffff; --blob1: #c1d3ff; --blob2: #dad4ff; --blob3: #c5efe6; --blur: 50px; }
+/* 1e. Glacier relief : couleurs de Glacier, formes nettes en relief */
+html[data-fond="glacier-relief"] { --fa1: #f5f9ff; --fa2: #e1ecff; --fb1: #e8f2ff; --fb2: #fdfeff; --hi: #ffffff; --blob1: #cfe0ff; --blob2: #e0ebff; --blob3: #d6f0fa; --blur: 8px;
+  --relief: inset 18px 22px 40px rgba(255, 255, 255, .85), inset -20px -24px 50px rgba(79, 134, 217, .16), 20px 30px 70px rgba(58, 98, 170, .14); }
+/* 1f. Glacier nacré : reflets blanc, bleu et rose pâle */
+html[data-fond="glacier-nacre"] { --fa1: #fbfcff; --fa2: #e7eefb; --fb1: #eef3fc; --fb2: #fdfcff; --hi: #ffffff; --blob1: #d3e1fb; --blob2: #ece4f6; --blob3: #d6edf6; --blur: 40px;
+  --texture: radial-gradient(ellipse at 70% 20%, rgba(255, 255, 255, .55), transparent 55%); }
 
 /* Sélecteur d’aperçu (masqué sur flemme.org) */
 .fond-picker { position: fixed; z-index: 60; left: calc(16px + env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: grid; justify-items: start; gap: 8px; }

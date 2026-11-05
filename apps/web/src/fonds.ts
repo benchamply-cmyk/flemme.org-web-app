@@ -3,9 +3,11 @@ import './fonds.css';
 // Fonds de page à comparer (voir fonds.css). Le sélecteur n’apparaît pas sur flemme.org, où le fond actuel reste en place.
 const FONDS = [
   { id: 'glacier', nom: 'Glacier', swatch: 'radial-gradient(circle at 35% 30%, #fff, #bcd5ff)' },
-  { id: 'relief', nom: 'Relief', swatch: 'radial-gradient(circle at 30% 28%, #fff 30%, #dbe7fa)' },
-  { id: 'horizon', nom: 'Horizon', swatch: 'linear-gradient(180deg, #c9defd, #fff)' },
-  { id: 'givre', nom: 'Givre', swatch: 'repeating-linear-gradient(118deg, #fff 0 2px, #e3ecf8 2px 7px)' },
+  { id: 'glacier-clair', nom: 'Glacier clair', swatch: 'radial-gradient(circle at 35% 30%, #fff 20%, #d3e3ff)' },
+  { id: 'glacier-profond', nom: 'Glacier profond', swatch: 'radial-gradient(circle at 35% 30%, #eaf2ff, #9cc0ff)' },
+  { id: 'glacier-aurore', nom: 'Glacier aurore', swatch: 'linear-gradient(135deg, #c1d3ff, #dad4ff 50%, #c5efe6)' },
+  { id: 'glacier-relief', nom: 'Glacier relief', swatch: 'radial-gradient(circle at 30% 28%, #fff 30%, #cfe0ff)' },
+  { id: 'glacier-nacre', nom: 'Glacier nacré', swatch: 'linear-gradient(135deg, #d3e1fb, #ece4f6 50%, #d6edf6)' },
   { id: '', nom: 'Actuel (en ligne)', swatch: 'linear-gradient(135deg, #cbbcff, #e3eeff 50%, #bfeef0)' },
 ];
 const enLigne = /(^|\.)flemme\.org$/.test(location.hostname);
