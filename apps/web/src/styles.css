@@ -102,3 +102,13 @@ p > .tag + .tag { margin-left: 6px; }
 .profile-head { display: flex; gap: 14px; align-items: center; }
 .avatar-photo { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; background: var(--ink); color: var(--accent); display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 26px; flex: none; }
 .help-btn { margin-left: auto; margin-right: 8px; }
+/* Petits écrans : en-tête de l’app plus compact, marges qui évitent les encoches. */
+.top, .app { padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+@media (max-width: 400px) {
+  .top { padding-left: max(14px, env(safe-area-inset-left, 0px)); padding-right: max(14px, env(safe-area-inset-right, 0px)); gap: 8px; }
+  .top img { height: 46px; }
+  .help-btn { margin-right: 0; padding: 8px 12px; }
+  .app { padding-left: max(14px, env(safe-area-inset-left, 0px)); padding-right: max(14px, env(safe-area-inset-right, 0px)); }
+  .choice { min-height: 120px; padding: 18px; }
+  .choice-title { font-size: 21px; }
+}

@@ -18,9 +18,40 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&display=swap">
 </head>
 <body>
-<header class="top">
-  <a href="./"><img src="/flemme-logo.png" alt="FLEMME"></a>
-  <nav aria-label="Navigation principale"><a class="btn small secondary" href="#comment">Comment ça marche</a><a class="btn small" href="app.html">Ouvrir l’app</a></nav>
+<header class="nav" id="nav">
+  <div class="nav-bar">
+    <a class="nav-logo" href="./" aria-label="FLEMME · accueil"><img src="/flemme-logo.png" alt="FLEMME"></a>
+    <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navMenu"><span class="nav-burger" aria-hidden="true"><span></span><span></span><span></span></span><span class="sr">Menu</span></button>
+    <div class="nav-menu" id="navMenu">
+      <form class="nav-search" id="navSearch" role="search">
+        <label class="sr" for="navQ">Rechercher une flemme</label>
+        <input id="navQ" type="search" placeholder="Rechercher une flemme…" maxlength="100" autocomplete="off" enterkeyhint="search">
+        <button type="submit" aria-label="Lancer la recherche"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+      </form>
+      <nav aria-label="Navigation principale">
+        <ul class="nav-links">
+          <li><a class="nav-link" href="#concept">Concept</a></li>
+          <li><a class="nav-link" href="#comment">Comment ça marche</a></li>
+          <li class="nav-sub">
+            <button type="button" class="nav-link" aria-expanded="false" aria-controls="subContact">Contact<span class="caret" aria-hidden="true"></span></button>
+            <ul class="nav-drop" id="subContact">
+              <li><a href="#contact">Écrivez-nous</a></li>
+              <li><a href="#faq">Questions fréquentes</a></li>
+            </ul>
+          </li>
+          <li class="nav-espace"><a class="btn small" href="app.html#mine">Mon espace</a></li>
+          <li class="nav-sub nav-lang">
+            <button type="button" class="nav-link" aria-expanded="false" aria-controls="subLang"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3Z" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="nav-lang-label">Langues</span><span class="nav-lang-code" aria-hidden="true">FR</span><span class="caret" aria-hidden="true"></span></button>
+            <ul class="nav-drop" id="subLang">
+              <li><a href="./" lang="fr" hreflang="fr" aria-current="true">Français</a></li>
+              <li><span class="nav-soon" lang="en">English <small>bientôt</small></span></li>
+              <li><span class="nav-soon" lang="es">Español <small>bientôt</small></span></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
 </header>
 
 <main class="site">
@@ -43,6 +74,17 @@
         <div class="showcase-dots" id="showcaseDots"></div>
         <button type="button" class="showcase-arrow" id="showcaseNext" aria-label="Exemple suivant">→</button>
       </div>
+    </div>
+  </section>
+
+  <section id="concept" class="block">
+    <p class="eyebrow">Le concept</p>
+    <h2 class="heading">Ceux qui repoussent, ceux qui aident.</h2>
+    <p class="narrow">FLEMME met en relation les personnes qui veulent déléguer une tâche et celles qui souhaitent proposer leur aide. Chacun garde la main : la demande est libre, le prix se discute.</p>
+    <div class="roles">
+      <article class="role flemmard"><span class="role-icon" aria-hidden="true">☕</span><h3>Le Flemmard</h3><p>Il décrit ce qu’il repousse, avec un budget et un délai indicatifs. Sa demande est relue par l’équipe avant d’être publiée.</p></article>
+      <article class="role brigadier"><span class="role-icon" aria-hidden="true">✋</span><h3>Le Brigadier</h3><p>Il choisit les flemmes qui lui parlent et propose son forfait, ses disponibilités et le résultat promis.</p></article>
+      <article class="role"><span class="role-icon" aria-hidden="true">✦</span><h3>FLEMME</h3><p>Met les deux en relation, rédige l’accord écrit avec eux et ajoute 10&#8239;% au forfait accepté. Rien de plus.</p></article>
     </div>
   </section>
 
@@ -81,6 +123,29 @@
     <a class="btn wide-btn" href="app.html#find">Voir les flemmes disponibles</a>
   </section>
 
+  <section id="faq" class="block">
+    <p class="eyebrow">Contact</p>
+    <h2 class="heading">Questions fréquentes</h2>
+    <div class="faq" id="faqList"></div>
+  </section>
+
+  <section id="contact" class="block contact">
+    <div>
+      <p class="eyebrow">Contact</p>
+      <h2 class="heading">Écrivez-nous</h2>
+      <p class="narrow">Une question, une idée, un souci avec une flemme&#8239;? L’équipe lit chaque message et répond par e-mail.</p>
+    </div>
+    <div class="card contact-card">
+      <span class="note">Adresse e-mail</span>
+      <span class="contact-mail" id="contactMail">ben.champly@gmail.com</span>
+      <div class="contact-actions">
+        <a class="btn small" href="mailto:ben.champly@gmail.com?subject=FLEMME">Écrire un e-mail</a>
+        <button type="button" class="btn small secondary" id="copyMail">Copier l’adresse</button>
+      </div>
+      <p class="note" id="copyNote" aria-live="polite">Déjà inscrit&#8239;? Tu peux aussi écrire à l’équipe depuis l’aide de <a href="app.html#mine">ton espace</a>.</p>
+    </div>
+  </section>
+
   <section class="block honest">
     <p class="eyebrow">Version de test</p>
     <h2 class="heading">Ce que cette version fait, et ne fait pas.</h2>
@@ -96,7 +161,7 @@
 <footer class="foot">
   <p class="foot-about"><b>Flemme met en relation</b> les personnes qui veulent déléguer une tâche et celles qui souhaitent proposer leur aide.</p>
   <b>FLEMME.</b> Déléguer un peu. Aider quelqu’un.
-  <nav><a href="/mentions.html">Mentions légales</a><a href="/confidentialite.html">Confidentialité</a><a href="mailto:ben.champly@gmail.com">Contact</a></nav>
+  <nav><a href="/mentions.html">Mentions légales</a><a href="/confidentialite.html">Confidentialité</a><a href="#contact">Contact</a><a href="#faq">Questions fréquentes</a></nav>
 </footer>
 <script type="module" src="/src/landing.ts"></script>
 </body>

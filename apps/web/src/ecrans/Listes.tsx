@@ -34,10 +34,18 @@ export function Listes(ctx: Ctx) {
     <Recherche {...ctx} card={card} fallback={available} skip={helping}/></>;
 }
 
+// Recherche lancée depuis la barre du menu de la vitrine (index.html), lue une seule fois.
+function pendingQuery() {
+  try { const q = sessionStorage.getItem('flemme.recherche') || ''; sessionStorage.removeItem('flemme.recherche'); return q.trim().slice(0, 100); } catch { return ''; }
+}
+
 // Recherche, filtres et tri : faits par le serveur (flemme_v2.search_tasks), pagination comprise.
 function Recherche({ state: { busy, found, filter }, card, fallback, skip }: Ctx & { card: (t: Task) => ReactNode; fallback: Task[]; skip: Task[] }) {
   const [f, setF] = useState<SearchFilter>(filter), [open, setOpen] = useState(false);
-  useEffect(() => { if (!found) void session.search(filter); }, []);
+  useEffect(() => {
+    const q = pendingQuery();
+    if (q) run({ ...filter, q }); else if (!found) void session.search(filter);
+  }, []);
   const set = (k: keyof SearchFilter) => (e: { target: { value: string } }) => setF(v => ({ ...v, [k]: e.target.value }));
   const run = (next: SearchFilter) => { setF(next); void session.search(next); };
   const select = (label: string, k: keyof SearchFilter, options: readonly Option[], empty: string) =>

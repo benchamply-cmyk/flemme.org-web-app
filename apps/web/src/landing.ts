@@ -1,4 +1,5 @@
 import { money, parseMoney, price } from '../../../packages/shared/src/domain.ts';
+import { FAQ } from '../../../packages/shared/src/aide.ts';
 import './styles.css';
 import './landing.css';
 
@@ -53,3 +54,48 @@ region.addEventListener('focusin', pause(true));
 region.addEventListener('focusout', pause(false));
 show(0);
 start();
+
+// Menu : sous-menus Contact et Langues, menu repliable sous 1100 px, barre de recherche.
+const nav = document.getElementById('nav')!;
+const toggle = document.getElementById('navToggle')!;
+const subs = [...nav.querySelectorAll<HTMLButtonElement>('.nav-sub > button')];
+const closeSubs = (except?: Element) => subs.forEach(b => { if (b !== except) b.setAttribute('aria-expanded', 'false'); });
+const setMenu = (open: boolean) => {
+  toggle.setAttribute('aria-expanded', String(open));
+  nav.classList.toggle('open', open);
+  document.documentElement.classList.toggle('nav-locked', open);
+  if (!open) closeSubs();
+};
+toggle.addEventListener('click', () => setMenu(toggle.getAttribute('aria-expanded') !== 'true'));
+subs.forEach(b => b.addEventListener('click', () => { closeSubs(b); b.setAttribute('aria-expanded', String(b.getAttribute('aria-expanded') !== 'true')); }));
+// Un lien du menu ferme tout ; un clic ailleurs ou Échap ferme les sous-menus.
+nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+document.addEventListener('click', e => { if (!(e.target as Element).closest('.nav-sub')) closeSubs(); });
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  const open = subs.find(b => b.getAttribute('aria-expanded') === 'true');
+  if (open) { closeSubs(); open.focus(); } else if (nav.classList.contains('open')) { setMenu(false); toggle.focus(); }
+});
+matchMedia('(min-width: 1100px)').addEventListener('change', e => { if (e.matches) setMenu(false); });
+// L’ombre de l’en-tête n’apparaît qu’une fois la page défilée.
+const onScroll = () => nav.classList.toggle('scrolled', scrollY > 8);
+addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+// La recherche se fait dans l’app (Résoudre une flemme) : la vitrine lui passe les mots cherchés.
+document.getElementById('navSearch')!.addEventListener('submit', e => {
+  e.preventDefault();
+  const q = (document.getElementById('navQ') as HTMLInputElement).value.trim();
+  try { if (q) sessionStorage.setItem('flemme.recherche', q); else sessionStorage.removeItem('flemme.recherche'); } catch { /* stockage bloqué : la liste s’ouvre sans filtre */ }
+  location.href = 'app.html#find';
+});
+
+// Questions fréquentes : mêmes réponses que l’assistant de l’app (packages/shared/src/aide.ts).
+const esc = (t: string) => t.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!).replace(/ ([?!:;])/g, '\u202f$1');
+document.getElementById('faqList')!.innerHTML = FAQ.map(f => `<details class="faq-item"><summary>${esc(f.question)}</summary><p>${esc(f.answer)}</p></details>`).join('');
+
+// Copier l’adresse de contact (repli : sélection du texte si le presse-papiers est refusé).
+document.getElementById('copyMail')!.addEventListener('click', async () => {
+  const mail = document.getElementById('contactMail')!, note = document.getElementById('copyNote')!;
+  try { await navigator.clipboard.writeText(mail.textContent || ''); note.textContent = 'Adresse copiée.'; }
+  catch { getSelection()?.selectAllChildren(mail); note.textContent = 'Adresse sélectionnée : copie-la avec Ctrl+C ou ⌘C.'; }
+});
