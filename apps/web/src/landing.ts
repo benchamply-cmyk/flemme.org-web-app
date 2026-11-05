@@ -2,7 +2,7 @@ import { money, parseMoney, price } from '../../../packages/shared/src/domain.ts
 import { FAQ } from '../../../packages/shared/src/aide.ts';
 import './styles.css';
 import './landing.css';
-import './essais.ts';
+import './fond.ts';
 
 // Calculateur de la vitrine : même arrondi au centime que l’accord enregistré par l’app.
 const input = document.getElementById('amount') as HTMLInputElement;
@@ -59,7 +59,7 @@ start();
 // Menu : sous-menus Contact et Langues, menu repliable sous 1100 px, barre de recherche.
 const nav = document.getElementById('nav')!;
 const toggle = document.getElementById('navToggle')!;
-// Délégation : le contenu du menu peut être remplacé (essais d’organisation, voir essais.ts).
+// Délégation : le contenu du menu peut être remplacé (sous-menus ajoutés ou retirés sans relancer le script).
 const subs = () => [...nav.querySelectorAll<HTMLButtonElement>('.nav-sub > button')];
 const closeSubs = (except?: Element) => subs().forEach(b => { if (b !== except) b.setAttribute('aria-expanded', 'false'); });
 const setMenu = (open: boolean) => {

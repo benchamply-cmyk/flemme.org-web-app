@@ -1,5 +1,5 @@
 /* Fonds de page à essayer (commentaire de Ben du 5 novembre 2026) : dégradés blanc et bleu, ombres et reliefs,
-   qui évoluent au défilement (--p va de 0 en haut de page à 1 en bas). Retirer ce fichier et src/fonds.ts une fois le fond choisi. */
+   qui évoluent au défilement (--p va de 0 en haut de page à 1 en bas). Fond retenu par Ben le 5 novembre 2026 : Glacier aurore. */
 html[data-fond] body { background: var(--fa2); }
 .fond { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; background: linear-gradient(170deg, var(--fa1), var(--fa2)); }
 html:not([data-fond]) .fond { display: none; }
@@ -10,20 +10,7 @@ html:not([data-fond]) .fond { display: none; }
 .fond .b2 { width: 46vmax; height: 46vmax; right: -16vmax; top: 26vh; background: radial-gradient(circle at 36% 30%, var(--hi), var(--blob2) 64%); transform: translate3d(calc(var(--p, 0) * -8vw), calc(var(--p, 0) * -34vh), 0); }
 .fond .b3 { width: 70vmax; height: 34vmax; left: 8vw; bottom: -22vmax; border-radius: 50% 50% 46% 54% / 60% 60% 40% 40%; background: radial-gradient(ellipse at 40% 25%, var(--hi), var(--blob3) 66%); transform: translate3d(calc(var(--p, 0) * 10vw), calc(var(--p, 0) * -18vh), 0) rotate(calc(var(--p, 0) * -6deg)); }
 
-/* 1. Glacier : bleus diffus, très doux */
-html[data-fond="glacier"] { --fa1: #f5f9ff; --fa2: #e1ecff; --fb1: #e8f2ff; --fb2: #fdfeff; --hi: #ffffff; --blob1: #bcd5ff; --blob2: #d6e6ff; --blob3: #cdeefa; --blur: 48px; }
-/* Variantes de Glacier (choix de Ben du 5 novembre 2026) */
-/* 1b. Glacier clair : plus blanc, bleus très légers */
-html[data-fond="glacier-clair"] { --fa1: #ffffff; --fa2: #edf4ff; --fb1: #f3f8ff; --fb2: #ffffff; --hi: #ffffff; --blob1: #d3e3ff; --blob2: #e5eeff; --blob3: #daf1fa; --blur: 60px; }
-/* 1c. Glacier profond : bleus plus présents */
-html[data-fond="glacier-profond"] { --fa1: #eaf2ff; --fa2: #cddfff; --fb1: #d7e6ff; --fb2: #f1f6ff; --hi: #f4f8ff; --blob1: #9cc0ff; --blob2: #b9d3ff; --blob3: #a5dcf2; --blur: 54px; }
-/* 1d. Glacier aurore : bleu avec une touche de lavande et de menthe */
+/* Glacier aurore : bleu avec une touche de lavande et de menthe */
 html[data-fond="glacier-aurore"] { --fa1: #f5f8ff; --fa2: #e2ebff; --fb1: #eeefff; --fb2: #f1fbfa; --hi: #ffffff; --blob1: #c1d3ff; --blob2: #dad4ff; --blob3: #c5efe6; --blur: 50px; }
-/* 1e. Glacier relief : couleurs de Glacier, formes nettes en relief */
-html[data-fond="glacier-relief"] { --fa1: #f5f9ff; --fa2: #e1ecff; --fb1: #e8f2ff; --fb2: #fdfeff; --hi: #ffffff; --blob1: #cfe0ff; --blob2: #e0ebff; --blob3: #d6f0fa; --blur: 8px;
-  --relief: inset 18px 22px 40px rgba(255, 255, 255, .85), inset -20px -24px 50px rgba(79, 134, 217, .16), 20px 30px 70px rgba(58, 98, 170, .14); }
-/* 1f. Glacier nacré : reflets blanc, bleu et rose pâle */
-html[data-fond="glacier-nacre"] { --fa1: #fbfcff; --fa2: #e7eefb; --fb1: #eef3fc; --fb2: #fdfcff; --hi: #ffffff; --blob1: #d3e1fb; --blob2: #ece4f6; --blob3: #d6edf6; --blur: 40px;
-  --texture: radial-gradient(ellipse at 70% 20%, rgba(255, 255, 255, .55), transparent 55%); }
 
 @media (prefers-reduced-motion: reduce) { .fond i { transform: none !important; } .fond::before { opacity: .35; } }
