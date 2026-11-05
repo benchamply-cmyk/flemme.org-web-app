@@ -25,21 +25,20 @@
     <div class="nav-menu" id="navMenu">
       <form class="nav-search" id="navSearch" role="search">
         <label class="sr" for="navQ">Rechercher une flemme</label>
-        <input id="navQ" type="search" placeholder="Rechercher une flemme…" maxlength="100" autocomplete="off" enterkeyhint="search">
+        <input id="navQ" type="search" placeholder="Rechercher…" maxlength="100" autocomplete="off" enterkeyhint="search">
         <button type="submit" aria-label="Lancer la recherche"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
       </form>
       <nav aria-label="Navigation principale">
         <ul class="nav-links">
           <li><a class="nav-link" href="#concept">Concept</a></li>
-          <li><a class="nav-link" href="#comment">Comment ça marche</a></li>
+          <li><a class="nav-link" href="#comment">Parcours</a></li>
           <li class="nav-sub">
-            <button type="button" class="nav-link" aria-expanded="false" aria-controls="subContact">Contact<span class="caret" aria-hidden="true"></span></button>
-            <ul class="nav-drop" id="subContact">
-              <li><a href="#contact">Écrivez-nous</a></li>
+            <button type="button" class="nav-link" aria-expanded="false" aria-controls="subAide">Aide<span class="caret" aria-hidden="true"></span></button>
+            <ul class="nav-drop" id="subAide">
               <li><a href="#faq">Questions fréquentes</a></li>
+              <li><a href="#contact">Écrivez-nous</a></li>
             </ul>
           </li>
-          <li class="nav-espace"><a class="btn small" href="app.html#mine">Mon espace</a></li>
           <li class="nav-sub nav-lang">
             <button type="button" class="nav-link" aria-expanded="false" aria-controls="subLang"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3Z" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="nav-lang-label">Langues</span><span class="nav-lang-code" aria-hidden="true">FR</span><span class="caret" aria-hidden="true"></span></button>
             <ul class="nav-drop" id="subLang">
@@ -48,6 +47,9 @@
               <li><span class="nav-soon" lang="es">Español <small>bientôt</small></span></li>
             </ul>
           </li>
+          <li class="nav-espace nav-cta"><a class="btn small green" href="app.html#find">Résoudre</a></li>
+          <li class="nav-espace nav-cta"><a class="btn small" href="app.html#mine">Déléguer</a></li>
+          <li class="nav-espace"><a class="btn small secondary" href="app.html#mine">Mon espace</a></li>
         </ul>
       </nav>
     </div>
