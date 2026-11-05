@@ -1,0 +1,89 @@
+/*
+ * Flemme.org — fonds du 5 novembre 2026 (fichier de Ben, repris tel quel).
+ * Choix V0.4 : variante Accueil sur toutes les pages, reflets animés.
+ * Importer ce fichier puis ajouter .flemme-chrome-home au conteneur.
+ * Le conteneur doit avoir la hauteur de la zone à décorer.
+ * Variantes facultatives : data-flemme-page="deleguer", "resoudre" ou "comment".
+ */
+.flemme-chrome-home {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  overflow: clip;
+  background-color: #fff;
+}
+
+.flemme-chrome-home::before,
+.flemme-chrome-home::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: center / 100% 100% no-repeat;
+  opacity: var(--flemme-ribbon-opacity, 1);
+  filter: var(--flemme-ribbon-tone, saturate(1))
+    drop-shadow(0 var(--shadow-y) 26px #64809b26);
+  transform: translate(var(--ribbon-x, 0%), var(--ribbon-y, 0%));
+  animation: flemme-ribbon-drift var(--ribbon-duration) ease-in-out infinite;
+  animation-play-state: var(--flemme-motion, running);
+}
+
+.flemme-chrome-home::before {
+  --shadow-y: 14px;
+  --ribbon-duration: 32s;
+  --drift-x: -1.5%;
+  --drift-y: 1%;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201460%20816%22%20preserveAspectRatio=%22none%22%3E%3Cdefs%3E%3ClinearGradient%20id=%22g%22%20gradientUnits=%22userSpaceOnUse%22%20x1=%220%22%20y1=%220%22%20x2=%22177%22%20y2=%22384%22%3E%3Cstop%20offset=%220%22%20stop-color=%22%23e5edf5%22/%3E%3Cstop%20offset=%220.25%22%20stop-color=%22%23ffffff%22/%3E%3Cstop%20offset=%220.43%22%20stop-color=%22%23a9c9e8%22/%3E%3Cstop%20offset=%220.51%22%20stop-color=%22%23ffffff%22/%3E%3Cstop%20offset=%220.7%22%20stop-color=%22%23d8e1ee%22/%3E%3Cstop%20offset=%220.87%22%20stop-color=%22%23ffffff%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20d=%22M0%200%20H964%20C846%20190%20386%20388%200%20394%20Z%22%20fill=%22url%28%23g%29%22/%3E%3C/svg%3E");
+}
+
+.flemme-chrome-home::after {
+  --shadow-y: -12px;
+  --ribbon-duration: 40s;
+  --drift-x: 1.5%;
+  --drift-y: -1%;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201460%20816%22%20preserveAspectRatio=%22none%22%3E%3Cdefs%3E%3ClinearGradient%20id=%22g%22%20gradientUnits=%22userSpaceOnUse%22%20x1=%221330%22%20y1=%22522%22%20x2=%221475%22%20y2=%22754%22%3E%3Cstop%20offset=%220%22%20stop-color=%22%23ffffff%22/%3E%3Cstop%20offset=%220.22%22%20stop-color=%22%23d4e3f4%22/%3E%3Cstop%20offset=%220.4%22%20stop-color=%22%23ffffff%22/%3E%3Cstop%20offset=%220.67%22%20stop-color=%22%23a4c7e7%22/%3E%3Cstop%20offset=%220.83%22%20stop-color=%22%23ffffff%22/%3E%3Cstop%20offset=%221%22%20stop-color=%22%23cad8e8%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20d=%22M814%20816%20C976%20687%201214%20580%201460%20507%20V816%20Z%22%20fill=%22url%28%23g%29%22/%3E%3C/svg%3E");
+}
+
+.flemme-chrome-home[data-flemme-page="deleguer"] {
+  --flemme-ribbon-tone: saturate(1.22);
+  --flemme-ribbon-opacity: .84;
+}
+
+.flemme-chrome-home[data-flemme-page="deleguer"]::before { --ribbon-y: -12%; }
+.flemme-chrome-home[data-flemme-page="deleguer"]::after { --ribbon-y: -7%; }
+
+.flemme-chrome-home[data-flemme-page="resoudre"] {
+  --flemme-ribbon-tone: saturate(.43);
+  --flemme-ribbon-opacity: .8;
+}
+
+.flemme-chrome-home[data-flemme-page="resoudre"]::before { --ribbon-x: -14%; }
+.flemme-chrome-home[data-flemme-page="resoudre"]::after { --ribbon-y: -3%; }
+
+.flemme-chrome-home[data-flemme-page="comment"] {
+  --flemme-ribbon-tone: saturate(.75);
+  --flemme-ribbon-opacity: .58;
+}
+
+.flemme-chrome-home[data-flemme-page="comment"]::before { --ribbon-y: -19%; }
+.flemme-chrome-home[data-flemme-page="comment"]::after { --ribbon-x: 15%; }
+
+@keyframes flemme-ribbon-drift {
+  50% {
+    transform: translate(
+      calc(var(--ribbon-x, 0%) + var(--drift-x)),
+      calc(var(--ribbon-y, 0%) + var(--drift-y))
+    );
+  }
+}
+
+@media (max-width: 40rem) {
+  .flemme-chrome-home::before { bottom: 27%; }
+  .flemme-chrome-home::after { top: 33%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flemme-chrome-home::before,
+  .flemme-chrome-home::after { animation: none; }
+}

@@ -120,7 +120,7 @@ export default function App() {
     go('list', { tab: 'find' });
   }
   return <>
-    <div className="bandeau app-bandeau">
+    <div className="flemme-chrome-home bandeau app-bandeau">
       <header className="entete">
         <div className="entete-gauche">
           <a className="logo" href="./" aria-label="FLEMME · retour à la présentation">FLEMME.</a>
