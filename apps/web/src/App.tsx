@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import type { ReactNode } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 import { backLabel, contractFields, footer, money, rights, taskFields } from '../../../packages/shared/src/index.ts';
 import type { Command, Input, Option, Screen, Task } from '../../../packages/shared/src/index.ts';
 import { onlinePayment, session, useSession } from './session.ts';
 import { Action } from './ui.tsx';
+import pied from './site/pied.html?raw';
+import './site/site.css';
 import type { Ctx, Draft, FieldOptions, Place } from './ecrans/contexte.ts';
 import { Accueil } from './ecrans/Accueil.tsx';
 import { Accord } from './ecrans/Accord.tsx';
@@ -23,8 +25,9 @@ import { Signalement } from './ecrans/Signalement.tsx';
 // Différence web : chaque écran est une entrée d’historique, le bouton Retour du navigateur remplace BackHandler.
 
 // Lien direct depuis la vitrine : app.html#mine ou app.html#find.
-const initialTab = location.hash === '#find' ? 'find' : location.hash === '#mine' || location.hash.startsWith('#paiement') ? 'mine' : null;
-const start: Place = { screen: initialTab ? 'list' : 'home', tab: initialTab || 'mine', taskId: '', offerId: '', depth: 0 };
+// app.html#deposer ouvre directement le formulaire « Déléguer ma flemme ».
+const initialTab = location.hash === '#find' ? 'find' : location.hash === '#mine' || location.hash === '#deposer' || location.hash.startsWith('#paiement') ? 'mine' : null;
+const start: Place = { screen: location.hash === '#deposer' ? 'new' : initialTab ? 'list' : 'home', tab: initialTab || 'mine', taskId: '', offerId: '', depth: 0 };
 // Écrans ouverts depuis la fiche d’une flemme : combien de pas pour y revenir.
 const aboveDetail: Partial<Record<Screen, number>> = { offer: 1, review: 2, report: 1, edit: 1, contract: 1 };
 // Formulaire prérempli à l’ouverture d’un écran : modification d’une demande ou reprise d’un brouillon.
@@ -100,23 +103,57 @@ export default function App() {
   else if (screen === 'help') content = <Aide key={visit} {...ctx}/>;
   else if (screen === 'home') content = <Accueil {...ctx}/>;
   else if (screen === 'new') content = <NouvelleFlemme key={visit} {...ctx}/>;
-  else if (screen === 'list') content = <Listes {...ctx}/>;
-  else if (!task) content = <><h1 className="heading">Flemme indisponible</h1><Action secondary onClick={() => go('list')}>Revenir à la liste</Action></>;
+  else if (screen === 'list') content = <Listes key={visit} {...ctx}/>;
+  else if (!task) content = <><h1 className="heading">Demande indisponible</h1><Action secondary onClick={() => go('list')}>Revenir à la liste</Action></>;
   else if (screen === 'report') content = <Signalement {...ctx}/>;
   else if (screen === 'edit') content = <NouvelleFlemme key={visit} {...ctx}/>;
   else if (screen === 'contract') content = <Accord {...ctx}/>;
   else if ((screen === 'offer' || screen === 'review') && offer) content = <Offre {...ctx}/>;
   else content = <Fiche key={visit} {...ctx}/>;
 
+  const connecte = actorId !== '';
+  // Lien « catégorie » du pied de page : la liste des demandes se filtre sans recharger l’app.
+  function onPied(e: MouseEvent<HTMLElement>) {
+    const a = (e.target as Element).closest<HTMLAnchorElement>('[data-filtre-categorie]');
+    if (!a || !connecte) return;
+    e.preventDefault();
+    try { sessionStorage.setItem('flemme.filtre', JSON.stringify({ category: a.dataset.filtreCategorie })); } catch { /* stockage bloqué */ }
+    go('list', { tab: 'find' });
+  }
+  // Lien du menu burger : referme le menu puis change d’écran dans l’app.
+  const menu = (action: () => void) => (e: MouseEvent<HTMLAnchorElement>) => { e.preventDefault(); (e.currentTarget.closest('details') as HTMLDetailsElement).open = false; action(); };
+  const loupe = <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></g></svg>;
+  const plus = <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round"/></svg>;
   return <>
-    <header className="top"><a href="./" aria-label="FLEMME · retour à la présentation"><img src={import.meta.env.BASE_URL + 'flemme-logo.png'} alt="FLEMME"/></a>{actorId !== '' && <button type="button" className="btn small secondary help-btn" onClick={() => go('help')}>Aide</button>}{actorId !== '' && <button type="button" className="avatar" aria-label="Mon compte" onClick={() => go('account')}>{gateway?.actor.name.slice(0, 1).toUpperCase()}</button>}</header>
+    <div className="flemme-chrome-home bandeau app-bandeau">
+      <header className="entete">
+        <div className="entete-gauche">
+          <a className="logo" href="./" aria-label="FLEMME · retour à la présentation">FLEMME.</a>
+          {connecte && <button type="button" className="pastille deleguer" onClick={() => go('new', { tab: 'mine', draftId: undefined })}>{plus}<span>Déléguer<span className="long"> ma flemme</span></span></button>}
+          <a className="pastille entete-resoudre" href="resoudre.html">{loupe}<span>Flemmes à résoudre</span></a>
+        </div>
+        <details className="burger">
+          <summary aria-label="Menu"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinejoin="round"><rect x="4" y="4" width="6" height="6" rx="2"/><rect x="14" y="4" width="6" height="6" rx="2"/><rect x="4" y="14" width="6" height="6" rx="2"/><rect x="14" y="14" width="6" height="6" rx="2"/></g></svg></summary>
+          <nav className="burger-menu" aria-label="Découvrir FLEMME">
+            <a className="burger-resoudre" href="resoudre.html">Flemmes à résoudre</a>
+            {connecte && <a href="#mine" onClick={menu(() => go('list', { tab: 'mine' }))}>Mon espace</a>}
+            {connecte && <a href="#aide" onClick={menu(() => go('help'))}>Aide</a>}
+            <a href="comment-ca-marche.html">Comment ça marche</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a>
+          </nav>
+        </details>
+        <div className="entete-droite">{connecte
+          ? <><button type="button" className="pastille mon-espace" aria-label="Mon espace" onClick={() => go('list', { tab: 'mine' })}><span className="pastille-initiale" aria-hidden="true">{gateway?.actor.name.slice(0, 1).toUpperCase()}</span><span>Mon espace</span></button></>
+          : <span className="pastille deleguer" aria-current="page"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/><path d="M3 12h11M10 8l4 4-4 4"/></g></svg><span>Connexion</span></span>}</div>
+      </header>
+    </div>
     <main ref={main} tabIndex={-1} className="app" aria-busy={busy}>
-      {screen !== 'home' && actorId !== '' && <Action secondary onClick={back}>{backLabel(screen)}</Action>}
+      {screen !== 'home' && connecte && <div className="app-nav"><Action secondary onClick={back}>{backLabel(screen)}</Action>{screen !== 'account' && <button type="button" className="btn small secondary" onClick={() => go('account')}>Mon compte</button>}</div>}
       {!!error && <div role="alert" className="alert">{error}</div>}
       {!!notice && <p aria-live="polite" className="notice">{notice}</p>}
       {content}
       {busy && <p className="muted" role="status">En cours…</p>}
     </main>
     <p className="foot">{footer(session.remote, onlinePayment)}</p>
+    <div onClick={onPied} dangerouslySetInnerHTML={{ __html: pied }}/>
   </>;
 }

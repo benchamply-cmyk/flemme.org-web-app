@@ -1,6 +1,7 @@
-/* Identité partagée avec packages/shared/src/brand.ts (palette V5 glacier de flemme.org). */
+/* Identité partagée avec packages/shared/src/brand.ts. Habillage V0.3 (5 novembre 2026) : fond blanc,
+   en-tête bleu commun avec la vitrine (src/site/site.css), boutons encre et texte blanc. */
 :root {
-  --paper: #e3eeff; --ink: #16131f; --surface: #ffffff; --soft: #f3f7ff; --muted: #3f3a55;
+  --paper: #ffffff; --ink: #16131f; --surface: #ffffff; --soft: #f3f7ff; --muted: #3f3a55;
   --accent: #a5ccff; --glacier-deep: #4f86d9; --violet: #3a2fa0; --green: #57d68d;
   --error: #f8e9e4;
   --display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
@@ -9,18 +10,10 @@
 }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
-body {
-  margin: 0; min-height: 100vh; color: var(--ink); font: 16px/1.45 var(--display); background-color: var(--paper);
-  background-image:
-    radial-gradient(ellipse at 0% 12%, rgba(170,150,255,.42), transparent 60%),
-    radial-gradient(ellipse at 100% 0%, rgba(255,182,220,.25), transparent 55%),
-    radial-gradient(ellipse at 100% 100%, rgba(120,220,225,.36), transparent 60%),
-    linear-gradient(135deg, #e3eeff, #f3f7ff);
-  background-attachment: fixed;
-}
+body { margin: 0; min-height: 100vh; color: var(--ink); font: 16px/1.45 var(--display); background: var(--paper); }
 a { color: inherit; }
 button, input, textarea { font: inherit; color: inherit; }
-:focus-visible { outline: 3px solid var(--glacier-deep); outline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--violet); outline-offset: 3px; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* En-tête et pied communs */
@@ -31,28 +24,28 @@ button, input, textarea { font: inherit; color: inherit; }
 .foot nav { display: flex; gap: 14px; justify-content: center; margin-top: 8px; flex-wrap: wrap; }
 
 /* Typographie */
-.eyebrow { font: 700 11px/1.4 var(--mono); letter-spacing: 1.4px; color: var(--violet); text-transform: uppercase; margin: 0; }
+.eyebrow { font: 700 11px/1.4 var(--mono); letter-spacing: 1.4px; color: #3a4f7a; text-transform: uppercase; margin: 0; }
 .heading { font-weight: 900; font-size: clamp(30px, 6vw, 34px); line-height: 1.08; letter-spacing: .2px; text-transform: uppercase; margin: 8px 0; text-wrap: balance; }
 .muted { color: var(--muted); font-size: 14px; margin: 0; }
 .note { color: var(--muted); font-size: 12px; line-height: 1.5; margin: 0; }
 .strong { font-weight: 700; }
 .section-title { font-size: 20px; font-weight: 800; text-transform: uppercase; margin: 18px 0 0; }
 
-/* Boutons pilules : encre + texte glacier, comme Action dans App.tsx */
-.btn { display: flex; align-items: center; justify-content: center; min-height: 48px; padding: 14px 20px; border-radius: 999px; border: 2px solid var(--ink); background: var(--ink); color: var(--accent); text-transform: uppercase; letter-spacing: .4px; font-size: 15px; font-weight: 700; text-align: center; text-decoration: none; cursor: pointer; }
-.btn:hover { filter: brightness(1.15); }
+/* Boutons pilules : encre + texte blanc, comme Action dans App.tsx */
+.btn { display: flex; align-items: center; justify-content: center; min-height: 48px; padding: 14px 20px; border-radius: 999px; border: 2px solid var(--ink); background: #d2e4ff; color: var(--ink); text-transform: uppercase; letter-spacing: .4px; font-size: 15px; font-weight: 700; text-align: center; text-decoration: none; cursor: pointer; }
+.btn:hover { background: #a5ccff; }
 .btn.secondary { background: var(--surface); color: var(--ink); }
-.btn.secondary:hover { background: var(--soft); filter: none; }
+.btn.secondary:hover { background: var(--soft); }
 .btn:disabled { opacity: .55; cursor: default; }
 .btn.small { min-height: 40px; padding: 8px 16px; font-size: 13px; }
 
 /* Cartes et éléments de l’app */
-.card { border-radius: 24px; border: 2px solid var(--ink); background: var(--surface); padding: 17px; display: grid; gap: 12px; }
+.card { border-radius: 18px; border: 2px solid var(--ink); background: var(--surface); padding: 17px; display: grid; gap: 12px; }
 button.card { text-align: left; cursor: pointer; width: 100%; }
 button.card:hover { box-shadow: var(--shadow); }
 .card-title { font-size: 18px; font-weight: 700; line-height: 1.33; margin: 0; }
 .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
-.tag { font-size: 12px; background: var(--ink); color: var(--accent); padding: 7px; border-radius: 7px; justify-self: start; align-self: flex-start; }
+.tag { font-size: 11px; font-weight: 800; text-transform: uppercase; background: var(--glacier-clair, #e6efff); color: var(--ink); border: 2px solid var(--ink); padding: 3px 8px; border-radius: 8px; justify-self: start; align-self: flex-start; }
 .link { font-weight: 600; font-size: 14px; }
 .price { font-size: 18px; font-weight: 700; }
 .divider { height: 1px; background: var(--ink); }
@@ -67,8 +60,8 @@ button.card:hover { box-shadow: var(--shadow); }
 
 /* Les deux grandes actions, identiques à l’accueil mobile */
 .choices { display: grid; gap: 18px; }
-.choice { display: grid; gap: 9px; align-content: center; min-height: 142px; padding: 22px; border-radius: 26px; border: 2.5px solid var(--ink); background: var(--accent); box-shadow: var(--shadow); text-decoration: none; text-align: left; cursor: pointer; transition: transform .12s, box-shadow .12s; }
-.choice.secondary { background: var(--surface); }
+.choice { display: grid; gap: 9px; align-content: center; min-height: 142px; padding: 22px; border-radius: 26px; border: 2.5px solid var(--ink); background: #d2e4ff; color: var(--ink); box-shadow: var(--shadow); text-decoration: none; text-align: left; cursor: pointer; transition: transform .12s, box-shadow .12s; }
+.choice.secondary { background: #b8f0de; color: var(--ink); }
 .choice:hover { transform: translate(-2px, -2px); box-shadow: 7px 8px 0 var(--violet); }
 .choice:active { transform: translate(2px, 2px); box-shadow: 2px 3px 0 var(--violet); }
 .choice-icon { font-size: 25px; }
@@ -87,7 +80,7 @@ button.card:hover { box-shadow: var(--shadow); }
 /* Parcours complet : listes déroulantes, demandes en attente, dictée, filtres */
 .field select { appearance: auto; }
 .field small { display: block; }
-.tag.warn { background: var(--accent); color: var(--ink); border: 1px solid var(--ink); }
+.tag.warn { background: var(--peche, #ffd9c2); }
 .dictee { display: grid; gap: 6px; justify-items: start; }
 .dictee .btn { width: auto; }
 .card .row .btn { flex: 1 1 auto; }
@@ -102,3 +95,25 @@ p > .tag + .tag { margin-left: 6px; }
 .profile-head { display: flex; gap: 14px; align-items: center; }
 .avatar-photo { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; background: var(--ink); color: var(--accent); display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 26px; flex: none; }
 .help-btn { margin-left: auto; margin-right: 8px; }
+/* Petits écrans : en-tête de l’app plus compact, marges qui évitent les encoches. */
+.top, .app { padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+@media (max-width: 400px) {
+  .top { padding-left: max(14px, env(safe-area-inset-left, 0px)); padding-right: max(14px, env(safe-area-inset-right, 0px)); gap: 8px; }
+  .top img { height: 46px; }
+  .help-btn { margin-right: 0; padding: 8px 12px; }
+  .app { padding-left: max(14px, env(safe-area-inset-left, 0px)); padding-right: max(14px, env(safe-area-inset-right, 0px)); }
+  .choice { min-height: 120px; padding: 18px; }
+  .choice-title { font-size: 21px; }
+}
+
+/* Habillage V0.3 de l’app : bandeau bleu court, colonne de contenu, pied de page de la vitrine. */
+.app-bandeau { padding-bottom: 8px; margin-bottom: 24px; }
+.app { min-height: calc(100vh - 360px); }
+.app .heading { color: var(--ink); text-transform: none; font-size: clamp(30px, 6vw, 40px); letter-spacing: -1px; }
+.app-nav { display: flex; gap: 8px; align-items: center; }
+.app-nav .btn { flex: 1 1 auto; }
+.app-nav .btn.small { flex: 0 0 auto; min-height: 48px; }
+.pastille-initiale { width: 26px; height: 26px; border-radius: 50%; background: #b8f0de; color: var(--ink); display: grid; place-items: center; font-size: 13px; }
+.propose { background: var(--menthe, #b8f0de); border-width: 2.5px; box-shadow: 5px 6px 0 var(--violet); }
+.propose .field input, .propose .field textarea { background: #fff; }
+.foot { padding-bottom: 16px; }

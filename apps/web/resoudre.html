@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#3a4f7a">
+<title>Flemmes à résoudre — Flemme.org</title>
+<meta name="description" content="Flemmes à résoudre : trouve une tâche près de chez toi ou à distance, ouvre la demande et propose ton aide avec ton forfait.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="FLEMME">
+<meta property="og:title" content="Flemmes à résoudre — Flemme.org">
+<meta property="og:description" content="Flemmes à résoudre : trouve une tâche près de chez toi ou à distance, ouvre la demande et propose ton aide avec ton forfait.">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/flemme-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&display=swap">
+</head>
+<body>
+<section class="flemme-chrome-home bandeau">
+<!--#entete-->
+  <div class="titre-page">
+    <p class="ariane"><a href="./">Accueil</a> › Flemmes à résoudre</p>
+    <h1>Flemmes à résoudre</h1>
+    <p>Trouve une tâche près de chez toi ou à distance, et propose ton aide.</p>
+  </div>
+</section>
+<main>
+<section class="bloc" style="padding-bottom:0">
+    <form role="search" class="barre" id="rechercheForm">
+      <label style="flex:1;display:flex;min-width:0"><span class="sr">Rechercher une demande</span><input id="rechercheQ" type="search" placeholder="Une tâche, une compétence, une ville… Ex. CV, étagère, devis" maxlength="100" autocomplete="off" enterkeyhint="search"></label>
+      <button type="submit">Voir les demandes</button>
+    </form>
+    <div class="filtres" id="filtres"><b>Filtres :</b></div>
+  </section>
+  <section class="bloc serre">
+    <p class="surtitre">Pour te donner une idée</p>
+    <h2 class="titre">Exemples de demandes</h2>
+    <!-- Mêmes exemples que le carrousel de l’accueil (tableur « Flemme – Exemples du carrousel », lignes « En ligne »). -->
+    <div class="grille large">
+      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="maison"><span class="etiquette" style="background:var(--vert-tendre)"><span aria-hidden="true">⌂</span> Maison</span><b>Monter mes nouveaux meubles Ikea…</b><span>Lyon · Croix-Rousse · dans la semaine</span><span class="lien-fort">Voir la demande →</span></a>
+      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="numerique"><span class="etiquette" style="background:var(--peche)"><span aria-hidden="true">✳</span> Numérique</span><b>S’occuper de mon annonce LeBonCoin</b><span>À distance · dans le mois</span><span class="lien-fort">Voir la demande →</span></a>
+      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="administratif"><span class="etiquette" style="background:var(--glacier-clair)"><span aria-hidden="true">✉</span> Démarches</span><b>Ce dossier de la CAF qui me fait peur…</b><span>À distance · environ 1 semaine</span><span class="lien-fort">Voir la demande →</span></a>
+      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="organisation"><span class="etiquette" style="background:var(--lavande)"><span aria-hidden="true">◷</span> Organisation</span><b>L’anniversaire de Léa dans dix jours…</b><span>Paris · 11e · environ 1 mois</span><span class="lien-fort">Voir la demande →</span></a>
+      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="maison"><span class="etiquette" style="background:var(--lagon)"><span aria-hidden="true">✦</span> Quotidien</span><b>Ces cartons du déménagement…</b><span>Nantes · Centre · ce week-end</span><span class="lien-fort">Voir la demande →</span></a>
+    </div>
+    <p class="doux" style="font-size:13px">Ces cartes sont des exemples. Les vraies demandes, relues par l’équipe, s’ouvrent avec «&#8239;Voir les demandes&#8239;».</p>
+  </section>
+  <section class="bloc">
+    <p class="surtitre">Proposer ton aide</p>
+    <h2 class="titre">En trois étapes</h2>
+    <p class="doux">Les Brigadiers sont les personnes qui proposent leur aide sur Flemme. Avec ton compte, tu peux en faire partie dès ta première proposition.</p>
+    <div class="grille">
+      <div class="carte"><b>1 · Trouve une demande</b><p class="doux">À distance ou près de chez toi. Ouvre la fiche pour voir ce qui est attendu.</p></div>
+      <div class="carte"><b>2 · Envoie ta proposition</b><p class="doux">Le résultat que tu peux livrer, ton délai et ton forfait.</p></div>
+      <div class="carte"><b>3 · Mettez-vous d’accord</b><p class="doux">Si ta proposition est retenue, vous confirmez l’accord avant de commencer.</p></div>
+    </div>
+    <div class="boutons"><a class="bouton vert" href="app.html#find">Voir les demandes</a><a class="bouton clair" href="comment-ca-marche.html#aider">Comment ça marche</a></div>
+  </section>
+</main>
+<!--#pied-->
+<script type="module" src="/src/site/pages/resoudre.ts"></script>
+</body>
+</html>

@@ -47,7 +47,7 @@ test('changement de personnage puis proposition et droits calculés', async () =
   await s.switchActor(demoActors[2], () => { switched = true; });
   assert.ok(switched); assert.equal(s.getState().actorId, 'demo-camille');
   const colis = s.getState().tasks.find(t => t.id === 'demo-colis')!;
-  assert.equal(cardHint(colis, 'demo-camille'), 'Je peux aider →');
+  assert.equal(cardHint(colis, 'demo-camille'), 'Voir la demande →');
   assert.equal(rights(colis, 'demo-camille').canOffer, true);
   await s.mutate('offer', colis.id, { amount: 1500, slot: 'Lundi', scope: 'Tout compris' }, () => {});
   const after = s.getState().tasks.find(t => t.id === 'demo-colis')!;

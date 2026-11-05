@@ -48,11 +48,11 @@ export function helpInput(topic: string | undefined, text: string | undefined, t
 /** Réponses prédéfinies de l’assistant. Aucune IA : recherche par mots clés, puis proposition de parler à un humain. */
 export const FAQ: { id: string; question: string; keywords: string[]; answer: string; topic: HelpTopic }[] = [
   { id: 'deposer', topic: 'demande', question: 'Comment déposer une flemme ?', keywords: ['deposer', 'publier', 'demande', 'creer', 'nouvelle'],
-    answer: 'Depuis « Mes flemmes », choisis « Déléguer ma flemme ». Décris ce qu’il faut faire, le délai et un budget indicatif. L’équipe FLEMME relit ta demande avant de la publier.' },
+    answer: 'Choisis « Déléguer ma flemme » et décris ce dont tu as besoin, avec tes mots. Précise le lieu si c’est sur place et un délai si tu en as un : le budget est facultatif. L’équipe FLEMME relit ta demande avant de la publier.' },
   { id: 'validation', topic: 'demande', question: 'Pourquoi ma demande n’est pas visible ?', keywords: ['visible', 'validation', 'attente', 'publiee', 'privee', 'refusee'],
     answer: 'Chaque demande reste privée jusqu’à sa validation par l’équipe. Si une correction est demandée, le message de l’équipe s’affiche sur ta demande : corrige-la, elle repart en validation.' },
   { id: 'candidature', topic: 'mission', question: 'Comment proposer mon aide ?', keywords: ['proposer', 'candidature', 'aider', 'brigadier', 'offre'],
-    answer: 'Ouvre une flemme dans « Résoudre une flemme », indique ton forfait, tes disponibilités et le résultat promis. L’équipe relit ta candidature avant de la transmettre au déposant.' },
+    answer: 'Ouvre une demande dans « Flemmes à résoudre », puis « Proposer mon aide » : indique ton forfait, tes disponibilités et le résultat que tu peux livrer. L’équipe relit ta proposition avant de la transmettre à la personne qui a publié la demande.' },
   { id: 'prix', topic: 'paiement', question: 'Combien coûte FLEMME ?', keywords: ['prix', 'commission', 'frais', 'cout', 'tarif', 'pourcentage'],
     answer: 'Le Brigadier fixe son forfait. FLEMME ajoute sa commission au forfait accepté : le détail est affiché avant d’accepter, puis figé dans l’accord.' },
   { id: 'payer', topic: 'paiement', question: 'Comment payer le Brigadier ?', keywords: ['payer', 'paiement', 'carte', 'stripe', 'virement', 'rembourse'],

@@ -1,9 +1,11 @@
 import type { Ctx } from './contexte.ts';
 
+// Accueil de l’app : les deux portes d’entrée, chacune avec sa destination immédiate.
 export function Accueil({ go }: Ctx) {
-  return <div className="home"><div><p className="eyebrow">Le droit d’avoir la flemme.</p><h1 className="heading">Passe le relais. Ou prends-le.</h1><p className="muted">Ce que certains repoussent, d’autres aident à le réaliser. Décris ta flemme ou propose tes services, et mettez-vous d’accord.</p></div>
+  return <div className="home"><div><p className="eyebrow">Une tâche en moins, un coup de main en plus.</p><h1 className="heading">Que veux-tu faire&#8239;?</h1><p className="muted">Avec un seul compte, tu peux déléguer une tâche et proposer ton aide.</p></div>
     <div className="choices">
-      <button type="button" className="choice" aria-label="Mes flemmes · déposer et suivre mes demandes" onClick={() => go('list', { tab: 'mine' })}><span className="choice-icon" aria-hidden="true">☕</span><span className="choice-title">Mes flemmes</span><span className="choice-hint">Je décris ce que je repousse</span></button>
-      <button type="button" className="choice secondary" aria-label="Résoudre une flemme · voir les flemmes à résoudre" onClick={() => go('list', { tab: 'find' })}><span className="choice-icon" aria-hidden="true">↗</span><span className="choice-title">Résoudre une flemme</span><span className="choice-hint">Je propose mon coup de main</span></button>
-    </div></div>;
+      <button type="button" className="choice" onClick={() => go('new', { tab: 'mine', draftId: undefined })}><span className="choice-icon" aria-hidden="true">＋</span><span className="choice-title">Déléguer ma flemme</span><span className="choice-hint">Décris ce que tu aimerais confier.</span></button>
+      <a className="choice secondary" href="resoudre.html"><span className="choice-icon" aria-hidden="true">⌕</span><span className="choice-title">Résoudre une flemme</span><span className="choice-hint">Trouve une demande et propose ton aide.</span></a>
+    </div>
+    <button type="button" className="btn secondary" onClick={() => go('list', { tab: 'mine' })}>Mon espace · mes demandes et mes propositions</button></div>;
 }
