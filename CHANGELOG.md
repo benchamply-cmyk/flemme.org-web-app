@@ -4,6 +4,8 @@ Chaque PR ajoute une ligne sous « À venir ». À chaque mise en production (`p
 
 ## À venir
 
+- Vitrine refondue d’après les retours de Ben sur l’artefact du 5 nov. : nouveau menu (recherche, Concept, Comment ça marche, Contact ▸ Écrivez-nous / Questions fréquentes, Mon espace, Langues), page responsive de 320 à 1920 px, nouvelle accroche et nouveaux boutons DÉLÉGUER / RÉSOUDRE, sections Concept, Catégories, Confiance et sécurité, Questions fréquentes, App mobile, Écrivez-nous et appel final, prix et Brigadier regroupés, fond Glacier aurore animé au défilement. La recherche du menu ouvre « Résoudre une flemme » avec les mots tapés.
+
 ## v6.3000 — 4 nov. 2026
 
 Mise en production de `preprod` (PR `preprod` → `prod`). Aucune migration de base de données.
