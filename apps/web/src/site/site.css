@@ -21,8 +21,6 @@
 .entete { display: grid; grid-template-columns: auto auto 1fr; align-items: center; gap: 16px; width: 100%; max-width: var(--largeur); margin: 0 auto; padding: 20px 24px; box-sizing: border-box; position: relative; z-index: 10; }
 .entete-gauche { display: flex; align-items: center; gap: 16px; justify-self: start; min-width: 0; }
 .entete-droite { justify-self: end; display: flex; align-items: center; gap: 14px; }
-.entete-connexion, .entete-connexion-bouton { color: var(--encre); font: 800 15px/1 var(--police); text-decoration: none; background: none; border: 0; padding: 8px 4px; cursor: pointer; }
-.entete-connexion:hover, .entete-connexion-bouton:hover { text-decoration: underline; }
 .pastille.deleguer { background: var(--glacier); color: var(--encre); box-shadow: 3px 4px 0 var(--violet); }
 .pastille.deleguer:hover { background: var(--glacier-clair); border-color: var(--encre); }
 .burger-menu .burger-connexion { display: none; }
