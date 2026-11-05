@@ -34,7 +34,7 @@ export function Listes(ctx: Ctx) {
       {offerDrafts.map(d => <div className="card" key={d.id}><span className="card-title">{tasks.find(t => t.id === d.taskId)?.title || 'Proposition'}</span><span className="note">Brouillon enregistré le {date(d.updatedAt)} · visible de toi seul</span>
         <span className="row"><button type="button" className="btn small" disabled={busy} onClick={() => go('detail', { taskId: d.taskId || '', draftId: d.id })}>Reprendre</button><button type="button" className="btn small secondary" disabled={busy} onClick={() => session.deleteDraft(d.id)}>Supprimer</button></span></div>)}</>}
     {helping.length ? helping.map(card) : !offerDrafts.length && <p className="muted">Aucune proposition envoyée. Trouve une demande dans « Flemmes à résoudre ».</p>}
-    <Action secondary onClick={() => go('list', { tab: 'find' })}>Voir les demandes à résoudre</Action>{reload}</>;
+    <Action secondary onClick={() => { location.href = 'resoudre.html'; }}>Voir les demandes à résoudre</Action>{reload}</>;
   return <><p className="eyebrow">À toi de jouer, Brigadier.</p><h1 className="heading">Flemmes à résoudre</h1><p className="muted">Trouve une tâche près de chez toi ou à distance. {brigadierPitch()}</p>
     {(helping.length > 0 || offerDrafts.length > 0) && <p className="note">Tes propositions et tes brouillons sont dans <button type="button" className="link" onClick={() => go('list', { tab: 'mine' })}>Mon espace</button>.</p>}
     <Recherche {...ctx} card={card} fallback={available} skip={helping}/></>;
