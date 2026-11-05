@@ -135,7 +135,7 @@ export default function App() {
         <details className="burger">
           <summary aria-label="Menu"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinejoin="round"><rect x="4" y="4" width="6" height="6" rx="2"/><rect x="14" y="4" width="6" height="6" rx="2"/><rect x="4" y="14" width="6" height="6" rx="2"/><rect x="14" y="14" width="6" height="6" rx="2"/></g></svg></summary>
           <nav className="burger-menu" aria-label="Découvrir FLEMME">
-            <a href="resoudre.html">Flemmes à résoudre</a>
+            <a className="burger-resoudre" href="resoudre.html">Flemmes à résoudre</a>
             {connecte && <a href="#mine" onClick={menu(() => go('list', { tab: 'mine' }))}>Mon espace</a>}
             {connecte && <a href="#aide" onClick={menu(() => go('help'))}>Aide</a>}
             <a href="comment-ca-marche.html">Comment ça marche</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a>

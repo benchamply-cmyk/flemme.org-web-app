@@ -23,7 +23,8 @@
 .entete-droite { justify-self: end; display: flex; align-items: center; gap: 14px; }
 .pastille.deleguer { background: var(--glacier); color: var(--encre); box-shadow: 3px 4px 0 var(--violet); }
 .pastille.deleguer:hover { background: var(--glacier-clair); border-color: var(--encre); }
-.burger-menu .burger-connexion { display: none; }
+.burger-menu .burger-connexion, .burger-menu .burger-resoudre { display: none; }
+/* Flemmes à résoudre n’apparaît dans le menu que lorsque la pastille de l’en-tête est masquée (petits écrans). */
 .logo { display: inline-flex; align-items: center; height: 44px; padding: 0 12px; box-sizing: border-box; font: 900 24px/1 var(--police); letter-spacing: -1px; color: var(--encre); text-decoration: none; background: var(--vert-logo); border: 2.5px solid var(--encre); border-radius: 12px; }
 .pastille { white-space: nowrap; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; box-sizing: border-box; border-radius: 999px; background: var(--encre); color: #fff; border: 2px solid var(--encre); text-decoration: none; font: 800 15px/1 var(--police); cursor: pointer; }
 .pastille:hover { background: var(--acier); border-color: var(--acier); }
@@ -54,7 +55,7 @@
 }
 
 @media (max-width: 860px) { .pastille .long { display: none; } }
-@media (max-width: 760px) { .entete-resoudre { display: none; } .burger-menu { left: auto; right: -40px; transform: none; } }
+@media (max-width: 760px) { .entete-resoudre { display: none; } .burger-menu .burger-resoudre { display: block; } .burger-menu { left: auto; right: -40px; transform: none; } }
 /* Très petits écrans : « Mon espace » passe dans le menu burger pour garder logo, Déléguer et menu. */
 @media (max-width: 420px) { .pastille.mon-espace { display: none; } }
 
