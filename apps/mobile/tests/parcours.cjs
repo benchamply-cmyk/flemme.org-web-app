@@ -39,7 +39,7 @@ test('envoi mobile : validation partagée, adresse distante retirée et brouillo
   assert.equal(submitted[1].category, 'numerique');
   assert.equal(submitted[1].address, null);
   assert.equal(Object.hasOwn(submitted[1], 'draftId'), false);
-  assert.match(submitted[3]({ review: 'pending' }), /reste privée/);
+  assert.match(submitted[3]({ review: 'pending' }), /en cours de relecture/);
   assert.throws(() => nodes(NouvelleFlemme({ ...base, draft: { ...draft, category: '' } })).find(n => n.type === Action).props.onPress(), /catégorie/);
 });
 test('brouillons : deux enregistrements créent deux versions, sans identifiant à écraser', () => {
