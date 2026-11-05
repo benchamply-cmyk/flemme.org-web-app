@@ -26,16 +26,4 @@ html[data-fond="glacier-relief"] { --fa1: #f5f9ff; --fa2: #e1ecff; --fb1: #e8f2f
 html[data-fond="glacier-nacre"] { --fa1: #fbfcff; --fa2: #e7eefb; --fb1: #eef3fc; --fb2: #fdfcff; --hi: #ffffff; --blob1: #d3e1fb; --blob2: #ece4f6; --blob3: #d6edf6; --blur: 40px;
   --texture: radial-gradient(ellipse at 70% 20%, rgba(255, 255, 255, .55), transparent 55%); }
 
-/* Sélecteur d’aperçu (masqué sur flemme.org) */
-.fond-picker { position: fixed; z-index: 60; left: calc(16px + env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: grid; justify-items: start; gap: 8px; }
-.fond-toggle { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px 0 8px; border: 2px solid var(--ink); border-radius: 999px; background: var(--surface); box-shadow: 3px 3px 0 var(--violet); font-weight: 750; font-size: 14px; cursor: pointer; }
-.fond-list { display: grid; gap: 4px; width: min(270px, calc(100vw - 32px)); margin: 0; padding: 8px; list-style: none; background: var(--surface); border: 2px solid var(--ink); border-radius: 18px; box-shadow: var(--shadow); }
-.fond-list[hidden] { display: none; }
-.fond-list p { margin: 4px 8px 6px; font-size: 12px; color: var(--muted); }
-.fond-list button { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 0 10px; border: 0; border-radius: 12px; background: none; font-weight: 650; text-align: left; cursor: pointer; }
-.fond-list button:hover { background: var(--soft); }
-.fond-list button[aria-pressed="true"] { background: #e6efff; }
-.fond-list button[aria-pressed="true"]::after { content: "✓"; margin-left: auto; color: var(--violet); font-weight: 900; }
-.swatch { flex: none; width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--ink); }
 @media (prefers-reduced-motion: reduce) { .fond i { transform: none !important; } .fond::before { opacity: .35; } }
-@media print { .fond-picker { display: none; } }

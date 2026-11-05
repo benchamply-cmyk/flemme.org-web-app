@@ -2,7 +2,7 @@ import { money, parseMoney, price } from '../../../packages/shared/src/domain.ts
 import { FAQ } from '../../../packages/shared/src/aide.ts';
 import './styles.css';
 import './landing.css';
-import './fonds.ts';
+import './essais.ts';
 
 // Calculateur de la vitrine : même arrondi au centime que l’accord enregistré par l’app.
 const input = document.getElementById('amount') as HTMLInputElement;
@@ -59,8 +59,9 @@ start();
 // Menu : sous-menus Contact et Langues, menu repliable sous 1100 px, barre de recherche.
 const nav = document.getElementById('nav')!;
 const toggle = document.getElementById('navToggle')!;
-const subs = [...nav.querySelectorAll<HTMLButtonElement>('.nav-sub > button')];
-const closeSubs = (except?: Element) => subs.forEach(b => { if (b !== except) b.setAttribute('aria-expanded', 'false'); });
+// Délégation : le contenu du menu peut être remplacé (essais d’organisation, voir essais.ts).
+const subs = () => [...nav.querySelectorAll<HTMLButtonElement>('.nav-sub > button')];
+const closeSubs = (except?: Element) => subs().forEach(b => { if (b !== except) b.setAttribute('aria-expanded', 'false'); });
 const setMenu = (open: boolean) => {
   toggle.setAttribute('aria-expanded', String(open));
   nav.classList.toggle('open', open);
@@ -68,13 +69,17 @@ const setMenu = (open: boolean) => {
   if (!open) closeSubs();
 };
 toggle.addEventListener('click', () => setMenu(toggle.getAttribute('aria-expanded') !== 'true'));
-subs.forEach(b => b.addEventListener('click', () => { closeSubs(b); b.setAttribute('aria-expanded', String(b.getAttribute('aria-expanded') !== 'true')); }));
-// Un lien du menu ferme tout ; un clic ailleurs ou Échap ferme les sous-menus.
-nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+nav.addEventListener('click', e => {
+  const t = e.target as Element;
+  const b = t.closest<HTMLButtonElement>('.nav-sub > button');
+  if (b) { closeSubs(b); b.setAttribute('aria-expanded', String(b.getAttribute('aria-expanded') !== 'true')); return; }
+  // Un lien du menu ferme tout ; un clic ailleurs ou Échap ferme les sous-menus.
+  if (t.closest('a')) setMenu(false);
+});
 document.addEventListener('click', e => { if (!(e.target as Element).closest('.nav-sub')) closeSubs(); });
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
-  const open = subs.find(b => b.getAttribute('aria-expanded') === 'true');
+  const open = subs().find(b => b.getAttribute('aria-expanded') === 'true');
   if (open) { closeSubs(); open.focus(); } else if (nav.classList.contains('open')) { setMenu(false); toggle.focus(); }
 });
 matchMedia('(min-width: 1100px)').addEventListener('change', e => { if (e.matches) setMenu(false); });
