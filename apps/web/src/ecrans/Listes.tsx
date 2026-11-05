@@ -34,17 +34,24 @@ export function Listes(ctx: Ctx) {
     <Recherche {...ctx} card={card} fallback={available} skip={helping}/></>;
 }
 
-// Recherche lancée depuis la barre du menu de la vitrine (index.html), lue une seule fois.
-function pendingQuery() {
-  try { const q = sessionStorage.getItem('flemme.recherche') || ''; sessionStorage.removeItem('flemme.recherche'); return q.trim().slice(0, 100); } catch { return ''; }
+// Recherche et filtres choisis sur la vitrine (page Résoudre, catégories de l’accueil et du pied de page), lus une seule fois.
+// Ancienne clé « flemme.recherche » (mots seuls) encore acceptée.
+const FILTRE_KEYS: (keyof SearchFilter)[] = ['q', 'category', 'mode', 'place', 'budget', 'deadline'];
+function pendingFilter(): SearchFilter {
+  try {
+    const raw = sessionStorage.getItem('flemme.filtre'), old = sessionStorage.getItem('flemme.recherche') || '';
+    sessionStorage.removeItem('flemme.filtre'); sessionStorage.removeItem('flemme.recherche');
+    const data = raw ? JSON.parse(raw) as Record<string, unknown> : { q: old };
+    return Object.fromEntries(FILTRE_KEYS.filter(k => typeof data[k] === 'string' && (data[k] as string).trim()).map(k => [k, (data[k] as string).trim().slice(0, 100)]));
+  } catch { return {}; }
 }
 
 // Recherche, filtres et tri : faits par le serveur (flemme_v2.search_tasks), pagination comprise.
 function Recherche({ state: { busy, found, filter }, card, fallback, skip }: Ctx & { card: (t: Task) => ReactNode; fallback: Task[]; skip: Task[] }) {
   const [f, setF] = useState<SearchFilter>(filter), [open, setOpen] = useState(false);
   useEffect(() => {
-    const q = pendingQuery();
-    if (q) run({ ...filter, q }); else if (!found) void session.search(filter);
+    const pending = pendingFilter();
+    if (Object.keys(pending).length) { run({ sort: filter.sort, ...pending }); if (FILTRE_KEYS.some(k => k !== 'q' && pending[k])) setOpen(true); } else if (!found) void session.search(filter);
   }, []);
   const set = (k: keyof SearchFilter) => (e: { target: { value: string } }) => setF(v => ({ ...v, [k]: e.target.value }));
   const run = (next: SearchFilter) => { setF(next); void session.search(next); };

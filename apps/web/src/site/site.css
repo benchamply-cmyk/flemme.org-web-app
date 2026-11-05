@@ -1,0 +1,48 @@
+/* Vitrine flemme.org, maquette V0.3 (canevas « Flemme – Maquettes vitrine », 5 novembre 2026).
+   En-tête et pied de page communs à la vitrine et à l’app (app.html). */
+:root {
+  --encre: #16131f; --texte-doux: #3f3a55; --violet: #3a2fa0;
+  --vert-logo: #57d68d; --vert-tendre: #c7f4b2; --menthe: #b8f0de;
+  --glacier: #d2e4ff; --glacier-clair: #e6efff; --ciel: #a5ccff; --lavande: #dad4ff; --peche: #ffd9c2; --lagon: #c5efe6;
+  --nuit: #0f0d18;
+  --degrade-haut: linear-gradient(160deg, #3a4f7a, #6f88b8 55%, #9bb7e0);
+  --ombre-violette: 5px 6px 0 var(--violet);
+  --police: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --mono: ui-monospace, Menlo, monospace;
+  --largeur: 1180px;
+}
+
+/* Bandeau bleu du haut de page : en-tête + titre de la page. */
+.bandeau { background: var(--degrade-haut); color: #fff; display: flex; flex-direction: column; }
+.entete { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; width: 100%; max-width: var(--largeur); margin: 0 auto; padding: 20px 24px; box-sizing: border-box; position: relative; z-index: 10; }
+.entete-gauche { display: flex; align-items: center; gap: 16px; justify-self: start; min-width: 0; }
+.entete-droite { justify-self: end; }
+.logo { display: inline-flex; align-items: center; height: 44px; padding: 0 12px; box-sizing: border-box; font: 900 24px/1 var(--police); letter-spacing: -1px; color: var(--encre); text-decoration: none; background: var(--vert-logo); border: 2.5px solid var(--encre); border-radius: 12px; }
+.pastille { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; box-sizing: border-box; border-radius: 999px; background: #fff; color: var(--encre); border: 2px solid #fff; text-decoration: none; font: 800 15px/1 var(--police); cursor: pointer; }
+.pastille:hover { background: var(--glacier-clair); }
+.pastille svg { flex: none; }
+.burger { position: relative; justify-self: center; }
+.burger summary { list-style: none; cursor: pointer; width: 44px; height: 44px; border-radius: 50%; background: var(--encre); color: #fff; display: grid; place-items: center; }
+.burger summary::-webkit-details-marker { display: none; }
+.burger-menu { position: absolute; left: 50%; transform: translateX(-50%); top: 54px; min-width: 220px; background: #fff; border: 2px solid var(--encre); border-radius: 18px; padding: 8px; display: flex; flex-direction: column; box-shadow: 0 18px 40px rgba(22,19,31,.25); }
+.burger-menu a { color: var(--encre); text-decoration: none; padding: 12px 14px; border-radius: 12px; font-weight: 700; }
+.burger-menu a:hover, .burger-menu a[aria-current] { background: var(--glacier-clair); }
+@media (max-width: 560px) {
+  .entete { display: flex; gap: 8px; padding: 16px; }
+  .entete .burger { margin-left: auto; }
+  .burger-menu { left: auto; right: -56px; transform: none; }
+  .entete-gauche { gap: 8px; }
+  .pastille { padding: 0 12px; }
+  .pastille span:not(.pastille-initiale) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+
+/* Pied de page : trois colonnes de liens sur fond nuit. */
+.pied { background: var(--nuit); color: var(--glacier); padding: 48px 24px 28px; font-family: var(--police); }
+.pied-colonnes { max-width: var(--largeur); margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 28px; }
+.pied-colonnes nav, .pied-marque { display: flex; flex-direction: column; gap: 10px; }
+.pied-colonnes b { color: #fff; }
+.pied-colonnes nav a { color: var(--glacier); text-decoration: none; }
+.pied-colonnes nav a:hover { color: #fff; text-decoration: underline; }
+.pied-marque .logo { align-self: flex-start; border: 0; height: auto; padding: 2px 10px; border-radius: 10px; }
+.pied-marque span { font-size: 14px; }
+.pied-bas { max-width: var(--largeur); margin: 32px auto 0; border-top: 1px solid var(--texte-doux); padding-top: 18px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; font-size: 13px; }

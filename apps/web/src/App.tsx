@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import type { ReactNode } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 import { backLabel, contractFields, footer, money, rights, taskFields } from '../../../packages/shared/src/index.ts';
 import type { Command, Input, Option, Screen, Task } from '../../../packages/shared/src/index.ts';
 import { onlinePayment, session, useSession } from './session.ts';
 import { Action } from './ui.tsx';
+import pied from './site/pied.html?raw';
+import './site/site.css';
 import type { Ctx, Draft, FieldOptions, Place } from './ecrans/contexte.ts';
 import { Accueil } from './ecrans/Accueil.tsx';
 import { Accord } from './ecrans/Accord.tsx';
@@ -100,7 +102,7 @@ export default function App() {
   else if (screen === 'help') content = <Aide key={visit} {...ctx}/>;
   else if (screen === 'home') content = <Accueil {...ctx}/>;
   else if (screen === 'new') content = <NouvelleFlemme key={visit} {...ctx}/>;
-  else if (screen === 'list') content = <Listes {...ctx}/>;
+  else if (screen === 'list') content = <Listes key={visit} {...ctx}/>;
   else if (!task) content = <><h1 className="heading">Flemme indisponible</h1><Action secondary onClick={() => go('list')}>Revenir à la liste</Action></>;
   else if (screen === 'report') content = <Signalement {...ctx}/>;
   else if (screen === 'edit') content = <NouvelleFlemme key={visit} {...ctx}/>;
@@ -108,15 +110,42 @@ export default function App() {
   else if ((screen === 'offer' || screen === 'review') && offer) content = <Offre {...ctx}/>;
   else content = <Fiche key={visit} {...ctx}/>;
 
+  const connecte = actorId !== '';
+  // Lien « catégorie » du pied de page : le catalogue se filtre sans recharger l’app.
+  function onPied(e: MouseEvent<HTMLElement>) {
+    const a = (e.target as Element).closest<HTMLAnchorElement>('[data-filtre-categorie]');
+    if (!a || !connecte) return;
+    e.preventDefault();
+    try { sessionStorage.setItem('flemme.filtre', JSON.stringify({ category: a.dataset.filtreCategorie })); } catch { /* stockage bloqué */ }
+    go('list', { tab: 'find' });
+  }
   return <>
-    <header className="top"><a href="./" aria-label="FLEMME · retour à la présentation"><img src={import.meta.env.BASE_URL + 'flemme-logo.png'} alt="FLEMME"/></a>{actorId !== '' && <button type="button" className="btn small secondary help-btn" onClick={() => go('help')}>Aide</button>}{actorId !== '' && <button type="button" className="avatar" aria-label="Mon compte" onClick={() => go('account')}>{gateway?.actor.name.slice(0, 1).toUpperCase()}</button>}</header>
+    <div className="bandeau app-bandeau">
+      <header className="entete">
+        <div className="entete-gauche">
+          <a className="logo" href="./" aria-label="FLEMME · retour à la présentation">FLEMME.</a>
+          {connecte && <button type="button" className="pastille" onClick={() => go('list', { tab: 'find' })}><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></g></svg><span>Catalogue</span></button>}
+        </div>
+        <details className="burger">
+          <summary aria-label="Menu"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"/></svg></summary>
+          <nav className="burger-menu" aria-label="Découvrir FLEMME">
+            {connecte && <a href="#aide" onClick={e => { e.preventDefault(); (e.currentTarget.closest('details') as HTMLDetailsElement).open = false; go('help'); }}>Aide</a>}
+            <a href="concept.html">Le concept</a><a href="comment-ca-marche.html">Comment ça marche</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a>
+          </nav>
+        </details>
+        <div className="entete-droite">{connecte
+          ? <button type="button" className="pastille" aria-label="Mon espace" onClick={() => go('list', { tab: 'mine' })}><span className="pastille-initiale" aria-hidden="true">{gateway?.actor.name.slice(0, 1).toUpperCase()}</span><span>Mon espace</span></button>
+          : <span className="pastille" aria-current="page"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></g></svg><span>Connexion</span></span>}</div>
+      </header>
+    </div>
     <main ref={main} tabIndex={-1} className="app" aria-busy={busy}>
-      {screen !== 'home' && actorId !== '' && <Action secondary onClick={back}>{backLabel(screen)}</Action>}
+      {screen !== 'home' && connecte && <div className="app-nav"><Action secondary onClick={back}>{backLabel(screen)}</Action>{screen !== 'account' && <button type="button" className="btn small secondary" onClick={() => go('account')}>Mon compte</button>}</div>}
       {!!error && <div role="alert" className="alert">{error}</div>}
       {!!notice && <p aria-live="polite" className="notice">{notice}</p>}
       {content}
       {busy && <p className="muted" role="status">En cours…</p>}
     </main>
     <p className="foot">{footer(session.remote, onlinePayment)}</p>
+    <div onClick={onPied} dangerouslySetInnerHTML={{ __html: pied }}/>
   </>;
 }
