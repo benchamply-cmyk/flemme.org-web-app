@@ -134,7 +134,7 @@ export default function App() {
             : <a className="pastille entete-resoudre" href="resoudre.html">{loupe}<span>Flemmes à résoudre</span></a>}
         </div>
         <details className="burger">
-          <summary aria-label="Menu"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"/></svg></summary>
+          <summary aria-label="Menu"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="currentColor"><circle cx="7" cy="7" r="2"/><circle cx="17" cy="7" r="2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></g></svg></summary>
           <nav className="burger-menu" aria-label="Découvrir FLEMME">
             {connecte ? <a href="#find" onClick={menu(() => go('list', { tab: 'find' }))}>Flemmes à résoudre</a> : <a href="resoudre.html">Flemmes à résoudre</a>}
             {connecte && <a href="#mine" onClick={menu(() => go('list', { tab: 'mine' }))}>Mon espace</a>}
