@@ -1,5 +1,4 @@
-/* Fonds de page à essayer (commentaire de Ben du 5 novembre 2026) : dégradés blanc et bleu, ombres et reliefs,
-   qui évoluent au défilement (--p va de 0 en haut de page à 1 en bas). Retirer ce fichier et src/fonds.ts une fois le fond choisi. */
+/* Fond Glacier (choix de Ben du 5 novembre 2026) : dégradés blanc et bleu qui évoluent au défilement (--p va de 0 en haut de page à 1 en bas). */
 html[data-fond] body { background: var(--fa2); }
 .fond { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; background: linear-gradient(170deg, var(--fa1), var(--fa2)); }
 html:not([data-fond]) .fond { display: none; }
@@ -12,30 +11,5 @@ html:not([data-fond]) .fond { display: none; }
 
 /* 1. Glacier : bleus diffus, très doux */
 html[data-fond="glacier"] { --fa1: #f5f9ff; --fa2: #e1ecff; --fb1: #e8f2ff; --fb2: #fdfeff; --hi: #ffffff; --blob1: #bcd5ff; --blob2: #d6e6ff; --blob3: #cdeefa; --blur: 48px; }
-/* Variantes de Glacier (choix de Ben du 5 novembre 2026) */
-/* 1b. Glacier clair : plus blanc, bleus très légers */
-html[data-fond="glacier-clair"] { --fa1: #ffffff; --fa2: #edf4ff; --fb1: #f3f8ff; --fb2: #ffffff; --hi: #ffffff; --blob1: #d3e3ff; --blob2: #e5eeff; --blob3: #daf1fa; --blur: 60px; }
-/* 1c. Glacier profond : bleus plus présents */
-html[data-fond="glacier-profond"] { --fa1: #eaf2ff; --fa2: #cddfff; --fb1: #d7e6ff; --fb2: #f1f6ff; --hi: #f4f8ff; --blob1: #9cc0ff; --blob2: #b9d3ff; --blob3: #a5dcf2; --blur: 54px; }
-/* 1d. Glacier aurore : bleu avec une touche de lavande et de menthe */
-html[data-fond="glacier-aurore"] { --fa1: #f5f8ff; --fa2: #e2ebff; --fb1: #eeefff; --fb2: #f1fbfa; --hi: #ffffff; --blob1: #c1d3ff; --blob2: #dad4ff; --blob3: #c5efe6; --blur: 50px; }
-/* 1e. Glacier relief : couleurs de Glacier, formes nettes en relief */
-html[data-fond="glacier-relief"] { --fa1: #f5f9ff; --fa2: #e1ecff; --fb1: #e8f2ff; --fb2: #fdfeff; --hi: #ffffff; --blob1: #cfe0ff; --blob2: #e0ebff; --blob3: #d6f0fa; --blur: 8px;
-  --relief: inset 18px 22px 40px rgba(255, 255, 255, .85), inset -20px -24px 50px rgba(79, 134, 217, .16), 20px 30px 70px rgba(58, 98, 170, .14); }
-/* 1f. Glacier nacré : reflets blanc, bleu et rose pâle */
-html[data-fond="glacier-nacre"] { --fa1: #fbfcff; --fa2: #e7eefb; --fb1: #eef3fc; --fb2: #fdfcff; --hi: #ffffff; --blob1: #d3e1fb; --blob2: #ece4f6; --blob3: #d6edf6; --blur: 40px;
-  --texture: radial-gradient(ellipse at 70% 20%, rgba(255, 255, 255, .55), transparent 55%); }
-
-/* Sélecteur d’aperçu (masqué sur flemme.org) */
-.fond-picker { position: fixed; z-index: 60; left: calc(16px + env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: grid; justify-items: start; gap: 8px; }
-.fond-toggle { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px 0 8px; border: 2px solid var(--ink); border-radius: 999px; background: var(--surface); box-shadow: 3px 3px 0 var(--violet); font-weight: 750; font-size: 14px; cursor: pointer; }
-.fond-list { display: grid; gap: 4px; width: min(270px, calc(100vw - 32px)); margin: 0; padding: 8px; list-style: none; background: var(--surface); border: 2px solid var(--ink); border-radius: 18px; box-shadow: var(--shadow); }
-.fond-list[hidden] { display: none; }
-.fond-list p { margin: 4px 8px 6px; font-size: 12px; color: var(--muted); }
-.fond-list button { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 0 10px; border: 0; border-radius: 12px; background: none; font-weight: 650; text-align: left; cursor: pointer; }
-.fond-list button:hover { background: var(--soft); }
-.fond-list button[aria-pressed="true"] { background: #e6efff; }
-.fond-list button[aria-pressed="true"]::after { content: "✓"; margin-left: auto; color: var(--violet); font-weight: 900; }
-.swatch { flex: none; width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--ink); }
 @media (prefers-reduced-motion: reduce) { .fond i { transform: none !important; } .fond::before { opacity: .35; } }
-@media print { .fond-picker { display: none; } }
+@media print { .fond { display: none; } }

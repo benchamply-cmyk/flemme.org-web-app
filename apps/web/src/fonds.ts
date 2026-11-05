@@ -1,23 +1,8 @@
 import './fonds.css';
 
-// Fonds de page à comparer (voir fonds.css). Le sélecteur n’apparaît pas sur flemme.org, où le fond actuel reste en place.
-const FONDS = [
-  { id: 'glacier', nom: 'Glacier', swatch: 'radial-gradient(circle at 35% 30%, #fff, #bcd5ff)' },
-  { id: 'glacier-clair', nom: 'Glacier clair', swatch: 'radial-gradient(circle at 35% 30%, #fff 20%, #d3e3ff)' },
-  { id: 'glacier-profond', nom: 'Glacier profond', swatch: 'radial-gradient(circle at 35% 30%, #eaf2ff, #9cc0ff)' },
-  { id: 'glacier-aurore', nom: 'Glacier aurore', swatch: 'linear-gradient(135deg, #c1d3ff, #dad4ff 50%, #c5efe6)' },
-  { id: 'glacier-relief', nom: 'Glacier relief', swatch: 'radial-gradient(circle at 30% 28%, #fff 30%, #cfe0ff)' },
-  { id: 'glacier-nacre', nom: 'Glacier nacré', swatch: 'linear-gradient(135deg, #d3e1fb, #ece4f6 50%, #d6edf6)' },
-  { id: '', nom: 'Actuel (en ligne)', swatch: 'linear-gradient(135deg, #cbbcff, #e3eeff 50%, #bfeef0)' },
-];
-const enLigne = /(^|\.)flemme\.org$/.test(location.hostname);
+// Fond de page Glacier (choix de Ben du 5 novembre 2026) : bleus diffus qui glissent avec le défilement.
 const root = document.documentElement;
-const lire = () => { try { return localStorage.getItem('flemme.fond'); } catch { return null; } };
-function choisir(id: string) {
-  if (id) root.dataset.fond = id; else delete root.dataset.fond;
-  try { localStorage.setItem('flemme.fond', id); } catch { /* stockage bloqué : le choix vaut pour cette visite */ }
-  document.querySelectorAll<HTMLButtonElement>('.fond-list button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.fond === id)));
-}
+root.dataset.fond = 'glacier';
 
 const fond = document.createElement('div');
 fond.className = 'fond'; fond.setAttribute('aria-hidden', 'true');
@@ -29,15 +14,3 @@ let attente = 0;
 const suivre = () => { attente = 0; const max = document.documentElement.scrollHeight - innerHeight; root.style.setProperty('--p', (max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0).toFixed(3)); };
 addEventListener('scroll', () => { if (!attente) attente = requestAnimationFrame(suivre); }, { passive: true });
 addEventListener('resize', suivre); suivre();
-
-if (!enLigne) {
-  const picker = document.createElement('div');
-  picker.className = 'fond-picker';
-  picker.innerHTML = `<div class="fond-list" id="fondList" hidden><p>Fond de page à essayer. Fais défiler pour voir les variations.</p>${FONDS.map(f => `<button type="button" data-fond="${f.id}" aria-pressed="false"><span class="swatch" style="background:${f.swatch}"></span>${f.nom}</button>`).join('')}</div><button type="button" class="fond-toggle" aria-expanded="false" aria-controls="fondList"><span class="swatch" style="background:${FONDS[0].swatch}"></span>Fond</button>`;
-  document.body.append(picker);
-  const toggle = picker.querySelector<HTMLButtonElement>('.fond-toggle')!, list = picker.querySelector<HTMLElement>('.fond-list')!;
-  toggle.addEventListener('click', () => { list.hidden = !list.hidden; toggle.setAttribute('aria-expanded', String(!list.hidden)); });
-  list.addEventListener('click', e => { const b = (e.target as Element).closest<HTMLButtonElement>('button[data-fond]'); if (b) choisir(b.dataset.fond || ''); });
-  const saved = lire();
-  choisir(saved !== null ? saved : 'glacier');
-}
