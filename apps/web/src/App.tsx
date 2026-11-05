@@ -129,6 +129,7 @@ export default function App() {
       <header className="entete">
         <div className="entete-gauche">
           <a className="logo" href="./" aria-label="FLEMME · retour à la présentation">FLEMME.</a>
+          {connecte && <button type="button" className="pastille deleguer" onClick={() => go('new', { tab: 'mine', draftId: undefined })}>{plus}<span>Déléguer<span className="long"> ma flemme</span></span></button>}
           {connecte ? <button type="button" className="pastille entete-resoudre" onClick={() => go('list', { tab: 'find' })}>{loupe}<span>Flemmes à résoudre</span></button>
             : <a className="pastille entete-resoudre" href="resoudre.html">{loupe}<span>Flemmes à résoudre</span></a>}
         </div>
@@ -142,8 +143,7 @@ export default function App() {
           </nav>
         </details>
         <div className="entete-droite">{connecte
-          ? <><button type="button" className="pastille deleguer" onClick={() => go('new', { tab: 'mine', draftId: undefined })}>{plus}<span>Déléguer<span className="long"> ma flemme</span></span></button>
-            <button type="button" className="pastille mon-espace" aria-label="Mon espace" onClick={() => go('list', { tab: 'mine' })}><span className="pastille-initiale" aria-hidden="true">{gateway?.actor.name.slice(0, 1).toUpperCase()}</span><span>Mon espace</span></button></>
+          ? <><button type="button" className="pastille mon-espace" aria-label="Mon espace" onClick={() => go('list', { tab: 'mine' })}><span className="pastille-initiale" aria-hidden="true">{gateway?.actor.name.slice(0, 1).toUpperCase()}</span><span>Mon espace</span></button></>
           : <span className="pastille" aria-current="page"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></g></svg><span>Connexion</span></span>}</div>
       </header>
     </div>
