@@ -40,7 +40,7 @@ html.nav-locked { overflow: hidden; }
 .cta:active { transform: translate(3px, 4px); box-shadow: 2px 2px 0 var(--violet); }
 .cta.green { background: #c7f4b2; color: var(--ink); }
 .cta-text { display: grid; gap: 3px; }
-.cta-text b { font-weight: 850; letter-spacing: -.2px; }
+.cta-text b { font-weight: 900; font-size: 20px; letter-spacing: .6px; text-transform: uppercase; }
 .cta-text small { font-size: 12.5px; font-weight: 500; opacity: .8; }
 .cta-arrow { flex: none; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: var(--accent); color: var(--ink); }
 .cta.green .cta-arrow { background: var(--ink); color: #c7f4b2; }
