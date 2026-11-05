@@ -31,15 +31,14 @@
       </div>
       <p class="note">Flemme.org est un service de mise en relation. Avec un seul compte, tu peux déléguer et aider.</p>
     </div>
-    <div class="vitrine-exemples">
-      <div class="exemple" aria-label="Exemple de demande">
-        <span class="exemple-etiquette" aria-hidden="true">Exemple ✦</span>
-        <span class="exemple-cat">Exemple de demande · Administratif</span>
-        <b class="exemple-titre">Mettre mon CV à jour avant vendredi</b>
-        <span class="exemple-meta">À distance · environ 3 jours · budget 40&#8239;€</span>
-        <div class="exemple-reponse"><b>Sam propose son aide · 40&#8239;€</b><br>Je reprends la mise en page et je te renvoie un PDF prêt à envoyer.</div>
-        <span class="exemple-meta">Tu compares, tu poses tes questions, puis tu choisis.</span>
+    <div class="vitrine-exemples" role="region" aria-roledescription="carrousel" aria-label="Exemples de demandes">
+      <div class="exemple" id="exemple" aria-live="polite"></div>
+      <div class="exemples-nav">
+        <button type="button" id="exemplePrec" aria-label="Exemple précédent">←</button>
+        <div class="points" id="exemplePoints"></div>
+        <button type="button" id="exempleSuiv" aria-label="Exemple suivant">→</button>
       </div>
+      <p class="exemples-note">Exemples pour illustrer, pas de vraies demandes.</p>
     </div>
   </div>
 </section>

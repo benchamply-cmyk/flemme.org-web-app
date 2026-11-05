@@ -75,6 +75,10 @@ button, input, textarea, select { font: inherit; color: inherit; }
 .exemple-titre { font-size: 20px; line-height: 1.15; }
 .exemple-meta { font-size: 13px; color: var(--texte-doux); }
 .exemple-reponse { background: var(--glacier-clair); border: 2px solid var(--encre); border-radius: 14px; padding: 10px 12px; font-size: 13px; }
+.exemples-nav { display: flex; align-items: center; gap: 10px; }
+.exemples-nav > button { width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--encre); background: #fff; color: var(--encre); cursor: pointer; }
+.exemple-icone { font-size: 18px; margin-right: 4px; }
+.exemples-note { font-size: 12px; color: var(--texte-doux); margin: 0; }
 .points { display: flex; gap: 6px; }
 .points button { width: 10px; height: 10px; padding: 0; border-radius: 50%; border: 1.5px solid var(--encre); background: transparent; cursor: pointer; }
 .points button[aria-current] { background: var(--encre); }
