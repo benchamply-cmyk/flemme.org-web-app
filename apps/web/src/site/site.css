@@ -33,6 +33,12 @@
 .burger { position: relative; justify-self: start; }
 .burger summary { list-style: none; cursor: pointer; width: 44px; height: 44px; border-radius: 50%; background: var(--menthe); color: var(--encre); border: 2px solid var(--encre); box-sizing: border-box; display: grid; place-items: center; }
 .burger summary::-webkit-details-marker { display: none; }
+/* Icône du menu : quatre carrés arrondis (choix de Ben) qui tournent au survol, au clic et menu ouvert. */
+.burger summary svg { transition: transform .35s cubic-bezier(.34, 1.56, .64, 1); }
+.burger summary:hover svg, .burger summary:focus-visible svg { transform: rotate(90deg); }
+.burger summary:active svg { transform: rotate(135deg) scale(.9); }
+.burger[open] summary svg { transform: rotate(45deg); }
+@media (prefers-reduced-motion: reduce) { .burger summary svg { transition: none; } }
 .burger-menu { position: absolute; left: 50%; transform: translateX(-50%); top: 54px; min-width: 220px; background: #fff; border: 2px solid var(--encre); border-radius: 18px; padding: 8px; display: flex; flex-direction: column; box-shadow: 0 18px 40px rgba(22,19,31,.25); }
 .burger-menu a { color: var(--encre); text-decoration: none; padding: 12px 14px; border-radius: 12px; font-weight: 700; }
 .burger-menu a:hover, .burger-menu a[aria-current] { background: var(--glacier-clair); }
