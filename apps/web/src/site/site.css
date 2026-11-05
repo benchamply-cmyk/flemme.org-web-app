@@ -20,7 +20,12 @@
 .bandeau { background-color: #fff; color: var(--encre); display: flex; flex-direction: column; }
 .entete { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; width: 100%; max-width: var(--largeur); margin: 0 auto; padding: 20px 24px; box-sizing: border-box; position: relative; z-index: 10; }
 .entete-gauche { display: flex; align-items: center; gap: 16px; justify-self: start; min-width: 0; }
-.entete-droite { justify-self: end; }
+.entete-droite { justify-self: end; display: flex; align-items: center; gap: 14px; }
+.entete-connexion, .entete-connexion-bouton { color: var(--encre); font: 800 15px/1 var(--police); text-decoration: none; background: none; border: 0; padding: 8px 4px; cursor: pointer; }
+.entete-connexion:hover, .entete-connexion-bouton:hover { text-decoration: underline; }
+.pastille.deleguer { background: var(--glacier); color: var(--encre); box-shadow: 3px 4px 0 var(--violet); }
+.pastille.deleguer:hover { background: var(--glacier-clair); border-color: var(--encre); }
+.burger-menu .burger-connexion { display: none; }
 .logo { display: inline-flex; align-items: center; height: 44px; padding: 0 12px; box-sizing: border-box; font: 900 24px/1 var(--police); letter-spacing: -1px; color: var(--encre); text-decoration: none; background: var(--vert-logo); border: 2.5px solid var(--encre); border-radius: 12px; }
 .pastille { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; box-sizing: border-box; border-radius: 999px; background: var(--encre); color: #fff; border: 2px solid var(--encre); text-decoration: none; font: 800 15px/1 var(--police); cursor: pointer; }
 .pastille:hover { background: var(--acier); border-color: var(--acier); }
@@ -37,8 +42,15 @@
   .burger-menu { left: auto; right: -56px; transform: none; }
   .entete-gauche { gap: 8px; }
   .pastille { padding: 0 12px; }
-  .pastille span:not(.pastille-initiale) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .entete-resoudre, .entete-connexion { display: none; }
+  .burger-menu .burger-connexion { display: block; }
+  .pastille .long { display: none; }
+  .entete > *, .entete-gauche > *, .entete-droite > * { flex-shrink: 0; }
+  .pastille.mon-espace span:not(.pastille-initiale) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 }
+
+/* Très petits écrans : « Mon espace » passe dans le menu burger pour garder logo, Déléguer et menu. */
+@media (max-width: 420px) { .pastille.mon-espace { display: none; } }
 
 /* Pied de page : trois colonnes de liens sur fond nuit. */
 .pied { background: var(--nuit); color: var(--glacier); padding: 48px 24px 28px; font-family: var(--police); }
@@ -49,4 +61,5 @@
 .pied-colonnes nav a:hover { color: #fff; text-decoration: underline; }
 .pied-marque .logo { align-self: flex-start; border: 0; height: auto; padding: 2px 10px; border-radius: 10px; }
 .pied-marque span { font-size: 14px; }
+.pied-marque .pied-doux { font-size: 13px; color: #a9b4cc; max-width: 34ch; }
 .pied-bas { max-width: var(--largeur); margin: 32px auto 0; border-top: 1px solid var(--texte-doux); padding-top: 18px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; font-size: 13px; }

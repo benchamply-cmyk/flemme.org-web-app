@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Option, SearchFilter, Task } from '../../../../packages/shared/src/index.ts';
-import { BUDGET_FILTERS, CATEGORIES, DEADLINES, MODES, SORTS, brigadierPitch, budgetLabel, cardHint, categoryLabel, date, deadlineLabel, money, partition, reviewLabel, taskStatus } from '../../../../packages/shared/src/index.ts';
+import { BUDGET_FILTERS, CATEGORIES, DEADLINES, MODES, SORTS, brigadierPitch, budgetLabel, cardHint, categoryLabel, date, deadlineLabel, money, partition, reviewLabel, rights, taskStatus } from '../../../../packages/shared/src/index.ts';
 import { session } from '../session.ts';
 import { Action } from '../ui.tsx';
 import type { Ctx } from './contexte.ts';
@@ -15,23 +15,43 @@ export function Listes(ctx: Ctx) {
   const { state: { tasks, actorId, busy, more, drafts }, place, go } = ctx;
   const { own, helping, available } = partition(tasks, actorId);
   const card = (t: Task) => <TaskCard key={t.id} task={t} actorId={actorId} onOpen={() => go('detail', { taskId: t.id })}/>;
-  const reload = <>{more && <Action secondary disabled={busy} onClick={() => session.loadMore()}>Voir plus de flemmes</Action>}<Action secondary disabled={busy} onClick={() => session.refresh()}>↻ Actualiser</Action></>;
+  const reload = <>{more && <Action secondary disabled={busy} onClick={() => session.loadMore()}>Voir plus de demandes</Action>}<Action secondary disabled={busy} onClick={() => session.refresh()}>↻ Actualiser</Action></>;
   const taskDrafts = drafts.filter(d => d.kind === 'task');
-  if (place.tab === 'mine') return <><h1 className="heading">Mes flemmes</h1><p className="muted">Dépose une demande et retrouve tes flemmes en cours.</p>
+  const offerDrafts = drafts.filter(d => d.kind === 'offer');
+  // « À faire » d’abord : chaque mission où c’est à la personne connectée d’agir, avec la prochaine étape.
+  const todo = [...own, ...helping].map(t => ({ t, next: nextStep(t, actorId) })).filter(x => x.next);
+  if (place.tab === 'mine') return <><h1 className="heading">Tes demandes et tes propositions</h1><p className="muted">Retrouve ce que tu as délégué et l’aide que tu as proposée.</p>
     <Action onClick={() => go('new', { draftId: undefined })}>＋ Déléguer ma flemme</Action>
+    {todo.length > 0 && <><h2 className="section-title">À faire</h2>
+      {todo.map(({ t, next }) => <button type="button" key={t.id} className="card todo" onClick={() => go('detail', { taskId: t.id })}><span className="card-title">{t.title}</span><span className="strong">{next}</span><span className="note">{t.owner.id === actorId ? 'Ta demande' : 'Ta proposition'} · {taskStatus[t.status]}</span></button>)}</>}
     {taskDrafts.length > 0 && <><h2 className="section-title">Mes brouillons</h2>
       {taskDrafts.map(d => <div className="card" key={d.id}><span className="card-title">{d.fields.title || 'Brouillon sans titre'}</span><span className="note">Enregistré le {date(d.updatedAt)} · visible de toi seul</span>
         <span className="row"><button type="button" className="btn small" disabled={busy} onClick={() => go('new', { draftId: d.id })}>Reprendre</button><button type="button" className="btn small secondary" disabled={busy} onClick={() => session.deleteDraft(d.id)}>Supprimer</button></span></div>)}</>}
     <h2 className="section-title">Mes demandes</h2>
-    {own.length ? own.map(card) : <p className="muted">Aucune flemme déposée. Par quoi veux-tu commencer ?</p>}{reload}</>;
-  const offerDrafts = drafts.filter(d => d.kind === 'offer');
-  return <><p className="eyebrow">À toi de jouer, Brigadier.</p><h1 className="heading">Résoudre une flemme</h1><p className="muted">{brigadierPitch()}</p>
-    {offerDrafts.length > 0 && <><h2 className="section-title">Mes candidatures en brouillon</h2>
-      {offerDrafts.map(d => <div className="card" key={d.id}><span className="card-title">{tasks.find(t => t.id === d.taskId)?.title || 'Candidature'}</span><span className="note">Enregistrée le {date(d.updatedAt)} · visible de toi seul</span>
+    {own.length ? own.map(card) : <p className="muted">Aucune demande pour l’instant. Qu’aimerais-tu déléguer ?</p>}
+    <h2 className="section-title">Mes propositions</h2>
+    {offerDrafts.length > 0 && <>
+      {offerDrafts.map(d => <div className="card" key={d.id}><span className="card-title">{tasks.find(t => t.id === d.taskId)?.title || 'Proposition'}</span><span className="note">Brouillon enregistré le {date(d.updatedAt)} · visible de toi seul</span>
         <span className="row"><button type="button" className="btn small" disabled={busy} onClick={() => go('detail', { taskId: d.taskId || '', draftId: d.id })}>Reprendre</button><button type="button" className="btn small secondary" disabled={busy} onClick={() => session.deleteDraft(d.id)}>Supprimer</button></span></div>)}</>}
-    {helping.length > 0 && <><h2 className="section-title">Mes propositions et missions</h2>{helping.map(card)}</>}
-    <h2 className="section-title">Flemmes disponibles</h2>
+    {helping.length ? helping.map(card) : !offerDrafts.length && <p className="muted">Aucune proposition envoyée. Trouve une demande dans « Flemmes à résoudre ».</p>}
+    <Action secondary onClick={() => go('list', { tab: 'find' })}>Voir les demandes à résoudre</Action>{reload}</>;
+  return <><p className="eyebrow">À toi de jouer, Brigadier.</p><h1 className="heading">Flemmes à résoudre</h1><p className="muted">Trouve une tâche près de chez toi ou à distance. {brigadierPitch()}</p>
+    {(helping.length > 0 || offerDrafts.length > 0) && <p className="note">Tes propositions et tes brouillons sont dans <button type="button" className="link" onClick={() => go('list', { tab: 'mine' })}>Mon espace</button>.</p>}
     <Recherche {...ctx} card={card} fallback={available} skip={helping}/></>;
+}
+
+/** Prochaine étape attendue de la personne connectée sur une demande, ou '' si c’est à l’autre d’agir. */
+function nextStep(t: Task, actorId: string) {
+  const can = rights(t, actorId);
+  if (can.isOwner && t.review === 'changes_requested') return 'Corriger ta demande';
+  if (can.isOwner && t.status === 'open' && t.offers.some(o => o.status === 'pending')) return 'Voir les propositions reçues';
+  if (can.canSign) return 'Relire et signer l’accord';
+  if (can.canContract && !t.contract) return 'Rédiger l’accord';
+  if (can.canContract && (t.contract?.status === 'draft' || t.contract?.status === 'changes_requested')) return 'Relire l’accord';
+  if (can.canDeclarePayment) return 'Régler et déclarer le paiement';
+  if (can.canConfirmPayment) return 'Confirmer le paiement reçu';
+  if (can.canReview) return 'Donner ton avis';
+  return '';
 }
 
 // Recherche et filtres choisis sur la vitrine (page Résoudre, catégories de l’accueil et du pied de page), lus une seule fois.
@@ -62,7 +82,7 @@ function Recherche({ state: { busy, found, filter }, card, fallback, skip }: Ctx
   const list = found ? found.tasks.filter(t => !skip.some(v => v.id === t.id)) : fallback;
   return <>
     <form role="search" className="searchbar" onSubmit={e => { e.preventDefault(); run(f); }}>
-      <div className="field"><label htmlFor="s-q">Rechercher une flemme</label><input id="s-q" type="search" value={f.q || ''} onChange={set('q')} placeholder="Un mot, une compétence, une envie…" maxLength={100}/></div>
+      <div className="field"><label htmlFor="s-q">Rechercher une demande</label><input id="s-q" type="search" value={f.q || ''} onChange={set('q')} placeholder="Une tâche, une compétence… Ex. CV, étagère" maxLength={100}/></div>
       <div className="row"><button type="submit" className="btn small" disabled={busy}>Rechercher</button><button type="button" className="btn small secondary" aria-expanded={open} aria-controls="filtres" onClick={() => setOpen(!open)}>☷ Filtres{active ? ' (' + active + ')' : ''}</button></div>
     </form>
     {open && <div id="filtres" className="card">
@@ -74,11 +94,11 @@ function Recherche({ state: { busy, found, filter }, card, fallback, skip }: Ctx
       <button type="button" className="btn small secondary" disabled={busy} onClick={() => run({ sort: f.sort })}>Réinitialiser les filtres</button>
     </div>}
     {select('Trier par', 'sort', SORTS, '')}
-    {found && <p className="note" aria-live="polite">{found.total === 0 ? 'Aucune flemme ne correspond.' : found.total + ' flemme(s) trouvée(s)'}</p>}
-    {list.length ? list.map(card) : !found && <p className="muted">Aucune nouvelle flemme pour l’instant. Actualise la liste un peu plus tard.</p>}
-    {found?.total === 0 && active > 0 && <button type="button" className="btn secondary" disabled={busy} onClick={() => run({ sort: f.sort })}>Effacer la recherche et les filtres</button>}
-    {found?.nextCursor && <button type="button" className="btn secondary" disabled={busy} onClick={() => session.search(filter, true)}>Voir plus de flemmes</button>}
+    {found && <p className="note" aria-live="polite">{found.total === 0 ? 'Aucune demande avec ces filtres.' : found.total + ' demande(s) trouvée(s)'}</p>}
+    {list.length ? list.map(card) : !found && <p className="muted">Aucune nouvelle demande pour l’instant. Actualise la liste un peu plus tard.</p>}
+    {found?.total === 0 && active > 0 && <><p className="muted">Essaie d’élargir la zone ou d’afficher les tâches à distance.</p><button type="button" className="btn secondary" disabled={busy} onClick={() => run({ sort: f.sort })}>Effacer les filtres</button></>}
+    {found?.nextCursor && <button type="button" className="btn secondary" disabled={busy} onClick={() => session.search(filter, true)}>Voir plus de demandes</button>}
     <button type="button" className="btn secondary" disabled={busy} onClick={() => session.search(filter)}>↻ Actualiser</button>
-    <p className="note">Seules les demandes validées par l’équipe apparaissent ici. Prix indicatifs hors frais FLEMME. Ouvrir une fiche ne crée aucune conversation : c’est toi qui proposes ton aide.</p>
+    <p className="note">Seules les demandes validées par l’équipe apparaissent ici. Prix indicatifs hors frais FLEMME. Ouvrir une demande ne crée aucune conversation : c’est toi qui proposes ton aide.</p>
   </>;
 }

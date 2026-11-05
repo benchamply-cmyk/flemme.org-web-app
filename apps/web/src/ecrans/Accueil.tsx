@@ -1,9 +1,11 @@
 import type { Ctx } from './contexte.ts';
 
+// Accueil de l’app : les deux portes d’entrée, chacune avec sa destination immédiate.
 export function Accueil({ go }: Ctx) {
-  return <div className="home"><div><p className="eyebrow">Le droit d’avoir la flemme,<br/>le pouvoir d’aider.</p><h1 className="heading">Passe le relais. Ou prends-le.</h1><p className="muted"><b>DÉLÉGUER</b> des tâches ou se charger de les <b>RÉALISER</b>, tout le monde est gagnant.</p></div>
+  return <div className="home"><div><p className="eyebrow">Une tâche en moins, un coup de main en plus.</p><h1 className="heading">Que veux-tu faire&#8239;?</h1><p className="muted">Avec un seul compte, tu peux déléguer une tâche et proposer ton aide.</p></div>
     <div className="choices">
-      <button type="button" className="choice" aria-label="Mes flemmes · déposer et suivre mes demandes" onClick={() => go('list', { tab: 'mine' })}><span className="choice-icon" aria-hidden="true">☕</span><span className="choice-title">Mes flemmes</span><span className="choice-hint">Je décris ce que je repousse</span></button>
-      <button type="button" className="choice secondary" aria-label="Résoudre une flemme · voir les flemmes à résoudre" onClick={() => go('list', { tab: 'find' })}><span className="choice-icon" aria-hidden="true">↗</span><span className="choice-title">Résoudre une flemme</span><span className="choice-hint">Je propose mon coup de main</span></button>
-    </div></div>;
+      <button type="button" className="choice" onClick={() => go('new', { tab: 'mine', draftId: undefined })}><span className="choice-icon" aria-hidden="true">＋</span><span className="choice-title">Déléguer ma flemme</span><span className="choice-hint">Décris ce que tu aimerais confier.</span></button>
+      <button type="button" className="choice secondary" onClick={() => go('list', { tab: 'find' })}><span className="choice-icon" aria-hidden="true">⌕</span><span className="choice-title">Résoudre une flemme</span><span className="choice-hint">Trouve une demande et propose ton aide.</span></button>
+    </div>
+    <button type="button" className="btn secondary" onClick={() => go('list', { tab: 'mine' })}>Mon espace · mes demandes et mes propositions</button></div>;
 }

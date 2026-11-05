@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#3a4f7a">
-<title>Résoudre des flemmes — FLEMME</title>
-<meta name="description" content="Tu sais faire ? Choisis les tâches qui te parlent, propose ton forfait, sois payé directement.">
+<title>Flemmes à résoudre — Flemme.org</title>
+<meta name="description" content="Flemmes à résoudre : trouve une tâche près de chez toi ou à distance, ouvre la demande et propose ton aide avec ton forfait.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:site_name" content="FLEMME">
-<meta property="og:title" content="Résoudre des flemmes — FLEMME">
-<meta property="og:description" content="Tu sais faire ? Choisis les tâches qui te parlent, propose ton forfait, sois payé directement.">
+<meta property="og:title" content="Flemmes à résoudre — Flemme.org">
+<meta property="og:description" content="Flemmes à résoudre : trouve une tâche près de chez toi ou à distance, ouvre la demande et propose ton aide avec ton forfait.">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/flemme-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,41 +21,39 @@
 <section class="flemme-chrome-home bandeau">
 <!--#entete-->
   <div class="titre-page">
-    <p class="ariane"><a href="./">Accueil</a> › Résoudre</p>
-    <h1>Résoudre une flemme</h1>
-    <p>Tu sais faire&#8239;? Choisis une tâche, propose ton forfait, sois payé directement.</p>
+    <p class="ariane"><a href="./">Accueil</a> › Flemmes à résoudre</p>
+    <h1>Flemmes à résoudre</h1>
+    <p>Trouve une tâche près de chez toi ou à distance, et propose ton aide.</p>
   </div>
 </section>
 <main>
 <section class="bloc" style="padding-bottom:0">
     <form role="search" class="barre" id="rechercheForm">
-      <label style="flex:1;display:flex;min-width:0"><span class="sr">Rechercher une flemme à résoudre</span><input id="rechercheQ" type="search" placeholder="Quelle flemme veux-tu résoudre ? Ex. montage, CV, déménagement…" maxlength="100" autocomplete="off" enterkeyhint="search"></label>
-      <button type="submit">Rechercher</button>
+      <label style="flex:1;display:flex;min-width:0"><span class="sr">Rechercher une demande</span><input id="rechercheQ" type="search" placeholder="Une tâche, une compétence, une ville… Ex. CV, étagère, devis" maxlength="100" autocomplete="off" enterkeyhint="search"></label>
+      <button type="submit">Voir les demandes</button>
     </form>
     <div class="filtres" id="filtres"><b>Filtres :</b></div>
   </section>
-  <section class="bloc">
-    <p class="surtitre">Devenir Brigadier</p>
-    <h2 class="titre">En 3 étapes</h2>
-    <div class="grille">
-      <div class="carte"><b>1 · Je crée mon profil</b><p class="doux">Compétences, zone, disponibilités.</p></div>
-      <div class="carte"><b>2 · Je choisis une flemme</b><p class="doux">Dans le catalogue, près de chez moi ou à distance.</p></div>
-      <div class="carte"><b>3 · Je propose mon forfait</b><p class="doux">Le Flemmard choisit, l’accord est écrit.</p></div>
-    </div>
-    <div class="boutons"><a class="bouton" href="app.html#find">Devenir Brigadier</a><a class="bouton clair" href="app.html#find">Voir le catalogue</a></div>
-  </section>
   <section class="bloc serre">
     <p class="surtitre">Pour te donner une idée</p>
-    <h2 class="titre">Des flemmes comme celles-ci</h2>
+    <h2 class="titre">Exemples de demandes</h2>
     <div class="grille large">
-      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="administratif"><span class="etiquette" style="background:var(--glacier-clair)">Administratif</span><b>Ce CV qui attend depuis trois semaines</b><span>À distance · environ 3 jours</span><span class="lien-fort">Voir les flemmes administratives →</span></a>
-      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="maison"><span class="etiquette" style="background:var(--vert-tendre)">Maison</span><b>Une étagère à monter</b><span>Sur place · cette semaine</span><span class="lien-fort">Voir les flemmes maison →</span></a>
-      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="numerique"><span class="etiquette" style="background:var(--peche)">Numérique</span><b>4 000 photos de vacances jamais triées</b><span>À distance · environ 1 semaine</span><span class="lien-fort">Voir les flemmes numériques →</span></a>
+      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="administratif"><span class="etiquette" style="background:var(--glacier-clair)">Administratif</span><b>Mettre mon CV à jour</b><span>À distance · environ 3 jours · budget 40&#8239;€</span><span class="lien-fort">Voir la demande →</span></a>
+      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="maison"><span class="etiquette" style="background:var(--vert-tendre)">Maison et petits travaux</span><b>Monter une étagère</b><span>Lyon · Croix-Rousse · cette semaine · prix à proposer</span><span class="lien-fort">Voir la demande →</span></a>
+      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="administratif"><span class="etiquette" style="background:var(--peche)">Démarches</span><b>Comparer trois devis</b><span>À distance · environ 1 semaine · budget 25&#8239;€</span><span class="lien-fort">Voir la demande →</span></a>
     </div>
-    <p class="doux" style="font-size:13px">Exemples pour illustrer. Les vraies flemmes, relues par l’équipe, sont dans le catalogue.</p>
+    <p class="doux" style="font-size:13px">Ces cartes sont des exemples. Les vraies demandes, relues par l’équipe, s’ouvrent avec «&#8239;Voir les demandes&#8239;».</p>
   </section>
-  <section class="bloc serre">
-    <div class="premium-court"><div><span class="badge">Brigadier Premium</span><b>Tu aides souvent&#8239;? Passe Premium.</b></div><a class="bouton vert" href="premium.html">Découvrir Premium →</a></div>
+  <section class="bloc">
+    <p class="surtitre">Proposer ton aide</p>
+    <h2 class="titre">En trois étapes</h2>
+    <p class="doux">Les Brigadiers sont les personnes qui proposent leur aide sur Flemme. Avec ton compte, tu peux en faire partie dès ta première proposition.</p>
+    <div class="grille">
+      <div class="carte"><b>1 · Trouve une demande</b><p class="doux">À distance ou près de chez toi. Ouvre la fiche pour voir ce qui est attendu.</p></div>
+      <div class="carte"><b>2 · Envoie ta proposition</b><p class="doux">Le résultat que tu peux livrer, ton délai et ton forfait.</p></div>
+      <div class="carte"><b>3 · Mettez-vous d’accord</b><p class="doux">Si ta proposition est retenue, vous confirmez l’accord avant de commencer.</p></div>
+    </div>
+    <div class="boutons"><a class="bouton vert" href="app.html#find">Voir les demandes</a><a class="bouton clair" href="comment-ca-marche.html#aider">Comment ça marche</a></div>
   </section>
 </main>
 <!--#pied-->

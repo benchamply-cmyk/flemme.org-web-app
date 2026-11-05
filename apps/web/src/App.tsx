@@ -25,8 +25,9 @@ import { Signalement } from './ecrans/Signalement.tsx';
 // Différence web : chaque écran est une entrée d’historique, le bouton Retour du navigateur remplace BackHandler.
 
 // Lien direct depuis la vitrine : app.html#mine ou app.html#find.
-const initialTab = location.hash === '#find' ? 'find' : location.hash === '#mine' || location.hash.startsWith('#paiement') ? 'mine' : null;
-const start: Place = { screen: initialTab ? 'list' : 'home', tab: initialTab || 'mine', taskId: '', offerId: '', depth: 0 };
+// app.html#deposer ouvre directement le formulaire « Déléguer ma flemme ».
+const initialTab = location.hash === '#find' ? 'find' : location.hash === '#mine' || location.hash === '#deposer' || location.hash.startsWith('#paiement') ? 'mine' : null;
+const start: Place = { screen: location.hash === '#deposer' ? 'new' : initialTab ? 'list' : 'home', tab: initialTab || 'mine', taskId: '', offerId: '', depth: 0 };
 // Écrans ouverts depuis la fiche d’une flemme : combien de pas pour y revenir.
 const aboveDetail: Partial<Record<Screen, number>> = { offer: 1, review: 2, report: 1, edit: 1, contract: 1 };
 // Formulaire prérempli à l’ouverture d’un écran : modification d’une demande ou reprise d’un brouillon.
@@ -103,7 +104,7 @@ export default function App() {
   else if (screen === 'home') content = <Accueil {...ctx}/>;
   else if (screen === 'new') content = <NouvelleFlemme key={visit} {...ctx}/>;
   else if (screen === 'list') content = <Listes key={visit} {...ctx}/>;
-  else if (!task) content = <><h1 className="heading">Flemme indisponible</h1><Action secondary onClick={() => go('list')}>Revenir à la liste</Action></>;
+  else if (!task) content = <><h1 className="heading">Demande indisponible</h1><Action secondary onClick={() => go('list')}>Revenir à la liste</Action></>;
   else if (screen === 'report') content = <Signalement {...ctx}/>;
   else if (screen === 'edit') content = <NouvelleFlemme key={visit} {...ctx}/>;
   else if (screen === 'contract') content = <Accord {...ctx}/>;
@@ -111,7 +112,7 @@ export default function App() {
   else content = <Fiche key={visit} {...ctx}/>;
 
   const connecte = actorId !== '';
-  // Lien « catégorie » du pied de page : le catalogue se filtre sans recharger l’app.
+  // Lien « catégorie » du pied de page : la liste des demandes se filtre sans recharger l’app.
   function onPied(e: MouseEvent<HTMLElement>) {
     const a = (e.target as Element).closest<HTMLAnchorElement>('[data-filtre-categorie]');
     if (!a || !connecte) return;
@@ -119,22 +120,30 @@ export default function App() {
     try { sessionStorage.setItem('flemme.filtre', JSON.stringify({ category: a.dataset.filtreCategorie })); } catch { /* stockage bloqué */ }
     go('list', { tab: 'find' });
   }
+  // Lien du menu burger : referme le menu puis change d’écran dans l’app.
+  const menu = (action: () => void) => (e: MouseEvent<HTMLAnchorElement>) => { e.preventDefault(); (e.currentTarget.closest('details') as HTMLDetailsElement).open = false; action(); };
+  const loupe = <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></g></svg>;
+  const plus = <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round"/></svg>;
   return <>
     <div className="flemme-chrome-home bandeau app-bandeau">
       <header className="entete">
         <div className="entete-gauche">
           <a className="logo" href="./" aria-label="FLEMME · retour à la présentation">FLEMME.</a>
-          {connecte && <button type="button" className="pastille" onClick={() => go('list', { tab: 'find' })}><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></g></svg><span>Catalogue</span></button>}
+          {connecte ? <button type="button" className="pastille entete-resoudre" onClick={() => go('list', { tab: 'find' })}>{loupe}<span>Flemmes à résoudre</span></button>
+            : <a className="pastille entete-resoudre" href="resoudre.html">{loupe}<span>Flemmes à résoudre</span></a>}
         </div>
         <details className="burger">
           <summary aria-label="Menu"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"/></svg></summary>
           <nav className="burger-menu" aria-label="Découvrir FLEMME">
-            {connecte && <a href="#aide" onClick={e => { e.preventDefault(); (e.currentTarget.closest('details') as HTMLDetailsElement).open = false; go('help'); }}>Aide</a>}
-            <a href="concept.html">Le concept</a><a href="comment-ca-marche.html">Comment ça marche</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a>
+            {connecte ? <a href="#find" onClick={menu(() => go('list', { tab: 'find' }))}>Flemmes à résoudre</a> : <a href="resoudre.html">Flemmes à résoudre</a>}
+            {connecte && <a href="#mine" onClick={menu(() => go('list', { tab: 'mine' }))}>Mon espace</a>}
+            {connecte && <a href="#aide" onClick={menu(() => go('help'))}>Aide</a>}
+            <a href="comment-ca-marche.html">Comment ça marche</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a>
           </nav>
         </details>
         <div className="entete-droite">{connecte
-          ? <button type="button" className="pastille" aria-label="Mon espace" onClick={() => go('list', { tab: 'mine' })}><span className="pastille-initiale" aria-hidden="true">{gateway?.actor.name.slice(0, 1).toUpperCase()}</span><span>Mon espace</span></button>
+          ? <><button type="button" className="pastille deleguer" onClick={() => go('new', { tab: 'mine', draftId: undefined })}>{plus}<span>Déléguer<span className="long"> ma flemme</span></span></button>
+            <button type="button" className="pastille mon-espace" aria-label="Mon espace" onClick={() => go('list', { tab: 'mine' })}><span className="pastille-initiale" aria-hidden="true">{gateway?.actor.name.slice(0, 1).toUpperCase()}</span><span>Mon espace</span></button></>
           : <span className="pastille" aria-current="page"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></g></svg><span>Connexion</span></span>}</div>
       </header>
     </div>

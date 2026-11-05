@@ -3,8 +3,8 @@ import '../commun.ts';
 
 // Questions fréquentes : mêmes réponses que l’assistant de l’app (packages/shared/src/aide.ts), rangées par profil.
 const groupes: { titre: string; sujets: string[] }[] = [
-  { titre: 'Pour les Flemmards', sujets: ['demande', 'paiement'] },
-  { titre: 'Pour les Brigadiers', sujets: ['mission'] },
+  { titre: 'Je délègue une tâche', sujets: ['demande', 'paiement'] },
+  { titre: 'Je propose mon aide', sujets: ['mission'] },
   { titre: 'Confiance, sécurité et compte', sujets: ['securite', 'compte'] },
 ];
 const esc = (t: string) => t.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!).replace(/ ([?!:;])/g, ' $1');

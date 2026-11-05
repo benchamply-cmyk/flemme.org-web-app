@@ -2,14 +2,16 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://flemme.org/comment-ca-marche.html#concept">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#3a4f7a">
-<title>Le concept — FLEMME</title>
+<title>Le concept — Flemme.org</title>
 <meta name="description" content="Ceux qui repoussent, ceux qui aident : les trois rôles de FLEMME, le prix sans surprise et nos engagements.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:site_name" content="FLEMME">
-<meta property="og:title" content="Le concept — FLEMME">
+<meta property="og:title" content="Le concept — Flemme.org">
 <meta property="og:description" content="Ceux qui repoussent, ceux qui aident : les trois rôles de FLEMME, le prix sans surprise et nos engagements.">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/flemme-icon.png">
@@ -18,52 +20,11 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&display=swap">
 </head>
 <body>
-<section class="flemme-chrome-home bandeau">
-<!--#entete-->
-  <div class="titre-page">
-    <p class="ariane"><a href="./">Accueil</a> › Le concept</p>
-    <h1>Le droit d’avoir la flemme, le pouvoir d’aider</h1>
-    <p>FLEMME relie ceux qui repoussent une tâche à ceux qui savent la faire.</p>
-  </div>
-</section>
-<main>
-<section class="bloc">
-    <p class="surtitre">Trois rôles</p>
-    <h2 class="titre">Ceux qui repoussent, ceux qui aident.</h2>
-    <div class="grille">
-      <div class="carte"><b>Le Flemmard</b><p class="doux">Il décrit ce qu’il repousse, avec un budget et un délai indicatifs. Sa demande est relue par l’équipe avant d’être publiée.</p></div>
-      <div class="carte"><b>Le Brigadier</b><p class="doux">Il choisit les flemmes qui lui parlent et propose son forfait, ses disponibilités et le résultat promis.</p></div>
-      <div class="carte"><b>FLEMME</b><p class="doux">Relit chaque demande, rédige l’accord écrit avec eux et ajoute 10&#8239;% au forfait accepté. Rien de plus.</p></div>
-    </div>
-  </section>
-  <section class="bloc" id="prix">
-    <div class="duo" style="align-items:center">
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <p class="surtitre">Le prix, sans surprise</p>
-        <h2 class="titre">Le forfait du Brigadier + 10&#8239;%.</h2>
-        <p class="doux">Le Brigadier fixe son prix. FLEMME ajoute 10&#8239;%, arrondis au centime, et c’est tout : pas de frais minimum, pas d’abonnement.</p>
-      </div>
-      <form class="carte ombre calcul" id="calc" novalidate>
-        <label class="champ" for="amount">Forfait Brigadier (€)<input id="amount" inputmode="decimal" value="40" autocomplete="off" aria-describedby="calcError"></label>
-        <div class="ligne"><span>Forfait Brigadier</span><b id="cBase">40,00 €</b></div>
-        <div class="ligne"><span>FLEMME · 10&#8239;%</span><b id="cFee">4,00 €</b></div>
-        <div class="trait"></div>
-        <div class="ligne total"><b>Total Flemmard</b><b id="cTotal">44,00 €</b></div>
-        <p class="erreur" id="calcError" aria-live="polite"></p>
-      </form>
-    </div>
-  </section>
-  <section class="bloc serre" id="engagements">
-    <p class="surtitre">Nos engagements</p>
-    <div class="grille" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
-      <div class="carte"><b>Chaque demande est relue</b><p class="doux">L’équipe valide les flemmes et les candidatures avant qu’elles soient visibles.</p></div>
-      <div class="carte"><b>Un accord écrit</b><p class="doux">Résultat attendu, délai et prix sont acceptés par les deux avant de commencer.</p></div>
-      <div class="carte"><b>Un examen humain en cas de désaccord</b><p class="doux">Un désaccord peut être signalé. Rien n’est effacé : messages et historique sont conservés.</p></div>
-      <div class="carte"><b>Paiement direct entre vous</b><p class="doux">Dans cette première version, tu paies le Brigadier toi-même. FLEMME n’encaisse encore ni la prestation ni ses 10&#8239;%.</p></div>
-    </div>
-  </section>
-</main>
-<!--#pied-->
-<script type="module" src="/src/site/pages/concept.ts"></script>
+<script>
+  // Le concept est désormais une section de « Comment ça marche » : les anciens liens (#prix, #engagements) y mènent.
+  var ancre = { '#prix': '#prix', '#engagements': '#confiance' }[location.hash] || '#concept';
+  location.replace('comment-ca-marche.html' + ancre);
+</script>
+<p style="font-family:sans-serif;padding:24px">Le concept est maintenant sur la page <a href="comment-ca-marche.html#concept">Comment ça marche</a>.</p>
 </body>
 </html>
