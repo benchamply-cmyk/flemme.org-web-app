@@ -86,10 +86,25 @@
       <article class="role brigadier"><span class="role-icon" aria-hidden="true">✋</span><h3>Le Brigadier</h3><p>Il choisit les flemmes qui lui parlent et propose son forfait, ses disponibilités et le résultat promis.</p></article>
       <article class="role"><span class="role-icon" aria-hidden="true">✦</span><h3>FLEMME</h3><p>Met les deux en relation, rédige l’accord écrit avec eux et ajoute 10&#8239;% au forfait accepté. Rien de plus.</p></article>
     </div>
+      <div class="split sub-block" id="prix">
+      <div>
+        <p class="eyebrow">Le prix, sans surprise</p>
+        <h3 class="heading sub-heading">Le forfait du Brigadier + 10&#8239;%.</h3>
+        <p>Le Brigadier fixe son prix. FLEMME ajoute 10&#8239;%, arrondis au centime, et c’est tout : pas de frais minimum, pas d’abonnement.</p>
+      </div>
+      <form class="card calc" id="calc" novalidate>
+        <div class="field"><label for="amount">Forfait Brigadier</label><input id="amount" inputmode="decimal" value="40" autocomplete="off" aria-describedby="calcError"></div>
+        <div class="row"><span>Forfait Brigadier</span><span class="strong" id="cBase">40,00 €</span></div>
+        <div class="row"><span>FLEMME · 10&#8239;%</span><span class="strong" id="cFee">4,00 €</span></div>
+        <div class="divider"></div>
+        <div class="row"><span class="strong">Total déposant</span><span class="price" id="cTotal">44,00 €</span></div>
+        <p class="note" id="calcError" aria-live="polite"></p>
+      </form>
+    </div>
   </section>
 
   <section id="comment" class="block">
-    <p class="eyebrow">Comment ça marche</p>
+    <p class="eyebrow">Le parcours utilisateurs</p>
     <h2 class="heading">De la flemme au coup de main, en 5 étapes.</h2>
     <ol class="parcours">
       <li class="etape flemmard"><div class="etape-tete"><span class="etape-num">1</span><span aria-hidden="true">☕</span></div><span class="etape-role">Flemmard</span><h3>Publication d’une annonce</h3><p>Il décrit ce qu’il repousse, avec un budget et un délai indicatifs.</p></li>
@@ -98,29 +113,22 @@
       <li class="etape"><div class="etape-tete"><span class="etape-num">4</span><span aria-hidden="true">✍</span></div><span class="etape-role">Les deux</span><h3>Préparation d’un contrat</h3><p>Résultat attendu, délai, prix et conditions, acceptés par les deux.</p></li>
       <li class="etape"><div class="etape-tete"><span class="etape-num">5</span><span aria-hidden="true">✓</span></div><span class="etape-role">Les deux</span><h3>Suivi de la prestation</h3><p>Étapes, fichiers et accompagnement jusqu’au résultat.</p></li>
     </ol>
-  </section>
-
-  <section class="block split">
-    <div>
-      <p class="eyebrow">Le prix, sans surprise</p>
-      <h2 class="heading">Le forfait du Brigadier + 10&#8239;%.</h2>
-      <p>Le Brigadier fixe son prix. FLEMME ajoute 10&#8239;%, arrondis au centime, et c’est tout : pas de frais minimum, pas d’abonnement.</p>
+    <div class="sub-block brigadier-call">
+      <p class="eyebrow">À toi de jouer, Brigadier.</p>
+      <h3 class="heading sub-heading">Tu sais faire&#8239;? Propose ton aide.</h3>
+      <p class="narrow">Retours de colis, meuble à monter, CV à remettre au propre… Choisis les flemmes qui te parlent, annonce ton forfait et tes disponibilités. Tu es payé directement par la personne que tu aides.</p>
+      <a class="btn wide-btn" href="app.html#find">Voir les flemmes disponibles</a>
     </div>
-    <form class="card calc" id="calc" novalidate>
-      <div class="field"><label for="amount">Forfait Brigadier</label><input id="amount" inputmode="decimal" value="40" autocomplete="off" aria-describedby="calcError"></div>
-      <div class="row"><span>Forfait Brigadier</span><span class="strong" id="cBase">40,00 €</span></div>
-      <div class="row"><span>FLEMME · 10&#8239;%</span><span class="strong" id="cFee">4,00 €</span></div>
-      <div class="divider"></div>
-      <div class="row"><span class="strong">Total déposant</span><span class="price" id="cTotal">44,00 €</span></div>
-      <p class="note" id="calcError" aria-live="polite"></p>
-    </form>
-  </section>
-
-  <section class="block">
-    <p class="eyebrow">À toi de jouer, Brigadier.</p>
-    <h2 class="heading">Tu sais faire&#8239;? Propose ton aide.</h2>
-    <p class="narrow">Retours de colis, meuble à monter, CV à remettre au propre… Choisis les flemmes qui te parlent, annonce ton forfait et tes disponibilités. Tu es payé directement par la personne que tu aides.</p>
-    <a class="btn wide-btn" href="app.html#find">Voir les flemmes disponibles</a>
+    <div class="sub-block honest">
+      <p class="eyebrow">Version de test</p>
+      <h3 class="heading sub-heading">Ce que cette version fait, et ne fait pas.</h3>
+      <ul class="facts">
+        <li><b>Paiement direct.</b> Tu paies le Brigadier toi-même. FLEMME n’encaisse encore ni la prestation ni ses 10&#8239;%.</li>
+        <li><b>Déclaratif.</b> « J’ai payé » et « J’ai reçu » sont des déclarations, pas une vérification bancaire.</li>
+        <li><b>Rien n’est effacé.</b> Offres, messages et historique sont conservés. Un désaccord peut être signalé pour un examen humain.</li>
+        <li><b>Pas d’achats à avancer</b> et pas de changement de prix après accord dans ce premier test.</li>
+      </ul>
+    </div>
   </section>
 
   <section id="faq" class="block">
@@ -146,16 +154,6 @@
     </div>
   </section>
 
-  <section class="block honest">
-    <p class="eyebrow">Version de test</p>
-    <h2 class="heading">Ce que cette version fait, et ne fait pas.</h2>
-    <ul class="facts">
-      <li><b>Paiement direct.</b> Tu paies le Brigadier toi-même. FLEMME n’encaisse encore ni la prestation ni ses 10&#8239;%.</li>
-      <li><b>Déclaratif.</b> « J’ai payé » et « J’ai reçu » sont des déclarations, pas une vérification bancaire.</li>
-      <li><b>Rien n’est effacé.</b> Offres, messages et historique sont conservés. Un désaccord peut être signalé pour un examen humain.</li>
-      <li><b>Pas d’achats à avancer</b> et pas de changement de prix après accord dans ce premier test.</li>
-    </ul>
-  </section>
 </main>
 
 <footer class="foot">

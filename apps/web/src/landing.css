@@ -45,27 +45,27 @@ html.nav-locked { overflow: hidden; }
 .cta-arrow { flex: none; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: var(--accent); color: var(--ink); }
 .cta.green .cta-arrow { background: var(--ink); color: #c7f4b2; }
 .smallnote { margin-top: 17px !important; font-size: 12px; color: var(--muted); }
-.showcase { position: relative; width: 100%; max-width: 360px; justify-self: center; padding: 15px 10px 15px 0; }
-.float-label { position: absolute; z-index: 2; top: -4px; right: -8px; padding: 12px 18px; background: #c7f4b2; border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); font-size: 12px; font-weight: 800; transform: rotate(7deg); }
-.showcase-card { min-height: 268px; padding: 20px; background: var(--surface); border: 2px solid var(--ink); border-radius: 26px; box-shadow: var(--shadow); transform: rotate(-3deg); cursor: pointer; }
+.showcase { position: relative; width: 100%; max-width: 300px; justify-self: center; padding: 15px 10px 15px 0; }
+.float-label { position: absolute; z-index: 2; top: -4px; right: -8px; padding: 9px 14px; background: #c7f4b2; border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); font-size: 12px; font-weight: 800; transform: rotate(7deg); }
+.showcase-card { min-height: 222px; padding: 16px; background: var(--surface); border: 2px solid var(--ink); border-radius: 26px; box-shadow: var(--shadow); transform: rotate(-3deg); cursor: pointer; }
 .showcase-slide { animation: showcase-in .45s both; }
 @keyframes showcase-in { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
 .showcase-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .pill { display: inline-block; padding: 6px 10px; border-radius: 8px; background: #e1eeff; font-size: 10px; font-weight: 700; letter-spacing: .4px; }
-.showcase-title { margin: 20px 0 12px !important; font-size: 21px; font-weight: 850; line-height: 1.15; }
+.showcase-title { margin: 16px 0 10px !important; font-size: 18px; font-weight: 850; line-height: 1.15; }
 .mockline { height: 8px; margin: 9px 0; border-radius: 8px; background: #e7e8f0; }
 .mockline.short { width: 65%; }
-.showcase-meta { display: flex; flex-wrap: wrap; gap: 12px; margin: 19px 0 !important; font-size: 12px; color: var(--muted); }
-.mini-reply { position: relative; display: flex; gap: 12px; margin: 20px -23px -8px 30px; padding: 17px; border: 1.5px solid var(--ink); border-radius: 18px; background: #dceeff; box-shadow: 3px 4px 0 #c5bcf2; transform: rotate(5deg); font-size: 13px; line-height: 1.5; }
-.avatar { flex: none; display: grid; place-items: center; width: 43px; height: 43px; border-radius: 50%; border: 1px solid #b7adcf; background: #eee6ff; font-size: 22px; }
-.showcase-nav { display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 26px; }
+.showcase-meta { display: flex; flex-wrap: wrap; gap: 12px; margin: 14px 0 !important; font-size: 12px; color: var(--muted); }
+.mini-reply { position: relative; display: flex; gap: 10px; margin: 16px -18px -6px 26px; padding: 13px; border: 1.5px solid var(--ink); border-radius: 18px; background: #dceeff; box-shadow: 3px 4px 0 #c5bcf2; transform: rotate(5deg); font-size: 12px; line-height: 1.45; }
+.avatar { flex: none; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; border: 1px solid #b7adcf; background: #eee6ff; font-size: 22px; }
+.showcase-nav { display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 20px; }
 .showcase-dots { display: flex; gap: 8px; }
 .showcase-dot { width: 10px; height: 10px; padding: 0; border: 1.5px solid var(--ink); border-radius: 50%; background: var(--surface); cursor: pointer; transition: width .2s; }
 .showcase-dot[aria-current="true"] { width: 26px; border-radius: 6px; background: var(--violet); border-color: var(--violet); }
 .showcase-arrow { width: 34px; height: 34px; border: 1.5px solid var(--ink); border-radius: 50%; background: var(--surface); font-weight: 800; cursor: pointer; }
 .showcase-arrow:hover { background: var(--accent); }
 @media (prefers-reduced-motion: reduce) { .showcase-slide { animation: none; } .cta, .cta:hover, .cta:active { transition: none; transform: none; } }
-@media (max-width: 650px) { .cta-row { display: grid; } .cta { min-height: 68px; font-size: 17px; } .showcase { width: 92%; margin: 0 auto; } }
+@media (max-width: 650px) { .cta-row { display: grid; } .cta { min-height: 68px; font-size: 17px; } .showcase { width: 86%; max-width: 290px; margin: 0 auto; } }
 @media (max-width: 400px) { .mini-reply { margin-right: -8px; margin-left: 16px; } .float-label { right: 0; } .honest { padding: 18px; } .display { letter-spacing: -1px; } }
 
 /* Parcours en 5 étapes */
@@ -177,3 +177,7 @@ html.nav-locked { overflow: hidden; }
 @media (min-width: 760px) { .contact { grid-template-columns: 1.1fr 1fr; gap: 40px; } }
 
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .nav, .nav-burger span, .caret { transition: none; } }
+
+/* Sous-blocs rattachés à Concept (le prix) et au parcours (Brigadier, version de test) */
+.sub-block { display: grid; gap: 14px; margin-top: clamp(28px, 5vw, 48px); min-width: 0; }
+.sub-heading { font-size: clamp(24px, 4.6vw, 30px); }

@@ -1,0 +1,37 @@
+/* Fonds de page à essayer (commentaire de Ben du 5 novembre 2026) : dégradés blanc et bleu, ombres et reliefs,
+   qui évoluent au défilement (--p va de 0 en haut de page à 1 en bas). Retirer ce fichier et src/fonds.ts une fois le fond choisi. */
+html[data-fond] body { background: var(--fa2); }
+.fond { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; background: linear-gradient(170deg, var(--fa1), var(--fa2)); }
+html:not([data-fond]) .fond { display: none; }
+.fond::before { content: ""; position: absolute; inset: 0; background: linear-gradient(170deg, var(--fb1), var(--fb2)); opacity: var(--p, 0); }
+.fond::after { content: ""; position: absolute; inset: 0; background: var(--texture, none); }
+.fond i { position: absolute; display: block; border-radius: 50%; filter: blur(var(--blur, 0px)); box-shadow: var(--relief, none); will-change: transform; }
+.fond .b1 { width: 62vmax; height: 62vmax; left: -20vmax; top: -24vmax; background: radial-gradient(circle at 38% 32%, var(--hi), var(--blob1) 62%); transform: translate3d(calc(var(--p, 0) * 6vw), calc(var(--p, 0) * 22vh), 0) scale(calc(1 + var(--p, 0) * .12)); }
+.fond .b2 { width: 46vmax; height: 46vmax; right: -16vmax; top: 26vh; background: radial-gradient(circle at 36% 30%, var(--hi), var(--blob2) 64%); transform: translate3d(calc(var(--p, 0) * -8vw), calc(var(--p, 0) * -34vh), 0); }
+.fond .b3 { width: 70vmax; height: 34vmax; left: 8vw; bottom: -22vmax; border-radius: 50% 50% 46% 54% / 60% 60% 40% 40%; background: radial-gradient(ellipse at 40% 25%, var(--hi), var(--blob3) 66%); transform: translate3d(calc(var(--p, 0) * 10vw), calc(var(--p, 0) * -18vh), 0) rotate(calc(var(--p, 0) * -6deg)); }
+
+/* 1. Glacier : bleus diffus, très doux */
+html[data-fond="glacier"] { --fa1: #f5f9ff; --fa2: #e1ecff; --fb1: #e8f2ff; --fb2: #fdfeff; --hi: #ffffff; --blob1: #bcd5ff; --blob2: #d6e6ff; --blob3: #cdeefa; --blur: 48px; }
+/* 2. Relief : formes blanches en relief, ombres bleutées */
+html[data-fond="relief"] { --fa1: #ffffff; --fa2: #e8f0fd; --fb1: #edf4ff; --fb2: #dbe7fa; --hi: #ffffff; --blob1: #f2f7ff; --blob2: #eaf2ff; --blob3: #e3edfd; --blur: 0px;
+  --relief: inset 22px 26px 48px rgba(255, 255, 255, .95), inset -26px -30px 60px rgba(79, 134, 217, .2), 26px 40px 80px rgba(58, 98, 170, .16); }
+/* 3. Horizon : ciel bleu en haut, blanc en bas, qui s’inverse en descendant */
+html[data-fond="horizon"] { --fa1: #c9defd; --fa2: #ffffff; --fb1: #ffffff; --fb2: #c6dcfb; --hi: #ffffff; --blob1: #e4efff; --blob2: #f4f8ff; --blob3: #d3e5ff; --blur: 26px; }
+/* 4. Givre : blanc bleuté, fines stries et reliefs légers */
+html[data-fond="givre"] { --fa1: #fbfdff; --fa2: #edf3fb; --fb1: #f1f6fd; --fb2: #e0eaf7; --hi: #ffffff; --blob1: #dce8f6; --blob2: #ebf2fb; --blob3: #d2e2f3; --blur: 6px;
+  --relief: inset 10px 12px 24px rgba(255, 255, 255, .9), 14px 22px 50px rgba(79, 110, 160, .12);
+  --texture: repeating-linear-gradient(118deg, rgba(255, 255, 255, .5) 0 1.5px, transparent 1.5px 26px); }
+
+/* Sélecteur d’aperçu (masqué sur flemme.org) */
+.fond-picker { position: fixed; z-index: 60; left: calc(16px + env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: grid; justify-items: start; gap: 8px; }
+.fond-toggle { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px 0 8px; border: 2px solid var(--ink); border-radius: 999px; background: var(--surface); box-shadow: 3px 3px 0 var(--violet); font-weight: 750; font-size: 14px; cursor: pointer; }
+.fond-list { display: grid; gap: 4px; width: min(270px, calc(100vw - 32px)); margin: 0; padding: 8px; list-style: none; background: var(--surface); border: 2px solid var(--ink); border-radius: 18px; box-shadow: var(--shadow); }
+.fond-list[hidden] { display: none; }
+.fond-list p { margin: 4px 8px 6px; font-size: 12px; color: var(--muted); }
+.fond-list button { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 0 10px; border: 0; border-radius: 12px; background: none; font-weight: 650; text-align: left; cursor: pointer; }
+.fond-list button:hover { background: var(--soft); }
+.fond-list button[aria-pressed="true"] { background: #e6efff; }
+.fond-list button[aria-pressed="true"]::after { content: "✓"; margin-left: auto; color: var(--violet); font-weight: 900; }
+.swatch { flex: none; width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--ink); }
+@media (prefers-reduced-motion: reduce) { .fond i { transform: none !important; } .fond::before { opacity: .35; } }
+@media print { .fond-picker { display: none; } }
