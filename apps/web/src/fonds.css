@@ -1,4 +1,4 @@
-/* Fond Glacier (choix de Ben du 5 novembre 2026) : dégradés blanc et bleu qui évoluent au défilement (--p va de 0 en haut de page à 1 en bas). */
+/* Fond Glacier aurore (choix de Ben du 5 novembre 2026) : dégradés blanc et bleu qui évoluent au défilement (--p va de 0 en haut de page à 1 en bas). */
 html[data-fond] body { background: var(--fa2); }
 .fond { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; background: linear-gradient(170deg, var(--fa1), var(--fa2)); }
 html:not([data-fond]) .fond { display: none; }
@@ -9,7 +9,7 @@ html:not([data-fond]) .fond { display: none; }
 .fond .b2 { width: 46vmax; height: 46vmax; right: -16vmax; top: 26vh; background: radial-gradient(circle at 36% 30%, var(--hi), var(--blob2) 64%); transform: translate3d(calc(var(--p, 0) * -8vw), calc(var(--p, 0) * -34vh), 0); }
 .fond .b3 { width: 70vmax; height: 34vmax; left: 8vw; bottom: -22vmax; border-radius: 50% 50% 46% 54% / 60% 60% 40% 40%; background: radial-gradient(ellipse at 40% 25%, var(--hi), var(--blob3) 66%); transform: translate3d(calc(var(--p, 0) * 10vw), calc(var(--p, 0) * -18vh), 0) rotate(calc(var(--p, 0) * -6deg)); }
 
-/* 1. Glacier : bleus diffus, très doux */
-html[data-fond="glacier"] { --fa1: #f5f9ff; --fa2: #e1ecff; --fb1: #e8f2ff; --fb2: #fdfeff; --hi: #ffffff; --blob1: #bcd5ff; --blob2: #d6e6ff; --blob3: #cdeefa; --blur: 48px; }
+/* Glacier aurore : bleu avec une touche de lavande et de menthe */
+html[data-fond="glacier-aurore"] { --fa1: #f5f8ff; --fa2: #e2ebff; --fb1: #eeefff; --fb2: #f1fbfa; --hi: #ffffff; --blob1: #c1d3ff; --blob2: #dad4ff; --blob3: #c5efe6; --blur: 50px; }
 @media (prefers-reduced-motion: reduce) { .fond i { transform: none !important; } .fond::before { opacity: .35; } }
 @media print { .fond { display: none; } }

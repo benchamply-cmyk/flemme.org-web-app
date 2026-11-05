@@ -3,6 +3,7 @@ import { FAQ } from '../../../packages/shared/src/aide.ts';
 import './styles.css';
 import './landing.css';
 import './fonds.ts';
+import './sections.ts';
 
 // Calculateur de la vitrine : même arrondi au centime que l’accord enregistré par l’app.
 const input = document.getElementById('amount') as HTMLInputElement;

@@ -1,8 +1,8 @@
 import './fonds.css';
 
-// Fond de page Glacier (choix de Ben du 5 novembre 2026) : bleus diffus qui glissent avec le défilement.
+// Fond de page Glacier aurore (choix de Ben du 5 novembre 2026) : bleu, lavande et menthe qui glissent avec le défilement.
 const root = document.documentElement;
-root.dataset.fond = 'glacier';
+root.dataset.fond = 'glacier-aurore';
 
 const fond = document.createElement('div');
 fond.className = 'fond'; fond.setAttribute('aria-hidden', 'true');

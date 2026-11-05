@@ -191,3 +191,28 @@ html.nav-locked { overflow: hidden; }
 }
 @media (min-width: 1100px) and (max-width: 1239px) { .nav-search { display: none; } }
 @media (max-width: 1099px) { .nav-cta { padding: 6px 0 !important; } }
+
+/* Sections ajoutées (choix de Ben du 5 novembre 2026) */
+#categories, #confiance, #app-mobile, #appel { scroll-margin-top: calc(var(--nav-h) + 16px); min-width: 0; }
+.cats { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 190px), 1fr)); }
+.cat { display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 12px 16px; background: var(--surface); border: 2px solid var(--ink); border-radius: 18px; font-weight: 750; text-decoration: none; transition: transform .12s, box-shadow .12s; }
+.cat:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--violet); }
+.cat-icon { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: var(--accent); border: 1.5px solid var(--ink); }
+.cat-arrow { margin-left: auto; }
+.trust { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); }
+.trust > div { display: grid; gap: 6px; align-content: start; padding: 18px; background: var(--surface); border: 2px solid var(--ink); border-radius: 18px; }
+.trust p { color: var(--muted); font-size: 14px; }
+.mobile-teaser { align-items: center; }
+@media (min-width: 760px) { .mobile-teaser { grid-template-columns: 1.4fr 1fr; } }
+.phone { justify-self: center; display: grid; gap: 10px; align-content: start; width: 170px; height: 300px; padding: 26px 14px; border: 3px solid var(--ink); border-radius: 30px; background: var(--surface); box-shadow: var(--shadow); }
+.phone-notch { justify-self: center; width: 54px; height: 8px; border-radius: 6px; background: var(--ink); }
+.phone-line { height: 10px; width: 70%; border-radius: 6px; background: #e7e8f0; }
+.phone-card { display: grid; place-items: center; height: 70px; border: 2px solid var(--ink); border-radius: 16px; background: var(--accent); font-weight: 850; font-size: 13px; text-transform: uppercase; }
+.phone-card.alt { background: #c7f4b2; }
+.final-cta { justify-items: center; text-align: center; padding: clamp(24px, 5vw, 44px) 20px; background: var(--ink); color: #fff; border-radius: 28px; }
+.final-cta .heading { color: #fff; }
+.final-cta p { color: #d2e4ff; }
+.final-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 6px; }
+.final-actions .btn { min-width: 220px; }
+.final-actions .btn:not(.green) { background: var(--accent); color: var(--ink); }
+@media (prefers-reduced-motion: reduce) { .cat { transition: none; } }
