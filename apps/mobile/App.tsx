@@ -44,9 +44,7 @@ function Mobile() {
   const state = useSession();
   const scroll = useRef<React.ComponentRef<typeof ScrollView>>(null);
   const { gateway, actorId, busy, ready, error, notice, tasks, recovering } = state;
-  const [stack, setStack] = useState<Place[]>([start]), [draft, setDraft] = useState<Draft>({}), [visit, setVisit] = useState(0), [plus, setPlus] = useState(false);
-  // Heure du dernier survol du « + » : un clic qui suit juste le survol garde la liste ouverte au lieu de la refermer.
-  const survol = useRef(0);
+  const [stack, setStack] = useState<Place[]>([start]), [draft, setDraft] = useState<Draft>({}), [visit, setVisit] = useState(0);
   const place = stack[stack.length - 1], { screen, taskId, offerId } = place;
   const task = tasks.find(t => t.id === taskId) || state.found?.tasks.find(t => t.id === taskId), offer = task?.offers.find(o => o.id === offerId);
 
@@ -57,7 +55,7 @@ function Mobile() {
     return () => s.remove();
   }, []);
   // `visit` remonte l’écran à chaque navigation : son état local (historique déplié…) repart de zéro.
-  function show(next: Place[]) { setStack(next); setDraft(initialDraft(next[next.length - 1])); setVisit(v => v + 1); setPlus(false); session.clearMessages(); }
+  function show(next: Place[]) { setStack(next); setDraft(initialDraft(next[next.length - 1])); setVisit(v => v + 1); session.clearMessages(); }
   useEffect(() => { scroll.current?.scrollTo({ y: 0, animated: false }); }, [visit]);
   function go(next: Screen, change: Partial<Place> = {}) {
     const p = { ...place, ...change, screen: next };
@@ -111,7 +109,7 @@ function Mobile() {
   else content = <Fiche key={visit} {...ctx}/>;
 
   const connecte = actorId !== '';
-  // Barre du haut fixe : logo, « + » (Déléguer / Résoudre), accès à Mon espace.
+  // Barre du haut fixe : logo, Rechercher, Connexion (Mon compte une fois connecté).
   // Menu du bas statique et fixe, icône et petit texte (demande de Ben, 6 novembre 2026) : Accueil, Flemmes, Contact, Mon compte.
   // Il remplace le menu à quatre carrés ; Mon profil est dans Mon compte, Contact ouvre l’aide et le message à l’équipe.
   const onglets: { label: string; icone: React.ReactNode; actif: boolean; action: () => void }[] = [
@@ -125,14 +123,11 @@ function Mobile() {
       <View style={styles.rubanHaut} pointerEvents="none"/><View style={styles.rubanBas} pointerEvents="none"/>
       <View style={styles.entete}>
         <Pressable accessibilityRole="button" accessibilityLabel="FLEMME · accueil" onPress={() => go('home')} style={styles.logo}><Text style={styles.logoTexte}>FLEMME.</Text></Pressable>
-        {connecte && <Pressable accessibilityRole="button" accessibilityLabel="Déléguer ou résoudre" accessibilityState={{ expanded: plus }} onPress={() => { setPlus(p => Date.now() - survol.current < 400 || !p); }} onHoverIn={() => { survol.current = Date.now(); setPlus(true); }} style={[styles.burger, styles.plus]}><Text style={[styles.plusTexte, plus && { transform: [{ rotate: '45deg' }] }]}>＋</Text></Pressable>}
-        {connecte && <Pressable accessibilityRole="button" accessibilityLabel="Mon espace" onPress={() => go('list', { tab: 'mine', recherche: false })} style={[styles.burger, styles.perso]}><Personne size={18}/></Pressable>}
+        {/* Barre du haut (demande de Ben, 6 novembre 2026) : logo, Rechercher, Connexion. */}
+        {connecte && <Pressable accessibilityRole="button" accessibilityLabel="Rechercher une demande" onPress={() => go('list', { tab: 'find', recherche: true })} style={[styles.burger, styles.loupe]}><Loupe size={18}/></Pressable>}
+        <Pressable accessibilityRole="button" accessibilityLabel={connecte ? 'Mon compte' : 'Connexion'} onPress={() => connecte && go('account')} style={[styles.burger, styles.perso]}><Personne size={18}/></Pressable>
       </View>
     </View>
-    {plus && <View style={[styles.menu, styles.actions]} accessibilityLabel="Déléguer ou résoudre">
-      <Pressable accessibilityRole="button" accessibilityLabel="Déléguer ma flemme" onPress={() => go('new', { tab: 'mine', draftId: undefined })} style={({ pressed }) => [styles.actionChoix, pressed && styles.menuLienActif]}><Text style={styles.menuTexte}>＋  Déléguer</Text></Pressable>
-      <Pressable accessibilityRole="button" accessibilityLabel="Résoudre une flemme" onPress={() => go('list', { tab: 'find', recherche: false })} style={({ pressed }) => [styles.actionChoix, styles.actionChoixMenthe, pressed && styles.menuLienActif]}><Text style={styles.menuTexte}>✓  Résoudre</Text></Pressable>
-    </View>}
     <ScrollView ref={scroll} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled" refreshControl={screen === 'list' && connecte ? <RefreshControl refreshing={busy} onRefresh={() => session.refresh()} tintColor={v04.encre}/> : undefined}>
       {screen !== 'home' && connecte && !(recovering && session.remote) && <Action secondary onPress={back}>{stack.length > 2 ? '← Retour' : backLabel(screen)}</Action>}
       {!!error && <View accessibilityRole="alert" style={styles.error}><Text style={styles.body}>{error}</Text></View>}

@@ -25,19 +25,12 @@ export const styles = StyleSheet.create({
   logo: { height: 40, paddingHorizontal: 9, flexShrink: 0, borderRadius: 12, borderWidth: 2.5, borderColor: c.encre, backgroundColor: c.vertLogo, justifyContent: 'center' },
   logoTexte: { fontFamily: police, fontWeight: '900', fontSize: 18, letterSpacing: -1, color: c.encre },
   burger: { width: 40, height: 40, flexShrink: 0, borderRadius: 20, borderWidth: 2, borderColor: c.encre, backgroundColor: c.menthe, alignItems: 'center', justifyContent: 'center', marginLeft: 'auto' },
-  // Bouton « + » à côté du menu (il remplace la loupe) et sa liste déroulante Déléguer / Résoudre.
-  plus: { backgroundColor: c.glacier, marginLeft: 'auto' },
-  plusTexte: { fontSize: 22, fontWeight: '700', color: c.encre, lineHeight: 24 },
-  actions: { right: 64, minWidth: 180, gap: 6 },
-  actionChoix: { paddingVertical: 11, paddingHorizontal: 14, borderRadius: 999, borderWidth: 2, borderColor: c.encre, backgroundColor: c.glacier },
-  actionChoixMenthe: { backgroundColor: c.menthe },
+  // Barre du haut : Rechercher (poussé à droite) puis Connexion.
+  loupe: { backgroundColor: c.glacier, marginLeft: 'auto' },
   recherche: { backgroundColor: c.menthe, gap: 10 },
   rechercheBarre: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: c.blanc, borderWidth: 2, borderColor: c.encre, borderRadius: 999, paddingHorizontal: 14, minHeight: 42 },
   rechercheChamp: { flex: 1, color: c.encre, fontFamily: police, fontSize: 15, paddingVertical: 8, outlineWidth: 0 },
-  menu: { position: 'absolute', right: 16, top: 66, minWidth: 220, backgroundColor: c.blanc, borderWidth: 2, borderColor: c.encre, borderRadius: 18, padding: 8, boxShadow: '0 18px 40px rgba(22,19,31,.25)', zIndex: 20 },
-  menuLien: { paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12 },
   menuLienActif: { backgroundColor: c.glacierClair },
-  menuTexte: { fontFamily: police, fontWeight: '700', fontSize: 15, color: c.encre },
   // Contenu
   content: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 24, gap: 12, maxWidth: 560, width: '100%', alignSelf: 'center', flexGrow: 1 },
   home: { flex: 1, justifyContent: 'center', gap: 30, paddingVertical: 24 },
@@ -84,7 +77,7 @@ export const styles = StyleSheet.create({
   deroulant: { flexDirection: 'row', alignItems: 'center', gap: 8, borderRadius: 999, borderWidth: 2, borderColor: c.encre, backgroundColor: c.blanc, paddingVertical: 9, paddingHorizontal: 14, minHeight: 40 },
   deroulantListe: { backgroundColor: c.blanc, borderWidth: 2, borderColor: c.encre, borderRadius: 16, padding: 6, gap: 2, boxShadow: '2px 3px 0 #a5ccff' },
   deroulantChoix: { paddingVertical: 9, paddingHorizontal: 12, borderRadius: 10 },
-  // Icône Mon espace (silhouette) dans la barre.
+  // Icône Connexion / Mon compte (silhouette) dans la barre.
   perso: { backgroundColor: c.blanc, marginLeft: 0 },
   check: { flexDirection: 'row', gap: 10, alignItems: 'center', marginVertical: 8 },
   checkBox: { width: 24, height: 24, borderRadius: 6, borderWidth: 2, borderColor: c.encre, backgroundColor: c.blanc, alignItems: 'center', justifyContent: 'center' },
