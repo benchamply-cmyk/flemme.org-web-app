@@ -123,7 +123,7 @@ export default function App() {
   // Lien du menu burger : referme le menu puis change d’écran dans l’app.
   const menu = (action: () => void) => (e: MouseEvent<HTMLAnchorElement>) => { e.preventDefault(); (e.currentTarget.closest('details') as HTMLDetailsElement).open = false; action(); };
   const loupe = <svg className="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="currentColor"><circle cx="16.5" cy="10.5" r="1.6"/><circle cx="14.7" cy="14.7" r="1.6"/><circle cx="10.5" cy="16.5" r="1.6"/><circle cx="6.3" cy="14.7" r="1.6"/><circle cx="4.5" cy="10.5" r="1.6"/><circle cx="6.3" cy="6.3" r="1.6"/><circle cx="10.5" cy="4.5" r="1.6"/><circle cx="14.7" cy="6.3" r="1.6"/><circle cx="19" cy="19" r="2.2"/></g></svg>;
-  const plus = <svg className="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="currentColor"><circle cx="12" cy="5" r="1.9"/><circle cx="12" cy="12" r="2.4"/><circle cx="12" cy="19" r="1.9"/><circle cx="5" cy="12" r="1.9"/><circle cx="19" cy="12" r="1.9"/></g></svg>;
+  const plus = <svg className="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="square" strokeLinejoin="miter"><path d="M12 6v12M6 12h12"/></g></svg>;
   return <>
     <div className="flemme-chrome-home bandeau app-bandeau">
       <header className="entete">
@@ -134,7 +134,7 @@ export default function App() {
           <a className="pastille entete-comment" href="comment-ca-marche.html"><svg className="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="currentColor"><circle cx="6" cy="6" r="1.6"/><circle cx="6" cy="12" r="1.6"/><circle cx="6" cy="18" r="1.6"/><circle cx="10" cy="6" r="1.6"/><circle cx="10" cy="12" r="1.6"/><circle cx="10" cy="18" r="1.6"/><circle cx="14" cy="6" r="1.6"/><circle cx="14" cy="12" r="1.6"/><circle cx="14" cy="18" r="1.6"/><circle cx="18" cy="6" r="1.6"/><circle cx="18" cy="12" r="1.6"/><circle cx="18" cy="18" r="1.6"/></g></svg><span>Comment ça marche</span></a>
         </div>
         <details className="burger">
-          <summary aria-label="Aide : FAQ, contact et langues"><svg className="ico" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><g fill="currentColor"><circle cx="8.5" cy="8" r="1.7"/><circle cx="12" cy="5.5" r="1.7"/><circle cx="15.5" cy="8" r="1.7"/><circle cx="13.5" cy="12" r="1.7"/><circle cx="12" cy="15" r="1.7"/><circle cx="12" cy="20" r="2"/></g></svg></summary>
+          <summary aria-label="Aide : FAQ, contact et langues"><svg className="ico" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="square" strokeLinejoin="miter"><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.7"/><path d="M12 17.5v.5"/></g></svg></summary>
           <nav className="burger-menu" aria-label="Aide et langues">
             <a className="burger-resoudre" href="resoudre.html">Flemmes à résoudre</a>
             {connecte && <a href="#mine" onClick={menu(() => go('list', { tab: 'mine' }))}>Mon espace</a>}
@@ -145,7 +145,7 @@ export default function App() {
         </details>
         <div className="entete-droite">{connecte
           ? <><button type="button" className="pastille mon-espace" aria-label="Mon espace" onClick={() => go('list', { tab: 'mine' })}><span className="pastille-initiale" aria-hidden="true">{gateway?.actor.name.slice(0, 1).toUpperCase()}</span><span>Mon espace</span></button></>
-          : <span className="pastille deleguer" aria-current="page"><svg className="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="currentColor"><circle cx="4" cy="12" r="1.6"/><circle cx="8" cy="12" r="1.6"/><circle cx="12" cy="12" r="2.2"/><circle cx="12" cy="8" r="1.4"/><circle cx="12" cy="16" r="1.4"/><circle cx="19" cy="5" r="1.6"/><circle cx="19" cy="12" r="1.6"/><circle cx="19" cy="19" r="1.6"/></g></svg><span>Connexion</span></span>}</div>
+          : <span className="pastille deleguer" aria-current="page"><svg className="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="square" strokeLinejoin="miter"><path d="M5 11l7-6 7 6v8H5z"/></g></svg><span>Connexion</span></span>}</div>
       </header>
     </div>
     <main ref={main} tabIndex={-1} className="app" aria-busy={busy}>

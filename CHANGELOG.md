@@ -4,7 +4,7 @@ Chaque PR ajoute une ligne sous « À venir ». À chaque mise en production (`p
 
 ## À venir
 
-- Icônes du site redessinées en style « points » (en-tête, menu « ? », boutons de l’accueil, carrousel, catégories, accueil de l’app) ; le grand titre change avec un effet de mise au point (flou puis net).
+- Icônes du site redessinées : points pour Résoudre et Comment ça marche, trait fin pour les autres (Déléguer, « ? », Connexion en forme de maison, catégories, flèches) ; le grand titre change avec un effet de mise au point (flou puis net).
 
 - En-tête : bouton « Comment ça marche » dans la barre (même style clair que Déléguer et Flemmes à résoudre, rangé dans le menu sous 1100 px) ; le menu devient un bouton « ? » qui ouvre FAQ, Contact et le choix de langue (FR ; EN et ES annoncés bientôt).
 
