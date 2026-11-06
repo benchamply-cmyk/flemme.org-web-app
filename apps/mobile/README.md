@@ -1,5 +1,20 @@
 # FLEMME mobile — bêta native
 
+## Visuel V0.4 et écrans du site — 06/11/2026
+
+L'app reprend l'habillage V0.4 retenu pour le site (`src/ui/styles.ts`, valeurs tirées de `apps/web/src/site/site.css`) : fond blanc et rubans chromés en haut, logo « FLEMME. » vert, bouton Déléguer glacier, menu à quatre carrés arrondis sur fond menthe, titres en casse normale, boutons glacier contour encre, cartes contour noir, pied de page nuit. Sur iOS et Android, la police reste celle du système ; le navigateur utilise Archivo.
+
+Textes et parcours alignés sur `app.html` (audit UX : demande, proposition, accord ; « Mon espace » avec « À faire »). Écrans ajoutés, mêmes règles que le site via `packages/shared` :
+
+- Accord écrit (`src/ecrans/Accord.tsx`) et signature sur la fiche : rédaction à deux, relecture par l'équipe, signature électronique simple horodatée.
+- Avis après la mission (note de 1 à 5 et commentaire) sur la fiche, visibles sur le profil.
+- Mot de passe oublié (`Connexion.tsx`) et choix du nouveau mot de passe (`MotDePasse.tsx`). Le lien e-mail rouvre l'app par `flemme-mobile://lien` en flux PKCE (`src/liens.ts`, `expo-crypto`) : **cette adresse doit être ajoutée dans Supabase, Authentication › URL Configuration › Redirect URLs**, sinon le lien renvoie vers le site.
+- Aide (`Aide.tsx`) : réponses toutes prêtes puis message à l'équipe FLEMME.
+- Profil public (`Profil.tsx`) : présentation, compétences, photo, avis reçus.
+- Pièces jointes (`Pieces.tsx`, `src/fichiers.ts`, `expo-document-picker`) : PDF, JPEG, PNG ou Word, 10 Mo au plus.
+
+Navigation : une pile d'écrans (`App.tsx`), le bouton Retour et le Retour Android dépilent. Pas encore portés : paiement en ligne Stripe, dictée, filtres de recherche.
+
 ## Aperçu dans un navigateur — 06/11/2026
 
 `npm run export:web` produit dans `dist-web/` une version navigateur de l'app (react-native-web), en démonstration locale uniquement. Elle sert à montrer et commenter les écrans sans téléphone ni Expo Go. `src/storage.web.ts` remplace alors `src/storage.ts` (Metro choisit le fichier `.web.ts`) : les instantanés de démo vont dans le stockage du navigateur et le jeton de connexion reste en mémoire. Les builds iOS et Android ne changent pas. Ce n'est pas une version publiée de l'app.

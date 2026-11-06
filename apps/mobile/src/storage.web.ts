@@ -27,3 +27,10 @@ export const tokens = {
   set: async (value: string) => { token = value; },
   clear: async () => { token = null; },
 };
+// Secret du lien e-mail en cours (voir liens.ts) : stockage du navigateur, le lien s'ouvre souvent dans un nouvel onglet.
+const secretKey = 'flemme-mobile-lien';
+export const linkSecret = {
+  get: async () => get(secretKey),
+  set: async (value: string) => set(secretKey, value),
+  clear: async () => { const s = store(); try { s?.removeItem(secretKey); } catch { /* bloqué */ } memory.delete(secretKey); },
+};
