@@ -21,30 +21,42 @@
 .entete { display: grid; grid-template-columns: auto auto 1fr; align-items: center; gap: 16px; width: 100%; max-width: var(--largeur); margin: 0 auto; padding: 20px 24px; box-sizing: border-box; position: relative; z-index: 10; }
 .entete-gauche { display: flex; align-items: center; gap: 16px; justify-self: start; min-width: 0; }
 .entete-droite { justify-self: end; display: flex; align-items: center; gap: 14px; }
-.pastille.deleguer { background: var(--glacier); color: var(--encre); box-shadow: 3px 4px 0 var(--violet); }
-.pastille.deleguer:hover { background: var(--glacier-clair); border-color: var(--encre); }
-.burger-menu .burger-connexion, .burger-menu .burger-resoudre { display: none; }
+.pastille.deleguer, .pastille.entete-resoudre, .pastille.entete-comment { background: var(--glacier); color: var(--encre); box-shadow: 3px 4px 0 var(--violet); }
+.pastille.deleguer:hover, .pastille.entete-resoudre:hover, .pastille.entete-comment:hover { background: var(--glacier-clair); border-color: var(--encre); }
+.burger-menu .burger-connexion, .burger-menu .burger-resoudre, .burger-menu .burger-comment { display: none; }
 /* Flemmes à résoudre n’apparaît dans le menu que lorsque la pastille de l’en-tête est masquée (petits écrans). */
 .logo { display: inline-flex; align-items: center; height: 44px; padding: 0 12px; box-sizing: border-box; font: 900 24px/1 var(--police); letter-spacing: -1px; color: var(--encre); text-decoration: none; background: var(--vert-logo); border: 2.5px solid var(--encre); border-radius: 12px; }
 .pastille { white-space: nowrap; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; box-sizing: border-box; border-radius: 999px; background: var(--encre); color: #fff; border: 2px solid var(--encre); text-decoration: none; font: 800 15px/1 var(--police); cursor: pointer; }
 .pastille:hover { background: var(--acier); border-color: var(--acier); }
 .pastille svg { flex: none; }
+/* Icônes : points (style C) pour Résoudre et Comment ça marche, trait fin (style A) pour les autres, choix de Ben du 6 nov. : alignées sur le texte. */
+.ico { flex: none; vertical-align: -0.15em; }
 .burger { position: relative; justify-self: start; }
 .burger summary { list-style: none; cursor: pointer; width: 44px; height: 44px; border-radius: 50%; background: var(--menthe); color: var(--encre); border: 2px solid var(--encre); box-sizing: border-box; display: grid; place-items: center; }
 .burger summary::-webkit-details-marker { display: none; }
 /* Icône du menu : quatre carrés arrondis (choix de Ben) qui tournent au survol, au clic et menu ouvert. */
 .burger summary svg { transition: transform .35s cubic-bezier(.34, 1.56, .64, 1); }
-.burger summary:hover svg, .burger summary:focus-visible svg { transform: rotate(90deg); }
-.burger summary:active svg { transform: rotate(135deg) scale(.9); }
-.burger[open] summary svg { transform: rotate(45deg); }
+/* Bouton « ? » : il penche au survol et se redresse en grossissant à l’ouverture. */
+.burger summary:hover svg, .burger summary:focus-visible svg { transform: rotate(-14deg); }
+.burger summary:active svg { transform: rotate(-24deg) scale(.88); }
+.burger[open] summary svg { transform: rotate(0) scale(1.12); }
 @media (prefers-reduced-motion: reduce) { .burger summary svg { transition: none; } }
-.burger-menu { position: absolute; left: 50%; transform: translateX(-50%); top: 54px; min-width: 220px; background: #fff; border: 2px solid var(--encre); border-radius: 18px; padding: 8px; display: flex; flex-direction: column; box-shadow: 0 18px 40px rgba(22,19,31,.25); }
+.burger-menu { position: absolute; left: 50%; transform: translateX(-50%); top: 54px; min-width: 250px; background: #fff; border: 2px solid var(--encre); border-radius: 18px; padding: 8px; display: flex; flex-direction: column; box-shadow: 0 18px 40px rgba(22,19,31,.25); }
 .burger-menu a { color: var(--encre); text-decoration: none; padding: 12px 14px; border-radius: 12px; font-weight: 700; }
 .burger-menu a:hover, .burger-menu a[aria-current] { background: var(--glacier-clair); }
+/* Langues : seul le français existe pour l’instant. */
+.burger-langues { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 6px 0 0; padding: 10px 14px 6px; border-top: 1.5px solid var(--glacier); font-weight: 700; color: var(--encre); }
+.burger-langues > span:first-child { margin-right: 4px; }
+.burger-langues b, .burger-langues span[aria-disabled] { padding: 4px 9px; border-radius: 999px; border: 1.5px solid var(--encre); font-size: 13px; }
+.burger-langues b { background: var(--glacier); }
+.burger-langues span[aria-disabled] { opacity: .45; cursor: not-allowed; }
+.burger-langues small { flex-basis: 100%; font-weight: 400; font-size: 12px; opacity: .7; }
+/* « Comment ça marche » passe dans le menu « ? » quand l’en-tête manque de place. */
+@media (max-width: 1100px) { .entete-comment { display: none; } .burger-menu .burger-comment { display: block; } }
 @media (max-width: 560px) {
   .entete { display: flex; gap: 8px; padding: 16px; }
   .entete .burger { margin-left: auto; }
-  .burger-menu { left: auto; right: -56px; transform: none; }
+  .burger-menu { left: auto; right: 0; transform: none; }
   .entete-gauche { gap: 8px; }
   .pastille { padding: 0 12px; }
   .entete-resoudre, .entete-connexion { display: none; }
