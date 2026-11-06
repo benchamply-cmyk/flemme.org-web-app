@@ -61,9 +61,17 @@ function Recherche({ ctx: { state: { busy, found, filter }, place }, card, fallb
   const input = useRef<React.ComponentRef<typeof TextInput>>(null);
   useEffect(() => { if (!found || place.recherche) void session.search(filter); if (place.recherche) setTimeout(() => input.current?.focus(), 50); }, []);
   const run = (next: SearchFilter) => { setF(next); void session.search(next); };
-  const pills = (label: string, k: keyof SearchFilter, options: readonly Option[], empty: string) => <View style={styles.field} accessibilityLabel={label}><Text style={styles.label}>{label}</Text><View style={[styles.row, { justifyContent: 'flex-start', gap: 8 }]}>
-    {[...(empty ? [{ value: '', label: empty }] : []), ...options].map(o => <Pressable key={o.value} accessibilityRole="radio" accessibilityLabel={o.label} accessibilityState={{ checked: (f[k] || '') === o.value, disabled: busy }} disabled={busy} onPress={() => run({ ...f, [k]: o.value })} style={[styles.option, (f[k] || '') === o.value && styles.optionSelected]}><Text style={styles.strong}>{o.label}</Text></Pressable>)}
-  </View></View>;
+  // Chaque filtre est un menu déroulant (demande de Ben, 6 novembre 2026) : fermé, il affiche le choix retenu ;
+  // ouvert, il liste les options ; un choix lance la recherche et referme le menu. Un seul menu ouvert à la fois.
+  const [deroule, setDeroule] = useState<keyof SearchFilter | ''>('');
+  const pills = (label: string, k: keyof SearchFilter, options: readonly Option[], empty: string) => {
+    const all = [...(empty ? [{ value: '', label: empty }] : []), ...options], current = all.find(o => o.value === (f[k] || '')) ?? all[0], ouvert = deroule === k;
+    return <View style={styles.field} accessibilityLabel={label}><Text style={styles.label}>{label}</Text>
+      <Pressable accessibilityRole="button" accessibilityLabel={label + ' : ' + current.label} accessibilityState={{ expanded: ouvert, disabled: busy }} disabled={busy} onPress={() => setDeroule(ouvert ? '' : k)} style={[styles.deroulant, !!(f[k] || '') && k !== 'sort' && styles.optionSelected]}>
+        <Text style={[styles.strong, styles.flex]}>{current.label}</Text><Text style={[styles.strong, ouvert && { transform: [{ rotate: '180deg' }] }]}>▾</Text></Pressable>
+      {ouvert && <View style={styles.deroulantListe}>{all.map(o => <Pressable key={o.value} accessibilityRole="radio" accessibilityLabel={o.label} accessibilityState={{ checked: current.value === o.value }} onPress={() => { setDeroule(''); run({ ...f, [k]: o.value }); }} style={({ pressed }) => [styles.deroulantChoix, (current.value === o.value || pressed) && styles.menuLienActif]}><Text style={styles.strong}>{current.value === o.value ? '✓ ' : ''}{o.label}</Text></Pressable>)}</View>}
+    </View>;
+  };
   const active = Object.entries(f).filter(([k, v]) => v && k !== 'sort' && k !== 'q').length;
   const list = found ? found.tasks.filter(t => !skip.some(v => v.id === t.id)) : fallback;
   return <>

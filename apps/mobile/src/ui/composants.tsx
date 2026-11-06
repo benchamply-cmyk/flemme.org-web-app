@@ -29,3 +29,11 @@ export function Loupe({ size = 18, color = '#16131f' }: { size?: number; color?:
     <View style={{ position: 'absolute', left: r * .78, top: r * .98, width: size * .42, height: w, borderRadius: w / 2, backgroundColor: color, transform: [{ rotate: '45deg' }], transformOrigin: 'left center' }}/>
   </View>;
 }
+/** Silhouette (tête et épaules) : accès à l’espace perso. */
+export function Personne({ size = 18, color = '#16131f' }: { size?: number; color?: string }) {
+  const w = Math.max(2, size / 8), t = size * .44;
+  return <View style={{ width: size, height: size, alignItems: 'center' }} accessibilityElementsHidden importantForAccessibility="no">
+    <View style={{ width: t, height: t, borderRadius: t / 2, borderWidth: w, borderColor: color }}/>
+    <View style={{ position: 'absolute', bottom: 0, width: size * .86, height: size * .42, borderTopLeftRadius: size * .43, borderTopRightRadius: size * .43, borderWidth: w, borderBottomWidth: 0, borderColor: color }}/>
+  </View>;
+}

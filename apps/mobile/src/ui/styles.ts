@@ -85,6 +85,12 @@ export const styles = StyleSheet.create({
   history: { borderLeftWidth: 2, borderColor: c.ciel, paddingLeft: 14 },
   option: { borderRadius: 16, borderWidth: 2, borderColor: c.encre, paddingVertical: 10, paddingHorizontal: 12, minHeight: 38, justifyContent: 'center', backgroundColor: c.blanc },
   optionSelected: { backgroundColor: c.glacier, boxShadow: '2px 3px 0 #a5ccff' },
+  // Filtres de la recherche en menus déroulants.
+  deroulant: { flexDirection: 'row', alignItems: 'center', gap: 8, borderRadius: 999, borderWidth: 2, borderColor: c.encre, backgroundColor: c.blanc, paddingVertical: 9, paddingHorizontal: 14, minHeight: 40 },
+  deroulantListe: { backgroundColor: c.blanc, borderWidth: 2, borderColor: c.encre, borderRadius: 16, padding: 6, gap: 2, boxShadow: '2px 3px 0 #a5ccff' },
+  deroulantChoix: { paddingVertical: 9, paddingHorizontal: 12, borderRadius: 10 },
+  // Icône Mon espace (silhouette) dans la barre.
+  perso: { backgroundColor: c.blanc, marginLeft: 0 },
   check: { flexDirection: 'row', gap: 10, alignItems: 'center', marginVertical: 8 },
   checkBox: { width: 24, height: 24, borderRadius: 6, borderWidth: 2, borderColor: c.encre, backgroundColor: c.blanc, alignItems: 'center', justifyContent: 'center' },
   checkBoxOn: { backgroundColor: c.menthe },

@@ -6,7 +6,7 @@ import { backLabel, contractFields, footer, money, rights, taskFields } from '..
 import type { Command, Input, Option, Screen, Task } from '../../packages/shared/src/index.ts';
 import { session, useSession } from './src/session';
 import { linkReceived } from './src/liens';
-import { Action, Carres } from './src/ui/composants';
+import { Action, Carres, Personne } from './src/ui/composants';
 import { styles, v04 } from './src/ui/styles';
 import type { Ctx, Draft, FieldOptions, Place } from './src/ecrans/contexte';
 import { Accueil } from './src/ecrans/Accueil';
@@ -120,6 +120,8 @@ function Mobile() {
         <Pressable accessibilityRole="button" accessibilityLabel="FLEMME · accueil" onPress={() => go('home')} style={styles.logo}><Text style={styles.logoTexte}>FLEMME.</Text></Pressable>
         {/* Bouton « + » : au clic (ou au survol dans le navigateur), déroule Déléguer et Résoudre, mêmes destinations que les deux cartes de l’accueil (demande de Ben, 6 novembre 2026). */}
         {connecte && <Pressable accessibilityRole="button" accessibilityLabel="Déléguer ou résoudre" accessibilityState={{ expanded: plus }} onPress={() => { setPlus(p => Date.now() - survol.current < 400 || !p); setMenu(false); }} onHoverIn={() => { survol.current = Date.now(); setPlus(true); setMenu(false); }} style={[styles.burger, styles.plus]}><Text style={[styles.plusTexte, plus && { transform: [{ rotate: '45deg' }] }]}>＋</Text></Pressable>}
+        {/* Accès direct à l’espace perso (demande de Ben, 6 novembre 2026). */}
+        {connecte && <Pressable accessibilityRole="button" accessibilityLabel="Mon espace" onPress={() => go('list', { tab: 'mine', recherche: false })} style={[styles.burger, styles.perso]}><Personne size={18}/></Pressable>}
         {connecte && <Pressable accessibilityRole="button" accessibilityLabel="Menu" accessibilityState={{ expanded: menu }} onPress={() => { setMenu(!menu); setPlus(false); }} style={[styles.burger, { marginLeft: 0 }]}><Carres ouvert={menu}/></Pressable>}
   </>;
   const deroulants = <>
