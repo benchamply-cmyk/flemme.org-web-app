@@ -4,6 +4,8 @@ Chaque PR ajoute une ligne sous « À venir ». À chaque mise en production (`p
 
 ## À venir
 
+- En-tête : bouton « Comment ça marche » dans la barre (même style clair que Déléguer et Flemmes à résoudre, rangé dans le menu sous 1100 px) ; le menu devient un bouton « ? » qui ouvre FAQ, Contact et le choix de langue (FR ; EN et ES annoncés bientôt).
+
 - Accueil de la vitrine : le grand titre alterne toutes les 2 s entre « Une tâche que tu repousses ? Trouve quelqu’un pour t’aider. » et « Une rémunération pour te charger de la mission. » (hauteur fixe, pas d’alternance si l’animation est réduite) ; surtitre « Le droit d’avoir la Flemme. Le Pouvoir d’aider. ».
 
 - Refonte de la vitrine et de l’app (PR #38, reprend la #36 ; remplace la #37) : vitrine multipage (accueil, Comment ça marche avec Le concept, Prix et Confiance, FAQ, Contact, Flemmes à résoudre, Premium, mentions, confidentialité) avec en-tête et pied de page communs, fonds chromés animés (V0.4). En-tête : Déléguer ma flemme, Flemmes à résoudre, menu à 4 carrés arrondis animés, bouton Connexion. Tous les boutons « Flemmes à résoudre » ouvrent la page dédiée. Textes revus d’après l’audit UX et le document « Contenus et image de marque » (vocabulaire demande / proposition / accord, « Flemmard » retiré, tutoiement). Carrousel et exemples de l’accueil et de la page Flemmes à résoudre tirés du tableur « Exemples du carrousel » (lignes « En ligne »). `app.html#deposer` ouvre directement le formulaire de demande ; Mon espace affiche d’abord « À faire ». Aucune migration de base de données.

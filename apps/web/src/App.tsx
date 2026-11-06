@@ -131,14 +131,16 @@ export default function App() {
           <a className="logo" href="./" aria-label="FLEMME · retour à la présentation">FLEMME.</a>
           {connecte && <button type="button" className="pastille deleguer" onClick={() => go('new', { tab: 'mine', draftId: undefined })}>{plus}<span>Déléguer<span className="long"> ma flemme</span></span></button>}
           <a className="pastille entete-resoudre" href="resoudre.html">{loupe}<span>Flemmes à résoudre</span></a>
+          <a className="pastille entete-comment" href="comment-ca-marche.html"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H10a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H14a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h6z"/></g></svg><span>Comment ça marche</span></a>
         </div>
         <details className="burger">
-          <summary aria-label="Menu"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinejoin="round"><rect x="4" y="4" width="6" height="6" rx="2"/><rect x="14" y="4" width="6" height="6" rx="2"/><rect x="4" y="14" width="6" height="6" rx="2"/><rect x="14" y="14" width="6" height="6" rx="2"/></g></svg></summary>
-          <nav className="burger-menu" aria-label="Découvrir FLEMME">
+          <summary aria-label="Aide : FAQ, contact et langues"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><path d="M8.5 9a3.5 3.5 0 1 1 5 3.2c-1 .5-1.5 1.2-1.5 2.3v.5"/><path d="M12 19h.01"/></g></svg></summary>
+          <nav className="burger-menu" aria-label="Aide et langues">
             <a className="burger-resoudre" href="resoudre.html">Flemmes à résoudre</a>
             {connecte && <a href="#mine" onClick={menu(() => go('list', { tab: 'mine' }))}>Mon espace</a>}
             {connecte && <a href="#aide" onClick={menu(() => go('help'))}>Aide</a>}
-            <a href="comment-ca-marche.html">Comment ça marche</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a>
+            <a className="burger-comment" href="comment-ca-marche.html">Comment ça marche</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a>
+            <p className="burger-langues"><span>Langue</span><b aria-current="true">FR</b><span aria-disabled="true" title="Bientôt">EN</span><span aria-disabled="true" title="Bientôt">ES</span><small>EN et ES bientôt</small></p>
           </nav>
         </details>
         <div className="entete-droite">{connecte
