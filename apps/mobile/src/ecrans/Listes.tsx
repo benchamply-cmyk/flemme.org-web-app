@@ -9,7 +9,7 @@ import type { Ctx } from './contexte';
 
 export function TaskCard({ task: t, actorId, onOpen }: { task: Task; actorId: string; onOpen: () => void }) {
   const pending = t.owner.id === actorId && t.review && t.review !== 'published';
-  return <Pressable accessibilityRole="button" accessibilityLabel={'Voir : ' + t.title} onPress={onOpen} style={({ pressed }) => [styles.card, pressed && { boxShadow: '5px 6px 0 #3a2fa0' }]}><View style={styles.row}><Text style={[styles.tag, pending && styles.tagWarn]}>{pending ? reviewLabel[t.review!] : taskStatus[t.status]}</Text><Text style={styles.strong}>{budgetLabel(t, money)}</Text></View><Text style={styles.cardTitle}>{t.title}</Text><Text style={styles.muted}>{[categoryLabel(t), t.place, t.deadline ? deadlineLabel(t) : ''].filter(Boolean).join(' · ')}</Text><Text style={styles.link}>{cardHint(t, actorId)}</Text></Pressable>;
+  return <Pressable accessibilityRole="button" accessibilityLabel={'Voir : ' + t.title} onPress={onOpen} style={({ pressed }) => [styles.card, pressed && { boxShadow: '5px 6px 0 #a5ccff' }]}><View style={styles.row}><Text style={[styles.tag, pending && styles.tagWarn]}>{pending ? reviewLabel[t.review!] : taskStatus[t.status]}</Text><Text style={styles.strong}>{budgetLabel(t, money)}</Text></View><Text style={styles.cardTitle}>{t.title}</Text><Text style={styles.muted}>{[categoryLabel(t), t.place, t.deadline ? deadlineLabel(t) : ''].filter(Boolean).join(' · ')}</Text><Text style={styles.link}>{cardHint(t, actorId)}</Text></Pressable>;
 }
 
 /** Prochaine étape attendue de la personne connectée sur une demande, ou '' si c’est à l’autre d’agir (comme le site). */
