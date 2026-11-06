@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, BackHandler, useWindowDimensions, KeyboardAvoidingView, Linking, Platform, Pressable, RefreshControl, ScrollView, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, BackHandler, KeyboardAvoidingView, Linking, Platform, Pressable, RefreshControl, ScrollView, Text, TextInput, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { backLabel, contractFields, footer, money, rights, taskFields } from '../../packages/shared/src/index.ts';
@@ -45,8 +45,6 @@ function Mobile() {
   const scroll = useRef<React.ComponentRef<typeof ScrollView>>(null);
   const { gateway, actorId, busy, ready, error, notice, tasks, recovering } = state;
   const [stack, setStack] = useState<Place[]>([start]), [draft, setDraft] = useState<Draft>({}), [visit, setVisit] = useState(0), [menu, setMenu] = useState(false);
-  // Très petits écrans (iPhone SE…) : le bouton Déléguer ne garde que son « + ».
-  const etroit = useWindowDimensions().width < 360;
   const place = stack[stack.length - 1], { screen, taskId, offerId } = place;
   const task = tasks.find(t => t.id === taskId) || state.found?.tasks.find(t => t.id === taskId), offer = task?.offers.find(o => o.id === offerId);
 
@@ -117,12 +115,12 @@ function Mobile() {
       <View style={styles.rubanHaut} pointerEvents="none"/><View style={styles.rubanBas} pointerEvents="none"/>
       <View style={styles.entete}>
         <Pressable accessibilityRole="button" accessibilityLabel="FLEMME · accueil" onPress={() => go('home')} style={styles.logo}><Text style={styles.logoTexte}>FLEMME.</Text></Pressable>
-        {connecte && <Pressable accessibilityRole="button" accessibilityLabel="Déléguer ma flemme" onPress={() => go('new', { tab: 'mine', draftId: undefined })} style={({ pressed }) => [styles.pastille, pressed && { backgroundColor: v04.glacierClair }]}><Text style={styles.pastilleIcone}>＋</Text>{!etroit && <Text style={styles.pastilleTexte}>Déléguer</Text>}</Pressable>}
         {connecte && <Pressable accessibilityRole="button" accessibilityLabel="Rechercher une demande" onPress={() => go('list', { tab: 'find', recherche: true })} style={[styles.burger, styles.loupe]}><Loupe size={18}/></Pressable>}
         {connecte && <Pressable accessibilityRole="button" accessibilityLabel="Menu" accessibilityState={{ expanded: menu }} onPress={() => setMenu(!menu)} style={[styles.burger, { marginLeft: 0 }]}><Carres ouvert={menu}/></Pressable>}
       </View>
     </View>
     {menu && <View style={styles.menu} accessibilityLabel="Menu">
+      {lien('Déléguer ma flemme', screen === 'new', () => go('new', { tab: 'mine', draftId: undefined }))}
       {lien('Flemmes à résoudre', screen === 'list' && place.tab === 'find', () => go('list', { tab: 'find', recherche: false }))}
       {lien('Mon espace', screen === 'list' && place.tab === 'mine', () => go('list', { tab: 'mine', recherche: false }))}
       {lien('Mon profil', screen === 'profile' && !place.userId, () => go('profile', { userId: undefined }))}

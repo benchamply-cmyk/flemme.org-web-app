@@ -17,16 +17,13 @@ const ombre = '4px 5px 0 #a5ccff';
 
 export const styles = StyleSheet.create({
   flex: { flex: 1 }, safe: { flex: 1, backgroundColor: c.blanc },
-  // En-tête : bandeau blanc à rubans chromés, logo, Déléguer, menu.
+  // En-tête : bandeau blanc à rubans chromés, logo, loupe, menu (bouton Déléguer retiré à la demande de Ben, 6 novembre 2026 ; Déléguer reste sur l’accueil et dans le menu).
   bandeau: { backgroundColor: c.blanc, overflow: 'hidden', position: 'relative', zIndex: 10 },
   rubanHaut: { position: 'absolute', top: -46, left: -60, width: '78%', height: 92, transform: [{ rotate: '-8deg' }], backgroundImage: 'linear-gradient(100deg, #e5edf5 0%, #ffffff 25%, #a9c9e8 43%, #ffffff 51%, #d8e1ee 70%, #ffffff 87%)', boxShadow: '0 14px 26px rgba(100,128,155,.15)' },
   rubanBas: { position: 'absolute', bottom: -40, right: -50, width: '62%', height: 70, transform: [{ rotate: '-10deg' }], backgroundImage: 'linear-gradient(100deg, #ffffff 0%, #d4e3f4 22%, #ffffff 40%, #a4c7e7 67%, #ffffff 83%, #cad8e8 100%)', boxShadow: '0 -12px 26px rgba(100,128,155,.15)' },
   entete: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 14, paddingTop: 14, paddingBottom: 22 },
   logo: { height: 40, paddingHorizontal: 9, flexShrink: 0, borderRadius: 12, borderWidth: 2.5, borderColor: c.encre, backgroundColor: c.vertLogo, justifyContent: 'center' },
   logoTexte: { fontFamily: police, fontWeight: '900', fontSize: 18, letterSpacing: -1, color: c.encre },
-  pastille: { height: 40, paddingHorizontal: 12, flexShrink: 1, borderRadius: 999, borderWidth: 2, borderColor: c.encre, backgroundColor: c.glacier, boxShadow: '3px 4px 0 #a5ccff', flexDirection: 'row', alignItems: 'center', gap: 6 },
-  pastilleTexte: { fontFamily: police, fontWeight: '800', fontSize: 14, color: c.encre },
-  pastilleIcone: { fontSize: 18, fontWeight: '700', color: c.encre, lineHeight: 20 },
   burger: { width: 40, height: 40, flexShrink: 0, borderRadius: 20, borderWidth: 2, borderColor: c.encre, backgroundColor: c.menthe, alignItems: 'center', justifyContent: 'center', marginLeft: 'auto' },
   // Loupe à côté du menu ; le menu garde marginLeft auto, la loupe le précède.
   loupe: { backgroundColor: c.blanc, marginLeft: 'auto' },
