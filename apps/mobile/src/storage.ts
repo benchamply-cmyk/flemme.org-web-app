@@ -23,3 +23,9 @@ export const tokens = {
   set: (value: string) => SecureStore.setItemAsync('flemme-mobile-refresh', value),
   clear: () => SecureStore.deleteItemAsync('flemme-mobile-refresh'),
 };
+// Secret du lien e-mail en cours (mot de passe oublié, confirmation), voir liens.ts.
+export const linkSecret = {
+  get: () => SecureStore.getItemAsync('flemme-mobile-lien'),
+  set: (value: string) => SecureStore.setItemAsync('flemme-mobile-lien', value),
+  clear: () => SecureStore.deleteItemAsync('flemme-mobile-lien'),
+};
