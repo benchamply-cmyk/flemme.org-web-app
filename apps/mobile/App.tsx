@@ -47,6 +47,7 @@ function Mobile() {
   const [stack, setStack] = useState<Place[]>([start]), [draft, setDraft] = useState<Draft>({}), [visit, setVisit] = useState(0), [menu, setMenu] = useState(false), [plus, setPlus] = useState(false);
   // Heure du dernier survol du « + » : un clic qui suit juste le survol garde la liste ouverte au lieu de la refermer.
   const survol = useRef(0);
+  const [utilise, setUtilise] = useState(false);
   const place = stack[stack.length - 1], { screen, taskId, offerId } = place;
   const task = tasks.find(t => t.id === taskId) || state.found?.tasks.find(t => t.id === taskId), offer = task?.offers.find(o => o.id === offerId);
 
@@ -57,7 +58,7 @@ function Mobile() {
     return () => s.remove();
   }, []);
   // `visit` remonte l’écran à chaque navigation : son état local (historique déplié…) repart de zéro.
-  function show(next: Place[]) { setStack(next); setDraft(initialDraft(next[next.length - 1])); setVisit(v => v + 1); setMenu(false); setPlus(false); session.clearMessages(); }
+  function show(next: Place[]) { setStack(next); setDraft(initialDraft(next[next.length - 1])); setVisit(v => v + 1); setMenu(false); setPlus(false); if (next[next.length - 1].screen !== 'home') setUtilise(true); session.clearMessages(); }
   useEffect(() => { scroll.current?.scrollTo({ y: 0, animated: false }); }, [visit]);
   function go(next: Screen, change: Partial<Place> = {}) {
     const p = { ...place, ...change, screen: next };
@@ -112,34 +113,42 @@ function Mobile() {
 
   const connecte = actorId !== '';
   const lien = (label: string, active: boolean, action: () => void) => <Pressable key={label} accessibilityRole="link" onPress={action} style={[styles.menuLien, active && styles.menuLienActif]}><Text style={styles.menuTexte}>{label}</Text></Pressable>;
-  return <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}><StatusBar style="dark"/><KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-    <View style={styles.bandeau}>
-      <View style={styles.rubanHaut} pointerEvents="none"/><View style={styles.rubanBas} pointerEvents="none"/>
-      <View style={styles.entete}>
+  // Barre de menu (logo, « + », menu) : en haut à l’ouverture de l’app, puis fixée en bas de l’écran dès qu’on s’en sert
+  // (défilement ou changement d’écran), à la demande de Ben (6 novembre 2026). Elle y reste jusqu’à la fermeture de l’app.
+  const enBas = connecte && utilise;
+  const barre = <>
         <Pressable accessibilityRole="button" accessibilityLabel="FLEMME · accueil" onPress={() => go('home')} style={styles.logo}><Text style={styles.logoTexte}>FLEMME.</Text></Pressable>
         {/* Bouton « + » : au clic (ou au survol dans le navigateur), déroule Déléguer et Résoudre, mêmes destinations que les deux cartes de l’accueil (demande de Ben, 6 novembre 2026). */}
         {connecte && <Pressable accessibilityRole="button" accessibilityLabel="Déléguer ou résoudre" accessibilityState={{ expanded: plus }} onPress={() => { setPlus(p => Date.now() - survol.current < 400 || !p); setMenu(false); }} onHoverIn={() => { survol.current = Date.now(); setPlus(true); setMenu(false); }} style={[styles.burger, styles.plus]}><Text style={[styles.plusTexte, plus && { transform: [{ rotate: '45deg' }] }]}>＋</Text></Pressable>}
         {connecte && <Pressable accessibilityRole="button" accessibilityLabel="Menu" accessibilityState={{ expanded: menu }} onPress={() => { setMenu(!menu); setPlus(false); }} style={[styles.burger, { marginLeft: 0 }]}><Carres ouvert={menu}/></Pressable>}
-      </View>
-    </View>
-    {plus && <View style={[styles.menu, styles.actions]} accessibilityLabel="Déléguer ou résoudre">
+  </>;
+  const deroulants = <>
+    {plus && <View style={[styles.menu, styles.actions, enBas && styles.menuBas]} accessibilityLabel="Déléguer ou résoudre">
       <Pressable accessibilityRole="button" accessibilityLabel="Déléguer ma flemme" onPress={() => go('new', { tab: 'mine', draftId: undefined })} style={({ pressed }) => [styles.actionChoix, pressed && styles.menuLienActif]}><Text style={styles.menuTexte}>＋  Déléguer</Text></Pressable>
       <Pressable accessibilityRole="button" accessibilityLabel="Résoudre une flemme" onPress={() => go('list', { tab: 'find', recherche: false })} style={({ pressed }) => [styles.actionChoix, styles.actionChoixMenthe, pressed && styles.menuLienActif]}><Text style={styles.menuTexte}>✓  Résoudre</Text></Pressable>
     </View>}
-    {menu && <View style={styles.menu} accessibilityLabel="Menu">
+    {menu && <View style={[styles.menu, enBas && styles.menuBas]} accessibilityLabel="Menu">
       {lien('Flemmes à résoudre', screen === 'list' && place.tab === 'find', () => go('list', { tab: 'find', recherche: false }))}
       {lien('Mon espace', screen === 'list' && place.tab === 'mine', () => go('list', { tab: 'mine', recherche: false }))}
       {lien('Mon profil', screen === 'profile' && !place.userId, () => go('profile', { userId: undefined }))}
       {lien('Aide', screen === 'help', () => go('help'))}
       {lien('Mon compte', screen === 'account', () => go('account'))}
     </View>}
-    <ScrollView ref={scroll} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled" refreshControl={screen === 'list' && connecte ? <RefreshControl refreshing={busy} onRefresh={() => session.refresh()} tintColor={v04.encre}/> : undefined}>
+  </>;
+  return <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}><StatusBar style="dark"/><KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    {!enBas && <View style={styles.bandeau}>
+      <View style={styles.rubanHaut} pointerEvents="none"/><View style={styles.rubanBas} pointerEvents="none"/>
+      <View style={styles.entete}>{barre}</View>
+    </View>}
+    {!enBas && deroulants}
+    <ScrollView ref={scroll} scrollEventThrottle={64} onScroll={e => { if (!utilise && e.nativeEvent.contentOffset.y > 40) setUtilise(true); }} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled" refreshControl={screen === 'list' && connecte ? <RefreshControl refreshing={busy} onRefresh={() => session.refresh()} tintColor={v04.encre}/> : undefined}>
       {screen !== 'home' && connecte && !(recovering && session.remote) && <Action secondary onPress={back}>{stack.length > 2 ? '← Retour' : backLabel(screen)}</Action>}
       {!!error && <View accessibilityRole="alert" style={styles.error}><Text style={styles.body}>{error}</Text></View>}
       {!!notice && <View accessibilityLiveRegion="polite" style={styles.notice}><Text style={styles.body}>{notice}</Text></View>}
       {content}
       {busy && <ActivityIndicator style={{ margin: 16 }} accessibilityLabel="En cours" color={v04.encre}/>}
     </ScrollView>
+    {enBas && <View style={styles.barreBas}>{deroulants}{barre}</View>}
     <SafeAreaView edges={['bottom']} style={styles.pied}><Text style={styles.piedTexte}>{footer(session.remote)}</Text></SafeAreaView>
   </KeyboardAvoidingView></SafeAreaView>;
 }
