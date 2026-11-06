@@ -54,6 +54,8 @@ export const styles = StyleSheet.create({
   homeChoiceHint: { color: c.encre, fontFamily: police, fontSize: 13, lineHeight: 18 },
   heading: { color: c.encre, fontFamily: police, fontWeight: '900', fontSize: 27, lineHeight: 31, letterSpacing: -.8, marginVertical: 6 },
   body: { color: c.encre, fontFamily: police, fontSize: 15, lineHeight: 21, flexShrink: 1 },
+  // Grand titre de l’accueil qui alterne, posé sur le plus long des deux (voir Accueil.tsx).
+  titreAlterne: { position: 'absolute', top: 0, left: 0, right: 0 },
   muted: { color: c.texteDoux, fontFamily: police, fontSize: 13, lineHeight: 19 },
   strong: { color: c.encre, fontFamily: police, fontWeight: '700', fontSize: 14, flexShrink: 1 },
   price: { color: c.encre, fontFamily: police, fontSize: 18, fontWeight: '700' },
