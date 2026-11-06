@@ -6,7 +6,7 @@ import { backLabel, contractFields, footer, money, rights, taskFields } from '..
 import type { Command, Input, Option, Screen, Task } from '../../packages/shared/src/index.ts';
 import { session, useSession } from './src/session';
 import { linkReceived } from './src/liens';
-import { Action, Carres, Loupe } from './src/ui/composants';
+import { Action, Carres } from './src/ui/composants';
 import { styles, v04 } from './src/ui/styles';
 import type { Ctx, Draft, FieldOptions, Place } from './src/ecrans/contexte';
 import { Accueil } from './src/ecrans/Accueil';
@@ -44,7 +44,9 @@ function Mobile() {
   const state = useSession();
   const scroll = useRef<React.ComponentRef<typeof ScrollView>>(null);
   const { gateway, actorId, busy, ready, error, notice, tasks, recovering } = state;
-  const [stack, setStack] = useState<Place[]>([start]), [draft, setDraft] = useState<Draft>({}), [visit, setVisit] = useState(0), [menu, setMenu] = useState(false);
+  const [stack, setStack] = useState<Place[]>([start]), [draft, setDraft] = useState<Draft>({}), [visit, setVisit] = useState(0), [menu, setMenu] = useState(false), [plus, setPlus] = useState(false);
+  // Heure du dernier survol du « + » : un clic qui suit juste le survol garde la liste ouverte au lieu de la refermer.
+  const survol = useRef(0);
   const place = stack[stack.length - 1], { screen, taskId, offerId } = place;
   const task = tasks.find(t => t.id === taskId) || state.found?.tasks.find(t => t.id === taskId), offer = task?.offers.find(o => o.id === offerId);
 
@@ -55,7 +57,7 @@ function Mobile() {
     return () => s.remove();
   }, []);
   // `visit` remonte l’écran à chaque navigation : son état local (historique déplié…) repart de zéro.
-  function show(next: Place[]) { setStack(next); setDraft(initialDraft(next[next.length - 1])); setVisit(v => v + 1); setMenu(false); session.clearMessages(); }
+  function show(next: Place[]) { setStack(next); setDraft(initialDraft(next[next.length - 1])); setVisit(v => v + 1); setMenu(false); setPlus(false); session.clearMessages(); }
   useEffect(() => { scroll.current?.scrollTo({ y: 0, animated: false }); }, [visit]);
   function go(next: Screen, change: Partial<Place> = {}) {
     const p = { ...place, ...change, screen: next };
@@ -115,12 +117,16 @@ function Mobile() {
       <View style={styles.rubanHaut} pointerEvents="none"/><View style={styles.rubanBas} pointerEvents="none"/>
       <View style={styles.entete}>
         <Pressable accessibilityRole="button" accessibilityLabel="FLEMME · accueil" onPress={() => go('home')} style={styles.logo}><Text style={styles.logoTexte}>FLEMME.</Text></Pressable>
-        {connecte && <Pressable accessibilityRole="button" accessibilityLabel="Rechercher une demande" onPress={() => go('list', { tab: 'find', recherche: true })} style={[styles.burger, styles.loupe]}><Loupe size={18}/></Pressable>}
-        {connecte && <Pressable accessibilityRole="button" accessibilityLabel="Menu" accessibilityState={{ expanded: menu }} onPress={() => setMenu(!menu)} style={[styles.burger, { marginLeft: 0 }]}><Carres ouvert={menu}/></Pressable>}
+        {/* Bouton « + » : au clic (ou au survol dans le navigateur), déroule Déléguer et Résoudre, mêmes destinations que les deux cartes de l’accueil (demande de Ben, 6 novembre 2026). */}
+        {connecte && <Pressable accessibilityRole="button" accessibilityLabel="Déléguer ou résoudre" accessibilityState={{ expanded: plus }} onPress={() => { setPlus(p => Date.now() - survol.current < 400 || !p); setMenu(false); }} onHoverIn={() => { survol.current = Date.now(); setPlus(true); setMenu(false); }} style={[styles.burger, styles.plus]}><Text style={[styles.plusTexte, plus && { transform: [{ rotate: '45deg' }] }]}>＋</Text></Pressable>}
+        {connecte && <Pressable accessibilityRole="button" accessibilityLabel="Menu" accessibilityState={{ expanded: menu }} onPress={() => { setMenu(!menu); setPlus(false); }} style={[styles.burger, { marginLeft: 0 }]}><Carres ouvert={menu}/></Pressable>}
       </View>
     </View>
+    {plus && <View style={[styles.menu, styles.actions]} accessibilityLabel="Déléguer ou résoudre">
+      <Pressable accessibilityRole="button" accessibilityLabel="Déléguer ma flemme" onPress={() => go('new', { tab: 'mine', draftId: undefined })} style={({ pressed }) => [styles.actionChoix, pressed && styles.menuLienActif]}><Text style={styles.menuTexte}>＋  Déléguer</Text></Pressable>
+      <Pressable accessibilityRole="button" accessibilityLabel="Résoudre une flemme" onPress={() => go('list', { tab: 'find', recherche: false })} style={({ pressed }) => [styles.actionChoix, styles.actionChoixMenthe, pressed && styles.menuLienActif]}><Text style={styles.menuTexte}>✓  Résoudre</Text></Pressable>
+    </View>}
     {menu && <View style={styles.menu} accessibilityLabel="Menu">
-      {lien('Déléguer ma flemme', screen === 'new', () => go('new', { tab: 'mine', draftId: undefined }))}
       {lien('Flemmes à résoudre', screen === 'list' && place.tab === 'find', () => go('list', { tab: 'find', recherche: false }))}
       {lien('Mon espace', screen === 'list' && place.tab === 'mine', () => go('list', { tab: 'mine', recherche: false }))}
       {lien('Mon profil', screen === 'profile' && !place.userId, () => go('profile', { userId: undefined }))}

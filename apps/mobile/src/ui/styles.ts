@@ -25,8 +25,12 @@ export const styles = StyleSheet.create({
   logo: { height: 40, paddingHorizontal: 9, flexShrink: 0, borderRadius: 12, borderWidth: 2.5, borderColor: c.encre, backgroundColor: c.vertLogo, justifyContent: 'center' },
   logoTexte: { fontFamily: police, fontWeight: '900', fontSize: 18, letterSpacing: -1, color: c.encre },
   burger: { width: 40, height: 40, flexShrink: 0, borderRadius: 20, borderWidth: 2, borderColor: c.encre, backgroundColor: c.menthe, alignItems: 'center', justifyContent: 'center', marginLeft: 'auto' },
-  // Loupe à côté du menu ; le menu garde marginLeft auto, la loupe le précède.
-  loupe: { backgroundColor: c.blanc, marginLeft: 'auto' },
+  // Bouton « + » à côté du menu (il remplace la loupe) et sa liste déroulante Déléguer / Résoudre.
+  plus: { backgroundColor: c.glacier, marginLeft: 'auto' },
+  plusTexte: { fontSize: 22, fontWeight: '700', color: c.encre, lineHeight: 24 },
+  actions: { right: 64, minWidth: 180, gap: 6 },
+  actionChoix: { paddingVertical: 11, paddingHorizontal: 14, borderRadius: 999, borderWidth: 2, borderColor: c.encre, backgroundColor: c.glacier },
+  actionChoixMenthe: { backgroundColor: c.menthe },
   recherche: { backgroundColor: c.menthe, gap: 10 },
   rechercheBarre: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: c.blanc, borderWidth: 2, borderColor: c.encre, borderRadius: 999, paddingHorizontal: 14, minHeight: 42 },
   rechercheChamp: { flex: 1, color: c.encre, fontFamily: police, fontSize: 15, paddingVertical: 8, outlineWidth: 0 },

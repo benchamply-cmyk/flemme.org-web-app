@@ -2,7 +2,7 @@
 
 ## Visuel V0.4 et écrans du site — 06/11/2026
 
-L'app reprend l'habillage V0.4 retenu pour le site (`src/ui/styles.ts`, valeurs tirées de `apps/web/src/site/site.css`) : fond blanc et rubans chromés en haut, logo « FLEMME. » vert, loupe de recherche, menu à quatre carrés arrondis sur fond menthe, titres en casse normale, boutons glacier contour encre, cartes contour noir, pied de page nuit. Sur iOS et Android, la police reste celle du système ; le navigateur utilise Archivo.
+L'app reprend l'habillage V0.4 retenu pour le site (`src/ui/styles.ts`, valeurs tirées de `apps/web/src/site/site.css`) : fond blanc et rubans chromés en haut, logo « FLEMME. » vert, bouton « + » (Déléguer ou Résoudre), menu à quatre carrés arrondis sur fond menthe, titres en casse normale, boutons glacier contour encre, cartes contour noir, pied de page nuit. Sur iOS et Android, la police reste celle du système ; le navigateur utilise Archivo.
 
 Textes et parcours alignés sur `app.html` (audit UX : demande, proposition, accord ; « Mon espace » avec « À faire »). Écrans ajoutés, mêmes règles que le site via `packages/shared` :
 
