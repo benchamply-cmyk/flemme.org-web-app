@@ -56,6 +56,11 @@ button, input, textarea, select { font: inherit; color: inherit; }
 .accueil-texte { flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 18px; }
 .accueil-texte .surtitre { color: var(--acier); }
 .accueil-texte h1 { margin: 0; color: var(--encre); font-size: clamp(40px, 5vw, 64px); line-height: .98; font-weight: 900; letter-spacing: -2px; }
+/* Titre alterné : les phrases occupent la même case de grille, la plus longue fixe la hauteur. */
+.titre-alterne { display: grid; }
+.titre-alterne > span { grid-area: 1 / 1; opacity: 0; visibility: hidden; transition: opacity .45s ease, visibility .45s; }
+.titre-alterne > span.actif { opacity: 1; visibility: visible; }
+@media (prefers-reduced-motion: reduce) { .titre-alterne > span { transition: none; } }
 .accueil-texte .accroche { margin: 0; font-size: 19px; max-width: 520px; }
 .accueil-texte .note { margin: 0; font-size: 13px; color: var(--texte-doux); }
 .cta { display: flex; align-items: center; gap: 16px; min-height: 64px; padding: 14px 16px 14px 26px; border-radius: 999px; border: 2px solid var(--encre); background: var(--glacier); color: var(--encre); text-decoration: none; box-shadow: 4px 5px 0 var(--violet); transition: transform .12s, box-shadow .12s; }
