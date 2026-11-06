@@ -4,6 +4,8 @@ Chaque PR ajoute une ligne sous « À venir ». À chaque mise en production (`p
 
 ## À venir
 
+- Icônes du site redessinées en style « points » (en-tête, menu « ? », boutons de l’accueil, carrousel, catégories, accueil de l’app) ; le grand titre change avec un effet de mise au point (flou puis net).
+
 - En-tête : bouton « Comment ça marche » dans la barre (même style clair que Déléguer et Flemmes à résoudre, rangé dans le menu sous 1100 px) ; le menu devient un bouton « ? » qui ouvre FAQ, Contact et le choix de langue (FR ; EN et ES annoncés bientôt).
 
 - Accueil de la vitrine : le grand titre alterne toutes les 3,5 s entre « Une tâche que tu repousses ? Trouve quelqu’un pour t’aider. » et « Une rémunération pour te charger de la mission. » (hauteur fixe, pas d’alternance si l’animation est réduite) ; surtitre « Le droit d’avoir la Flemme. Le Pouvoir d’aider. ».

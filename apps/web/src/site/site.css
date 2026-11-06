@@ -29,6 +29,8 @@
 .pastille { white-space: nowrap; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; box-sizing: border-box; border-radius: 999px; background: var(--encre); color: #fff; border: 2px solid var(--encre); text-decoration: none; font: 800 15px/1 var(--police); cursor: pointer; }
 .pastille:hover { background: var(--acier); border-color: var(--acier); }
 .pastille svg { flex: none; }
+/* Icônes « points » (style C retenu par Ben le 6 nov.) : alignées sur le texte. */
+.ico { flex: none; vertical-align: -0.15em; }
 .burger { position: relative; justify-self: start; }
 .burger summary { list-style: none; cursor: pointer; width: 44px; height: 44px; border-radius: 50%; background: var(--menthe); color: var(--encre); border: 2px solid var(--encre); box-sizing: border-box; display: grid; place-items: center; }
 .burger summary::-webkit-details-marker { display: none; }
