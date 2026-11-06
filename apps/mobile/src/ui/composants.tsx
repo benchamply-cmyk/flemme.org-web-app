@@ -17,10 +17,6 @@ export function Check({ checked, onChange, disabled, children }: { checked: bool
   return <Pressable accessibilityRole="checkbox" accessibilityState={{ checked, disabled }} disabled={disabled} onPress={() => onChange(!checked)} style={styles.check}>
     <View style={[styles.checkBox, checked && styles.checkBoxOn]}>{checked && <Text style={styles.strong}>✓</Text>}</View><Text style={[styles.strong, { flex: 1 }]}>{children}</Text></Pressable>;
 }
-/** Icône du menu : quatre carrés arrondis (choix de Ben pour le site). */
-export function Carres({ ouvert }: { ouvert: boolean }) {
-  return <View style={[styles.carres, ouvert && { transform: [{ rotate: '45deg' }] }]}>{[0, 1, 2, 3].map(i => <View key={i} style={styles.carre}/>)}</View>;
-}
 /** Loupe dessinée (recherche), à la taille `size`. */
 export function Loupe({ size = 18, color = '#16131f' }: { size?: number; color?: string }) {
   const r = size * .62, w = Math.max(2, size / 8);
@@ -35,5 +31,21 @@ export function Personne({ size = 18, color = '#16131f' }: { size?: number; colo
   return <View style={{ width: size, height: size, alignItems: 'center' }} accessibilityElementsHidden importantForAccessibility="no">
     <View style={{ width: t, height: t, borderRadius: t / 2, borderWidth: w, borderColor: color }}/>
     <View style={{ position: 'absolute', bottom: 0, width: size * .86, height: size * .42, borderTopLeftRadius: size * .43, borderTopRightRadius: size * .43, borderWidth: w, borderBottomWidth: 0, borderColor: color }}/>
+  </View>;
+}
+/** Maison (onglet Accueil) : toit en chevron sur un corps carré. */
+export function Maison({ size = 20, color = '#d2e4ff' }: { size?: number; color?: string }) {
+  const w = Math.max(2, size / 9), toit = size * .62;
+  return <View style={{ width: size, height: size, alignItems: 'center' }} accessibilityElementsHidden importantForAccessibility="no">
+    <View style={{ position: 'absolute', top: size * .14, width: toit, height: toit, borderLeftWidth: w, borderTopWidth: w, borderColor: color, borderTopLeftRadius: 2, transform: [{ rotate: '45deg' }] }}/>
+    <View style={{ position: 'absolute', bottom: 0, width: size * .66, height: size * .52, borderWidth: w, borderTopWidth: 0, borderColor: color, borderBottomLeftRadius: 2, borderBottomRightRadius: 2 }}/>
+  </View>;
+}
+/** Bulle de dialogue (onglet Contact). */
+export function Bulle({ size = 20, color = '#d2e4ff' }: { size?: number; color?: string }) {
+  const w = Math.max(2, size / 9);
+  return <View style={{ width: size, height: size }} accessibilityElementsHidden importantForAccessibility="no">
+    <View style={{ width: size, height: size * .74, borderRadius: size * .22, borderWidth: w, borderColor: color }}/>
+    <View style={{ position: 'absolute', left: size * .2, bottom: size * .06, width: size * .26, height: size * .26, borderRightWidth: w, borderBottomWidth: w, borderColor: color, backgroundColor: 'transparent', transform: [{ rotate: '45deg' }] }}/>
   </View>;
 }
