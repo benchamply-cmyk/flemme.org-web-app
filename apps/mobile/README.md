@@ -1,5 +1,9 @@
 # FLEMME mobile — bêta native
 
+## Aperçu dans un navigateur — 06/11/2026
+
+`npm run export:web` produit dans `dist-web/` une version navigateur de l'app (react-native-web), en démonstration locale uniquement. Elle sert à montrer et commenter les écrans sans téléphone ni Expo Go. `src/storage.web.ts` remplace alors `src/storage.ts` (Metro choisit le fichier `.web.ts`) : les instantanés de démo vont dans le stockage du navigateur et le jeton de connexion reste en mémoire. Les builds iOS et Android ne changent pas. Ce n'est pas une version publiée de l'app.
+
 ## Organisation du code — 03/11/2026
 
 Les règles métier, l’accès aux données (démo et Supabase), l’état de l’app et les textes communs sont dans `packages/shared`, partagé avec le site. Ici restent `App.tsx` (navigation, bouton Retour Android, choix de l’écran), un fichier par écran dans `src/ecrans/`, les composants et styles natifs dans `src/ui/`, et le stockage natif (`src/storage.ts`). `metro.config.js` autorise Metro à lire `packages/shared`. `npm test` lance les tests de `packages/shared`.
