@@ -27,6 +27,11 @@ export const styles = StyleSheet.create({
   pastilleTexte: { fontFamily: police, fontWeight: '800', fontSize: 15, color: c.encre },
   pastilleIcone: { fontSize: 18, fontWeight: '700', color: c.encre, lineHeight: 20 },
   burger: { width: 44, height: 44, borderRadius: 22, borderWidth: 2, borderColor: c.encre, backgroundColor: c.menthe, alignItems: 'center', justifyContent: 'center', marginLeft: 'auto' },
+  // Loupe à côté du menu ; le menu garde marginLeft auto, la loupe le précède.
+  loupe: { backgroundColor: c.blanc, marginLeft: 'auto' },
+  recherche: { backgroundColor: c.menthe, gap: 10 },
+  rechercheBarre: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: c.blanc, borderWidth: 2, borderColor: c.encre, borderRadius: 999, paddingHorizontal: 14, minHeight: 48 },
+  rechercheChamp: { flex: 1, color: c.encre, fontFamily: police, fontSize: 16, paddingVertical: 10, outlineWidth: 0 },
   carres: { width: 18, height: 18, flexDirection: 'row', flexWrap: 'wrap', gap: 4 },
   carre: { width: 7, height: 7, borderRadius: 2.5, borderWidth: 2, borderColor: c.encre },
   menu: { position: 'absolute', right: 16, top: 66, minWidth: 220, backgroundColor: c.blanc, borderWidth: 2, borderColor: c.encre, borderRadius: 18, padding: 8, boxShadow: '0 18px 40px rgba(22,19,31,.25)', zIndex: 20 },

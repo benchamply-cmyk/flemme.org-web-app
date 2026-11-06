@@ -21,3 +21,11 @@ export function Check({ checked, onChange, disabled, children }: { checked: bool
 export function Carres({ ouvert }: { ouvert: boolean }) {
   return <View style={[styles.carres, ouvert && { transform: [{ rotate: '45deg' }] }]}>{[0, 1, 2, 3].map(i => <View key={i} style={styles.carre}/>)}</View>;
 }
+/** Loupe dessinée (recherche), à la taille `size`. */
+export function Loupe({ size = 18, color = '#16131f' }: { size?: number; color?: string }) {
+  const r = size * .62, w = Math.max(2, size / 8);
+  return <View style={{ width: size, height: size }} accessibilityElementsHidden importantForAccessibility="no">
+    <View style={{ position: 'absolute', left: 0, top: 0, width: r, height: r, borderRadius: r / 2, borderWidth: w, borderColor: color }}/>
+    <View style={{ position: 'absolute', left: r * .78, top: r * .98, width: size * .42, height: w, borderRadius: w / 2, backgroundColor: color, transform: [{ rotate: '45deg' }], transformOrigin: 'left center' }}/>
+  </View>;
+}

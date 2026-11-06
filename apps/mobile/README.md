@@ -11,9 +11,10 @@ Textes et parcours alignés sur `app.html` (audit UX : demande, proposition, acc
 - Mot de passe oublié (`Connexion.tsx`) et choix du nouveau mot de passe (`MotDePasse.tsx`). Le lien e-mail rouvre l'app par `flemme-mobile://lien` en flux PKCE (`src/liens.ts`, `expo-crypto`) : **cette adresse doit être ajoutée dans Supabase, Authentication › URL Configuration › Redirect URLs**, sinon le lien renvoie vers le site.
 - Aide (`Aide.tsx`) : réponses toutes prêtes puis message à l'équipe FLEMME.
 - Profil public (`Profil.tsx`) : présentation, compétences, photo, avis reçus.
+- Recherche : loupe dans l'en-tête (et sur la carte « Résoudre une flemme ») qui ouvre « Flemmes à résoudre » avec la barre de recherche et les filtres du site (catégorie, où, ville, budget, délai, tri), via `session.search`.
 - Pièces jointes (`Pieces.tsx`, `src/fichiers.ts`, `expo-document-picker`) : PDF, JPEG, PNG ou Word, 10 Mo au plus.
 
-Navigation : une pile d'écrans (`App.tsx`), le bouton Retour et le Retour Android dépilent. Pas encore portés : paiement en ligne Stripe, dictée, filtres de recherche.
+Navigation : une pile d'écrans (`App.tsx`), le bouton Retour et le Retour Android dépilent. Pas encore portés : paiement en ligne Stripe, dictée.
 
 ## Aperçu dans un navigateur — 06/11/2026
 

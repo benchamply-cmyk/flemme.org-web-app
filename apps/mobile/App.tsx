@@ -6,7 +6,7 @@ import { backLabel, contractFields, footer, money, rights, taskFields } from '..
 import type { Command, Input, Option, Screen, Task } from '../../packages/shared/src/index.ts';
 import { session, useSession } from './src/session';
 import { linkReceived } from './src/liens';
-import { Action, Carres } from './src/ui/composants';
+import { Action, Carres, Loupe } from './src/ui/composants';
 import { styles, v04 } from './src/ui/styles';
 import type { Ctx, Draft, FieldOptions, Place } from './src/ecrans/contexte';
 import { Accueil } from './src/ecrans/Accueil';
@@ -28,8 +28,8 @@ const start: Place = { screen: 'home', tab: 'mine', taskId: '', offerId: '' };
 
 // Formulaire prérempli à l’ouverture d’un écran, comme initialDraft() du site.
 function initialDraft(next: Place): Draft {
-  const { tasks, drafts, actorId } = session.getState();
-  const t = tasks.find(v => v.id === next.taskId);
+  const { tasks, drafts, found, actorId } = session.getState();
+  const t = tasks.find(v => v.id === next.taskId) || found?.tasks.find(v => v.id === next.taskId);
   if (next.screen === 'edit') return t ? taskFields(t, money) : {};
   if ((next.screen === 'new' || next.screen === 'detail') && next.draftId) return { ...drafts.find(d => d.id === next.draftId)?.fields };
   // Proposition à corriger : le Brigadier repart de la sienne.
@@ -46,7 +46,7 @@ function Mobile() {
   const { gateway, actorId, busy, ready, error, notice, tasks, recovering } = state;
   const [stack, setStack] = useState<Place[]>([start]), [draft, setDraft] = useState<Draft>({}), [visit, setVisit] = useState(0), [menu, setMenu] = useState(false);
   const place = stack[stack.length - 1], { screen, taskId, offerId } = place;
-  const task = tasks.find(t => t.id === taskId), offer = task?.offers.find(o => o.id === offerId);
+  const task = tasks.find(t => t.id === taskId) || state.found?.tasks.find(t => t.id === taskId), offer = task?.offers.find(o => o.id === offerId);
 
   useEffect(() => {
     void session.initialize();
@@ -100,7 +100,7 @@ function Mobile() {
   else if (screen === 'help') content = <Aide key={visit} {...ctx}/>;
   else if (screen === 'home') content = <Accueil {...ctx}/>;
   else if (screen === 'new') content = <NouvelleFlemme key={visit} {...ctx}/>;
-  else if (screen === 'list') content = <Listes {...ctx}/>;
+  else if (screen === 'list') content = <Listes key={visit} {...ctx}/>;
   else if (!task) content = <><Text style={styles.heading}>Demande indisponible</Text><Action secondary onPress={() => go('list')}>Revenir à la liste</Action></>;
   else if (screen === 'report') content = <Signalement {...ctx}/>;
   else if (screen === 'edit') content = <NouvelleFlemme key={visit} {...ctx}/>;
@@ -116,12 +116,13 @@ function Mobile() {
       <View style={styles.entete}>
         <Pressable accessibilityRole="button" accessibilityLabel="FLEMME · accueil" onPress={() => go('home')} style={styles.logo}><Text style={styles.logoTexte}>FLEMME.</Text></Pressable>
         {connecte && <Pressable accessibilityRole="button" accessibilityLabel="Déléguer ma flemme" onPress={() => go('new', { tab: 'mine', draftId: undefined })} style={({ pressed }) => [styles.pastille, pressed && { backgroundColor: v04.glacierClair }]}><Text style={styles.pastilleIcone}>＋</Text><Text style={styles.pastilleTexte}>Déléguer</Text></Pressable>}
-        {connecte && <Pressable accessibilityRole="button" accessibilityLabel="Menu" accessibilityState={{ expanded: menu }} onPress={() => setMenu(!menu)} style={styles.burger}><Carres ouvert={menu}/></Pressable>}
+        {connecte && <Pressable accessibilityRole="button" accessibilityLabel="Rechercher une demande" onPress={() => go('list', { tab: 'find', recherche: true })} style={[styles.burger, styles.loupe]}><Loupe size={18}/></Pressable>}
+        {connecte && <Pressable accessibilityRole="button" accessibilityLabel="Menu" accessibilityState={{ expanded: menu }} onPress={() => setMenu(!menu)} style={[styles.burger, { marginLeft: 0 }]}><Carres ouvert={menu}/></Pressable>}
       </View>
     </View>
     {menu && <View style={styles.menu} accessibilityLabel="Menu">
-      {lien('Flemmes à résoudre', screen === 'list' && place.tab === 'find', () => go('list', { tab: 'find' }))}
-      {lien('Mon espace', screen === 'list' && place.tab === 'mine', () => go('list', { tab: 'mine' }))}
+      {lien('Flemmes à résoudre', screen === 'list' && place.tab === 'find', () => go('list', { tab: 'find', recherche: false }))}
+      {lien('Mon espace', screen === 'list' && place.tab === 'mine', () => go('list', { tab: 'mine', recherche: false }))}
       {lien('Mon profil', screen === 'profile' && !place.userId, () => go('profile', { userId: undefined }))}
       {lien('Aide', screen === 'help', () => go('help'))}
       {lien('Mon compte', screen === 'account', () => go('account'))}
