@@ -6,6 +6,7 @@ import { onlinePayment, session, useSession } from './session.ts';
 import { Action } from './ui.tsx';
 import pied from './site/pied.html?raw';
 import './site/site.css';
+import './site/reglages.css';
 import type { Ctx, Draft, FieldOptions, Place } from './ecrans/contexte.ts';
 import { Accueil } from './ecrans/Accueil.tsx';
 import { Accord } from './ecrans/Accord.tsx';
@@ -125,7 +126,7 @@ export default function App() {
   const loupe = <svg className="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="currentColor"><circle cx="16.5" cy="10.5" r="1.6"/><circle cx="14.7" cy="14.7" r="1.6"/><circle cx="10.5" cy="16.5" r="1.6"/><circle cx="6.3" cy="14.7" r="1.6"/><circle cx="4.5" cy="10.5" r="1.6"/><circle cx="6.3" cy="6.3" r="1.6"/><circle cx="10.5" cy="4.5" r="1.6"/><circle cx="14.7" cy="6.3" r="1.6"/><circle cx="19" cy="19" r="2.2"/></g></svg>;
   const plus = <svg className="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="square" strokeLinejoin="miter"><path d="M12 6v12M6 12h12"/></g></svg>;
   return <>
-    <div className="flemme-chrome-home bandeau app-bandeau">
+    <div className="flemme-chrome-home bandeau app-bandeau" data-flemme-page="deleguer">
       <header className="entete">
         <div className="entete-gauche">
           <a className="logo" href="./" aria-label="FLEMME · retour à la présentation">FLEMME.</a>

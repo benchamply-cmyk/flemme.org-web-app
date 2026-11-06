@@ -4,6 +4,8 @@ Chaque PR ajoute une ligne sous « À venir ». À chaque mise en production (`p
 
 ## À venir
 
+- Apparence du site selon les réglages choisis dans la maquette V0.5 (fichier `apps/web/src/site/reglages.css`) : police Space Grotesk, barre d’en-tête en verre avec pastilles compactes, boutons clairs à contour et coins arrondis avec ombre douce qui se soulèvent au survol, contours gris clair, cartes à ombre douce, fond de page en dégradé glacier, reflets discrets, titres plus petits, espacements compacts, sections qui apparaissent en fondu ; quelques réglages propres à certaines pages (accueil sans contours, Comment ça marche et l’app en texte gris bleuté).
+
 - Icônes du site redessinées : points pour Résoudre et Comment ça marche, trait fin pour les autres (Déléguer, « ? », Connexion en forme de maison, catégories, flèches) ; le grand titre change avec un effet de mise au point (flou puis net).
 
 - En-tête : bouton « Comment ça marche » dans la barre (même style clair que Déléguer et Flemmes à résoudre, rangé dans le menu sous 1100 px) ; le menu devient un bouton « ? » qui ouvre FAQ, Contact et le choix de langue (FR ; EN et ES annoncés bientôt).
