@@ -47,3 +47,7 @@ Les préfixes autorisés sont `feature/`, `fix/`, `docs/`, `chore/` et `mobile/`
 - **Urgent (04/11)** : créer un ruleset sur `prod` et `preprod` : PR obligatoire, **pas de suppression** (Restrict deletions), pas de force push, CI `Site web (apps/web)` requise. Settings → Rules → Rulesets → New branch ruleset, cibles `prod` et `preprod`.
 - Activer la suppression automatique des branches fusionnées.
 - Dans « Pull requests », n'autoriser que les merge commits (désactiver squash et rebase). Pas encore fait : #24 a été squashée le 04/11.
+
+## Tests de variantes (décision du 7 novembre 2026)
+
+Le configurateur fait partie des branches preprod et prod ; aucun environnement permanent beta n’est nécessaire. Une branche courte feature/beta-testeurs remplace les PR #42/#43. Voir [configuration et invitations](beta-testeurs.md). Promotion : PR vers preprod, recette, puis PR preprod vers prod avec merge commit.
