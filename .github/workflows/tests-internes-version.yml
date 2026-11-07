@@ -1,11 +1,11 @@
-name: Version beta après fusion
+name: Tests Version Interne après fusion
 on:
   push:
     branches: [preprod, prod]
 permissions:
   contents: write
 concurrency:
-  group: beta-version-${{ github.ref }}
+  group: tests-internes-version-${{ github.ref }}
   cancel-in-progress: false
 jobs:
   version:
@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: '22'
       - name: Générer le manifeste
-        run: node beta/scripts/version.mjs /tmp/beta-version.json
+        run: node tests/internes/scripts/version.mjs /tmp/tests-internes-version.json
       - name: Versionner la fusion sans modifier la branche
         env:
           BRANCH_NAME: ${{ github.ref_name }}
@@ -27,7 +27,7 @@ jobs:
           if [[ "$subject" =~ ^Merge\ pull\ request\ \#([0-9]+) ]]; then
             pr="${BASH_REMATCH[1]}"
             short_sha=$(git rev-parse --short=7 HEAD)
-            version_tag="beta-${BRANCH_NAME}-pr${pr}-${short_sha}"
+            version_tag="tests-internes-${BRANCH_NAME}-pr${pr}-${short_sha}"
             if git rev-parse "$version_tag" >/dev/null 2>&1; then exit 0; fi
             git config user.name github-actions[bot]
             git config user.email 41898282+github-actions[bot]@users.noreply.github.com
@@ -38,5 +38,5 @@ jobs:
           fi
       - uses: actions/upload-artifact@v4
         with:
-          name: beta-version-${{ github.ref_name }}-${{ github.sha }}
-          path: /tmp/beta-version.json
+          name: tests-internes-version-${{ github.ref_name }}-${{ github.sha }}
+          path: /tmp/tests-internes-version.json

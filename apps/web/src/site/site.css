@@ -84,9 +84,9 @@
 .pied-bas { max-width: var(--largeur); margin: 32px auto 0; border-top: 1px solid var(--texte-doux); padding-top: 18px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; font-size: 13px; }
 
 /* Compte testeur : garder Test et le compte côte à côte, y compris sur petit écran. */
-.entete:has(.beta-test) .entete-droite { gap: 8px; }
+.entete:has(.tests-internes-test) .entete-droite { gap: 8px; }
 @media (max-width: 560px) {
-  .entete:has(.beta-test) { flex-wrap: wrap; }
-  .entete:has(.beta-test) .entete-droite { margin-left: auto; }
-  .entete:has(.beta-test) .pastille.mon-espace { display: inline-flex; }
+  .entete:has(.tests-internes-test) { flex-wrap: wrap; }
+  .entete:has(.tests-internes-test) .entete-droite { margin-left: auto; }
+  .entete:has(.tests-internes-test) .pastille.mon-espace { display: inline-flex; }
 }

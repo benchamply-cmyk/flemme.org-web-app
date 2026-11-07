@@ -14,7 +14,7 @@
 | Appel OpenAI réel sur cette branche | aucun |
 | Migration / déploiement | aucun |
 
-Python : interpréteur Python 3.12 de l'environnement de validation V4 déjà installé, avec pythonpath sur le nouveau dossier src. Aucun paquet ajouté. Commandes reproductibles dans le projet : `uv sync --locked --extra dev`, puis `uv run --locked pytest -q` et `uv run --locked python -m compileall -q src`. JavaScript : `node --test flemme-web-beta/tests/*.test.mjs` à la racine.
+Python : interpréteur Python 3.12 de l'environnement de validation V4 déjà installé, avec pythonpath sur le nouveau dossier src. Aucun paquet ajouté. Commandes reproductibles dans le projet : `uv sync --locked --extra dev`, puis `uv run --locked pytest -q` et `uv run --locked python -m compileall -q src`. JavaScript : tests du site web historique, exécutés depuis son ancien dossier.
 
 Les nouveaux tests couvrent : qualification leasing sans marque/ville obligatoires, budget absent, clarification à partir des seuls messages utilisateur sauvegardés, refus des actions engageantes, API canonique plan/approbation/exécution, rôle client refusé sur les outils, projection sans mutation des événements, reprise native/legacy sur le même stockage, taille de corps, absence d'écho de données sensibles, budgets invalides, prix total web, union OpenAPI discriminée, session transmise par l'adaptateur Netlify, origine HTTPS et validation de sa réponse. Les tests de calculs, devises/taxes/bases, citations, sécurité HTTPS/SSRF et parseurs existants continuent à passer.
 

@@ -2,7 +2,7 @@
 
 ## Faits vérifiés et limites de l'audit
 
-Base GitHub : [main@5d36cea](https://github.com/benchamply-cmyk/FlemmeV2.0/commit/5d36ceac7242e4cb69735ce2a2d9146af03dd1f4). Branches distantes lues : main, beta, archive/pr34-illustrations, archive/sauvegarde-v3-2026-10-20, archive/v4.1100. Aucun archivage réalisé dans cette opération. Les descriptions des anciennes PR ne sont pas une preuve de déploiement.
+Base GitHub : [main@5d36cea](https://github.com/benchamply-cmyk/FlemmeV2.0/commit/5d36ceac7242e4cb69735ce2a2d9146af03dd1f4). Branches distantes lues : main, intégration historique, archive/pr34-illustrations, archive/sauvegarde-v3-2026-10-20, archive/v4.1100. Aucun archivage réalisé dans cette opération. Les descriptions des anciennes PR ne sont pas une preuve de déploiement.
 
 Render, lecture du 26/10 : service `srv-db7c17q5b2lc73fbs6ng`, branche main, déploiement manuel `dep-dbc3o8rrjlhs73anm6kg`, déclaré live sur 5d36cea depuis le 21/10 06:15:38 Europe/Paris. Auto-déploiement désactivé, offre free, chemin de health-check vide. La tentative de lecture HTTP de /health par l'outil web a échoué : disponibilité actuelle non certifiée. Aucun environnement secret consulté ou modifié. [Service](https://dashboard.render.com/web/srv-db7c17q5b2lc73fbs6ng).
 

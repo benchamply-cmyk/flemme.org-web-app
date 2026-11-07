@@ -253,9 +253,9 @@ export class RemoteGateway implements Gateway {
   }
   // Web only: exchange the current session for a same-origin test cookie.
   // Never place this bearer token in a URL or forward it to a preview origin.
-  async betaAccess(): Promise<boolean> {
+  async internalTestsAccess(): Promise<boolean> {
     if (Date.now() > this.expires - 60000) await this.refresh();
-    const response = await this.transport('/.netlify/functions/beta-auth', {
+    const response = await this.transport('/.netlify/functions/tests-internes-auth', {
       method: 'POST', headers: { Authorization: 'Bearer ' + this.access, 'Content-Type': 'application/json' },
       body: '{}', signal: AbortSignal.timeout(10000),
     });

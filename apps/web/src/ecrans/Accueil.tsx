@@ -1,4 +1,4 @@
-import { AccountAccess } from '../beta/AccountAccess.tsx';
+import { AccountAccess } from '../tests/internes/AccountAccess.tsx';
 import type { Ctx } from './contexte.ts';
 
 // Accueil de l’app : les deux portes d’entrée, chacune avec sa destination immédiate.

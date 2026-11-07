@@ -6,7 +6,7 @@ Ce document décrit [benchamply-cmyk/FlemmeV2.0](https://github.com/benchamply-c
 
 | Dossier | Contenu | Repris ici ? |
 |---|---|---|
-| `flemme-web-beta/` | Site historique flemme.org (HTML/CSS/JS, Netlify Forms, `/espace`, `/gestionadmin`, Decap CMS) | Non, il reste en production depuis FlemmeV2.0 |
+| Dossier du site historique | Site historique flemme.org (HTML/CSS/JS, Netlify Forms, `/espace`, `/gestionadmin`, Decap CMS) | Non, il reste en production depuis FlemmeV2.0 |
 | `flemme-managerV1/` | Flemme Manager : agents IA, API sur Render (`flemme-manager-v2-api`) | **Oui**, dans `apps/manager` |
 | `supabase/` | Schémas SQL de l'espace client et du Manager | SQL du Manager : **oui**, dans `apps/manager/supabase`. Espace client : non (ses comptes sont repris, voir `migration-comptes-espace.md`) |
 | `apps/mobile/` | App Expo SDK 58 et backend Supabase | **Oui** |
@@ -18,7 +18,7 @@ Ce document décrit [benchamply-cmyk/FlemmeV2.0](https://github.com/benchamply-c
 | Branche | Rôle | État |
 |---|---|---|
 | `main` | Production de flemme.org (Netlify `flemmeorg`) | Dernière fusion : #53, le 28/10 |
-| `beta` | Intégration, branche par défaut | Contient en plus `apps/web` (#56) |
+| la branche d’intégration historique | Intégration, branche par défaut | Contient en plus `apps/web` (#56) |
 | `feature/candidature-brigade` | PR #54 : candidature Brigade limitée à 4 métiers | Ouverte, prête à fusionner |
 | `docs/changelog-v5` | PR #58 : nettoyage du CHANGELOG | Ouverte |
 | `feature/apps-web-netlify` | PR #59 : site Netlify de test pour `apps/web` dans FlemmeV2.0 | Ouverte, remplacée par ce dépôt-ci |
@@ -33,9 +33,9 @@ Tags : `v4.1000` (V4, 20/10) et `V.5.1000` (mise en production de la V5, 21/10).
 ### 1. Les premières versions du site (1er au 5 octobre)
 Toutes ces PR vont vers `main`.
 - **#1 `V2.1`, #2 `V2.2`** : versions V2.1 et V2.2 du site, ajoutées par upload.
-- **#3 `claude/project-thread-65r4iw`** : V2.3, la bêta publique.
-- **#4** : report de #3 dans la branche `V2.3.beta`.
-- **#5** : Netlify publie la bêta depuis le dépôt, avec le style de la refonte.
+- **#3 `claude/project-thread-65r4iw`** : V2.3, la version publique de test.
+- **#4** : report de #3 dans la branche de test V2.3.
+- **#5** : Netlify publie la version de test depuis le dépôt, avec le style de la refonte.
 - **#6 à #8 `claude/project-thread-e0e5b8`** : espace personnel. Inscription par e-mail, suivi des demandes, connexion par mot de passe, pseudo facultatif et e-mails en français.
 - **#9** : page équipe et alertes e-mail sur les demandes clients.
 
@@ -54,37 +54,37 @@ Ces PR vont aussi vers `main`.
 - **#25** : recherche web réelle et comparaison documentaire avec citations.
 
 ### 3. La journée du 20 octobre (V4)
-De nombreuses PR, souvent en cascade : c'est elle qui a conduit à créer `beta`.
+De nombreuses PR, souvent en cascade : c'est elle qui a conduit à créer la branche d’intégration historique.
 - **#26 `StableVersion/…`** : sauvegarde de la V3, fusionnée malgré la mention « NE PAS FUSIONNER ». Elle est conservée dans `archive/sauvegarde-v3-2026-10-20`.
-- **#27, #28 `BetaVersion/V4.1000-…`** : V4, avec un menu qui sépare les services disponibles des services à venir.
+- **#27, #28 ancien nom de branche de test long et daté** : V4, avec un menu qui sépare les services disponibles des services à venir.
 - **#29 (fermée), #30** : variantes UI/UX V4.1100.
 - **#31** : fond bleu métal. **#32** : son alternative « Métal intense ». **#33** : doublon de #32, fermée.
 - **#34** : illustrations animées, jamais fusionnée. Conservée dans `archive/pr34-illustrations`.
 - **#35** : version PR #28 indépendante (textes et typo « Affiche condensée »), fusionnée dans `main`. Tag `v4.1000`.
 - **#36** : PR d'archive, fermée.
 
-### 4. V5 et organisation main/beta (21 octobre)
-- **#37 `feature/design-v5`** → `beta` : design V5. Menus déroulants, pages dédiées, recherche, bleu glacier.
-- **#38** `beta` → `main` : mise en production de la V5. Tag `V.5.1000`.
+### 4. V5 et organisation production/intégration historique (21 octobre)
+- **#37 `feature/design-v5`** → la branche d’intégration historique : design V5. Menus déroulants, pages dédiées, recherche, bleu glacier.
+- **#38** la branche d’intégration historique → `main` : mise en production de la V5. Tag `V.5.1000`.
 - **#39 `feat/admin-agent-routing-…`** → `main` directement : plans d'agents validés par les administrateurs.
-- **#40 `feature/manager-espace-v5`** → `beta` : refonte V5 de Mon espace et de Mes conversations. **#41** la met en production.
-- **#42 `feature/espace-admin-separes`** → `beta` : séparation de `/espace` (client) et `/gestionadmin` (admin). **#43** la met en production.
-- **#44 `fix/accroche-accueil`** → `beta` : nouvelle accroche, vert espoir, fond Glacier profond. **#46** la met en production.
-- **#45 `feature/espace-ecrire-manager`** → `beta` : le client écrit à Flemme Manager depuis `/espace`. **#47** la met en production.
+- **#40 `feature/manager-espace-v5`** → la branche d’intégration historique : refonte V5 de Mon espace et de Mes conversations. **#41** la met en production.
+- **#42 `feature/espace-admin-separes`** → la branche d’intégration historique : séparation de `/espace` (client) et `/gestionadmin` (admin). **#43** la met en production.
+- **#44 `fix/accroche-accueil`** → la branche d’intégration historique : nouvelle accroche, vert espoir, fond Glacier profond. **#46** la met en production.
+- **#45 `feature/espace-ecrire-manager`** → la branche d’intégration historique : le client écrit à Flemme Manager depuis `/espace`. **#47** la met en production.
 
 ### 5. Manager unifié et app mobile (26 au 28 octobre)
 - **#48 `feat/unified-flemme-manager-…`** → `main` directement : Manager, outils internes et API unifiés.
-- **#49 `feature/flemme-mobile`** → `beta` : app mobile. Délégation, Brigadiers, commission de 10 %. **Repris ici dans `apps/mobile`.**
-- **#50 `fix/mobile-expo-go-sdk58`** → `beta` : compatibilité Expo Go SDK 58. **Repris ici.**
-- **#51 `feature/mobile-accueil-deux-actions`** → `beta` : accueil à deux actions, identité Glacier, logo. **Repris ici.**
-- **#52** `main` → `beta` : report de #48 dans `beta`.
-- **#53** `beta` → `main` en squash : réunit les deux branches côté contenu, mais sépare leurs historiques.
+- **#49 `feature/flemme-mobile`** → la branche d’intégration historique : app mobile. Délégation, Brigadiers, commission de 10 %. **Repris ici dans `apps/mobile`.**
+- **#50 `fix/mobile-expo-go-sdk58`** → la branche d’intégration historique : compatibilité Expo Go SDK 58. **Repris ici.**
+- **#51 `feature/mobile-accueil-deux-actions`** → la branche d’intégration historique : accueil à deux actions, identité Glacier, logo. **Repris ici.**
+- **#52** `main` → la branche d’intégration historique : report de #48 dans la branche d’intégration historique.
+- **#53** la branche d’intégration historique → `main` en squash : réunit les deux branches côté contenu, mais sépare leurs historiques.
 
 ### 6. Nouveau site web (2 au 3 novembre)
-- **#54 `feature/candidature-brigade`** → `beta` : Brigade limitée à 4 métiers, profils de démonstration, personas. Ouverte. Elle concerne le site historique.
+- **#54 `feature/candidature-brigade`** → la branche d’intégration historique : Brigade limitée à 4 métiers, profils de démonstration, personas. Ouverte. Elle concerne le site historique.
 - **#55 `feature/flemme-web`** : brouillon de #56, fermé.
-- **#56 `feature/flemmeV3-web-app`** → `beta` : nouveau site `apps/web`. **Repris ici.**
-- **#57** `main` → `beta` en merge commit : réaligne les historiques. Ouverte.
+- **#56 `feature/flemmeV3-web-app`** → la branche d’intégration historique : nouveau site `apps/web`. **Repris ici.**
+- **#57** `main` → la branche d’intégration historique en merge commit : réaligne les historiques. Ouverte.
 - **#58 `docs/changelog-v5`** : rangement du CHANGELOG. Ouverte.
 - **#59 `feature/apps-web-netlify`** : site Netlify de test pour `apps/web` dans FlemmeV2.0. Ouverte, rendue inutile par ce dépôt.
 
@@ -94,8 +94,8 @@ Le numéro #12 n’est pas une PR : c’est l’issue « Réorganisation — Ré
 
 Elles ont servi à fixer les règles de [organisation-git.md](organisation-git.md).
 
-1. `main` et `beta` ont le même contenu, mais des historiques séparés à cause des squash de #48 et #53 (corrigé par #57).
+1. `main` et la branche d’intégration historique ont le même contenu, mais des historiques séparés à cause des squash de #48 et #53 (corrigé par #57).
 2. Des PR directes vers `main` : #39 et #48.
 3. La section « À venir » du CHANGELOG n'a pas été mise à jour entre le 21/10 et le 3/11 (corrigé par #58).
-4. Des noms de branche hors convention : `claude/…`, `feat/…` avec une date, `BetaVersion/…/20/10/2016`, `StableVersion/…`, et des branches sans préfixe (`V2.1`, `brigade-anti-flemme`).
+4. Des noms de branche hors convention : `claude/…`, `feat/…` avec une date, ancien nom de branche de test long et daté, `StableVersion/…`, et des branches sans préfixe (`V2.1`, `brigade-anti-flemme`).
 5. Des tags incohérents : `v4.1000` et `V.5.1000`.

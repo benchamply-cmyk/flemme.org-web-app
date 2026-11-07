@@ -5,7 +5,7 @@
   command = "npm run build"
   publish = "dist"
   # Ne reconstruit que si le site ou le code partagé avec l'app mobile (packages/shared) ont changé.
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ../../packages/shared ../../beta ../../netlify.toml"
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ../../packages/shared ../../tests/internes ../../netlify.toml"
 
 [build.environment]
   NODE_VERSION = "22"
@@ -75,24 +75,24 @@
 
 # One project, two branches. Test aliases never select a Git ref themselves.
 [[redirects]]
-  from = "/beta/testprod"
-  to = "https://flemme.org/beta"
+  from = "/tests/internes/testprod"
+  to = "https://flemme.org/tests/internes"
   status = 302
   force = true
 
 [[redirects]]
-  from = "/beta/testpreprod"
-  to = "https://preprod--flemmeorg.netlify.app/beta"
+  from = "/tests/internes/testpreprod"
+  to = "https://preprod--flemmeorg.netlify.app/tests/internes"
   status = 302
   force = true
 
 [[redirects]]
-  from = "/beta"
-  to = "/beta.html"
+  from = "/tests/internes"
+  to = "/tests/internes/index.html"
   status = 200
 
 [[headers]]
-  for = "/beta*"
+  for = "/tests/internes*"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
     Cache-Control = "no-store"

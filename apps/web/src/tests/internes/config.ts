@@ -8,5 +8,5 @@ export function normalize(value: unknown): Variant {
     features: { aide: typeof v?.features?.aide === 'boolean' ? v.features.aide : true, premium: typeof v?.features?.premium === 'boolean' ? v.features.premium : true } };
 }
 export function readVariant(): Variant {
-  try { return normalize(JSON.parse(localStorage.getItem('flemme.beta.v1') || 'null')); } catch { return normalize(null); }
+  try { return normalize(JSON.parse(localStorage.getItem('flemme.tests.internes.v1') || 'null')); } catch { return normalize(null); }
 }

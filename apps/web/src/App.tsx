@@ -1,4 +1,4 @@
-import { AccountAccess } from './beta/AccountAccess.tsx';
+import { AccountAccess } from './tests/internes/AccountAccess.tsx';
 import { useEffect, useRef, useState } from 'react';
 import type { MouseEvent, ReactNode } from 'react';
 import { backLabel, contractFields, footer, money, rights, taskFields } from '../../../packages/shared/src/index.ts';

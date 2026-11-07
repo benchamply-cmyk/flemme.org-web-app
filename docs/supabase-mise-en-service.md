@@ -44,7 +44,7 @@ Netlify > projet `flemmeorg` > Site configuration > Environment variables > Add 
 | Variable | Valeur |
 |---|---|
 | `VITE_SUPABASE_URL` | `https://yktpabnqkhwcshvjuncs.supabase.co` |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` | la clé **publique** `sb_publishable_…` du projet (Supabase > Project Settings > API Keys ; c'est aussi celle de `flemme-web-beta/content/supabase.json` dans FlemmeV2.0) |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | la clé **publique** `sb_publishable_…` du projet (Supabase > Project Settings > API Keys ; c'est aussi celle de la configuration publique du site historique dans FlemmeV2.0) |
 
 - Scopes : Builds.
 - **Deploy contexts : seulement « Branch deploys » et « Deploy Previews » dans un premier temps**, pas « Production ». flemme.org reste ainsi en démo pendant la recette.

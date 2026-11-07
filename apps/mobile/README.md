@@ -1,4 +1,4 @@
-# FLEMME mobile — bêta native
+# FLEMME mobile — tests/internes natifs
 
 ## Visuel V0.4 et écrans du site — 06/11/2026
 
@@ -36,7 +36,7 @@ Sources vérifiées le 28/10/2026 : https://docs.expo.dev/workflow/upgrading-exp
 
 ## Identité flemme.org — 28/10/2026
 
-Le thème natif reprend les valeurs finales du CSS du site : bleu glacier #a5ccff, fond #e3eeff, surface douce #f3f7ff, encre #16131f, violet #3a2fa0 et bleu profond #4f86d9. Les variables historiques vertes du CSS sont surchargées par la version V5 ; ce sont bien les valeurs finales qui sont utilisées. Source : https://github.com/benchamply-cmyk/FlemmeV2.0/blob/beta/flemme-web-beta/styles.css ; aspect également vérifié sur https://flemme.org/ le 28/10/2026.
+Le thème natif reprend les valeurs finales du CSS du site : bleu glacier #a5ccff, fond #e3eeff, surface douce #f3f7ff, encre #16131f, violet #3a2fa0 et bleu profond #4f86d9. Les variables historiques vertes du CSS sont surchargées par la version V5 ; ce sont bien les valeurs finales qui sont utilisées. Source : feuille de style du [dépôt historique FlemmeV2.0](https://github.com/benchamply-cmyk/FlemmeV2.0) ; aspect également vérifié sur https://flemme.org/ le 28/10/2026.
 
 packages/shared/src/brand.ts (anciennement src/brand.ts) centralise la palette et le fond statique à dégradés lilas, rose, aqua et glacier. Les contours sombres, ombres violettes décalées, boutons pilules et titres en capitales reprennent les traitements du site. Le navigateur utilise Archivo via Google Fonts ; le natif utilise des caractères système condensés disponibles sur iOS/Android, sans téléchargement de police ni nouvelle dépendance.
 
@@ -50,7 +50,7 @@ L’écran initial affiche deux grands boutons centraux, Mes flemmes et Résoudr
 
 ## Décision d’architecture
 
-Même dépôt que le site, application indépendante dans apps/mobile, branche feature/flemme-mobile issue de beta. Aucune dépendance à l’interface web, aucun déplacement ni remplacement de fichiers existants. L’app n’est pas une WebView. Un nouveau dépôt serait utile si une équipe, des droits d’accès ou un cycle de livraison séparés le justifient ; ce n’est pas nécessaire pour ce premier test.
+Même dépôt que le site, application indépendante dans apps/mobile, branche feature/flemme-mobile issue de la branche d’intégration historique. Aucune dépendance à l’interface web, aucun déplacement ni remplacement de fichiers existants. L’app n’est pas une WebView. Un nouveau dépôt serait utile si une équipe, des droits d’accès ou un cycle de livraison séparés le justifient ; ce n’est pas nécessaire pour ce premier test.
 
 React Native / Expo et TypeScript. SDK 54.0.37, React Native 0.81.5 et React 19.1.0, versions épinglées et verrouillées, effectivement vérifiées dans cet environnement. Le SDK n’est pas le dernier publié : il a été retenu pour une chaîne disponible et reproductible. Pour tester sur un téléphone dont Expo Go ne prend plus en charge SDK 54, utiliser une compilation native de cette version. L’évolution du SDK et la validation des exigences des stores précèdent une distribution publique.
 

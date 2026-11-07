@@ -1,0 +1,16 @@
+html[data-tests-internes-theme] { --menthe: var(--tests-internes-accent); --glacier: var(--tests-internes-accent); }
+html[data-tests-internes-theme="nuit"] body { background: #16131f; color: #f3efff; }
+html[data-tests-internes-theme="nuit"] .bandeau, html[data-tests-internes-theme="nuit"] main { background-color: #252235; color: #f3efff; }
+html[data-tests-internes-theme="papier"] body, html[data-tests-internes-theme="papier"] .bandeau { background-color: #fff4de; }
+html[data-tests-internes-theme="papier"] { --police: Georgia, serif; }
+html[data-tests-internes-nav="visible"] .entete { display: flex; flex-wrap: wrap; }
+html[data-tests-internes-nav="visible"] .burger { display: contents; }
+html[data-tests-internes-nav="visible"] .burger summary { display: none; }
+html[data-tests-internes-nav="visible"] .burger-menu { position: static; transform: none; display: flex; flex-direction: row; flex-wrap: wrap; box-shadow: none; }
+html[data-tests-internes-nav="compacte"] .entete { padding-block: 8px; }
+html[data-tests-internes-nav="compacte"] .pastille { font-size: 13px; height: 36px; }
+[data-tests-internes-feature][hidden], html[data-tests-internes-theme] a[hidden] { display: none !important; }
+html[data-tests-internes-nav="visible"] details.burger::details-content { content-visibility: visible !important; display: contents; }
+html[data-tests-internes-theme="nuit"] .flemme-chrome-home::before, html[data-tests-internes-theme="nuit"] .flemme-chrome-home::after { display: none; }
+html[data-tests-internes-theme="nuit"] .accueil-texte h1, html[data-tests-internes-theme="nuit"] .accueil-texte > p, html[data-tests-internes-theme="nuit"] main > h1, html[data-tests-internes-theme="nuit"] main > h2, html[data-tests-internes-theme="nuit"] main > p, html[data-tests-internes-theme="nuit"] .surtitre, html[data-tests-internes-theme="nuit"] .lien-fort { color: #f3efff; }
+html[data-tests-internes-theme="nuit"] .carte, html[data-tests-internes-theme="nuit"] .etapes li, html[data-tests-internes-theme="nuit"] .exemple { color: #16131f; }

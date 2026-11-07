@@ -1,10 +1,10 @@
 import { createHmac, createHash, timingSafeEqual } from 'node:crypto';
-const cookieName='flemme_beta';
+const cookieName='flemme_tests_internes';
 const env=key=>globalThis.Netlify?.env.get(key) ?? process.env[key];
 const equal=(a,b)=>{const x=Buffer.from(a||''),y=Buffer.from(b||'');return x.length===y.length && timingSafeEqual(x,y);};
 const hash=value=>createHash('sha256').update(value).digest('hex');
 export const reply=(status,data,headers={})=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store',...headers}});
-function settings(){return {enabled:env('BETA_ENABLED')==='oui',secret:env('BETA_SESSION_SECRET'),invite:env('BETA_INVITE_TOKEN')||'',expiry:Date.parse(env('BETA_INVITE_EXPIRES_AT')||''),url:env('VITE_SUPABASE_URL'),key:env('VITE_SUPABASE_PUBLISHABLE_KEY'),emails:[...(env('BETA_ADMIN_EMAILS')||'ben.champly@gmail.com').split(','),...(env('BETA_TESTER_EMAILS')||'').split(',')].map(x=>x.trim().toLowerCase()).filter(Boolean)};}
+function settings(){return {enabled:env('TESTS_INTERNES_ENABLED')==='oui',secret:env('TESTS_INTERNES_SESSION_SECRET'),invite:env('TESTS_INTERNES_INVITE_TOKEN')||'',expiry:Date.parse(env('TESTS_INTERNES_INVITE_EXPIRES_AT')||''),url:env('VITE_SUPABASE_URL'),key:env('VITE_SUPABASE_PUBLISHABLE_KEY'),emails:[...(env('TESTS_INTERNES_ADMIN_EMAILS')||'ben.champly@gmail.com').split(','),...(env('TESTS_INTERNES_TESTER_EMAILS')||'').split(',')].map(x=>x.trim().toLowerCase()).filter(Boolean)};}
 function encode(payload,c){const data=Buffer.from(JSON.stringify({...payload,exp:Date.now()+3600000})).toString('base64url');return data+'.'+createHmac('sha256',c.secret).update(data).digest('base64url');}
 function decode(value,c){try{const [data,sig]=value.split('.');if(!equal(sig,createHmac('sha256',c.secret).update(data).digest('base64url')))return null;const p=JSON.parse(Buffer.from(data,'base64url'));return p.exp>Date.now()?p:null;}catch{return null;}}
 function cookie(value){return `${cookieName}=${value}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${value?3600:0}`;}

@@ -10,6 +10,6 @@ test('account test access exchanges current bearer only on same-origin function'
   return new Response(JSON.stringify({allowed:true}));
  }) as typeof fetch;
  const gateway=new RemoteGateway('https://example.supabase.co','test-public',{get:async()=>null,set:async()=>{},clear:async()=>{}},transport);
- await gateway.login('test@example.test','test-password');assert.equal(await gateway.betaAccess(),true);
- const call=requests.at(-1)!;assert.equal(call.path,'/.netlify/functions/beta-auth');assert.equal(call.init?.method,'POST');assert.equal((call.init?.headers as Record<string,string>).Authorization,'Bearer test-access');assert.ok(!call.path.includes('test-access'));
+ await gateway.login('test@example.test','test-password');assert.equal(await gateway.internalTestsAccess(),true);
+ const call=requests.at(-1)!;assert.equal(call.path,'/.netlify/functions/tests-internes-auth');assert.equal(call.init?.method,'POST');assert.equal((call.init?.headers as Record<string,string>).Authorization,'Bearer test-access');assert.ok(!call.path.includes('test-access'));
 });

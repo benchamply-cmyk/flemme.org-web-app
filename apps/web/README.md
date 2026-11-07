@@ -1,6 +1,6 @@
 # FLEMME web — site aligné sur l’app mobile
 
-Nouveau site, indépendant du site historique flemme.org (dossier `flemme-web-beta` du dépôt FlemmeV2.0), qui reprend le modèle de `apps/mobile` : deux actions (« Mes flemmes », « Résoudre une flemme »), des Brigadiers qui proposent un forfait et une commission FLEMME de 10 % ajoutée au forfait accepté.
+Nouveau site, indépendant du site historique flemme.org (conservé dans le dépôt historique FlemmeV2.0), qui reprend le modèle de `apps/mobile` : deux actions (« Mes flemmes », « Résoudre une flemme »), des Brigadiers qui proposent un forfait et une commission FLEMME de 10 % ajoutée au forfait accepté.
 
 - `index.html` : vitrine (les deux actions, les quatre étapes, un calculateur du prix et ce que la version de test ne fait pas).
 - `app.html` : le parcours de l’app dans le navigateur, avec les mêmes écrans et les mêmes textes que l’app mobile. `src/App.tsx` gère la navigation et choisit l’écran ; chaque écran est un fichier de `src/ecrans/`, avec le même nom que son pendant mobile.

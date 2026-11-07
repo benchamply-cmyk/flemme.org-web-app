@@ -23,10 +23,10 @@ Les préfixes autorisés sont `feature/`, `fix/`, `docs/`, `chore/` et `mobile/`
 ## Leçons tirées de FlemmeV2.0
 
 - **Pas de squash entre `preprod` et `prod`.** Sur FlemmeV2.0, les squash de #48 et #53 ont séparé les deux historiques alors que leur contenu était identique.
-- **Pas de PR directe vers `prod`.** Sur FlemmeV2.0, #39 et #48 sont allées directement sur `main` et ont dû être reportées dans `beta` après coup.
+- **Pas de PR directe vers `prod`.** Sur FlemmeV2.0, #39 et #48 sont allées directement sur `main` et ont dû être reportées dans la branche d’intégration historique après coup.
 - **Une PR par sujet.** Le 20/10, #29 à #35 ont été fusionnées en série, en cascade et entre elles, ce qui a rendu l'état du site illisible.
 - **Pas de branche de sauvegarde.** Pour garder une version, on pose un tag, pas une branche `archive/…` ou `StableVersion/…`.
-- **Des noms de branche simples.** Pas de `claude/project-thread-…`, pas de date, pas de `/` dans le sujet (`BetaVersion/V4.1000-coveredServices-20/10/2016`).
+- **Des noms de branche simples.** Pas de `claude/project-thread-…`, pas de date, pas de `/` dans le sujet (ancien nom de branche de test long et daté).
 - **Tags homogènes :** `v5.1000` et pas `V.5.1000`.
 
 ## Incident du 04/11/2026 : branche `prod` supprimée
@@ -50,4 +50,4 @@ Les préfixes autorisés sont `feature/`, `fix/`, `docs/`, `chore/` et `mobile/`
 
 ## Tests de variantes (décision du 7 novembre 2026)
 
-Le configurateur fait partie des branches preprod et prod ; aucun environnement permanent beta n’est nécessaire. Une branche courte feature/beta-testeurs remplace les PR #42/#43. Voir [configuration et invitations](beta-testeurs.md). Promotion : PR vers preprod, recette, puis PR preprod vers prod avec merge commit.
+Le configurateur fait partie des branches preprod et prod ; aucun environnement permanent tests/internes n’est nécessaire. Une branche courte feature/test-interne remplace les PR #42/#43. Voir [configuration et invitations](tests-internes-testeurs.md). Promotion : PR vers preprod, recette, puis PR preprod vers prod avec merge commit.

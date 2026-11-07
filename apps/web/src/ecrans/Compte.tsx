@@ -1,4 +1,4 @@
-import { AccountAccess } from '../beta/AccountAccess.tsx';
+import { AccountAccess } from '../tests/internes/AccountAccess.tsx';
 import { DemoGateway, demoActors } from '../../../../packages/shared/src/index.ts';
 import { onlinePayment, openStripe, session } from '../session.ts';
 import { Action } from '../ui.tsx';

@@ -1,4 +1,4 @@
-// Palette de flemme.org, relevée dans flemme-web-beta/styles.css le 28/10/2026.
+// Palette de flemme.org, relevée dans la feuille de style du site historique le 28/10/2026.
 // Le vert reste dans le logo ; les surfaces et actions reprennent le bleu glacier V5.
 export const colors = {
   paper: '#e3eeff',

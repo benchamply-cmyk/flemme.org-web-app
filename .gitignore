@@ -6,4 +6,4 @@ dist/
 .DS_Store
 .netlify/
 
-apps/web/public/beta/version.json
+apps/web/public/tests/internes/version.json

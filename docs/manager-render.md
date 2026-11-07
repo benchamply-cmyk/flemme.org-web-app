@@ -1,6 +1,6 @@
 # Flemme Manager sur Render : rebrancher le service sur ce dépôt
 
-Le Flemme Manager (agents IA, API FastAPI) fait partie de la V2 (décision de Ben, 03/11/2026). Son code est copié dans `apps/manager/` depuis FlemmeV2.0 (`flemme-managerV1/` et les SQL `supabase/manager-*.sql` et `supabase/migrations/`, état de `beta` et `main` au 03/11/2026, identiques sur ces dossiers). Les tests passent ici : 239 tests Python, tests SQL V2, V3, V4, admin et messages clients.
+Le Flemme Manager (agents IA, API FastAPI) fait partie de la V2 (décision de Ben, 03/11/2026). Son code est copié dans `apps/manager/` depuis FlemmeV2.0 (`flemme-managerV1/` et les SQL `supabase/manager-*.sql` et `supabase/migrations/`, état de l’intégration historique et `main` au 03/11/2026, identiques sur ces dossiers). Les tests passent ici : 239 tests Python, tests SQL V2, V3, V4, admin et messages clients.
 
 Le service Render, lui, se construit toujours depuis FlemmeV2.0. Cette page décrit comment le faire pointer sur ce dépôt. **Rien n'a été modifié sur Render** : c'est à Ben de le faire, après fusion de la PR et mise en production (`preprod` → `prod`).
 
