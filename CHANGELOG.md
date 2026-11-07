@@ -4,6 +4,9 @@ Chaque PR ajoute une ligne sous « À venir ». À chaque mise en production (`p
 
 ## À venir
 
+- Organisation des versions (branche beta) : audit des branches preprod, prod, beta et feature/test-interne, incohérences et corrections proposées, classement des PR en design/visuel et UX/navigation, listes de PR pour beta et pour les tests internes (`docs/organisation-versions.md`). Documentation seulement, aucun changement du site.
+- Atelier visuel (PR #46, branche beta, site flemmeorg-beta) : quatre directions de vitrine, réglages de couleurs, typo, arrondis, espaces, menu et sections, comparaison avec la référence prod c199dfa, retours anonymes par Netlify Forms. Ligne ajoutée après coup.
+
 - Apparence du site selon les réglages choisis dans la maquette V0.5 (fichier `apps/web/src/site/reglages.css`) : police Space Grotesk, barre d’en-tête en verre avec pastilles compactes, boutons clairs à contour et coins arrondis avec ombre douce qui se soulèvent au survol, contours gris clair, cartes à ombre douce, fond de page en dégradé glacier, reflets discrets, titres plus petits, espacements compacts, sections qui apparaissent en fondu ; quelques réglages propres à certaines pages (accueil sans contours, Comment ça marche et l’app en texte gris bleuté).
 
 - Icônes du site redessinées : points pour Résoudre et Comment ça marche, trait fin pour les autres (Déléguer, « ? », Connexion en forme de maison, catégories, flèches) ; le grand titre change avec un effet de mise au point (flou puis net).
@@ -48,5 +51,5 @@ Première mise en production de ce dépôt sur https://flemme.org, en mode réel
 - flemme.org (projet Netlify flemmeorg) publie désormais ce dépôt : en-tête noindex retiré, pages Mentions légales et Confidentialité ajoutées (reprises de FlemmeV2.0, stockage adapté au nouveau site), anciennes adresses (/espace, /manager, /rejoindre, /gestionadmin, /services, /demarche, /ambassadeurs) redirigées (branche fix/flemme-org-prod).
 - Import initial depuis FlemmeV2.0 (branche feature/import-initial) : `apps/web` (PR #56 de FlemmeV2.0) et `apps/mobile` (PR #49 à #51), dans l'état de `beta` au 3 nov. 2026. S’y ajoutent `netlify.toml`, la CI web et mobile, la documentation Git et l'historique des branches et PR de FlemmeV2.0.
 
-## Bêta expérimentale (non déployée)
+## Bêta expérimentale (commits directs 8695a44 et 3eb6ffc, remplacée en façade par l’atelier de la #46)
 - Configurateur avec aperçu des pages réelles, feedback Supabase isolé et notification Resend. Flux beta → preprod → prod vérifié en CI.
