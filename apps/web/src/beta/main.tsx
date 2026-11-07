@@ -7,6 +7,8 @@ function Beta() {
   const [v, setV] = useState(readVariant), [page, setPage] = useState('/index.html'), [revision, refresh] = useState(0);
   const [status, setStatus] = useState(''), [busy, setBusy] = useState(false);
   const [requestId, setRequestId] = useState(() => crypto.randomUUID());
+  const [version, setVersion] = useState('');
+  useEffect(()=>{void fetch('/beta/version.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(v=>{if(v?.id)setVersion(v.id);}).catch(()=>{});},[]);
   const [allowed, setAllowed] = useState(false), [ready, setReady] = useState(false);
   useEffect(() => { let alive=true; async function open(){const params=new URLSearchParams(location.search), invite=params.get('invite');history.replaceState(null,'',location.pathname);try {if(invite)await loginBeta({invite});const ok=await checkBetaAccess();if(alive)setAllowed(ok);}catch(err){if(alive)setStatus((err as Error).message);}finally{if(alive)setReady(true);}}void open();const change=()=>void checkBetaAccess().then(ok=>{if(alive)setAllowed(ok);});addEventListener('focus',change);const timer=setInterval(change,60000);return()=>{alive=false;clearInterval(timer);removeEventListener('focus',change);};},[]);
   if(!ready)return <main><p role="status">Vérification de l’accès…</p></main>;
@@ -20,7 +22,7 @@ function Beta() {
       const result = await res.json(); setStatus(result.notified ? 'Retour enregistré, notification e-mail envoyée.' : 'Retour enregistré. Notification en attente : l’équipe pourra la relancer.'); setRequestId(crypto.randomUUID());
     } catch (err) { setStatus((err as Error).message); } finally { setBusy(false); }
   }
-  return <main><a href="/">← FLEMME</a><button onClick={()=>void logoutBeta().then(()=>setAllowed(false))}>Quitter le mode test</button><p className="eyebrow">Laboratoire des testeurs</p><h1>La bêta se construit avec toi.</h1><p>Choisis une combinaison, parcours le vrai site puis donne ton avis. N’utilise aucune donnée personnelle réelle pendant les essais.</p><div className="layout"><section aria-label="Configurateur"><h2>Ta version</h2>
+  return <main><a href="/">← FLEMME</a><button onClick={()=>void logoutBeta().then(()=>setAllowed(false))}>Quitter le mode test</button><p className="eyebrow">Laboratoire des testeurs</p>{version && <p aria-label="Version du test">{version}</p>}<h1>La bêta se construit avec toi.</h1><p>Choisis une combinaison, parcours le vrai site puis donne ton avis. N’utilise aucune donnée personnelle réelle pendant les essais.</p><div className="layout"><section aria-label="Configurateur"><h2>Ta version</h2>
     <label>Thème<select value={v.theme} onChange={e => update({...v, theme:e.target.value})}><option value="clair">Clair</option><option value="nuit">Nuit</option><option value="papier">Papier</option></select></label>
     <label>Couleur d’accent<select value={['#b8f0de','#dad4ff','#ffd9c2'].includes(v.color) ? v.color : ''} onChange={e => {if(e.target.value) update({...v,color:e.target.value});}}><option value="">Personnalisée</option><option value="#b8f0de">Menthe</option><option value="#dad4ff">Lavande</option><option value="#ffd9c2">Pêche</option></select><input aria-label="Couleur personnalisée" type="color" value={v.color} onChange={e=>update({...v,color:e.target.value})}/></label>
     <label>Navigation<select value={v.navigation} onChange={e=>update({...v,navigation:e.target.value})}><option value="burger">Menu burger</option><option value="visible">Liens visibles</option><option value="compacte">Compacte</option></select></label>

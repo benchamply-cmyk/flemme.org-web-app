@@ -5,3 +5,5 @@ dist/
 *.log
 .DS_Store
 .netlify/
+
+apps/web/public/beta/version.json

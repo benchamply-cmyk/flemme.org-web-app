@@ -31,3 +31,16 @@ test('account access requires validated Supabase identity and confirmed referenc
   email='removed@example.test';assert.equal(await authorize(make('GET',null,session)),false);
  }finally{globalThis.fetch=original;for(const k of Object.keys(process.env))if(k.startsWith('BETA_'))delete process.env[k];Object.assign(process.env,old);}
 });
+test('current-account bearer supports added testers without trusting browser email or role',async()=>{
+ const old={...process.env},original=globalThis.fetch;
+ try{
+  Object.assign(process.env,{BETA_ENABLED:'oui',BETA_SESSION_SECRET:'test-secret-'.repeat(4),BETA_TESTER_EMAILS:'tester@example.test',VITE_SUPABASE_URL:'https://test.supabase.co',VITE_SUPABASE_PUBLISHABLE_KEY:'test-public'});
+  let identity='outsider@example.test';
+  globalThis.fetch=async()=>new Response(JSON.stringify({id:'u',email:identity,email_confirmed_at:'2026-01-01'}));
+  const request=()=>new Request(base,{method:'POST',headers:{origin:'https://flemme.test',Authorization:'Bearer test-only-token','Content-Type':'application/json'},body:JSON.stringify({email:'ben.champly@gmail.com',role:'admin'})});
+  assert.equal((await handler(request())).status,403);
+  identity='tester@example.test';const res=await handler(request());assert.equal(res.status,200);
+  const session=res.headers.get('set-cookie').split(';')[0];assert.equal(await authorize(make('GET',null,session)),true);
+  process.env.BETA_TESTER_EMAILS='';assert.equal(await authorize(make('GET',null,session)),false);
+ }finally{globalThis.fetch=original;for(const k of Object.keys(process.env))if(k.startsWith('BETA_'))delete process.env[k];Object.assign(process.env,old);}
+});

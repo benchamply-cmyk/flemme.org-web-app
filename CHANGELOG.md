@@ -50,3 +50,5 @@ Première mise en production de ce dépôt sur https://flemme.org, en mode réel
 
 ## Configurateur de test sur prod et preprod
 - Un seul projet Netlify : /beta, compte référent et invitations révocables, variantes désactivées sans autorisation serveur. Raccourcis /beta/testprod et /beta/testpreprod. Remplace le laboratoire sur branche beta.
+
+- Accès Version test dans Mon compte avec session existante et liste serveur de testeurs ; dossier beta/, manifeste déployé, tags par merge de PR, règles AGENTS.md et CLAUDE.md.

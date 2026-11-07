@@ -26,6 +26,8 @@ Les visiteurs sans session ne voient pas le menu Bêta et ne reçoivent pas les 
 - BETA_ENABLED=oui ; sans activation explicite, aucun accès.
 - BETA_SESSION_SECRET : secret aléatoire au moins 32 caractères.
 - BETA_ADMIN_EMAILS=ben.champly@gmail.com (valeur initiale par défaut côté serveur).
+- BETA_TESTER_EMAILS : autres comptes autorisés, adresses confirmées séparées par des virgules. Retirer un compte révoque son accès au prochain contrôle serveur.
+- Le dossier beta/ décrit les versions, génère /beta/version.json et porte les instructions de projet. Le workflow beta-version tague chaque merge commit de PR vers preprod/prod, sans push sur ces branches.
 - VITE_SUPABASE_URL et VITE_SUPABASE_PUBLISHABLE_KEY : valeurs publiques du même environnement que l'app ; doivent aussi être disponibles aux fonctions pour la vérification du compte. Ne jamais copier de clé privilégiée au frontend.
 - BETA_INVITE_TOKEN : jeton aléatoire d'au moins 32 caractères.
 - BETA_INVITE_EXPIRES_AT : date ISO explicite. Aucune invitation acceptée sans date valide future.
