@@ -4,6 +4,7 @@ Chaque PR ajoute une ligne sous « À venir ». À chaque mise en production (`p
 
 ## À venir
 
+- Atelier visuel (branche beta) : la référence devient le design V0.5 de preprod (PR #41, 214a248) au lieu de prod c199dfa. Variantes Essentiel, Expressif et Guidé, menu et blocs de l’accueil réécrits pour les pages V0.5 ; pages Comment ça marche, Flemmes à résoudre, FAQ, Contact et Premium ajoutées au choix de page. Les anciens liens de variantes ne s’ouvrent plus.
 - Apparence du site selon les réglages choisis dans la maquette V0.5 (fichier `apps/web/src/site/reglages.css`) : police Space Grotesk, barre d’en-tête en verre avec pastilles compactes, boutons clairs à contour et coins arrondis avec ombre douce qui se soulèvent au survol, contours gris clair, cartes à ombre douce, fond de page en dégradé glacier, reflets discrets, titres plus petits, espacements compacts, sections qui apparaissent en fondu ; quelques réglages propres à certaines pages (accueil sans contours, Comment ça marche et l’app en texte gris bleuté).
 
 - Icônes du site redessinées : points pour Résoudre et Comment ça marche, trait fin pour les autres (Déléguer, « ? », Connexion en forme de maison, catégories, flèches) ; le grand titre change avec un effet de mise au point (flou puis net).
