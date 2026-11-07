@@ -6,6 +6,7 @@ import { onlinePayment, session, useSession } from './session.ts';
 import { Action } from './ui.tsx';
 import pied from './site/pied.html?raw';
 import './site/site.css';
+import './site/reglages.css';
 import type { Ctx, Draft, FieldOptions, Place } from './ecrans/contexte.ts';
 import { Accueil } from './ecrans/Accueil.tsx';
 import { Accord } from './ecrans/Accord.tsx';
@@ -122,28 +123,30 @@ export default function App() {
   }
   // Lien du menu burger : referme le menu puis change d’écran dans l’app.
   const menu = (action: () => void) => (e: MouseEvent<HTMLAnchorElement>) => { e.preventDefault(); (e.currentTarget.closest('details') as HTMLDetailsElement).open = false; action(); };
-  const loupe = <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></g></svg>;
-  const plus = <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round"/></svg>;
+  const loupe = <svg className="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="currentColor"><circle cx="16.5" cy="10.5" r="1.6"/><circle cx="14.7" cy="14.7" r="1.6"/><circle cx="10.5" cy="16.5" r="1.6"/><circle cx="6.3" cy="14.7" r="1.6"/><circle cx="4.5" cy="10.5" r="1.6"/><circle cx="6.3" cy="6.3" r="1.6"/><circle cx="10.5" cy="4.5" r="1.6"/><circle cx="14.7" cy="6.3" r="1.6"/><circle cx="19" cy="19" r="2.2"/></g></svg>;
+  const plus = <svg className="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="square" strokeLinejoin="miter"><path d="M12 6v12M6 12h12"/></g></svg>;
   return <>
-    <div className="flemme-chrome-home bandeau app-bandeau">
+    <div className="flemme-chrome-home bandeau app-bandeau" data-flemme-page="deleguer">
       <header className="entete">
         <div className="entete-gauche">
           <a className="logo" href="./" aria-label="FLEMME · retour à la présentation">FLEMME.</a>
           {connecte && <button type="button" className="pastille deleguer" onClick={() => go('new', { tab: 'mine', draftId: undefined })}>{plus}<span>Déléguer<span className="long"> ma flemme</span></span></button>}
           <a className="pastille entete-resoudre" href="resoudre.html">{loupe}<span>Flemmes à résoudre</span></a>
+          <a className="pastille entete-comment" href="comment-ca-marche.html"><svg className="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="currentColor"><circle cx="6" cy="6" r="1.6"/><circle cx="6" cy="12" r="1.6"/><circle cx="6" cy="18" r="1.6"/><circle cx="10" cy="6" r="1.6"/><circle cx="10" cy="12" r="1.6"/><circle cx="10" cy="18" r="1.6"/><circle cx="14" cy="6" r="1.6"/><circle cx="14" cy="12" r="1.6"/><circle cx="14" cy="18" r="1.6"/><circle cx="18" cy="6" r="1.6"/><circle cx="18" cy="12" r="1.6"/><circle cx="18" cy="18" r="1.6"/></g></svg><span>Comment ça marche</span></a>
         </div>
         <details className="burger">
-          <summary aria-label="Menu"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinejoin="round"><rect x="4" y="4" width="6" height="6" rx="2"/><rect x="14" y="4" width="6" height="6" rx="2"/><rect x="4" y="14" width="6" height="6" rx="2"/><rect x="14" y="14" width="6" height="6" rx="2"/></g></svg></summary>
-          <nav className="burger-menu" aria-label="Découvrir FLEMME">
+          <summary aria-label="Aide : FAQ, contact et langues"><svg className="ico" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="square" strokeLinejoin="miter"><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.7"/><path d="M12 17.5v.5"/></g></svg></summary>
+          <nav className="burger-menu" aria-label="Aide et langues">
             <a className="burger-resoudre" href="resoudre.html">Flemmes à résoudre</a>
             {connecte && <a href="#mine" onClick={menu(() => go('list', { tab: 'mine' }))}>Mon espace</a>}
             {connecte && <a href="#aide" onClick={menu(() => go('help'))}>Aide</a>}
-            <a href="comment-ca-marche.html">Comment ça marche</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a>
+            <a className="burger-comment" href="comment-ca-marche.html">Comment ça marche</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a>
+            <p className="burger-langues"><span>Langue</span><b aria-current="true">FR</b><span aria-disabled="true" title="Bientôt">EN</span><span aria-disabled="true" title="Bientôt">ES</span><small>EN et ES bientôt</small></p>
           </nav>
         </details>
         <div className="entete-droite">{connecte
           ? <><button type="button" className="pastille mon-espace" aria-label="Mon espace" onClick={() => go('list', { tab: 'mine' })}><span className="pastille-initiale" aria-hidden="true">{gateway?.actor.name.slice(0, 1).toUpperCase()}</span><span>Mon espace</span></button></>
-          : <span className="pastille deleguer" aria-current="page"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/><path d="M3 12h11M10 8l4 4-4 4"/></g></svg><span>Connexion</span></span>}</div>
+          : <span className="pastille deleguer" aria-current="page"><svg className="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="square" strokeLinejoin="miter"><path d="M5 11l7-6 7 6v8H5z"/></g></svg><span>Connexion</span></span>}</div>
       </header>
     </div>
     <main ref={main} tabIndex={-1} className="app" aria-busy={busy}>
