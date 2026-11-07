@@ -1,0 +1,16 @@
+html[data-beta-theme] { --menthe: var(--beta-accent); --glacier: var(--beta-accent); }
+html[data-beta-theme="nuit"] body { background: #16131f; color: #f3efff; }
+html[data-beta-theme="nuit"] .bandeau, html[data-beta-theme="nuit"] main { background-color: #252235; color: #f3efff; }
+html[data-beta-theme="papier"] body, html[data-beta-theme="papier"] .bandeau { background-color: #fff4de; }
+html[data-beta-theme="papier"] { --police: Georgia, serif; }
+html[data-beta-nav="visible"] .entete { display: flex; flex-wrap: wrap; }
+html[data-beta-nav="visible"] .burger { display: contents; }
+html[data-beta-nav="visible"] .burger summary { display: none; }
+html[data-beta-nav="visible"] .burger-menu { position: static; transform: none; display: flex; flex-direction: row; flex-wrap: wrap; box-shadow: none; }
+html[data-beta-nav="compacte"] .entete { padding-block: 8px; }
+html[data-beta-nav="compacte"] .pastille { font-size: 13px; height: 36px; }
+[data-beta-feature][hidden], html[data-beta-theme] a[hidden] { display: none !important; }
+html[data-beta-nav="visible"] details.burger::details-content { content-visibility: visible !important; display: contents; }
+html[data-beta-theme="nuit"] .flemme-chrome-home::before, html[data-beta-theme="nuit"] .flemme-chrome-home::after { display: none; }
+html[data-beta-theme="nuit"] .accueil-texte h1, html[data-beta-theme="nuit"] .accueil-texte > p, html[data-beta-theme="nuit"] main > h1, html[data-beta-theme="nuit"] main > h2, html[data-beta-theme="nuit"] main > p, html[data-beta-theme="nuit"] .surtitre, html[data-beta-theme="nuit"] .lien-fort { color: #f3efff; }
+html[data-beta-theme="nuit"] .carte, html[data-beta-theme="nuit"] .etapes li, html[data-beta-theme="nuit"] .exemple { color: #16131f; }

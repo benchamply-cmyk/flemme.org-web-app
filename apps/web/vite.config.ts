@@ -6,7 +6,7 @@ import { supabaseConfigProblem } from './src/supabaseConfig.ts';
 
 // La vitrine (index.html et ses pages intérieures, maquette V0.3), le parcours de l’app (app.html),
 // l’admin de l’équipe (admin.html) et l’aperçu isolé de la future interface (apercu.html).
-const pages = ['index', 'concept', 'comment-ca-marche', 'faq', 'contact', 'premium', 'resoudre', 'mentions', 'confidentialite', 'app', 'admin', 'apercu'];
+const pages = ['index', 'concept', 'comment-ca-marche', 'faq', 'contact', 'premium', 'resoudre', 'mentions', 'confidentialite', 'app', 'admin', 'apercu', 'beta'];
 // En-tête et pied de page de la vitrine, écrits une fois dans src/site et insérés dans chaque page au build.
 const morceau = (nom: string) => readFileSync(fileURLToPath(new URL(`./src/site/${nom}.html`, import.meta.url)), 'utf8').trim();
 const habillage = { name: 'flemme-habillage', transformIndexHtml: (html: string) => html.replace('<!--#entete-->', morceau('entete')).replace('<!--#pied-->', morceau('pied')) };
@@ -15,6 +15,7 @@ export default defineConfig(({ command, mode }) => {
   // VITE_SUPABASE_* viennent de .env en local, des variables d’environnement Netlify en ligne.
   // Au build, une configuration à moitié remplie ou une clé secrète arrête tout : rien n’est publié.
   const env = loadEnv(mode, process.cwd(), 'VITE_');
+  if (env.VITE_BETA_ENABLED === 'oui' && (env.VITE_SUPABASE_URL || env.VITE_SUPABASE_PUBLISHABLE_KEY) && env.VITE_BETA_BACKEND_VERIFIED !== 'oui') throw new Error('Bêta : connexion backend non vérifiée. Utiliser un projet isolé puis confirmer VITE_BETA_BACKEND_VERIFIED.');
   const problem = supabaseConfigProblem(env.VITE_SUPABASE_URL, env.VITE_SUPABASE_PUBLISHABLE_KEY);
   if (problem && command === 'build') throw new Error(problem);
   return {

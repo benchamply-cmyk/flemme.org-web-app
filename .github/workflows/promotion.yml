@@ -1,0 +1,23 @@
+name: Flux de promotion
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+permissions:
+  contents: read
+jobs:
+  promotion:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Vérifier la destination
+        env:
+          BASE: ${{ github.base_ref }}
+          HEAD: ${{ github.head_ref }}
+        run: |
+          if [ "$BASE" = prod ] && [ "$HEAD" != preprod ]; then
+            echo 'Production accepte uniquement preprod.'
+            exit 1
+          fi
+          if [ "$HEAD" = beta ] && [ "$BASE" != preprod ]; then
+            echo 'beta doit passer par preprod.'
+            exit 1
+          fi

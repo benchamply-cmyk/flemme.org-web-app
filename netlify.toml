@@ -72,3 +72,14 @@
   from = "/ambassadeurs*"
   to = "/"
   status = 302
+
+# Beta is dormant until a branch-specific opt-in; never enable globally.
+[context.beta.environment]
+  VITE_BETA_ENABLED = "oui"
+  VITE_PAIEMENT_EN_LIGNE = "non"
+
+[[headers]]
+  for = "/beta*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"

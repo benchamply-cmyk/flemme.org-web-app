@@ -47,3 +47,7 @@ Les préfixes autorisés sont `feature/`, `fix/`, `docs/`, `chore/` et `mobile/`
 - **Urgent (04/11)** : créer un ruleset sur `prod` et `preprod` : PR obligatoire, **pas de suppression** (Restrict deletions), pas de force push, CI `Site web (apps/web)` requise. Settings → Rules → Rulesets → New branch ruleset, cibles `prod` et `preprod`.
 - Activer la suppression automatique des branches fusionnées.
 - Dans « Pull requests », n'autoriser que les merge commits (désactiver squash et rebase). Pas encore fait : #24 a été squashée le 04/11.
+
+## Laboratoire beta
+
+Branche persistante issue de preprod, isolée des environnements réels. Flux obligatoire : beta → PR ciblées preprod → PR preprod vers prod. Aucune PR beta vers prod. Ne pas supprimer beta après fusion ; protéger cette branche. Voir [audit et configuration](beta.md).
