@@ -1,3 +1,4 @@
+import { AccountAccess } from './beta/AccountAccess.tsx';
 import { useEffect, useRef, useState } from 'react';
 import type { MouseEvent, ReactNode } from 'react';
 import { backLabel, contractFields, footer, money, rights, taskFields } from '../../../packages/shared/src/index.ts';
@@ -145,7 +146,7 @@ export default function App() {
           </nav>
         </details>
         <div className="entete-droite">{connecte
-          ? <><button type="button" className="pastille mon-espace" aria-label="Mon espace" onClick={() => go('list', { tab: 'mine' })}><span className="pastille-initiale" aria-hidden="true">{gateway?.actor.name.slice(0, 1).toUpperCase()}</span><span>Mon espace</span></button></>
+          ? <><AccountAccess gateway={gateway} compact/><button type="button" className="pastille mon-espace" aria-label="Mon espace" onClick={() => go('list', { tab: 'mine' })}><span className="pastille-initiale" aria-hidden="true">{gateway?.actor.name.slice(0, 1).toUpperCase()}</span><span>Mon espace</span></button></>
           : <span className="pastille deleguer" aria-current="page"><svg className="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="square" strokeLinejoin="miter"><path d="M5 11l7-6 7 6v8H5z"/></g></svg><span>Connexion</span></span>}</div>
       </header>
     </div>
