@@ -1,3 +1,4 @@
+import { betaEnabled } from './beta/config.ts';
 import { useEffect, useRef, useState } from 'react';
 import type { MouseEvent, ReactNode } from 'react';
 import { backLabel, contractFields, footer, money, rights, taskFields } from '../../../packages/shared/src/index.ts';
@@ -138,7 +139,7 @@ export default function App() {
             <a className="burger-resoudre" href="resoudre.html">Flemmes à résoudre</a>
             {connecte && <a href="#mine" onClick={menu(() => go('list', { tab: 'mine' }))}>Mon espace</a>}
             {connecte && <a href="#aide" onClick={menu(() => go('help'))}>Aide</a>}
-            <a href="comment-ca-marche.html">Comment ça marche</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a>
+            {betaEnabled && <a href="beta.html">Bêta</a>}<a href="comment-ca-marche.html">Comment ça marche</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a>
           </nav>
         </details>
         <div className="entete-droite">{connecte

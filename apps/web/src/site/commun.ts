@@ -1,3 +1,5 @@
+import '../beta/runtime.ts';
+import { betaEnabled } from '../beta/config.ts';
 import './vitrine.css';
 import { ouvrirCatalogue } from './filtre.ts';
 
@@ -5,8 +7,8 @@ import { ouvrirCatalogue } from './filtre.ts';
 const burger = document.querySelector<HTMLDetailsElement>('.burger');
 if (burger) {
   // Un clic ailleurs ou Échap referme le menu.
-  document.addEventListener('click', e => { if (burger.open && !burger.contains(e.target as Node)) burger.open = false; });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && burger.open) { burger.open = false; burger.querySelector('summary')?.focus(); } });
+  document.addEventListener('click', e => { if (document.documentElement.dataset.betaNav !== 'visible' && burger.open && !burger.contains(e.target as Node)) burger.open = false; });
+  document.addEventListener('keydown', e => { if (document.documentElement.dataset.betaNav !== 'visible' && e.key === 'Escape' && burger.open) { burger.open = false; burger.querySelector('summary')?.focus(); } });
   // La page courante est marquée dans le menu.
   const page = location.pathname.split('/').pop() || 'index.html';
   burger.querySelectorAll('a').forEach(a => { if (a.getAttribute('href') === page) a.setAttribute('aria-current', 'page'); });
@@ -25,3 +27,5 @@ document.querySelectorAll<HTMLButtonElement>('[data-copier]').forEach(b => b.add
   try { await navigator.clipboard.writeText(cible.textContent || ''); if (note) note.textContent = 'Adresse copiée.'; }
   catch { getSelection()?.selectAllChildren(cible); if (note) note.textContent = 'Adresse sélectionnée : copie-la avec Ctrl+C ou ⌘C.'; }
 }));
+
+if (betaEnabled) { const a = document.createElement('a'); a.href = 'beta.html'; a.textContent = 'Bêta'; document.querySelector('.burger-menu')?.append(a); }
