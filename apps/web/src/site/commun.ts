@@ -1,6 +1,7 @@
 import '../beta/runtime.ts';
 import { betaEnabled } from '../beta/config.ts';
 import './vitrine.css';
+import './reglages.css';
 import { ouvrirCatalogue } from './filtre.ts';
 
 // Comportements communs à toutes les pages de la vitrine : menu burger, liens vers le catalogue filtré.

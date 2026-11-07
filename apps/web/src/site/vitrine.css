@@ -56,6 +56,23 @@ button, input, textarea, select { font: inherit; color: inherit; }
 .accueil-texte { flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 18px; }
 .accueil-texte .surtitre { color: var(--acier); }
 .accueil-texte h1 { margin: 0; color: var(--encre); font-size: clamp(40px, 5vw, 64px); line-height: .98; font-weight: 900; letter-spacing: -2px; }
+/* Titre alterné : les phrases occupent la même case de grille, la plus longue fixe la hauteur. */
+.titre-alterne { display: grid; }
+/* Phrases empilées dans la même case : la plus longue fixe la hauteur. Style d’animation choisi par data-anim
+   (fondu, glisse, volet, flou). « sortie » marque la phrase qui part pendant la transition. */
+.titre-alterne > span { grid-area: 1 / 1; opacity: 0; visibility: hidden; transition: opacity .6s ease, visibility .6s, transform .6s cubic-bezier(.2, .8, .2, 1), clip-path .6s cubic-bezier(.65, 0, .35, 1), filter .6s ease; }
+.titre-alterne > span.actif { opacity: 1; visibility: visible; }
+.titre-alterne[data-anim="glisse"] { overflow: hidden; }
+.titre-alterne[data-anim="glisse"] > span { transform: translateY(60%); }
+.titre-alterne[data-anim="glisse"] > span.actif { transform: none; }
+.titre-alterne[data-anim="glisse"] > span.sortie { transform: translateY(-60%); }
+.titre-alterne[data-anim="volet"] > span { opacity: 1; clip-path: inset(0 100% 0 0); }
+.titre-alterne[data-anim="volet"] > span.actif { clip-path: inset(0 0 0 0); }
+.titre-alterne[data-anim="volet"] > span.sortie { visibility: visible; clip-path: inset(0 0 0 100%); }
+.titre-alterne[data-anim="flou"] > span { filter: blur(14px); transform: scale(1.05); }
+.titre-alterne[data-anim="flou"] > span.actif { filter: none; transform: none; }
+.titre-alterne[data-anim="flou"] > span.sortie { transform: scale(.96); }
+@media (prefers-reduced-motion: reduce) { .titre-alterne > span { transition: none; } }
 .accueil-texte .accroche { margin: 0; font-size: 19px; max-width: 520px; }
 .accueil-texte .note { margin: 0; font-size: 13px; color: var(--texte-doux); }
 .cta { display: flex; align-items: center; gap: 16px; min-height: 64px; padding: 14px 16px 14px 26px; border-radius: 999px; border: 2px solid var(--encre); background: var(--glacier); color: var(--encre); text-decoration: none; box-shadow: 4px 5px 0 var(--violet); transition: transform .12s, box-shadow .12s; }

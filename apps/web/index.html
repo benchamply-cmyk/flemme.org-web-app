@@ -15,28 +15,29 @@
 <link rel="apple-touch-icon" href="/flemme-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap">
 </head>
-<body>
+<body data-page="accueil">
 <section class="flemme-chrome-home bandeau accueil">
 <!--#entete-->
   <div class="accueil-contenu">
     <div class="accueil-texte">
-      <p class="surtitre">Une tâche en moins, un coup de main en plus.</p>
-      <h1>Une tâche que tu repousses&#8239;? Trouve quelqu’un pour t’aider.</h1>
+      <p class="surtitre">Le droit d’avoir la Flemme.<br>Le Pouvoir d’aider.</p>
+      <!-- Le titre alterne toutes les 3,5 s entre deux phrases (src/landing.ts). Les deux sont empilées : la hauteur suit la plus longue. -->
+      <h1 class="titre-alterne" data-anim="flou"><span class="actif">Une tâche que tu repousses&#8239;? Trouve quelqu’un pour t’aider.</span><span aria-hidden="true">Une rémunération pour te charger de la mission.</span></h1>
       <p class="accroche">Décris ce dont tu as besoin. Des personnes intéressées peuvent te proposer leur aide et leur prix. Tu choisis si une proposition te convient.</p>
       <div class="boutons">
-        <a class="cta" href="app.html#deposer"><span class="cta-texte"><b>Déléguer ma flemme</b><small>Décris ce que tu aimerais confier.</small></span><span class="cta-fleche" aria-hidden="true">＋</span></a>
-        <a class="cta vert" href="resoudre.html"><span class="cta-texte"><b>Résoudre une flemme</b><small>Trouve une demande et propose ton aide.</small></span><span class="cta-fleche" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></g></svg></span></a>
+        <a class="cta" href="app.html#deposer"><span class="cta-texte"><b>Déléguer ma flemme</b><small>Décris ce que tu aimerais confier.</small></span><span class="cta-fleche" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><path d="M12 6v12M6 12h12"/></g></svg></span></a>
+        <a class="cta vert" href="resoudre.html"><span class="cta-texte"><b>Résoudre une flemme</b><small>Trouve une demande et propose ton aide.</small></span><span class="cta-fleche" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="currentColor"><circle cx="16.5" cy="10.5" r="1.6"/><circle cx="14.7" cy="14.7" r="1.6"/><circle cx="10.5" cy="16.5" r="1.6"/><circle cx="6.3" cy="14.7" r="1.6"/><circle cx="4.5" cy="10.5" r="1.6"/><circle cx="6.3" cy="6.3" r="1.6"/><circle cx="10.5" cy="4.5" r="1.6"/><circle cx="14.7" cy="6.3" r="1.6"/><circle cx="19" cy="19" r="2.2"/></g></svg></span></a>
       </div>
       <p class="note">Flemme.org est un service de mise en relation. Avec un seul compte, tu peux déléguer et aider.</p>
     </div>
     <div class="vitrine-exemples" role="region" aria-roledescription="carrousel" aria-label="Exemples de demandes">
       <div class="exemple" id="exemple" aria-live="polite"></div>
       <div class="exemples-nav">
-        <button type="button" id="exemplePrec" aria-label="Exemple précédent">←</button>
+        <button type="button" id="exemplePrec" aria-label="Exemple précédent"><svg class="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter" transform="matrix(-1 0 0 1 24 0)"><path d="M5 12h14M14 7l5 5-5 5"/></g></svg></button>
         <div class="points" id="exemplePoints"></div>
-        <button type="button" id="exempleSuiv" aria-label="Exemple suivant">→</button>
+        <button type="button" id="exempleSuiv" aria-label="Exemple suivant"><svg class="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12h14M14 7l5 5-5 5"/></g></svg></button>
       </div>
       <p class="exemples-note">Exemples pour illustrer, pas de vraies demandes.</p>
     </div>
@@ -60,11 +61,11 @@
     <h2 class="titre">Qu’est-ce que tu aimerais déléguer&#8239;?</h2>
     <!-- Mêmes exemples que le carrousel (tableur « Flemme – Exemples du carrousel », lignes « En ligne »). -->
     <div class="grille etroite">
-      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="maison"><span class="etiquette" style="background:var(--vert-tendre)"><span aria-hidden="true">⌂</span> Maison</span><b>Monter mes nouveaux meubles Ikea…</b><span>Lyon · Croix-Rousse · dans la semaine</span></a>
-      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="numerique"><span class="etiquette" style="background:var(--peche)"><span aria-hidden="true">✳</span> Numérique</span><b>S’occuper de mon annonce LeBonCoin</b><span>À distance · dans le mois</span></a>
-      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="administratif"><span class="etiquette" style="background:var(--glacier-clair)"><span aria-hidden="true">✉</span> Démarches</span><b>Ce dossier de la CAF qui me fait peur…</b><span>À distance · environ 1 semaine</span></a>
-      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="organisation"><span class="etiquette" style="background:var(--lavande)"><span aria-hidden="true">◷</span> Organisation</span><b>L’anniversaire de Léa dans dix jours…</b><span>Paris · 11e · environ 1 mois</span></a>
-      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="maison"><span class="etiquette" style="background:var(--lagon)"><span aria-hidden="true">✦</span> Quotidien</span><b>Ces cartons du déménagement…</b><span>Nantes · Centre · ce week-end</span></a>
+      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="maison"><span class="etiquette" style="background:var(--vert-tendre)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 11l7-6 7 6v8H5z"/></g></svg> Maison</span><b>Monter mes nouveaux meubles Ikea…</b><span>Lyon · Croix-Rousse · dans la semaine</span></a>
+      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="numerique"><span class="etiquette" style="background:var(--peche)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><rect x="5" y="6" width="14" height="10"/><path d="M9 19h6"/></g></svg> Numérique</span><b>S’occuper de mon annonce LeBonCoin</b><span>À distance · dans le mois</span></a>
+      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="administratif"><span class="etiquette" style="background:var(--glacier-clair)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 4h9l3 3v13H6z"/><path d="M9 11h6M9 15h4"/></g></svg> Démarches</span><b>Ce dossier de la CAF qui me fait peur…</b><span>À distance · environ 1 semaine</span></a>
+      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="organisation"><span class="etiquette" style="background:var(--lavande)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><circle cx="12" cy="12" r="7"/><path d="M12 8v4h3"/></g></svg> Organisation</span><b>L’anniversaire de Léa dans dix jours…</b><span>Paris · 11e · environ 1 mois</span></a>
+      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="maison"><span class="etiquette" style="background:var(--lagon)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><path d="M12 5v14M5 12h14M7.5 7.5l9 9M16.5 7.5l-9 9"/></g></svg> Quotidien</span><b>Ces cartons du déménagement…</b><span>Nantes · Centre · ce week-end</span></a>
     </div>
     <a class="lien-fort" href="resoudre.html">Voir des exemples de demandes →</a>
   </section>

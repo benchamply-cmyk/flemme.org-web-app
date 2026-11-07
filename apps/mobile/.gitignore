@@ -6,3 +6,4 @@ android/
 .env
 .env.local
 *.log
+dist-web/
