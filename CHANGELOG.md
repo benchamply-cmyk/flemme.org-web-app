@@ -56,3 +56,5 @@ Première mise en production de ce dépôt sur https://flemme.org, en mode réel
 - Le bouton « Accès bêta version » est également visible sur l’accueil de l’application (« Que veux-tu faire ? »), y compris avant autorisation ou en démonstration ; le configurateur reste protégé côté serveur.
 
 - Après connexion d’un compte testeur autorisé, bouton « Test » à côté de « Mon espace » dans l’en-tête ; masqué pour les comptes ordinaires, avec accès /beta protégé côté serveur.
+
+- Une invitation valide permet de tester et soumettre un retour sans compte. Notification de réponse à ben.champly@gmail.com par défaut après enregistrement ; même origine vérifiée pour prod, preprod et aperçus.

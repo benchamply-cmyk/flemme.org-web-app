@@ -49,3 +49,7 @@ Intégration via PR vers preprod avec marqueur [skip netlify] jusqu'à vérifica
 ## Protection GitHub effective
 
 Ruleset 26773580 actif sur prod et preprod : PR, une approbation par un autre compte que l’auteur, contrôles web et promotion obligatoires, branche à jour, discussions résolues, merge commit uniquement, suppression/force push interdits et aucun contournement. Les anciens rulesets sont conservés. Source versionnée : beta/github-ruleset.json.
+
+## PR Amélioration version test
+
+Un visiteur muni du lien valide n’a pas besoin de compte pour tester ou envoyer le formulaire. La fonction de feedback valide son cookie d’invitation côté serveur, puis enregistre le retour et notifie ben.champly@gmail.com par défaut. Aucun appel Auth ni création de compte pour ce visiteur. La notification contient page, note, commentaire, variantes et référence du retour. Le contrôle d’origine utilise l’origine exacte de la requête ; BETA_ALLOWED_ORIGIN est facultatif pour la restreindre davantage. Les formulaires de flemme.org sont autorisés seulement avec une session test valide et le stockage de feedback dédié configuré. La base de production reste refusée. L’envoi réel exige toujours BETA_SUPABASE_URL/SECRET_KEY, la table dédiée, BETA_FEEDBACK_ENABLED, BETA_RESEND_API_KEY et un BETA_EMAIL_FROM vérifié. Ces réglages ne sont pas effectués par cette PR.
