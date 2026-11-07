@@ -11,3 +11,7 @@ Quatre propositions : Référence V0.5, Essentiel, Expressif et Guidé, appliqu�
 Le formulaire de retours anonyme est collecté par Netlify Forms sur le site bêta, indépendamment de Supabase. Il contient la configuration et le commit testés. Activer Forms avant le déploiement. La notification à ben.champly@gmail.com doit être configurée dans les notifications Forms du site et vérifiée séparément ; le code seul ne configure aucun destinataire.
 
 Validation : build complet, tests du modèle de variantes, vérification HTTP du déploiement. La référence est figée sur un commit : toute actualisation se fait explicitement dans une PR, avec mise à jour des sélecteurs si le site change. Les liens partagés et variantes enregistrées avec l’ancienne référence ne s’ouvrent plus (clés locales passées en v2).
+
+## Versions et directions (PR #48)
+
+`reference.json` liste les versions sélectionnables (`versions`, `default`) : Design V0.5 (#41, 214a248), Refonte V0.4 (#38, 82e24f6), site en ligne v6.3000 (c199dfa, avec #20, #22, #33). Chaque version est compilée dans `atelier-reference/<id>/`. Les familles de structure `v05` et `v63` ont chacune leurs blocs et sélecteurs (`apps/web/src/atelier/model.ts`). Les directions personnelles se créent depuis les réglages actuels, par version, et restent dans le navigateur ; le lien partagé contient la version, son commit et les réglages. #44 et #45 (tests internes) ne sont pas proposées.
