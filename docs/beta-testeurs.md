@@ -45,3 +45,7 @@ Tester refus anonyme, lien erroné/expiré, rotation et révocation, connexion c
 Les tests sur prod utilisent les connexions de prod : écritures, e-mails et paiements restent réels. Les options du configurateur ne donnent aucun droit supplémentaire et ne modifient aucune configuration backend. Les paiements ne sont pas activés par ce chantier.
 
 Intégration via PR vers preprod avec marqueur [skip netlify] jusqu'à vérification des contextes ; puis recette preprod, puis PR preprod → prod avec merge commit. Le site flemmeorg-beta et la branche beta restent conservés tant que le remplacement n'est pas validé ; les retirer demande une action séparée, sans perte des retours.
+
+## Protection GitHub effective
+
+Ruleset 26773580 actif sur prod et preprod : PR, une approbation par un autre compte que l’auteur, contrôles web et promotion obligatoires, branche à jour, discussions résolues, merge commit uniquement, suppression/force push interdits et aucun contournement. Les anciens rulesets sont conservés. Source versionnée : beta/github-ruleset.json.
