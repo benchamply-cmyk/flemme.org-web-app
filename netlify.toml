@@ -5,7 +5,7 @@
   command = "npm run build"
   publish = "dist"
   # Ne reconstruit que si le site ou le code partagé avec l'app mobile (packages/shared) ont changé.
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ../../packages/shared ../../netlify.toml"
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ../../packages/shared ../../atelier ../../netlify.toml"
 
 [build.environment]
   NODE_VERSION = "22"
@@ -80,6 +80,18 @@
 
 [[headers]]
   for = "/beta*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"
+
+# Atelier visuel : aperçu indépendant, sans modifier la production.
+[[redirects]]
+  from = "/atelier"
+  to = "/atelier.html"
+  status = 200
+
+[[headers]]
+  for = "/atelier*"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
     Cache-Control = "no-store"
