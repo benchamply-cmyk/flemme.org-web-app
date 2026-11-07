@@ -54,3 +54,5 @@ Première mise en production de ce dépôt sur https://flemme.org, en mode réel
 - Accès Version test dans Mon compte avec session existante et liste serveur de testeurs ; dossier beta/, manifeste déployé, tags par merge de PR, règles AGENTS.md et CLAUDE.md.
 
 - Le bouton « Accès bêta version » est également visible sur l’accueil de l’application (« Que veux-tu faire ? »), y compris avant autorisation ou en démonstration ; le configurateur reste protégé côté serveur.
+
+- Après connexion d’un compte testeur autorisé, bouton « Test » à côté de « Mon espace » dans l’en-tête ; masqué pour les comptes ordinaires, avec accès /beta protégé côté serveur.
