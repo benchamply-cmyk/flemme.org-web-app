@@ -1,3 +1,4 @@
+import { checkBetaAccess } from './access.ts';
 import { useEffect, useState } from 'react';
 import { RemoteGateway } from '../../../../packages/shared/src/gateway.ts';
 import type { Gateway } from '../../../../packages/shared/src/gateway.ts';
@@ -9,7 +10,8 @@ export function AccountAccess({ gateway, visibleEntry = false, compact = false }
     setAllowed(false);
     async function check() {
       try {
-        const ok = gateway instanceof RemoteGateway ? await gateway.betaAccess() : false;
+        const accountAllowed = gateway instanceof RemoteGateway ? await gateway.betaAccess() : false;
+        const ok = accountAllowed || await checkBetaAccess();
         if (alive) setAllowed(ok);
       } catch { if (alive) setAllowed(false); }
     }
