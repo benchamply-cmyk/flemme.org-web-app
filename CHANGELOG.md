@@ -47,3 +47,10 @@ Première mise en production de ce dépôt sur https://flemme.org, en mode réel
 - Référencement : `robots.txt`, `sitemap.xml` (accueil et pages légales) et page 404 en français pour les adresses introuvables (branche chore/seo-robots-404).
 - flemme.org (projet Netlify flemmeorg) publie désormais ce dépôt : en-tête noindex retiré, pages Mentions légales et Confidentialité ajoutées (reprises de FlemmeV2.0, stockage adapté au nouveau site), anciennes adresses (/espace, /manager, /rejoindre, /gestionadmin, /services, /demarche, /ambassadeurs) redirigées (branche fix/flemme-org-prod).
 - Import initial depuis FlemmeV2.0 (branche feature/import-initial) : `apps/web` (PR #56 de FlemmeV2.0) et `apps/mobile` (PR #49 à #51), dans l'état de `beta` au 3 nov. 2026. S’y ajoutent `netlify.toml`, la CI web et mobile, la documentation Git et l'historique des branches et PR de FlemmeV2.0.
+
+## Configurateur de test sur prod et preprod
+- Un seul projet Netlify : /beta, compte référent et invitations révocables, variantes désactivées sans autorisation serveur. Raccourcis /beta/testprod et /beta/testpreprod. Remplace le laboratoire sur branche beta.
+
+- Accès Version test dans Mon compte avec session existante et liste serveur de testeurs ; dossier beta/, manifeste déployé, tags par merge de PR, règles AGENTS.md et CLAUDE.md.
+
+- Le bouton « Accès bêta version » est également visible sur l’accueil de l’application (« Que veux-tu faire ? »), y compris avant autorisation ou en démonstration ; le configurateur reste protégé côté serveur.
