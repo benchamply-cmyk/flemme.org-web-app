@@ -51,3 +51,5 @@ Les préfixes autorisés sont `feature/`, `fix/`, `docs/`, `chore/` et `mobile/`
 ## Laboratoire beta
 
 Branche persistante issue de preprod, isolée des environnements réels. Flux obligatoire : beta → PR ciblées preprod → PR preprod vers prod. Aucune PR beta vers prod. Ne pas supprimer beta après fusion ; protéger cette branche. Voir [audit et configuration](beta.md).
+
+Depuis la PR #46, la branche beta publie l’atelier visuel sur le site Netlify flemmeorg-beta ; les tests internes (comptes testeurs, invitations, PR #44 et #45) restent sur preprod. Répartition des PR et incohérences à corriger : [organisation des versions](organisation-versions.md).
