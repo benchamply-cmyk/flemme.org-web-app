@@ -21,40 +21,42 @@ const { Accueil } = require('../src/ecrans/Accueil.tsx');
 const { Action } = require('../src/ui/composants.tsx');
 const nodes = tree => !tree || typeof tree !== 'object' ? [] : Array.isArray(tree) ? tree.flatMap(nodes) : [tree, ...nodes(tree.props?.children)];
 const draft = { title: 'Remettre mon CV au propre', details: 'Une page claire', category: 'numerique', mode: 'distance', amount: '40', place: 'Ancien lieu', address: 'Ancienne adresse' };
-const base = { state: { busy: false, actorId: 'a' }, screen: 'new', draft, field: () => null, choice: () => null, validated: fn => fn() };
+const base = { state: { busy: false, actorId: 'a' }, place: { screen: 'new', tab: 'mine', taskId: '', offerId: '' }, draft, field: () => null, choice: () => null, validated: fn => fn(), keepDraft: () => {}, fill: () => {} };
 
-test('accueil : déléguer ouvre le dépôt, résoudre ouvre les missions et le suivi reste accessible', () => {
+test('accueil : déléguer ouvre le dépôt, résoudre ouvre les demandes et Mon espace reste accessible', () => {
   const visits = [];
-  const buttons = nodes(Accueil({ navigate: s => visits.push(s), openList: t => visits.push(t) })).filter(n => n.type === 'Pressable');
+  const buttons = nodes(Accueil({ go: (s, c) => visits.push(s + ':' + (c?.tab || '')) })).filter(n => n.type === 'Pressable' || n.type === Action);
   for (const b of buttons) b.props.onPress();
-  assert.deepEqual(visits, ['new', 'find', 'mine']);
+  assert.deepEqual(visits, ['new:mine', 'list:find', 'list:mine']);
 });
-test('envoi mobile : validation partagée, adresse distante retirée et brouillon conservé', () => {
+test('envoi mobile : validation partagée, adresse distante retirée, brouillon repris transmis', () => {
   let submitted;
   const tree = NouvelleFlemme({ ...base, mutate: (...args) => { submitted = args; } });
-  const send = nodes(tree).find(n => n.type === Action && n.props.children === 'Envoyer pour validation');
+  const send = nodes(tree).find(n => n.type === Action && n.props.children === 'Envoyer ma demande');
   send.props.onPress();
   assert.equal(submitted[0], 'create');
   assert.equal(submitted[1].budget, 4000);
   assert.equal(submitted[1].category, 'numerique');
   assert.equal(submitted[1].address, null);
-  assert.equal(Object.hasOwn(submitted[1], 'draftId'), false);
+  assert.equal(submitted[1].draftId, null);
   assert.match(submitted[3]({ review: 'pending' }), /en cours de relecture/);
   assert.throws(() => nodes(NouvelleFlemme({ ...base, draft: { ...draft, category: '' } })).find(n => n.type === Action).props.onPress(), /catégorie/);
 });
-test('brouillons : deux enregistrements créent deux versions, sans identifiant à écraser', () => {
+test('brouillons : le premier enregistrement crée le brouillon, la reprise le met à jour', () => {
   saved.length = 0;
-  const tree = NouvelleFlemme({ ...base, mutate: () => {} });
-  const save = nodes(tree).find(n => n.type === Action && n.props.secondary);
-  save.props.onPress(); save.props.onPress();
-  assert.equal(saved.length, 2);
-  for (const [data] of saved) {
-    assert.equal(Object.hasOwn(data, 'id'), false);
-    assert.equal(data.fields.title, draft.title);
-  }
+  const kept = [];
+  const first = nodes(NouvelleFlemme({ ...base, mutate: () => {}, keepDraft: id => kept.push(id) })).find(n => n.type === Action && n.props.children === 'Enregistrer le brouillon');
+  first.props.onPress();
+  assert.equal(saved[0][0].id, undefined);
+  assert.equal(saved[0][0].fields.title, draft.title);
+  saved[0][1]({ id: 'b1' });
+  assert.deepEqual(kept, ['b1']);
+  const again = nodes(NouvelleFlemme({ ...base, place: { ...base.place, draftId: 'b1' }, mutate: () => {} })).find(n => n.type === Action && n.props.children === 'Enregistrer le brouillon');
+  again.props.onPress();
+  assert.equal(saved[1][0].id, 'b1');
 });
 test('modification : une demande attribuée ne présente aucun bouton d’envoi', () => {
   const task = { owner: { id: 'a' }, status: 'assigned', offers: [] };
-  const tree = NouvelleFlemme({ ...base, screen: 'edit', task });
+  const tree = NouvelleFlemme({ ...base, place: { ...base.place, screen: 'edit' }, task });
   assert.equal(nodes(tree).filter(n => n.type === Action).length, 0);
 });
