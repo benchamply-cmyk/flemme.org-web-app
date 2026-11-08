@@ -7,3 +7,4 @@ test('untrusted settings cannot inject CSS or duplicate sections',()=>{const d=n
 test('reference has no appearance overrides in both families',()=>{assert.equal(variantCSS(preset('reference')),'');assert.equal(variantCSS(preset('reference','v63')),'');});
 test('sections follow the family of the version',()=>{assert.ok('price' in preset('reference','v63').show);assert.ok(!('price' in normalize({order:['price']},'v05').show));});
 test('variant CSS targets each family selectors',()=>{assert.match(variantCSS({...preset('essentiel'),menu:'compact'}),/main>\.bloc\{padding-top:40px/);assert.match(variantCSS(preset('essentiel','v63')),/\.site\{gap:90px/);});
+test('edited texts are kept, bounded and validated',()=>{const d=normalize({texts:{'index.html|0.1.2':'Bonjour','faq.html|3':'x'.repeat(900),'../evil|1':'non','index.html|a':'non'}});assert.deepEqual(Object.keys(d.texts),['index.html|0.1.2','faq.html|3']);assert.equal(d.texts['faq.html|3'].length,500);});
