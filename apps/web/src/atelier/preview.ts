@@ -1,4 +1,4 @@
-import { normalize, variantCSS, type Design, type Section } from './model.ts';
+import { normalize, optionsCSS, variantCSS, type Design, type Section } from './model.ts';
 // Éditeur de texte : chaque texte modifié est repéré par sa page et son chemin d’éléments depuis <body>.
 const pageOf=(doc:Document)=>doc.location.pathname.split('/').pop()||'index.html';
 export function pathOf(el:Element,doc:Document){const parts:number[]=[];let n:Element|null=el;while(n&&n!==doc.body){const p:Element|null=n.parentElement;if(!p)break;parts.unshift(Array.prototype.indexOf.call(p.children,n));n=p;}return parts.join('.');}
@@ -7,11 +7,11 @@ const editable=(el:Element)=>!el.closest('script,style,svg,select,textarea,input
 export type EditOptions={edit:boolean;onText:(key:string,text:string)=>void};
 export function applyPreview(frame:HTMLIFrameElement,design:Design,onPage:(p:string)=>void,opts?:EditOptions){
  const doc=frame.contentDocument;if(!doc?.body)return;
- const cfg=normalize(design);
+ const cfg=normalize(design,design.family);
  const nodes:Partial<Record<Section,HTMLElement|null>>={};let parent:HTMLElement|null=null;
- if(cfg.family==='v05'){
+ if(cfg.family!=='v63'){
   // Repère une seule fois les blocs de l’accueil dans leur ordre d’origine, avant tout déplacement.
-  const main=doc.querySelector('main'),blocs=['steps','examples','trust','contact'];parent=main;
+  const main=doc.querySelector('main'),blocs=cfg.family==='v06'?['steps','examples','trust','contact','final']:['steps','examples','trust','contact'];parent=main;
   if(main&&!main.dataset.atelierTagged){main.dataset.atelierTagged='true';Array.from(main.querySelectorAll<HTMLElement>(':scope > section.bloc')).forEach((node,i)=>{if(blocs[i])node.dataset.atelierSection=blocs[i];});}
   nodes.hero=doc.querySelector<HTMLElement>('.bandeau.accueil');nodes.footer=doc.querySelector<HTMLElement>('footer.pied');
   for(const key of blocs)nodes[key]=doc.querySelector<HTMLElement>(`main > [data-atelier-section="${key}"]`);
@@ -21,7 +21,8 @@ export function applyPreview(frame:HTMLIFrameElement,design:Design,onPage:(p:str
  }
  Object.entries(nodes).forEach(([k,node])=>{if(node)node.hidden=!cfg.show[k];});
  if(parent)for(const key of cfg.order){const node=nodes[key];if(node?.parentElement===parent)parent.append(node);}
- let style=doc.getElementById('atelier-style');if(!style){style=doc.createElement('style');style.id='atelier-style';doc.head.append(style);}style.textContent=variantCSS(cfg)+'\n[hidden]{display:none!important}\nhtml[data-atelier-edit="1"] body *:hover{outline:1px dashed #5b7cfa;outline-offset:2px;cursor:text}\n[contenteditable="plaintext-only"]{outline:2px solid #5b7cfa!important;background:#fffbe6}';
+ let style=doc.getElementById('atelier-style');if(!style){style=doc.createElement('style');style.id='atelier-style';doc.head.append(style);}doc.querySelectorAll<HTMLElement>('.titre-alterne').forEach(t=>{if(cfg.family==='v06'&&cfg.anim!=='fixe')t.dataset.anim=cfg.anim;});
+ style.textContent=variantCSS(cfg)+optionsCSS(cfg)+'\n[hidden]{display:none!important}\nhtml[data-atelier-edit="1"] body *:hover{outline:1px dashed #5b7cfa;outline-offset:2px;cursor:text}\n[contenteditable="plaintext-only"]{outline:2px solid #5b7cfa!important;background:#fffbe6}';
  const page=pageOf(doc);
  for(const [key,text] of Object.entries(cfg.texts)){const [pg,path]=key.split('|');if(pg!==page)continue;const el=byPath(doc,path);if(el&&el.textContent!==text&&doc.activeElement!==el)el.textContent=text;}
  doc.documentElement.dataset.atelierEdit=opts?.edit?'1':'';
