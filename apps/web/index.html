@@ -22,10 +22,10 @@
 <!--#entete-->
   <div class="accueil-contenu">
     <div class="accueil-texte">
-      <p class="surtitre">Le droit d’avoir la Flemme.<br>Le Pouvoir d’aider.</p>
-      <!-- Le titre alterne toutes les 3,5 s entre deux phrases (src/landing.ts). Les deux sont empilées : la hauteur suit la plus longue. -->
-      <h1 class="titre-alterne" data-anim="flou"><span class="actif">Une tâche que tu repousses&#8239;? Trouve quelqu’un pour t’aider.</span><span aria-hidden="true">Une rémunération pour te charger de la mission.</span></h1>
-      <p class="accroche">Décris ce dont tu as besoin. Des personnes intéressées peuvent te proposer leur aide et leur prix. Tu choisis si une proposition te convient.</p>
+      <!-- V0.6 : surtitre et titre alternent ensemble toutes les 3,5 s (src/landing.ts). -->
+      <p class="surtitre titre-alterne" data-anim="flou"><span class="actif">Le droit d’avoir la Flemme.<br>Le Pouvoir d’aider.</span><span aria-hidden="true">Une tâche en moins,<br>un coup de main en plus.</span></p>
+      <h1 class="titre-alterne" data-anim="flou"><span class="actif">Tu repousses une tâche&#8239;? Trouve quelqu’un pour t’aider.</span><span aria-hidden="true">Des rémunérations pour effectuer des missions.</span></h1>
+      <p class="accroche">Ce que certains repoussent, d’autres aident à le réaliser. Décris ta flemme ou propose tes services, et mettez-vous d’accord.</p>
       <div class="boutons">
         <a class="cta" href="app.html#deposer"><span class="cta-texte"><b>Déléguer ma flemme</b><small>Décris ce que tu aimerais confier.</small></span><span class="cta-fleche" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><path d="M12 6v12M6 12h12"/></g></svg></span></a>
         <a class="cta vert" href="resoudre.html"><span class="cta-texte"><b>Résoudre une flemme</b><small>Trouve une demande et propose ton aide.</small></span><span class="cta-fleche" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="currentColor"><circle cx="16.5" cy="10.5" r="1.6"/><circle cx="14.7" cy="14.7" r="1.6"/><circle cx="10.5" cy="16.5" r="1.6"/><circle cx="6.3" cy="14.7" r="1.6"/><circle cx="4.5" cy="10.5" r="1.6"/><circle cx="6.3" cy="6.3" r="1.6"/><circle cx="10.5" cy="4.5" r="1.6"/><circle cx="14.7" cy="6.3" r="1.6"/><circle cx="19" cy="19" r="2.2"/></g></svg></span></a>
@@ -57,7 +57,7 @@
   </section>
 
   <section class="bloc">
-    <p class="surtitre">Exemples de tâches</p>
+    <p class="surtitre">Catégories</p>
     <h2 class="titre">Qu’est-ce que tu aimerais déléguer&#8239;?</h2>
     <!-- Mêmes exemples que le carrousel (tableur « Flemme – Exemples du carrousel », lignes « En ligne »). -->
     <div class="grille etroite">
@@ -67,30 +67,30 @@
       <a class="exemple-carte" href="app.html#find" data-filtre-categorie="organisation"><span class="etiquette" style="background:var(--lavande)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><circle cx="12" cy="12" r="7"/><path d="M12 8v4h3"/></g></svg> Organisation</span><b>L’anniversaire de Léa dans dix jours…</b><span>Paris · 11e · environ 1 mois</span></a>
       <a class="exemple-carte" href="app.html#find" data-filtre-categorie="maison"><span class="etiquette" style="background:var(--lagon)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><path d="M12 5v14M5 12h14M7.5 7.5l9 9M16.5 7.5l-9 9"/></g></svg> Quotidien</span><b>Ces cartons du déménagement…</b><span>Nantes · Centre · ce week-end</span></a>
     </div>
-    <a class="lien-fort" href="resoudre.html">Voir des exemples de demandes →</a>
+    <a class="lien-fort" href="resoudre.html">Voir les demandes disponibles →</a>
   </section>
 
-  <section class="bloc">
-    <div class="duo" style="align-items:center">
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <p class="surtitre">Prix et confiance</p>
-        <h2 class="titre">Tu gardes la main</h2>
-        <p class="doux">Compare les propositions, pose tes questions et vérifie le prix total avant d’accepter.</p>
-        <a class="lien-fort" href="comment-ca-marche.html#confiance">Confiance et sécurité →</a>
-      </div>
-      <div class="carte ombre calcul" aria-label="Exemple de prix">
-        <div class="ligne"><span>Forfait proposé</span><b>40,00&#8239;€</b></div>
-        <div class="ligne"><span>Frais Flemme</span><b>4,00&#8239;€</b></div>
-        <div class="trait"></div>
-        <div class="ligne total"><b>Total à payer</b><b>44,00&#8239;€</b></div>
-        <p class="doux" style="font-size:13px;margin:0">Exemple. La personne qui t’aide reçoit son forfait de 40&#8239;€.</p>
-      </div>
+  <section class="bloc serre">
+    <p class="surtitre">Confiance</p>
+    <h2 class="titre">Ce qui vous protège, l’un comme l’autre</h2>
+    <div class="grille" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+      <div class="carte"><b>Chaque flemme est relue</b><p class="doux">L’équipe relit les demandes et les propositions de prestation avant qu’elles soient visibles. Cette relecture ne garantit pas le résultat.</p></div>
+      <div class="carte"><b>Un accord écrit et signé</b><p class="doux">Résultat attendu, délai et prix sont acceptés et signés par les deux avant de commencer.</p></div>
+      <div class="carte"><b>Un examen humain en cas de désaccord</b><p class="doux">Un désaccord peut être signalé depuis la mission. Rien n’est effacé&#8239;: messages et historique sont conservés.</p></div>
+      <div class="carte"><b>Un prix clair</b><p class="doux">Le forfait, les frais Flemme et le total à payer sont affichés avant d’accepter.</p></div>
     </div>
+    <a class="lien-fort" href="comment-ca-marche.html#confiance">Nos engagements →</a>
   </section>
 
   <section class="bloc duo" style="flex-direction:row;align-items:center">
     <div style="flex:1 1 360px;display:flex;flex-direction:column;gap:8px"><p class="surtitre">Contact</p><h2 class="titre">Écris-nous</h2><p class="doux">L’équipe lit chaque message et répond par e-mail.</p></div>
     <div class="contact-carte"><b class="contact-mail" id="contactMail">ben.champly@gmail.com</b><div class="boutons" style="gap:8px"><a class="bouton petit" href="contact.html">Écrire un message</a><button type="button" class="bouton petit clair" data-copier="contactMail" data-note="copieNote">Copier l’adresse</button></div><p class="doux" id="copieNote" aria-live="polite" style="font-size:13px"></p></div>
+  </section>
+  <section class="bloc" style="text-align:center;align-items:center">
+    <p class="surtitre">Une flemme en tête&#8239;?</p>
+    <h2 class="titre">Une tâche en moins, un coup de main en plus.</h2>
+    <p class="doux">Décris ta flemme en quelques minutes, ou trouve une demande disponible près de chez toi ou à distance.</p>
+    <div class="boutons" style="justify-content:center"><a class="bouton" href="app.html#deposer">Déléguer ma flemme</a><a class="bouton vert" href="resoudre.html">Résoudre une flemme</a></div>
   </section>
 </main>
 <!--#pied-->

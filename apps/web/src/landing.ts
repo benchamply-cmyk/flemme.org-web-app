@@ -6,17 +6,21 @@ import './site/commun.ts';
 const anciennes: Record<string, string> = { '#concept': 'comment-ca-marche.html#concept', '#prix': 'comment-ca-marche.html#prix', '#comment': 'comment-ca-marche.html', '#faq': 'faq.html', '#contact': 'contact.html' };
 if (anciennes[location.hash]) location.replace(anciennes[location.hash]);
 
-// Grand titre : alterne toutes les 3,5 secondes entre ses phrases (pas d’alternance si l’animation est réduite).
-// Le style de transition se règle par data-anim sur le h1 (voir vitrine.css).
-const phrases = document.querySelectorAll<HTMLElement>('.titre-alterne > span');
-if (phrases.length > 1 && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+// Surtitre et grand titre (V0.6) : alternent ensemble toutes les 3,5 secondes (pas d’alternance si l’animation est réduite).
+// Le style de transition se règle par data-anim sur chaque bloc .titre-alterne (voir vitrine.css).
+const groupes = [...document.querySelectorAll<HTMLElement>('.titre-alterne')].map(g => [...g.querySelectorAll<HTMLElement>(':scope > span')]).filter(p => p.length > 1);
+if (groupes.length && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
   let phrase = 0;
   setInterval(() => {
-    const avant = phrases[phrase];
-    avant.classList.replace('actif', 'sortie');
-    setTimeout(() => avant.classList.remove('sortie'), 650);
-    phrase = (phrase + 1) % phrases.length;
-    phrases[phrase].classList.add('actif');
+    const suivante = phrase + 1;
+    groupes.forEach(phrases => {
+      const avant = phrases[phrase % phrases.length];
+      avant.classList.replace('actif', 'sortie');
+      setTimeout(() => avant.classList.remove('sortie'), 650);
+      const apres = phrases[suivante % phrases.length];
+      apres.classList.add('actif');
+    });
+    phrase = suivante;
   }, 3500);
 }
 
