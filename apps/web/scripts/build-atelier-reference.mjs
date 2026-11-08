@@ -16,7 +16,8 @@ for(const version of reference.versions){
  try{execFileSync('git',['cat-file','-e',version.commit+'^{commit}'],{cwd:root,stdio:'ignore'});}catch{execFileSync('git',['fetch','--depth=1','origin',version.commit],{cwd:root,stdio:'inherit'});}
  const temp=mkdtempSync(join(tmpdir(),'flemme-reference-'));
  try{
-  const archive=execFileSync('git',['archive',version.commit,'apps/web','packages/shared'],{cwd:root,maxBuffer:30*1024*1024});
+  const paths=['apps/web'];for(const extra of ['packages/shared','apps/mobile/src'])try{execFileSync('git',['cat-file','-e',version.commit+':'+extra],{cwd:root,stdio:'ignore'});paths.push(extra);}catch{}
+  const archive=execFileSync('git',['archive',version.commit,...paths],{cwd:root,maxBuffer:30*1024*1024});
   execFileSync('tar',['-x','-C',temp],{input:archive});
   const web=join(temp,'apps/web');
   for(const args of [['ci','--ignore-scripts','--no-audit','--no-fund'],['run','build','--','--base=/atelier-reference/'+version.id+'/']]){
