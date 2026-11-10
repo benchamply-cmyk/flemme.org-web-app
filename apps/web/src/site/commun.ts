@@ -1,7 +1,7 @@
 import '../beta/runtime.ts';
 import './vitrine.css';
 import './reglages.css';
-import './reglages-v07.css';
+import './reglages-retenus.css';
 import { ouvrirCatalogue } from './filtre.ts';
 
 // Comportements communs à toutes les pages de la vitrine : menu burger, liens vers le catalogue filtré.
