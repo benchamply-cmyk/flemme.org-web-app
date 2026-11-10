@@ -1,0 +1,34 @@
+/* Réglages V0.7 retenus sur le canevas (maquette 00 · Réglages communs). Généré depuis la V0.7 du canevas le 10/11/2026. */
+/* ambiance = 1 · Glacier (actuel) ; direction = 2 · Doux pastel nacré ; fond = 2 · Chrome de la page ; reflets = 3 · Discrets ; fondpage = 2 · Dégradé glacier ; entete = 2 · Barre en verre ; logo = 1 · Bloc vert (actuel) ; homebtn = 1 · Icône et texte (actuel) ; pictos = 1 · Icône et texte (actuel) ; menuicone = 2 · Quatre carrés ; connexion = 1 · Comme les pastilles (actuel) ; menubtn = 4 · Sans fond ; couleurmenu = 1 · Actuelles ; menuouvert = 1 · Fermés ; pastilles = 1 · Normale ; boutons = 13 · Dégradé violet-bleu (texte blanc) ; forme = 2 · Arrondi ; ombrebtn = 2 · Douce ; taillebtn = 1 · Normale ; fleche = 3 · Sans rond ; epaisseur = 1 · 2 px (actuel) ; couleurctr = 1 · Encre (actuel) ; arrondi = 1 · 18 px (actuel) ; cartes = 4 · Ombre décalée ; fondcartes = 1 · Glacier et menthe (actuel) ; ombreexemple = 4 · Glacier décalée ; fondexemple = 1 · Actuel ; police = 2 · Space Grotesk ; couleurtitres = 1 · Encre (actuel) ; casse = 1 · Normale (actuel) ; tailletitres = 3 · Plus petite ; couleurtexte = 1 · Encre (actuel) ; accent = 2 · Bleu acier (actuel) ; principale = 1 · Glacier (actuel) ; animtitre = 2 · Fondu ; survol = 2 · Se soulève ; entree = 3 · Zoom léger ; carrousel = 2 · Flotte doucement ; iconemenu = 2 · Tourne ; largeur = 1 · 1180 px (actuel) ; espacement = 2 · Compact ; etiquettes = 3 · Contour seul ; pied = 1 · Nuit (actuel) ; surtitre = 1 · Petites capitales (actuel) ; animsurtitre = 1 · Alterne avec le titre (actuel) ; herodispo = 1 · Texte à gauche (actuel) ; etapes = 1 · Cartes contour (actuel) ; confiance = 1 · Cartes (actuel) ; contactbloc = 1 · Actuel ; appel = 1 · Centré (actuel) ; titres = 1 · À gauche (actuel) ; separateurs = 1 · Aucune (actuel) ; piedcols = 1 · 3 colonnes (actuel) */
+@keyframes v5-zoom{from{opacity:0;transform:scale(.96)}}
+@keyframes v5-flotte{50%{transform:translateY(-10px) rotate(-1deg)}}
+.flemme-chrome-home{--flemme-ribbon-opacity:.45!important}
+main{background:linear-gradient(180deg,#fff 0%,#e6efff 35%,#fff 70%,#e6efff 100%)}
+.entete{background:rgba(255,255,255,.62);backdrop-filter:blur(10px);border:1.5px solid rgba(22,19,31,.12);border-radius:999px;margin-top:14px!important;padding:10px 14px!important}
+.entete .pastille{border-color:transparent!important;background:transparent!important;box-shadow:none!important}
+.burger summary{background:none!important;border-color:transparent!important}
+.cta, .bouton, .btn, .choice, .pastille{border-radius:14px!important}
+.cta, .bouton, .btn, .choice, .pastille.deleguer, .pastille.entete-resoudre, .pastille.entete-comment{box-shadow:0 8px 20px rgba(58,47,160,.22)!important}
+.cta .cta-fleche{background:none!important;color:inherit!important}
+.carte, .exemple-carte, .contact-carte{box-shadow:4px 5px 0 var(--violet)!important}
+.exemple{box-shadow:6px 7px 0 #a5ccff!important}
+:root, *{font-family:"Space Grotesk",system-ui,sans-serif!important}
+.bandeau h1{font-size:clamp(32px,4vw,48px)!important}
+.titre{font-size:28px!important}
+.cta, .bouton, .btn, .choice, .pastille{transition:transform .2s,box-shadow .2s}
+.cta:hover, .bouton:hover, .btn:hover, .choice:hover, .pastille:hover{transform:translate(-2px,-3px)}
+main .bloc{animation:v5-zoom .8s ease both}
+main .bloc:nth-child(2){animation-delay:.15s}
+main .bloc:nth-child(3){animation-delay:.3s}
+.exemple{animation:v5-flotte 5s ease-in-out infinite}
+.burger summary:hover svg{transform:rotate(360deg)!important;transition:transform .6s}
+.bloc{padding-top:24px!important;padding-bottom:24px!important;gap:12px!important}
+.etiquette{background:#fff!important}
+.menu-principal summary svg{display:none!important}
+.menu-principal summary::before{content:"";width:6px;height:6px;border-radius:2px;background:currentColor;box-shadow:8px 0 0 currentColor,0 8px 0 currentColor,8px 8px 0 currentColor;transform:translate(-4px,-4px)}
+.carte, .exemple-carte, .contact-carte, .etapes li, .exemple{border:0!important;border-radius:28px!important;background:linear-gradient(135deg,#ffffff 0%,#eef4ff 40%,#f3fbf8 70%,#fbf4ff 100%)!important;box-shadow:0 18px 40px rgba(120,140,200,.18)!important}
+.cta, .bouton, .pastille{border-radius:999px!important;border-color:transparent!important}
+.bandeau h1{font-weight:700!important}
+.cta, .bouton:not(.clair), .btn:not(.secondary), .choice:not(.secondary){background:linear-gradient(90deg,#6b4fd8,#3a7bd5)!important;color:#fff!important}
+.cta small{color:rgba(255,255,255,.8)!important}
+.cta .cta-fleche{background:#fff!important;color:var(--encre)!important}
