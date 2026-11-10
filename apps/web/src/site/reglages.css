@@ -22,7 +22,7 @@ main { background:linear-gradient(180deg,#fff 0%,#e6efff 35%,#fff 70%,#e6efff 10
 /* Forme des boutons : 2 · Arrondi */
 .cta, .bouton, .btn, .choice, .pastille { border-radius:14px!important }
 /* Ombre des boutons : 2 · Douce */
-.cta, .bouton, .btn, .choice, .pastille.deleguer, .pastille.entete-resoudre, .pastille.entete-comment { box-shadow:0 8px 20px rgba(58,47,160,.22)!important }
+.cta, .bouton, .btn, .choice, .pastille.deleguer, .pastille.entete-resoudre, .pastille.entete-comment, .pastille.entete-home { box-shadow:0 8px 20px rgba(58,47,160,.22)!important }
 /* Rond des grands boutons : 3 · Sans rond */
 .cta .cta-fleche { background:none!important;color:inherit!important }
 /* Couleur des contours : 3 · Gris clair */
