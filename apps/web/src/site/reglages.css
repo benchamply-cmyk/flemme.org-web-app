@@ -1,0 +1,69 @@
+/*
+ * Réglages choisis par Ben dans la maquette V0.5 (canevas « Flemme – Maquettes vitrine », 06/11/2026).
+ * Généré à partir des réglages de chaque maquette : valeurs communes d'abord, puis exceptions par page
+ * (attribut data-page sur <body>). Chargé après site.css et vitrine.css.
+ */
+/* Police : Space Grotesk */
+:root { --police:'Space Grotesk', 'Helvetica Neue', Arial, sans-serif; --display:'Space Grotesk', 'Helvetica Neue', Arial, sans-serif; }
+/* Reflets chromés : 3 · Discrets */
+.flemme-chrome-home { --flemme-ribbon-opacity:.45!important }
+/* Fond des pages au défilement : 2 · Dégradé glacier */
+main { background:linear-gradient(180deg,#fff 0%,#e6efff 35%,#fff 70%,#e6efff 100%) }
+/* Style de l’en-tête : 2 · Barre en verre */
+.entete { background:rgba(255,255,255,.62);backdrop-filter:blur(10px);border:1.5px solid rgba(22,19,31,.12);border-radius:999px;margin-top:14px!important;padding:10px 14px!important }
+.entete .pastille { border-color:transparent!important;background:transparent!important;box-shadow:none!important;color:var(--encre)!important }
+/* Bouton du menu « ? » : 4 · Sans fond */
+.burger summary { background:none!important;border-color:transparent!important }
+/* Taille des pastilles : 2 · Compacte */
+.entete .pastille { height:36px!important;padding:0 12px!important;font-size:13px!important }
+.burger summary { width:36px!important;height:36px!important }
+/* Couleurs des boutons : 2 · Contour encre sur blanc */
+.cta, .bouton, .btn, .choice { background:#fff!important;color:var(--encre)!important }
+/* Forme des boutons : 2 · Arrondi */
+.cta, .bouton, .btn, .choice, .pastille { border-radius:14px!important }
+/* Ombre des boutons : 2 · Douce */
+.cta, .bouton, .btn, .choice, .pastille.deleguer, .pastille.entete-resoudre, .pastille.entete-comment, .pastille.entete-home { box-shadow:0 8px 20px rgba(58,47,160,.22)!important }
+/* Rond des grands boutons : 3 · Sans rond */
+.cta .cta-fleche { background:none!important;color:inherit!important }
+/* Couleur des contours : 3 · Gris clair */
+.carte, .exemple-carte, .contact-carte, .exemple, .parcours-duo>div, .cta, .bouton, .btn, .choice, .pastille, .etiquette, .burger summary { border-color:#c9d3e0!important }
+/* Effet des cartes : 2 · Ombre douce chromée */
+.carte, .exemple-carte, .contact-carte { border-color:transparent!important;background:linear-gradient(180deg,#fff,#f4f8fc)!important;box-shadow:0 10px 30px rgba(100,128,155,.22)!important }
+/* Ombre de la carte d’exemple (accueil) : 5 · Douce floue */
+.exemple { box-shadow:0 14px 34px rgba(58,47,160,.22)!important }
+/* Taille des titres : 3 · Plus petite */
+.bandeau h1 { font-size:clamp(32px,4vw,48px)!important }
+.titre { font-size:28px!important }
+@media (prefers-reduced-motion: no-preference) {
+/* Survol des boutons : 2 · Se soulève */
+.cta, .bouton, .btn, .choice, .pastille { transition:transform .2s,box-shadow .2s }
+.cta:hover, .bouton:hover, .btn:hover, .choice:hover, .pastille:hover { transform:translate(-2px,-3px) }
+/* Apparition des sections : 2 · Fondu montant */
+@keyframes v5-monte{from{opacity:0;transform:translateY(24px)}}
+main .bloc { animation:v5-monte .8s ease both }
+main .bloc:nth-child(2) { animation-delay:.15s }
+main .bloc:nth-child(3) { animation-delay:.3s }
+main .bloc:nth-child(4) { animation-delay:.45s }
+}
+/* Espacements : 2 · Compact */
+.bloc { padding-top:24px!important;padding-bottom:24px!important;gap:12px!important }
+/* Étiquettes de catégories : 3 · Contour seul */
+.etiquette { background:#fff!important }
+
+/* Exceptions par page */
+/* Fond des pages au défilement, page comment : 3 · Chrome fixe */
+body[data-page="comment"] main { background:linear-gradient(115deg,#fff 0%,#e8eef6 22%,#fff 38%,#dfe8f3 62%,#f7f9fc 80%,#e3ebf5 100%) fixed }
+/* Fond des pages au défilement, page app : 1 · Blanc (actuel) */
+body[data-page="app"] main { background:none }
+/* Épaisseur des contours, page accueil : 4 · Aucun contour */
+body[data-page="accueil"] .carte, body[data-page="accueil"] .exemple-carte, body[data-page="accueil"] .contact-carte, body[data-page="accueil"] .exemple, body[data-page="accueil"] .parcours-duo>div, body[data-page="accueil"] .cta, body[data-page="accueil"] .bouton, body[data-page="accueil"] .btn, body[data-page="accueil"] .choice, body[data-page="accueil"] .pastille, body[data-page="accueil"] .etiquette, body[data-page="accueil"] .burger summary { border-color:transparent!important }
+/* Couleur des contours, page app : 1 · Encre (actuel) */
+body[data-page="app"] .carte, body[data-page="app"] .exemple-carte, body[data-page="app"] .contact-carte, body[data-page="app"] .exemple, body[data-page="app"] .parcours-duo>div, body[data-page="app"] .cta, body[data-page="app"] .bouton, body[data-page="app"] .btn, body[data-page="app"] .choice, body[data-page="app"] .pastille, body[data-page="app"] .etiquette, body[data-page="app"] .burger summary { border-color:var(--encre)!important }
+/* Fond des cartes colorées, page comment : 6 · Gris chromé */
+body[data-page="comment"] .fond-glacier, body[data-page="comment"] .fond-menthe { background:linear-gradient(160deg,#fff,#e3eaf2 60%,#f4f7fa)!important }
+/* Fond des cartes colorées, page app : 6 · Gris chromé */
+body[data-page="app"] .fond-glacier, body[data-page="app"] .fond-menthe { background:linear-gradient(160deg,#fff,#e3eaf2 60%,#f4f7fa)!important }
+/* Couleur du texte courant, page comment : 2 · Gris bleuté */
+body[data-page="comment"] { --encre:#2b3550;--texte-doux:#5a6684 }
+/* Couleur du texte courant, page app : 2 · Gris bleuté */
+body[data-page="app"] { --encre:#2b3550;--texte-doux:#5a6684;--ink:#2b3550;--muted:#5a6684 }

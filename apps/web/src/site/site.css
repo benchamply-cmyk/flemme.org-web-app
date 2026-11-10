@@ -1,0 +1,95 @@
+@import './fonds-chromes.css';
+
+/* Vitrine flemme.org, maquettes V0.3 et V0.4 (canevas « Flemme – Maquettes vitrine », 5 novembre 2026).
+   V0.4 retenue par Ben : fond chromé Accueil, en-tête encre et menthe, titres en casse normale,
+   textes proposés, boutons glacier et menthe, cartes contour noir, accent bleu acier, pied de page nuit.
+   En-tête et pied de page communs à la vitrine et à l’app (app.html). */
+:root {
+  --encre: #16131f; --texte-doux: #3f3a55; --violet: #3a2fa0;
+  --vert-logo: #57d68d; --vert-tendre: #c7f4b2; --menthe: #b8f0de;
+  --glacier: #d2e4ff; --glacier-clair: #e6efff; --ciel: #a5ccff; --lavande: #dad4ff; --peche: #ffd9c2; --lagon: #c5efe6;
+  --nuit: #0f0d18; --acier: #3a4f7a;
+  --degrade-haut: linear-gradient(160deg, #3a4f7a, #6f88b8 55%, #9bb7e0);
+  --ombre-violette: 5px 6px 0 var(--violet);
+  --police: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --mono: ui-monospace, Menlo, monospace;
+  --largeur: 1180px;
+}
+
+/* Haut de page : fond blanc et rubans chromés (fonds-chromes.css, classe flemme-chrome-home). */
+.bandeau { background-color: #fff; color: var(--encre); display: flex; flex-direction: column; }
+.entete { display: grid; grid-template-columns: auto auto 1fr; align-items: center; gap: 16px; width: 100%; max-width: var(--largeur); margin: 0 auto; padding: 20px 24px; box-sizing: border-box; position: relative; z-index: 10; }
+.entete-gauche { display: flex; align-items: center; gap: 16px; justify-self: start; min-width: 0; }
+.entete-droite { justify-self: end; display: flex; align-items: center; gap: 14px; }
+.pastille.deleguer, .pastille.entete-resoudre, .pastille.entete-comment, .pastille.entete-home { background: var(--glacier); color: var(--encre); box-shadow: 3px 4px 0 var(--violet); }
+.pastille.deleguer:hover, .pastille.entete-resoudre:hover, .pastille.entete-comment:hover, .pastille.entete-home:hover { background: var(--glacier-clair); border-color: var(--encre); }
+.burger-menu .burger-connexion, .burger-menu .burger-resoudre, .burger-menu .burger-comment { display: none; }
+/* Flemmes à résoudre n’apparaît dans le menu que lorsque la pastille de l’en-tête est masquée (petits écrans). */
+.logo { display: inline-flex; align-items: center; height: 44px; padding: 0 12px; box-sizing: border-box; font: 900 24px/1 var(--police); letter-spacing: -1px; color: var(--encre); text-decoration: none; background: var(--vert-logo); border: 2.5px solid var(--encre); border-radius: 12px; }
+.pastille { white-space: nowrap; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; box-sizing: border-box; border-radius: 999px; background: var(--encre); color: #fff; border: 2px solid var(--encre); text-decoration: none; font: 800 15px/1 var(--police); cursor: pointer; }
+.pastille:hover { background: var(--acier); border-color: var(--acier); }
+.pastille svg { flex: none; }
+/* Icônes : points (style C) pour Résoudre et Comment ça marche, trait fin (style A) pour les autres, choix de Ben du 6 nov. : alignées sur le texte. */
+.ico { flex: none; vertical-align: -0.15em; }
+.burger { position: relative; justify-self: start; }
+.burger summary { list-style: none; cursor: pointer; width: 44px; height: 44px; border-radius: 50%; background: var(--menthe); color: var(--encre); border: 2px solid var(--encre); box-sizing: border-box; display: grid; place-items: center; }
+.burger summary::-webkit-details-marker { display: none; }
+/* Icône du menu : quatre carrés arrondis (choix de Ben) qui tournent au survol, au clic et menu ouvert. */
+.burger summary svg { transition: transform .35s cubic-bezier(.34, 1.56, .64, 1); }
+/* Bouton « ? » : il penche au survol et se redresse en grossissant à l’ouverture. */
+.burger summary:hover svg, .burger summary:focus-visible svg { transform: rotate(-14deg); }
+.burger summary:active svg { transform: rotate(-24deg) scale(.88); }
+.burger[open] summary svg { transform: rotate(0) scale(1.12); }
+@media (prefers-reduced-motion: reduce) { .burger summary svg { transition: none; } }
+.burger-menu { position: absolute; left: 50%; transform: translateX(-50%); top: 54px; min-width: 250px; background: #fff; border: 2px solid var(--encre); border-radius: 18px; padding: 8px; display: flex; flex-direction: column; box-shadow: 0 18px 40px rgba(22,19,31,.25); }
+.burger-menu a { color: var(--encre); text-decoration: none; padding: 12px 14px; border-radius: 12px; font-weight: 700; }
+.burger-menu a:hover, .burger-menu a[aria-current] { background: var(--glacier-clair); }
+/* Langues : seul le français existe pour l’instant. */
+.burger-langues { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 6px 0 0; padding: 10px 14px 6px; border-top: 1.5px solid var(--glacier); font-weight: 700; color: var(--encre); }
+.burger-langues > span:first-child { margin-right: 4px; }
+.burger-langues b, .burger-langues span[aria-disabled] { padding: 4px 9px; border-radius: 999px; border: 1.5px solid var(--encre); font-size: 13px; }
+.burger-langues b { background: var(--glacier); }
+.burger-langues span[aria-disabled] { opacity: .45; cursor: not-allowed; }
+.burger-langues small { flex-basis: 100%; font-weight: 400; font-size: 12px; opacity: .7; }
+/* « Comment ça marche » passe dans le menu « ? » quand l’en-tête manque de place. */
+@media (max-width: 1100px) { .entete-comment { display: none; } .burger-menu .burger-comment { display: block; } }
+/* V0.6 : le menu « ? » (Aide) est à droite, à côté de Connexion : sa liste s’ouvre vers la gauche. Home passe dans le logo sur petit écran. */
+.entete-droite .burger-menu { left: auto; right: 0; transform: none; min-width: 200px; }
+@media (max-width: 860px) { .entete-home { display: none; } }
+@media (max-width: 560px) {
+  .entete { display: flex; gap: 8px; padding: 16px; }
+  .entete .burger { margin-left: auto; }
+  .burger-menu { left: auto; right: 0; transform: none; }
+  .entete-gauche { gap: 8px; }
+  .pastille { padding: 0 12px; }
+  .entete-resoudre, .entete-connexion { display: none; }
+  .burger-menu .burger-connexion { display: block; }
+  .pastille .long { display: none; }
+  .entete > *, .entete-gauche > *, .entete-droite > * { flex-shrink: 0; }
+  .pastille.mon-espace span:not(.pastille-initiale) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+
+@media (max-width: 860px) { .pastille .long { display: none; } }
+@media (max-width: 760px) { .entete-resoudre { display: none; } .burger-menu .burger-resoudre { display: block; } .burger-menu { left: auto; right: -40px; transform: none; } }
+/* Très petits écrans : « Mon espace » passe dans le menu burger pour garder logo, Déléguer et menu. */
+@media (max-width: 420px) { .pastille.mon-espace { display: none; } }
+
+/* Pied de page : trois colonnes de liens sur fond nuit. */
+.pied { background: var(--nuit); color: var(--glacier); padding: 48px 24px 28px; font-family: var(--police); }
+.pied-colonnes { max-width: var(--largeur); margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 28px; }
+.pied-colonnes nav, .pied-marque { display: flex; flex-direction: column; gap: 10px; }
+.pied-colonnes b { color: #fff; }
+.pied-colonnes nav a { color: var(--glacier); text-decoration: none; }
+.pied-colonnes nav a:hover { color: #fff; text-decoration: underline; }
+.pied-marque .logo { align-self: flex-start; border: 0; height: auto; padding: 2px 10px; border-radius: 10px; }
+.pied-marque span { font-size: 14px; }
+.pied-marque .pied-doux { font-size: 13px; color: #a9b4cc; max-width: 34ch; }
+.pied-bas { max-width: var(--largeur); margin: 32px auto 0; border-top: 1px solid var(--texte-doux); padding-top: 18px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; font-size: 13px; }
+
+/* Compte testeur : garder Test et le compte côte à côte, y compris sur petit écran. */
+.entete:has(.beta-test) .entete-droite { gap: 8px; }
+@media (max-width: 560px) {
+  .entete:has(.beta-test) { flex-wrap: wrap; }
+  .entete:has(.beta-test) .entete-droite { margin-left: auto; }
+  .entete:has(.beta-test) .pastille.mon-espace { display: inline-flex; }
+}

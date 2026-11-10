@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#3a4f7a">
+<title>Questions fréquentes — Flemme.org</title>
+<meta name="description" content="Les réponses aux questions qu’on nous pose le plus, que tu délègues ou que tu proposes ton aide.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="FLEMME">
+<meta property="og:title" content="Questions fréquentes — Flemme.org">
+<meta property="og:description" content="Les réponses aux questions qu’on nous pose le plus, que tu délègues ou que tu proposes ton aide.">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/flemme-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+</head>
+<body data-page="faq">
+<section class="flemme-chrome-home bandeau">
+<!--#entete-->
+  <div class="titre-page">
+    <p class="ariane"><a href="./">Accueil</a> › FAQ</p>
+    <h1>Questions fréquentes</h1>
+    <p>Que tu délègues une tâche ou que tu proposes ton aide, voici les réponses aux questions qu’on nous pose le plus.</p>
+  </div>
+</section>
+<main>
+<section class="bloc">
+    <label class="recherche"><span class="sr">Rechercher une question</span><input id="faqQ" type="search" placeholder="Rechercher une question…" autocomplete="off"></label>
+    <div id="faqListe"></div>
+    <p class="doux" id="faqVide" hidden>Aucune question ne correspond. Écris-nous, on te répond par e-mail.</p>
+    <div class="carte" style="flex-direction:row;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between"><b>Pas trouvé ta réponse&#8239;?</b><a class="bouton" href="contact.html">Nous contacter</a></div>
+  </section>
+</main>
+<!--#pied-->
+<script type="module" src="/src/site/pages/faq.ts"></script>
+</body>
+</html>

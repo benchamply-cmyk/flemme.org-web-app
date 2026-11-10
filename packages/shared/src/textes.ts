@@ -5,18 +5,18 @@ import { budgetText } from './parcours.ts';
 // Libellés et messages affichés à l’identique sur le site et dans l’app mobile.
 // Les titres propres à chaque écran restent dans les écrans ; ici, seulement ce qui est calculé ou répété.
 export const taskStatus: Record<Task['status'], string> = { open: 'Ouverte', assigned: 'Attribuée', completed: 'Terminée' };
-export const offerStatus: Record<Offer['status'], string> = { pending: 'En attente', accepted: 'Acceptée', declined: 'Déclinée', not_selected: 'Flemme attribuée à un autre Brigadier' };
+export const offerStatus: Record<Offer['status'], string> = { pending: 'En attente', accepted: 'Acceptée', declined: 'Déclinée', not_selected: 'Demande confiée à un autre Brigadier' };
 export const date = (iso: string) => new Date(iso).toLocaleString('fr-FR');
 
 export const notices = {
-  published: 'Ta flemme est publiée.',
-  sentForReview: 'Demande envoyée. Elle reste privée jusqu’à sa validation par l’équipe FLEMME.',
+  published: 'Ta demande est publiée.',
+  sentForReview: 'Ta demande a été reçue. Elle est en cours de relecture : tu peux suivre son état dans « Mes demandes ».',
   edited: 'Demande modifiée.',
   draftSaved: 'Brouillon enregistré sur ton compte.',
   draftDeleted: 'Brouillon supprimé.',
-  offerSent: 'Proposition envoyée. La flemme reste ouverte jusqu’à acceptation.',
+  offerSent: 'Proposition envoyée. La demande reste ouverte jusqu’à ce qu’une proposition soit acceptée.',
   applied: (o?: { review?: string }) => o?.review === 'pending'
-    ? 'Candidature envoyée. L’équipe FLEMME la relit avant de la transmettre au déposant.' : 'Proposition envoyée. La flemme reste ouverte jusqu’à acceptation.',
+    ? 'Proposition envoyée. L’équipe FLEMME la relit avant de la transmettre à la personne qui a publié la demande.' : 'Proposition envoyée. La demande reste ouverte jusqu’à ce qu’une proposition soit acceptée.',
   contractSaved: 'Accord enregistré. Relisez-le à deux, puis soumettez-le.',
   contractSubmitted: (status?: string) => status === 'pending' ? 'Accord soumis : l’équipe FLEMME le contrôle avant la signature.' : 'Accord prêt à signer.',
   signed: 'Signature enregistrée et horodatée.',
@@ -55,7 +55,7 @@ export const paymentReturn = (hash: string) => hash === '#paiement-ok'
 /** Ligne d’appel en bas d’une carte de flemme, selon la place de la personne connectée. */
 export function cardHint(task: Task, actorId: string) {
   if (task.owner.id === actorId) return String(task.offers.filter(o => o.status === 'pending').length) + ' proposition(s) · suivre →';
-  return task.offers.some(o => o.brigadier.id === actorId) ? 'Ma proposition et le suivi →' : 'Je peux aider →';
+  return task.offers.some(o => o.brigadier.id === actorId) ? 'Ma proposition et le suivi →' : 'Voir la demande →';
 }
 export const budgetLabel = (task: Task, money: (n: number) => string) =>
   task.budget != null ? money(task.budget) : task.budgetRange ? budgetText(task, money) : 'Prix à proposer';

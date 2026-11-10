@@ -6,7 +6,7 @@ import { parseMoney } from './domain.ts';
 
 export type Option<K extends string = string> = { value: K; label: string };
 export const CATEGORIES = [
-  { value: 'administratif', label: 'Administratif' }, { value: 'maison', label: 'Maison & quotidien' },
+  { value: 'administratif', label: 'Administratif' }, { value: 'maison', label: 'Maison et bricolage' },
   { value: 'numerique', label: 'Numérique' }, { value: 'organisation', label: 'Organisation' }, { value: 'autre', label: 'Autre' },
 ] as const satisfies readonly Option[];
 export const DEADLINES = [

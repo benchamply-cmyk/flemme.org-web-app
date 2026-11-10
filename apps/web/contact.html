@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#3a4f7a">
+<title>Contact — Flemme.org</title>
+<meta name="description" content="Une question, une idée, un souci avec une flemme ? L’équipe lit chaque message et répond par e-mail.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="FLEMME">
+<meta property="og:title" content="Contact — Flemme.org">
+<meta property="og:description" content="Une question, une idée, un souci avec une flemme ? L’équipe lit chaque message et répond par e-mail.">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/flemme-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+</head>
+<body data-page="contact">
+<section class="flemme-chrome-home bandeau">
+<!--#entete-->
+  <div class="titre-page">
+    <p class="ariane"><a href="./">Accueil</a> › Contact</p>
+    <h1>Écris-nous</h1>
+    <p>Une question, une idée, un souci&#8239;? L’équipe lit chaque message et répond par e-mail.</p>
+  </div>
+</section>
+<main>
+<section class="bloc">
+    <div class="duo">
+      <form class="carte principal" id="contactForm" novalidate style="gap:14px">
+        <div class="deux-champs"><label class="champ">Nom<input name="nom" placeholder="Ton nom" autocomplete="name" maxlength="100"></label><label class="champ">E-mail<input name="email" type="email" placeholder="toi@exemple.fr" autocomplete="email" maxlength="200"></label></div>
+        <fieldset class="sujets"><legend>Sujet</legend>
+          <label class="puce"><input type="radio" name="sujet" value="Une flemme publiée"><span>Une flemme publiée</span></label>
+          <label class="puce"><input type="radio" name="sujet" value="Devenir Brigadier"><span>Devenir Brigadier</span></label>
+          <label class="puce"><input type="radio" name="sujet" value="Un désaccord"><span>Un désaccord</span></label>
+          <label class="puce"><input type="radio" name="sujet" value="Autre" checked><span>Autre</span></label>
+        </fieldset>
+        <label class="champ">Message<textarea name="message" placeholder="Ton message…" maxlength="3000" required></textarea></label>
+        <p class="erreur" id="contactErreur" aria-live="polite"></p>
+        <button type="submit" class="bouton" style="align-self:flex-start">Envoyer</button>
+        <p class="doux" style="font-size:13px">« Envoyer » ouvre ta messagerie avec le message prêt à partir.</p>
+      </form>
+      <aside style="display:flex;flex-direction:column;gap:12px">
+        <div class="carte ombre"><b class="contact-mail" id="contactMail">ben.champly@gmail.com</b><button type="button" class="bouton clair" data-copier="contactMail" data-note="copieNote">Copier l’adresse</button><p class="doux" id="copieNote" aria-live="polite" style="font-size:13px"></p></div>
+        <div class="carte"><b>Avant d’écrire</b><p class="doux">La <a href="faq.html">FAQ</a> répond aux questions les plus courantes. Déjà inscrit&#8239;? Tu peux aussi écrire à l’équipe depuis l’aide de <a href="app.html#mine">ton espace</a>.</p></div>
+      </aside>
+    </div>
+  </section>
+</main>
+<!--#pied-->
+<script type="module" src="/src/site/pages/contact.ts"></script>
+</body>
+</html>

@@ -3,101 +3,97 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#a5ccff">
-<title>FLEMME — Le droit d’avoir la flemme</title>
-<meta name="description" content="Dépose ce que tu as la flemme de faire. Un Brigadier propose son forfait, tu choisis. FLEMME ajoute 10 %, rien de plus.">
+<meta name="theme-color" content="#3a4f7a">
+<title>Flemme.org — Déléguer une tâche ou proposer son aide</title>
+<meta name="description" content="Une tâche qui traîne ? Décris ton besoin et consulte les propositions. Tu veux aider ? Trouve une demande près de chez toi ou à distance.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:site_name" content="FLEMME">
-<meta property="og:title" content="FLEMME — Le droit d’avoir la flemme">
-<meta property="og:description" content="Déléguer un peu. Aider quelqu’un. Un forfait clair, 10 % pour FLEMME.">
+<meta property="og:title" content="Flemme.org — Déléguer une tâche ou proposer son aide">
+<meta property="og:description" content="Une tâche qui traîne ? Décris ton besoin et consulte les propositions. Tu veux aider ? Trouve une demande près de chez toi ou à distance.">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/flemme-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap">
 </head>
-<body>
-<header class="top">
-  <a href="./"><img src="/flemme-logo.png" alt="FLEMME"></a>
-  <nav aria-label="Navigation principale"><a class="btn small secondary" href="#comment">Comment ça marche</a><a class="btn small" href="app.html">Ouvrir l’app</a></nav>
-</header>
-
-<main class="site">
-  <section class="hero">
-    <div>
-      <p class="eyebrow">Le droit d’avoir la flemme.</p>
-      <h1 class="display">Passe le relais.<br><em>Ou prends-le.</em></h1>
-      <p class="lead">Ce que certains repoussent, d’autres aident à le réaliser.<br>Décris ta flemme ou propose tes services, et mettez-vous d’accord.</p>
-      <div class="cta-row">
-        <a class="cta" href="app.html#mine"><span class="cta-text"><b>Déléguer ma flemme</b><small>Je décris ce que je repousse</small></span><span class="cta-arrow" aria-hidden="true">↗</span></a>
-        <a class="cta green" href="app.html#find"><span class="cta-text"><b>Résoudre une flemme</b><small>Je propose mon coup de main</small></span><span class="cta-arrow" aria-hidden="true">↗</span></a>
+<body data-page="accueil">
+<section class="flemme-chrome-home bandeau accueil">
+<!--#entete-->
+  <div class="accueil-contenu">
+    <div class="accueil-texte">
+      <!-- V0.6 : surtitre et titre alternent ensemble toutes les 3,5 s (src/landing.ts). -->
+      <p class="surtitre titre-alterne" data-anim="fondu"><span class="actif">Le droit d’avoir la Flemme.<br>Le Pouvoir d’aider.</span><span aria-hidden="true">Une tâche en moins,<br>un coup de main en plus.</span></p>
+      <h1 class="titre-alterne" data-anim="fondu"><span class="actif">Tu repousses une tâche&#8239;? Trouve quelqu’un pour t’aider.</span><span aria-hidden="true">Des rémunérations pour effectuer des missions.</span></h1>
+      <p class="accroche">Ce que certains repoussent, d’autres aident à le réaliser. Décris ta flemme ou propose tes services, et mettez-vous d’accord.</p>
+      <div class="boutons">
+        <a class="cta" href="app.html#deposer"><span class="cta-texte"><b>Déléguer ma flemme</b><small>Décris ce que tu aimerais confier.</small></span><span class="cta-fleche" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><path d="M12 6v12M6 12h12"/></g></svg></span></a>
+        <a class="cta vert" href="resoudre.html"><span class="cta-texte"><b>Résoudre une flemme</b><small>Trouve une demande et propose ton aide.</small></span><span class="cta-fleche" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="currentColor"><circle cx="16.5" cy="10.5" r="1.6"/><circle cx="14.7" cy="14.7" r="1.6"/><circle cx="10.5" cy="16.5" r="1.6"/><circle cx="6.3" cy="14.7" r="1.6"/><circle cx="4.5" cy="10.5" r="1.6"/><circle cx="6.3" cy="6.3" r="1.6"/><circle cx="10.5" cy="4.5" r="1.6"/><circle cx="14.7" cy="6.3" r="1.6"/><circle cx="19" cy="19" r="2.2"/></g></svg></span></a>
       </div>
-      <p class="smallnote">Une demande libre. Un prix discuté ensemble.</p>
+      <p class="note">Flemme.org est un service de mise en relation. Avec un seul compte, tu peux déléguer et aider.</p>
     </div>
-    <div class="showcase" role="region" aria-roledescription="carrousel" aria-label="Exemples de flemmes">
-      <span class="float-label" aria-hidden="true">Un peu moins à faire ✦</span>
-      <div class="showcase-card" id="showcase" aria-live="polite"></div>
-      <div class="showcase-nav">
-        <button type="button" class="showcase-arrow" id="showcasePrev" aria-label="Exemple précédent">←</button>
-        <div class="showcase-dots" id="showcaseDots"></div>
-        <button type="button" class="showcase-arrow" id="showcaseNext" aria-label="Exemple suivant">→</button>
+    <div class="vitrine-exemples" role="region" aria-roledescription="carrousel" aria-label="Exemples de demandes">
+      <div class="exemple" id="exemple" aria-live="polite"></div>
+      <div class="exemples-nav">
+        <button type="button" id="exemplePrec" aria-label="Exemple précédent"><svg class="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter" transform="matrix(-1 0 0 1 24 0)"><path d="M5 12h14M14 7l5 5-5 5"/></g></svg></button>
+        <div class="points" id="exemplePoints"></div>
+        <button type="button" id="exempleSuiv" aria-label="Exemple suivant"><svg class="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 12h14M14 7l5 5-5 5"/></g></svg></button>
       </div>
+      <p class="exemples-note">Exemples pour illustrer, pas de vraies demandes.</p>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section id="comment" class="block">
-    <p class="eyebrow">Comment ça marche</p>
-    <h2 class="heading">De la flemme au coup de main, en 5 étapes.</h2>
-    <ol class="parcours">
-      <li class="etape flemmard"><div class="etape-tete"><span class="etape-num">1</span><span aria-hidden="true">☕</span></div><span class="etape-role">Flemmard</span><h3>Publication d’une annonce</h3><p>Il décrit ce qu’il repousse, avec un budget et un délai indicatifs.</p></li>
-      <li class="etape brigadier"><div class="etape-tete"><span class="etape-num">2</span><span aria-hidden="true">✋</span></div><span class="etape-role">Brigadier</span><h3>Candidature proposée</h3><p>Ceux que la demande inspire proposent de s’en charger, avec leur forfait.</p></li>
-      <li class="etape"><div class="etape-tete"><span class="etape-num">3</span><span aria-hidden="true">✉</span></div><span class="etape-role">Les deux</span><h3>Mise en relation en privé</h3><p>Une conversation s’ouvre : questions, précisions, prix négocié.</p></li>
-      <li class="etape"><div class="etape-tete"><span class="etape-num">4</span><span aria-hidden="true">✍</span></div><span class="etape-role">Les deux</span><h3>Préparation d’un contrat</h3><p>Résultat attendu, délai, prix et conditions, acceptés par les deux.</p></li>
-      <li class="etape"><div class="etape-tete"><span class="etape-num">5</span><span aria-hidden="true">✓</span></div><span class="etape-role">Les deux</span><h3>Suivi de la prestation</h3><p>Étapes, fichiers et accompagnement jusqu’au résultat.</p></li>
+<main>
+  <section class="bloc" style="padding-top:56px">
+    <p class="surtitre">Comment ça marche</p>
+    <h2 class="titre">En bref, trois étapes</h2>
+    <ol class="etapes">
+      <li><b>1 · Tu décris ta tâche</b><p>Le résultat que tu attends, le lieu si c’est sur place, un délai si tu en as un.</p></li>
+      <li><b>2 · Tu reçois des propositions</b><p>Des personnes qui peuvent t’aider indiquent leur prix et ce qui est inclus.</p></li>
+      <li><b>3 · Vous vous mettez d’accord</b><p>Tu relis l’accord et le prix total avant d’accepter.</p></li>
     </ol>
+    <a class="lien-fort" href="comment-ca-marche.html">Voir le fonctionnement en détail →</a>
   </section>
 
-  <section class="block split">
-    <div>
-      <p class="eyebrow">Le prix, sans surprise</p>
-      <h2 class="heading">Le forfait du Brigadier + 10&#8239;%.</h2>
-      <p>Le Brigadier fixe son prix. FLEMME ajoute 10&#8239;%, arrondis au centime, et c’est tout : pas de frais minimum, pas d’abonnement.</p>
+  <section class="bloc">
+    <p class="surtitre">Catégories</p>
+    <h2 class="titre">Qu’est-ce que tu aimerais déléguer&#8239;?</h2>
+    <!-- Mêmes exemples que le carrousel (tableur « Flemme – Exemples du carrousel », lignes « En ligne »). -->
+    <div class="grille etroite">
+      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="maison"><span class="etiquette" style="background:var(--vert-tendre)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 11l7-6 7 6v8H5z"/></g></svg> Maison</span><b>Monter mes nouveaux meubles Ikea…</b><span>Lyon · Croix-Rousse · dans la semaine</span></a>
+      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="numerique"><span class="etiquette" style="background:var(--peche)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><rect x="5" y="6" width="14" height="10"/><path d="M9 19h6"/></g></svg> Numérique</span><b>S’occuper de mon annonce LeBonCoin</b><span>À distance · dans le mois</span></a>
+      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="administratif"><span class="etiquette" style="background:var(--glacier-clair)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 4h9l3 3v13H6z"/><path d="M9 11h6M9 15h4"/></g></svg> Démarches</span><b>Ce dossier de la CAF qui me fait peur…</b><span>À distance · environ 1 semaine</span></a>
+      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="organisation"><span class="etiquette" style="background:var(--lavande)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><circle cx="12" cy="12" r="7"/><path d="M12 8v4h3"/></g></svg> Organisation</span><b>L’anniversaire de Léa dans dix jours…</b><span>Paris · 11e · environ 1 mois</span></a>
+      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="maison"><span class="etiquette" style="background:var(--lagon)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><path d="M12 5v14M5 12h14M7.5 7.5l9 9M16.5 7.5l-9 9"/></g></svg> Quotidien</span><b>Ces cartons du déménagement…</b><span>Nantes · Centre · ce week-end</span></a>
     </div>
-    <form class="card calc" id="calc" novalidate>
-      <div class="field"><label for="amount">Forfait Brigadier</label><input id="amount" inputmode="decimal" value="40" autocomplete="off" aria-describedby="calcError"></div>
-      <div class="row"><span>Forfait Brigadier</span><span class="strong" id="cBase">40,00 €</span></div>
-      <div class="row"><span>FLEMME · 10&#8239;%</span><span class="strong" id="cFee">4,00 €</span></div>
-      <div class="divider"></div>
-      <div class="row"><span class="strong">Total déposant</span><span class="price" id="cTotal">44,00 €</span></div>
-      <p class="note" id="calcError" aria-live="polite"></p>
-    </form>
+    <a class="lien-fort" href="resoudre.html">Voir les demandes disponibles →</a>
   </section>
 
-  <section class="block">
-    <p class="eyebrow">À toi de jouer, Brigadier.</p>
-    <h2 class="heading">Tu sais faire&#8239;? Propose ton aide.</h2>
-    <p class="narrow">Retours de colis, meuble à monter, CV à remettre au propre… Choisis les flemmes qui te parlent, annonce ton forfait et tes disponibilités. Tu es payé directement par la personne que tu aides.</p>
-    <a class="btn wide-btn" href="app.html#find">Voir les flemmes disponibles</a>
+  <section class="bloc serre">
+    <p class="surtitre">Confiance</p>
+    <h2 class="titre">Ce qui vous protège, l’un comme l’autre</h2>
+    <div class="grille" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+      <div class="carte"><b>Chaque flemme est relue</b><p class="doux">L’équipe relit les demandes et les propositions de prestation avant qu’elles soient visibles. Cette relecture ne garantit pas le résultat.</p></div>
+      <div class="carte"><b>Un accord écrit et signé</b><p class="doux">Résultat attendu, délai et prix sont acceptés et signés par les deux avant de commencer.</p></div>
+      <div class="carte"><b>Un examen humain en cas de désaccord</b><p class="doux">Un désaccord peut être signalé depuis la mission. Rien n’est effacé&#8239;: messages et historique sont conservés.</p></div>
+      <div class="carte"><b>Un prix clair</b><p class="doux">Le forfait, les frais Flemme et le total à payer sont affichés avant d’accepter.</p></div>
+    </div>
+    <a class="lien-fort" href="comment-ca-marche.html#confiance">Nos engagements →</a>
   </section>
 
-  <section class="block honest">
-    <p class="eyebrow">Version de test</p>
-    <h2 class="heading">Ce que cette version fait, et ne fait pas.</h2>
-    <ul class="facts">
-      <li><b>Paiement direct.</b> Tu paies le Brigadier toi-même. FLEMME n’encaisse encore ni la prestation ni ses 10&#8239;%.</li>
-      <li><b>Déclaratif.</b> « J’ai payé » et « J’ai reçu » sont des déclarations, pas une vérification bancaire.</li>
-      <li><b>Rien n’est effacé.</b> Offres, messages et historique sont conservés. Un désaccord peut être signalé pour un examen humain.</li>
-      <li><b>Pas d’achats à avancer</b> et pas de changement de prix après accord dans ce premier test.</li>
-    </ul>
+  <section class="bloc duo" style="flex-direction:row;align-items:center">
+    <div style="flex:1 1 360px;display:flex;flex-direction:column;gap:8px"><p class="surtitre">Contact</p><h2 class="titre">Écris-nous</h2><p class="doux">L’équipe lit chaque message et répond par e-mail.</p></div>
+    <div class="contact-carte"><b class="contact-mail" id="contactMail">ben.champly@gmail.com</b><div class="boutons" style="gap:8px"><a class="bouton petit" href="contact.html">Écrire un message</a><button type="button" class="bouton petit clair" data-copier="contactMail" data-note="copieNote">Copier l’adresse</button></div><p class="doux" id="copieNote" aria-live="polite" style="font-size:13px"></p></div>
+  </section>
+  <section class="bloc" style="text-align:center;align-items:center">
+    <p class="surtitre">Une flemme en tête&#8239;?</p>
+    <h2 class="titre">Une tâche en moins, un coup de main en plus.</h2>
+    <p class="doux">Décris ta flemme en quelques minutes, ou trouve une demande disponible près de chez toi ou à distance.</p>
+    <div class="boutons" style="justify-content:center"><a class="bouton" href="app.html#deposer">Déléguer ma flemme</a><a class="bouton vert" href="resoudre.html">Résoudre une flemme</a></div>
   </section>
 </main>
-
-<footer class="foot">
-  <p class="foot-about"><b>Flemme met en relation</b> les personnes qui veulent déléguer une tâche et celles qui souhaitent proposer leur aide.</p>
-  <b>FLEMME.</b> Déléguer un peu. Aider quelqu’un.
-  <nav><a href="/mentions.html">Mentions légales</a><a href="/confidentialite.html">Confidentialité</a><a href="mailto:ben.champly@gmail.com">Contact</a></nav>
-</footer>
+<!--#pied-->
 <script type="module" src="/src/landing.ts"></script>
 </body>
 </html>

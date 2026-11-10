@@ -3,10 +3,12 @@ import { prepareLink } from '../authLinks.ts';
 import { Action } from '../ui.tsx';
 import type { Ctx } from './contexte.ts';
 
-export function Connexion({ state: { gateway, busy }, draft, field, clearDraft }: Ctx) {
+export function Connexion({ state: { gateway, busy }, place, draft, field, clearDraft }: Ctx) {
   const email = draft.email || '', password = draft.password || '';
   const forgetPassword = () => clearDraft(['password']);
-  return <><h1 className="heading">Un peu de flemme ?</h1><p>Connecte-toi pour déposer une tâche ou proposer ton aide.</p>
+  // Le motif de connexion suit le bouton choisi sur la vitrine ; après connexion, l’app reprend sur cet écran.
+  const motif = place.screen === 'new' ? 'Connecte-toi pour décrire ta demande' : place.tab === 'find' && place.screen === 'list' ? 'Connecte-toi pour voir les demandes et proposer ton aide' : 'Connecte-toi pour retrouver ton espace';
+  return <><h1 className="heading">{motif}</h1><p>Un seul compte pour déléguer une tâche et proposer ton aide. Tu reviens ensuite directement là où tu en étais.</p>
     <p className="note">Déjà inscrit sur l’ancien espace FLEMME ? Utilise la même adresse e-mail. Si tu te connectais par lien e-mail, Google ou Apple, choisis « Mot de passe oublié ? » pour créer ton mot de passe.</p>
     {field('E-mail', 'email')}{field('Mot de passe', 'password', { secret: true })}
     <Action disabled={busy || !gateway} onClick={() => session.login(email, password, () => clearDraft())}>Me connecter</Action>
