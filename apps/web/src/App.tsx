@@ -8,6 +8,7 @@ import { Action } from './ui.tsx';
 import pied from './site/pied.html?raw';
 import './site/site.css';
 import './site/reglages.css';
+import './site/reglages-retenus.css';
 import type { Ctx, Draft, FieldOptions, Place } from './ecrans/contexte.ts';
 import { Accueil } from './ecrans/Accueil.tsx';
 import { Accord } from './ecrans/Accord.tsx';
