@@ -1,8 +1,15 @@
 {
  "schemaVersion": 2,
  "repository": "benchamply-cmyk/flemme.org-web-app",
- "default": "v05",
+ "default": "v06",
  "versions": [
+  {
+   "id": "v06",
+   "label": "Version V0.6",
+   "detail": "PR #49 (brouillon) · en-tête Home/Déléguer/Résoudre/Menu/Aide, pied 3 colonnes, accroches alternées, Confiance et appel final ; visuel V0.5",
+   "commit": "494264e0748ce7cac8a1372b8a3cbbecd445169a",
+   "family": "v06"
+  },
   {
    "id": "v05",
    "label": "Design V0.5",
