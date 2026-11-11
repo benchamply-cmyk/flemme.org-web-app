@@ -10,7 +10,11 @@ export function Action({ children, onPress, secondary = false, small = false, di
 // Accord conclu : montants figés par le serveur (agreed) ; sinon calcul avec le réglage courant (COMMISSION).
 export function Bill({ amount, agreed }: { amount: number; agreed?: Price }) {
   const p = agreed?.payout != null ? agreed : price(amount);
-  return <View style={styles.card} accessibilityLabel="Récapitulatif du prix"><View style={styles.row}><Text style={styles.body}>{p.model === 'ajout' ? 'Forfait Brigadier' : 'Reversé au Brigadier'}</Text><Text style={styles.strong}>{money(p.model === 'ajout' ? p.amount : p.payout)}</Text></View><View style={styles.row}><Text style={styles.body}>FLEMME · {rateLabel(p)}</Text><Text style={styles.strong}>{money(p.commission)}</Text></View><View style={styles.divider}/><View style={styles.row}><Text style={styles.strong}>Total déposant</Text><Text style={styles.price}>{money(p.total)}</Text></View></View>;
+  const row = (label: string, value: number, strong = false) => <View style={styles.row}><Text style={strong ? styles.strong : styles.body}>{label}</Text><Text style={strong ? styles.price : styles.strong}>{money(value)}</Text></View>;
+  if (p.model === 'partage') return <View style={styles.card} accessibilityLabel="Récapitulatif du prix">
+    {row('Forfait', p.amount)}{row('Frais FLEMME · ' + rateLabel({ rateBps: p.rateBps }), p.total - p.amount)}<View style={styles.divider}/>{row('Total déposant', p.total, true)}
+    {row('Reversé au Brigadier (forfait − ' + rateLabel({ rateBps: p.brigadierBps ?? 0 }) + ')', p.payout)}</View>;
+  return <View style={styles.card} accessibilityLabel="Récapitulatif du prix">{row(p.model === 'ajout' ? 'Forfait Brigadier' : 'Reversé au Brigadier', p.model === 'ajout' ? p.amount : p.payout)}{row('FLEMME · ' + rateLabel(p), p.commission)}<View style={styles.divider}/>{row('Total déposant', p.total, true)}</View>;
 }
 /** Case à cocher (acceptation de l’accord). */
 export function Check({ checked, onChange, disabled, children }: { checked: boolean; onChange: (v: boolean) => void; disabled?: boolean; children: React.ReactNode }) {

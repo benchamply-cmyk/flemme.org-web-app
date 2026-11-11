@@ -7,7 +7,7 @@ const out = (id: string, value: string) => { document.getElementById(id)!.textCo
 function update() {
   try {
     const p = price(parseMoney(input.value) as number);
-    out('cBase', money(p.amount)); out('cFee', money(p.commission)); out('cTotal', money(p.total)); out('calcError', '');
+    out('cBase', money(p.payout)); out('cFee', money(p.total - p.amount)); out('cTotal', money(p.total)); out('calcError', '');
     input.removeAttribute('aria-invalid');
   } catch (e) { out('calcError', (e as Error).message); input.setAttribute('aria-invalid', 'true'); }
 }

@@ -80,14 +80,14 @@
         <p class="surtitre">Prix et paiement</p>
         <h2 class="titre">Quel prix vais-je payer ou recevoir&#8239;?</h2>
         <p class="doux">Le forfait correspond au prix proposé par la personne qui réalise la tâche. Avant l’accord, le récapitulatif présente le forfait, les frais Flemme et le total à payer. La personne qui réalise la tâche voit le montant qu’elle recevra.</p>
-        <p class="doux">Dans cette première version, tu règles la personne qui t’aide directement. Flemme n’encaisse encore ni la prestation ni ses frais.</p>
+        <p class="doux">Flemme garde 25&#8239;% du forfait, partagés&#8239;: 12&#8239;% ajoutés à ton prix et 13&#8239;% retenus sur la part du Brigadier. Le paiement se fait en ligne&#8239;; l’argent reste bloqué jusqu’à ta validation.</p>
       </div>
       <form class="carte ombre calcul" id="calc" novalidate>
         <label class="champ" for="amount">Forfait proposé (€)<input id="amount" inputmode="decimal" value="40" autocomplete="off" aria-describedby="calcError"></label>
-        <div class="ligne"><span>Reçu par le Brigadier</span><b id="cBase">40,00 €</b></div>
-        <div class="ligne"><span>Frais Flemme · 10&#8239;%</span><b id="cFee">4,00 €</b></div>
+        <div class="ligne"><span>Frais Flemme pour toi · 12&#8239;%</span><b id="cFee">4,80 €</b></div>
         <div class="trait"></div>
-        <div class="ligne total"><b>Total à payer</b><b id="cTotal">44,00 €</b></div>
+        <div class="ligne total"><b>Total à payer</b><b id="cTotal">44,80 €</b></div>
+        <div class="ligne"><span>Reçu par le Brigadier · forfait − 13&#8239;%</span><b id="cBase">34,80 €</b></div>
         <p class="erreur" id="calcError" aria-live="polite"></p>
       </form>
     </div>

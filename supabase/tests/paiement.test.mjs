@@ -45,16 +45,25 @@ assert.deepEqual([t.agreement.commission, t.agreement.total, t.agreement.payout,
 // Réglage serveur identique à COMMISSION de packages/shared/src/domain.ts.
 await db.exec('reset role');
 const domain = await readFile(new URL('../../packages/shared/src/domain.ts', import.meta.url), 'utf8');
-const [, model, bps] = domain.match(/COMMISSION: CommissionConfig = \{ model: '(\w+)', rateBps: (\d+) \}/);
-assert.deepEqual((await db.query('select commission_model, commission_bps from flemme_v2.settings')).rows, [{ commission_model: model, commission_bps: Number(bps) }]);
+const [, model, bps, brigadierBps = '0'] = domain.match(/COMMISSION: CommissionConfig = \{ model: '(\w+)', rateBps: (\d+)(?:, brigadierBps: (\d+))? \}/);
+assert.deepEqual((await db.query('select commission_model, commission_bps, commission_brigadier_bps from flemme_v2.settings')).rows,
+  [{ commission_model: model, commission_bps: Number(bps), commission_brigadier_bps: Number(brigadierBps) }]);
 await assert.rejects(db.query('insert into flemme_v2.settings(id) values(false)'));
 for (const table of ['settings', 'brigadier_accounts', 'payments']) {
   await actor(owner); await assert.rejects(db.query(`select * from flemme_v2.${table}`), /permission denied/);
 }
 
-// Modèle « 65 % reversés au Brigadier », puis retour aux 10 % : les accords conclus ne bougent pas.
+// Option B : 12 % ajoutés pour le déposant, 13 % retenus au Brigadier (réglage par défaut de 20261112120000).
+const partage = await agreed(4000);
+assert.deepEqual([partage.agreement.commission, partage.agreement.total, partage.agreement.payout, partage.agreement.rateBps, partage.agreement.brigadierBps, partage.agreement.model],
+  [1000, 4480, 3480, 1200, 1300, 'partage']);
+assert.match(partage.history.at(-1).text, /commission de 12 % \+ 13 % confirmés/);
+// La part Brigadier n'est permise qu'avec le modèle partagé.
 await db.exec('reset role');
-await db.exec("update flemme_v2.settings set commission_model='prelevement', commission_bps=3500");
+await assert.rejects(db.query("update flemme_v2.settings set commission_model='ajout'"), /settings_commission_brigadier_rule/);
+
+// Modèle « 65 % reversés au Brigadier », puis retour aux 10 % : les accords conclus ne bougent pas.
+await db.exec("update flemme_v2.settings set commission_model='prelevement', commission_bps=3500, commission_brigadier_bps=0");
 const brigade = await agreed(4000);
 assert.deepEqual([brigade.agreement.commission, brigade.agreement.total, brigade.agreement.payout, brigade.agreement.model], [1400, 4000, 2600, 'prelevement']);
 assert.match(brigade.history.at(-1).text, /commission de 35 % confirmés/);

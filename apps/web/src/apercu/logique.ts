@@ -55,14 +55,15 @@ export function filterTasks<T extends Flemme>(tasks: T[], f: Filtre): T[] {
 }
 
 /**
- * Modèle retenu le 3 novembre 2026 : 10 % ajoutés au forfait du Brigadier, payés par le Flemmard.
+ * Réglage COMMISSION (option B, PR brouillon) : 12 % ajoutés pour le client, 13 % retenus sur le forfait du Brigadier.
+ * frais = ce que le client paie en plus du forfait ; recu = ce que touche le Brigadier.
  * Renvoie null si le prix n’est pas un montant positif.
  */
 export function tarif(prix: unknown): { forfait: string; frais: string; total: string; recu: string; taux: string } | null {
   const n = Number(String(prix ?? '').replace(',', '.'));
   if (!String(prix ?? '').trim() || !Number.isFinite(n) || n <= 0) return null;
   const p = price(Math.round(n * 100));
-  return { forfait: money(p.amount), frais: money(p.commission), total: money(p.total), recu: money(p.payout), taux: rateLabel() };
+  return { forfait: money(p.amount), frais: money(p.total - p.amount), total: money(p.total), recu: money(p.payout), taux: rateLabel() };
 }
 
 /** Ajoute une transcription à la fin de la description, sans casser le texte déjà saisi. */

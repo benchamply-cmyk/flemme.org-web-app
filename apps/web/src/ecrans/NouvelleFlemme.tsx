@@ -38,7 +38,7 @@ export function NouvelleFlemme({ state: { busy }, place, task, draft, field, cho
     {draft.deadline === 'autre' && field('Précise le délai', 'deadlineNote', { hint: 'Ex. avant la rentrée' })}
     {field('Budget · facultatif, hors frais', 'amount', { numeric: true })}
     {choice('Ou une fourchette · facultatif', 'budgetRange', BUDGET_RANGES, 'À discuter')}
-    {estimate && <p className="note">Si une proposition à ce prix est acceptée, tu paieras {money(estimate.total)} : {money(estimate.amount)} pour la personne qui t’aide et {money(estimate.commission)} de frais FLEMME.</p>}
+    {estimate && <p className="note">Si une proposition à ce prix est acceptée, tu paieras {money(estimate.total)} : le forfait de {money(estimate.amount)} et {money(estimate.total - estimate.amount)} de frais FLEMME.</p>}
     <h2 className="section-title">Vérifie ta demande</h2>
     <p className="muted">Voici les informations qui pourront être visibles sur ta fiche.</p>
     <div className="card apercu-demande" aria-label="Aperçu de ta fiche publique"><span className="row"><span className="tag">{label(CATEGORIES, draft.category) || 'Catégorie à choisir'}</span><span className="strong">{budget}</span></span><span className="card-title">{draft.title || 'Titre à compléter'}</span><span className="muted">{[lieu, draft.deadline ? (draft.deadline === 'autre' ? draft.deadlineNote : label(DEADLINES, draft.deadline)) : 'Délai à discuter'].filter(Boolean).join(' · ')}</span>{draft.details && <span>{draft.details}</span>}</div>

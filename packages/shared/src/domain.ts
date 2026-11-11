@@ -41,28 +41,39 @@ export type Command = 'edit' | 'offer' | 'message' | 'accept' | 'decline' | 'com
   | 'apply' | 'apply_edit' | 'agreement_save' | 'agreement_submit' | 'agreement_sign' | 'review';
 export type Input = Record<string, unknown>;
 /*
- * Commission FLEMME, configurable. Le modèle économique n'est pas encore tranché (roadmap V2) :
- * - 'ajout' : la commission s'ajoute au forfait du Brigadier (modèle actuel, 10 %).
+ * Commission FLEMME, configurable. Trois modèles :
+ * - 'ajout' : la commission s'ajoute au forfait du Brigadier (décision du 03/11/2026, 10 %).
  *   Le déposant paie forfait + commission, le Brigadier reçoit tout son forfait.
  * - 'prelevement' : la commission est prise sur le prix payé par le déposant.
  *   Exemple « 65 % reversés au Brigadier » : { model: 'prelevement', rateBps: 3500 }.
- * rateBps est en points de base (1000 = 10 %). Le serveur garde sa propre copie de ce réglage
- * (table flemme_mobile_v1.settings) ; un test vérifie que les deux restent identiques.
+ * - 'partage' (option B, PR brouillon) : rateBps est ajouté au prix du déposant et brigadierBps est retenu
+ *   sur le forfait du Brigadier. Exemple 12 % + 13 % : sur 40 €, le déposant paie 44,80 €, le Brigadier reçoit 34,80 €.
+ * Les taux sont en points de base (1000 = 10 %). Le serveur garde sa propre copie de ce réglage
+ * (table flemme_v2.settings) ; un test vérifie que les deux restent identiques.
  */
-export type CommissionModel = 'ajout' | 'prelevement';
-export type CommissionConfig = { model: CommissionModel; rateBps: number };
-export const COMMISSION: CommissionConfig = { model: 'ajout', rateBps: 1000 };
-export type Price = { amount: number; commission: number; total: number; payout: number; rateBps: number; model: CommissionModel };
+export type CommissionModel = 'ajout' | 'prelevement' | 'partage';
+export type CommissionConfig = { model: CommissionModel; rateBps: number; brigadierBps?: number };
+export const COMMISSION: CommissionConfig = { model: 'partage', rateBps: 1200, brigadierBps: 1300 };
+export type Price = { amount: number; commission: number; total: number; payout: number; rateBps: number; brigadierBps?: number; model: CommissionModel };
+const validBps = (bps: number) => Number.isSafeInteger(bps) && bps >= 0 && bps <= 10000;
 export function price(amount: number, config: CommissionConfig = COMMISSION): Price {
-  if (!Number.isSafeInteger(config.rateBps) || config.rateBps < 0 || config.rateBps > 10000) throw new Error('Taux de commission invalide.');
+  const brigadierBps = config.brigadierBps ?? 0;
+  if (!validBps(config.rateBps) || !validBps(brigadierBps)) throw new Error('Taux de commission invalide.');
+  if (config.model !== 'partage' && brigadierBps) throw new Error('La part Brigadier ne vaut que pour le modèle partagé.');
   const fee = Math.round(amount * config.rateBps / 10000); // centimes entiers, arrondi au centime le plus proche
+  if (config.model === 'partage') {
+    const kept = Math.round(amount * brigadierBps / 10000);
+    return { amount, commission: fee + kept, total: amount + fee, payout: amount - kept, rateBps: config.rateBps, brigadierBps, model: config.model };
+  }
   return config.model === 'ajout'
     ? { amount, commission: fee, total: amount + fee, payout: amount, rateBps: config.rateBps, model: config.model }
     : { amount, commission: fee, total: amount, payout: amount - fee, rateBps: config.rateBps, model: config.model };
 }
 export const commission = (amount: number, config: CommissionConfig = COMMISSION) => price(amount, config).commission;
-export const rateLabel = (config: Pick<CommissionConfig, 'rateBps'> = COMMISSION) =>
-  new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 2 }).format(config.rateBps / 100) + ' %';
+const percent = (bps: number) => new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 2 }).format(bps / 100) + ' %';
+/** « 10 % », ou « 12 % + 13 % » pour le modèle partagé (part déposant + part Brigadier). */
+export const rateLabel = (config: Pick<CommissionConfig, 'rateBps' | 'brigadierBps'> = COMMISSION) =>
+  config.brigadierBps ? percent(config.rateBps) + ' + ' + percent(config.brigadierBps) : percent(config.rateBps);
 export function money(amount: number) {
   return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(amount / 100);
 }

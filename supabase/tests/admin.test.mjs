@@ -69,7 +69,7 @@ assert.deepEqual(alerts.map(a => a.kind), ['report', 'agreement', 'task_created'
 assert.ok(alerts.every(a => /vault|decrypted_secrets/i.test(a.error) && !a.dispatchedAt), 'sans pg_net/Vault : erreur notée, rien de perdu');
 assert.equal(alerts[0].payload.text, 'Le Brigadier n’est pas venu');
 assert.equal(alerts[0].payload.actor, 'deposant'); assert.equal(alerts[0].payload.brigadier, 'brigadier');
-assert.deepEqual([alerts[1].payload.amount, alerts[1].payload.commission], [3000, 300]);
+assert.deepEqual([alerts[1].payload.amount, alerts[1].payload.commission], [3000, 750]); // commission partagée 12 % + 13 % (20261112120000)
 assert.ok((await adm('alert_retry', { id: alerts[0].id })).alert.error);
 
 let overview = await adm('overview');

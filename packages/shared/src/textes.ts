@@ -38,14 +38,22 @@ export const footer = (remote: boolean, online = false) => remote ? (online ? 'P
 
 // Commission : textes calculés à partir de COMMISSION (domain.ts), jamais « 10 % » en dur.
 export const commissionNote = () => COMMISSION.model === 'ajout'
-  ? `Commission FLEMME de ${rateLabel()} ajoutée au forfait accepté.` : `FLEMME garde ${rateLabel()} du prix payé.`;
+  ? `Commission FLEMME de ${rateLabel()} ajoutée au forfait accepté.`
+  : COMMISSION.model === 'partage'
+    ? `Frais FLEMME : ${rateLabel({ rateBps: COMMISSION.rateBps })} ajoutés au forfait pour le déposant, ${rateLabel({ rateBps: COMMISSION.brigadierBps ?? 0 })} retenus sur la part du Brigadier.`
+    : `FLEMME garde ${rateLabel()} du prix payé.`;
 export const brigadierPitch = () => COMMISSION.model === 'ajout'
-  ? `Propose ton forfait. Le déposant règle ${rateLabel()} en plus à FLEMME.` : `Propose ton prix. FLEMME garde ${rateLabel()}, le reste est pour toi.`;
+  ? `Propose ton forfait. Le déposant règle ${rateLabel()} en plus à FLEMME.`
+  : COMMISSION.model === 'partage'
+    ? `Propose ton forfait. FLEMME retient ${rateLabel({ rateBps: COMMISSION.brigadierBps ?? 0 })}, le reste est pour toi ; le déposant paie ${rateLabel({ rateBps: COMMISSION.rateBps })} de frais en plus.`
+    : `Propose ton prix. FLEMME garde ${rateLabel()}, le reste est pour toi.`;
 /** Note sous l’accord : paiement en ligne (Stripe Connect) ou paiement direct déclaratif. */
 export function paymentNote(a: Agreement, online: boolean, money: (n: number) => string) {
   return online
     ? `Paiement en ligne une fois la tâche terminée : ${money(a.total)} par carte via Stripe. ${money(a.payout ?? a.amount)} sont versés au Brigadier, ${money(a.commission)} reviennent à FLEMME.`
-    : `Paiement direct : ${money(a.amount)} au Brigadier. Commission FLEMME : ${money(a.commission)} à régler séparément, non encaissée dans cette version.`;
+    : a.model === 'partage'
+      ? `Paiement direct : ${money(a.amount)} au Brigadier. Frais FLEMME : ${money(a.total - a.amount)} pour le déposant et ${money(a.amount - a.payout)} pour le Brigadier, non encaissés dans cette version.`
+      : `Paiement direct : ${money(a.amount)} au Brigadier. Commission FLEMME : ${money(a.commission)} à régler séparément, non encaissée dans cette version.`;
 }
 /** Message au retour de Stripe Checkout (app.html#paiement-ok / #paiement-annule). */
 export const paymentReturn = (hash: string) => hash === '#paiement-ok'

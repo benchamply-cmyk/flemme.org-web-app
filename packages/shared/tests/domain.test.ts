@@ -12,8 +12,10 @@ test('montants : français, centimes, limites et arrondi de la commission', () =
   assert.equal(parseMoney('40,05'), 4005);
   assert.equal(parseMoney('', true), null);
   for (const bad of ['0', '-1', '1.005', '1e2', 'Infinity', '10000.01', '  ']) assert.throws(() => parseMoney(bad));
-  assert.equal(commission(4000), 400);
-  assert.equal(commission(1005), 101);
+  assert.equal(commission(4000), 1000); // 12 % + 13 % (option B)
+  assert.equal(commission(1005), 252); // 121 + 131, chaque part arrondie au centime
+  assert.equal(commission(4000, { model: 'ajout', rateBps: 1000 }), 400);
+  assert.equal(commission(1005, { model: 'ajout', rateBps: 1000 }), 101);
   assert.equal(commission(1), 0);
 });
 test('annonce ouverte sans expiration, budget facultatif et validation', () => {
@@ -35,7 +37,7 @@ test('acceptation unique, prix figé et autres offres conservées', () => {
   assert.throws(() => applyCommand(t, brigadier, 'accept', { offerId: 'o' }, at));
   t = applyCommand(t, owner, 'accept', { offerId: 'o' }, at);
   assert.equal(t.status, 'assigned');
-  assert.deepEqual(t.agreement, { amount: 4000, commission: 400, total: 4400, payout: 4000, rateBps: 1000, model: 'ajout', slot: 'Samedi', scope: 'Déplacement inclus', brigadier });
+  assert.deepEqual(t.agreement, { amount: 4000, commission: 1000, total: 4480, payout: 3480, rateBps: 1200, brigadierBps: 1300, model: 'partage', slot: 'Samedi', scope: 'Déplacement inclus', brigadier });
   assert.equal(t.offers.length, 2); assert.equal(t.offers[1].status, 'not_selected');
   assert.throws(() => applyCommand(t, owner, 'accept', { offerId: 'o2' }, at));
   assert.throws(() => applyCommand(t, stranger, 'offer', { id: 'o3', amount: 1000 }, at));
@@ -50,7 +52,7 @@ test('tâche terminée, paiement déclaré puis confirmé, signalement conservé
   t = applyCommand(t, brigadier, 'confirm_payment', {}, at);
   t = applyCommand(t, brigadier, 'report', { text: 'Prestation contestée' }, at);
   assert.equal(t.paymentConfirmed, true); assert.equal(t.reports.length, 1);
-  assert.equal(t.history.length, 7); assert.equal(t.agreement?.commission, 400);
+  assert.equal(t.history.length, 7); assert.equal(t.agreement?.commission, 1000);
   assert.throws(() => applyCommand(t, stranger, 'report', { text: 'Intrusion' }, at));
 });
 test('déclin conserve la proposition et permet un nouveau forfait', () => {
@@ -71,10 +73,13 @@ test('persistance : un échec disque n’annonce pas une création réussie ; re
   assert.ok(t.offers[0].id);
   assert.equal((await g.list()).tasks.find(x => x.id === a.id)?.offers.length, 1);
 });
-test('commission configurable : ajout (actuel) ou prélèvement, figée dans l’accord', () => {
-  assert.deepEqual(COMMISSION, { model: 'ajout', rateBps: 1000 });
-  assert.equal(rateLabel(), '10 %');
-  assert.deepEqual(price(4005), { amount: 4005, commission: 401, total: 4406, payout: 4005, rateBps: 1000, model: 'ajout' });
+test('commission configurable : partage (option B), ajout ou prélèvement, figée dans l’accord', () => {
+  assert.deepEqual(COMMISSION, { model: 'partage', rateBps: 1200, brigadierBps: 1300 });
+  assert.deepEqual(price(4000), { amount: 4000, commission: 1000, total: 4480, payout: 3480, rateBps: 1200, brigadierBps: 1300, model: 'partage' });
+  assert.equal(rateLabel(), '12 % + 13 %');
+  assert.throws(() => price(4000, { model: 'ajout', rateBps: 1000, brigadierBps: 1300 }));
+  for (const brigadierBps of [-1, 10001, 1.5]) assert.throws(() => price(4000, { model: 'partage', rateBps: 1200, brigadierBps }));
+  assert.deepEqual(price(4005, { model: 'ajout', rateBps: 1000 }), { amount: 4005, commission: 401, total: 4406, payout: 4005, rateBps: 1000, model: 'ajout' });
   // Hypothèse « 65 % reversés au Brigadier » : FLEMME prélève 35 % du prix payé.
   const brigade = { model: 'prelevement' as const, rateBps: 3500 };
   assert.deepEqual(price(4000, brigade), { amount: 4000, commission: 1400, total: 4000, payout: 2600, rateBps: 3500, model: 'prelevement' });

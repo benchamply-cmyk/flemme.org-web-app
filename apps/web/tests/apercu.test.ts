@@ -5,14 +5,14 @@ import { appendDictation, budgetLabel, filterTasks, tarif, validateRequest } fro
 // Les montants formatés par Intl contiennent des espaces insécables : on les normalise pour comparer.
 const plain = (s: string | undefined) => s?.replace(/\s/g, ' ');
 
-test('aperçu · tarif : 10 % ajoutés au forfait du Brigadier, payés par le Flemmard', () => {
+test('aperçu · tarif : 12 % ajoutés pour le client, 13 % retenus au Brigadier (option B)', () => {
   const t = tarif('40');
   assert.equal(plain(t?.forfait), '40,00 €');
-  assert.equal(plain(t?.frais), '4,00 €');
-  assert.equal(plain(t?.total), '44,00 €');
-  assert.equal(plain(t?.recu), '40,00 €');
-  assert.equal(t?.taux, '10 %');
-  assert.equal(plain(tarif('12,5')?.total), '13,75 €');
+  assert.equal(plain(t?.frais), '4,80 €');
+  assert.equal(plain(t?.total), '44,80 €');
+  assert.equal(plain(t?.recu), '34,80 €');
+  assert.equal(t?.taux, '12 % + 13 %');
+  assert.equal(plain(tarif('12,5')?.total), '14,00 €');
   assert.equal(tarif(''), null);
   assert.equal(tarif('0'), null);
   assert.equal(tarif('abc'), null);

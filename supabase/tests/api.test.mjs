@@ -92,8 +92,9 @@ await actor(users[0]);
 assert.equal((await api('list')).tasks[0].offers.length, 2);
 const acceptRequest = randomUUID();
 t = (await api('accept', t.id, { offerId, commission: 0, total: 1 }, acceptRequest)).task;
-assert.deepEqual([t.agreement.amount, t.agreement.commission, t.agreement.total, t.agreement.payout, t.agreement.rateBps, t.agreement.model], [4005, 401, 4406, 4005, 1000, 'ajout']);
-assert.match(t.history.at(-1).text, /commission de 10 % confirmés/);
+assert.deepEqual([t.agreement.amount, t.agreement.commission, t.agreement.total, t.agreement.payout, t.agreement.rateBps, t.agreement.model], [4005, 1002, 4486, 3484, 1200, 'partage']); // 12 % + 13 % (20261112120000)
+assert.equal(t.agreement.brigadierBps, 1300);
+assert.match(t.history.at(-1).text, /commission de 12 % \+ 13 % confirmés/);
 assert.equal(t.agreement.brigadier.name, 'Lou.B'); assert.equal(t.acceptedOfferId, offerId);
 assert.equal(t.offers[1].status, 'not_selected'); assert.equal(t.offers[0].messages[0].text, 'Message privé');
 assert.equal(t.offers[0].messages[0].actor.name, 'Lou.B');
