@@ -6,7 +6,7 @@ import './site/commun.ts';
 const anciennes: Record<string, string> = { '#concept': 'comment-ca-marche.html#concept', '#prix': 'comment-ca-marche.html#prix', '#comment': 'comment-ca-marche.html', '#faq': 'faq.html', '#contact': 'contact.html' };
 if (anciennes[location.hash]) location.replace(anciennes[location.hash]);
 
-// Carrousel du haut de page : un exemple fictif par service, avec ce que le Brigadier livre (11 nov. 2026).
+// Carrousel du haut de page : un exemple fictif par service, avec ce que Flemme livre (bêta, 11 nov. 2026).
 const exemples = [
   { cat: 'Démarches et courriers', icone: '<svg class="ico" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 4h9l3 3v13H6z"/><path d="M9 11h6M9 15h4"/></g></svg>', titre: 'Résilier ma salle de sport…', prix: '19 €', delai: '2 jours ouvrés', livre: 'La lettre de résiliation prête à envoyer, l’adresse et le mode d’envoi conseillé.' },
   { cat: 'Annonces de vente', icone: '<svg class="ico" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><rect x="5" y="6" width="14" height="10"/><path d="M9 19h6"/></g></svg>', titre: 'Vendre ma poussette sur Leboncoin…', prix: '19 €', delai: '2 jours ouvrés', livre: 'Titre, description, prix conseillé et trois conseils pour les photos.' },
