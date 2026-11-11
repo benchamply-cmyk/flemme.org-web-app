@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#3a4f7a">
-<title>Flemme.org — On s’occupe de tes démarches et petites corvées numériques</title>
-<meta name="description" content="Courriers et démarches, annonces de vente, recherches et comparatifs : décris ce que tu repousses, Flemme s’en charge à prix fixe et tu valides avant tout envoi.">
+<title>Flemme.org — Délègue tes démarches et corvées numériques, ou aide et sois rémunéré(e)</title>
+<meta name="description" content="Courriers et démarches, annonces de vente, recherches et comparatifs : décris ce que tu repousses, un membre de Flemme s’en charge à un forfait connu d’avance. Ou résous les flemmes des autres et sois rémunéré(e).">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:site_name" content="FLEMME">
-<meta property="og:title" content="Flemme.org — On s’occupe de tes démarches et petites corvées numériques">
-<meta property="og:description" content="Courriers et démarches, annonces de vente, recherches et comparatifs : décris ce que tu repousses, Flemme s’en charge à prix fixe et tu valides avant tout envoi.">
+<meta property="og:title" content="Flemme.org — Délègue tes démarches et corvées numériques, ou aide et sois rémunéré(e)">
+<meta property="og:description" content="Courriers et démarches, annonces de vente, recherches et comparatifs : décris ce que tu repousses, un membre de Flemme s’en charge à un forfait connu d’avance. Ou résous les flemmes des autres et sois rémunéré(e).">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/flemme-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,14 +22,15 @@
 <!--#entete-->
   <div class="accueil-contenu">
     <div class="accueil-texte">
-      <!-- Option A (11 nov. 2026) : un seul public, la personne qui délègue ; titre fixe, un seul bouton. -->
-      <p class="surtitre">Le droit d’avoir la Flemme.</p>
-      <h1>Tes démarches et petites corvées numériques, on s’en charge.</h1>
-      <p class="accroche">Un courrier à écrire, une annonce à rédiger, des offres à comparer&#8239;? Prix fixe annoncé avant de payer, résultat livré en 2 à 3 jours ouvrés, et rien n’est envoyé sans ton accord.</p>
+      <!-- 11 nov. 2026 : 3 services numériques cadrés, missions réalisées par les utilisateurs (Brigadiers) ; titre fixe. -->
+      <p class="surtitre">Le droit d’avoir la Flemme.<br>Le Pouvoir d’aider.</p>
+      <h1>Tes démarches et corvées numériques, quelqu’un s’en charge.</h1>
+      <p class="accroche">Un courrier à écrire, une annonce à rédiger, des offres à comparer&#8239;? Un membre de la communauté Flemme s’en occupe à un forfait connu d’avance, et rien n’est envoyé sans ton accord.</p>
       <div class="boutons">
-        <a class="cta" href="app.html#deposer"><span class="cta-texte"><b>Décris ta flemme</b><small>Quelques lignes suffisent. On te confirme le prix.</small></span><span class="cta-fleche" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><path d="M12 6v12M6 12h12"/></g></svg></span></a>
+        <a class="cta" href="app.html#deposer"><span class="cta-texte"><b>Décris ta flemme</b><small>Quelques lignes suffisent.</small></span><span class="cta-fleche" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><path d="M12 6v12M6 12h12"/></g></svg></span></a>
+        <a class="cta vert" href="resoudre.html"><span class="cta-texte"><b>Résoudre une flemme</b><small>Aide quelqu’un et sois rémunéré(e).</small></span><span class="cta-fleche" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="currentColor"><circle cx="16.5" cy="10.5" r="1.6"/><circle cx="14.7" cy="14.7" r="1.6"/><circle cx="10.5" cy="16.5" r="1.6"/><circle cx="6.3" cy="14.7" r="1.6"/><circle cx="4.5" cy="10.5" r="1.6"/><circle cx="6.3" cy="6.3" r="1.6"/><circle cx="10.5" cy="4.5" r="1.6"/><circle cx="14.7" cy="6.3" r="1.6"/><circle cx="19" cy="19" r="2.2"/></g></svg></span></a>
       </div>
-      <p class="note">Flemme réalise la tâche et en garantit le résultat. Services à distance uniquement pendant la bêta.</p>
+      <p class="note">Flemme.org met en relation&#8239;: les missions sont réalisées par des membres, les Brigadiers. Services à distance uniquement pendant la bêta.</p>
     </div>
     <div class="vitrine-exemples" role="region" aria-roledescription="carrousel" aria-label="Exemples de résultats livrés">
       <div class="exemple" id="exemple" aria-live="polite"></div>
@@ -46,14 +47,14 @@
 <main>
   <section class="bloc" id="services" style="padding-top:56px">
     <p class="surtitre">Nos services</p>
-    <h2 class="titre">Trois flemmes dont on s’occupe</h2>
-    <!-- Prix de lancement à tester pendant la bêta (business plan du 8 oct. 2026, analyse du 11 nov.). -->
+    <h2 class="titre">Trois flemmes à déléguer</h2>
+    <!-- Forfaits conseillés à tester pendant la bêta ; les 10 % de frais Flemme s’ajoutent (packages/shared/src/domain.ts). -->
     <div class="grille" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
-      <div class="carte"><span class="etiquette" style="background:var(--glacier-clair)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 4h9l3 3v13H6z"/><path d="M9 11h6M9 15h4"/></g></svg> Démarches et courriers</span><b>Un courrier ou un dossier prêt à envoyer</b><p class="doux">Résiliation, réclamation, CAF, assurance&#8239;: on rédige, tu relis, tu envoies. Avec la marche à suivre.</p><p><b>19&#8239;€</b> · 2 jours ouvrés</p></div>
-      <div class="carte"><span class="etiquette" style="background:var(--peche)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><rect x="5" y="6" width="14" height="10"/><path d="M9 19h6"/></g></svg> Annonces de vente</span><b>Une annonce qui donne envie</b><p class="doux">Titre, description, prix conseillé et conseils photo pour Leboncoin ou Vinted. Tu publies et tu encaisses.</p><p><b>19&#8239;€</b> l’annonce · <b>39&#8239;€</b> les 3 · 2 jours ouvrés</p></div>
-      <div class="carte"><span class="etiquette" style="background:var(--lavande)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><circle cx="11" cy="11" r="5.5"/><path d="M15 15l4 4"/></g></svg> Recherche et comparaison</span><b>Trois options comparées pour toi</b><p class="doux">Artisan, assurance, voyage, matériel&#8239;: trois options selon tes critères, avec les sources.</p><p><b>39&#8239;€</b> · 3 jours ouvrés</p></div>
+      <div class="carte"><span class="etiquette" style="background:var(--glacier-clair)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 4h9l3 3v13H6z"/><path d="M9 11h6M9 15h4"/></g></svg> Démarches et courriers</span><b>Un courrier ou un dossier prêt à envoyer</b><p class="doux">Résiliation, réclamation, CAF, assurance&#8239;: le Brigadier rédige, tu relis, tu envoies. Avec la marche à suivre.</p><p>Forfait conseillé <b>19&#8239;€</b> · 2 jours ouvrés</p></div>
+      <div class="carte"><span class="etiquette" style="background:var(--peche)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><rect x="5" y="6" width="14" height="10"/><path d="M9 19h6"/></g></svg> Annonces de vente</span><b>Une annonce qui donne envie</b><p class="doux">Titre, description, prix conseillé et conseils photo pour Leboncoin ou Vinted. Tu publies et tu encaisses.</p><p>Forfait conseillé <b>19&#8239;€</b> l’annonce, <b>39&#8239;€</b> les 3 · 2 jours ouvrés</p></div>
+      <div class="carte"><span class="etiquette" style="background:var(--lavande)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><circle cx="11" cy="11" r="5.5"/><path d="M15 15l4 4"/></g></svg> Recherche et comparaison</span><b>Trois options comparées pour toi</b><p class="doux">Artisan, assurance, voyage, matériel&#8239;: trois options selon tes critères, avec les sources.</p><p>Forfait conseillé <b>39&#8239;€</b> · 3 jours ouvrés</p></div>
     </div>
-    <p class="doux">Autre chose à faire à distance&#8239;? Décris-le&#8239;: on te propose un devis à partir de 69&#8239;€, ou on te dit franchement si ce n’est pas pour nous.</p>
+    <p class="doux">Le Brigadier qui s’en charge reçoit tout le forfait&#8239;; Flemme ajoute 10&#8239;% de frais, affichés avant d’accepter. Autre chose à faire à distance&#8239;? Décris-le&#8239;: les Brigadiers proposent leur prix.</p>
   </section>
 
   <section class="bloc">
@@ -61,19 +62,30 @@
     <h2 class="titre">Trois étapes, c’est tout</h2>
     <ol class="etapes">
       <li><b>1 · Tu décris ta flemme</b><p>Quelques lignes sur ce que tu repousses et pour quand.</p></li>
-      <li><b>2 · On te confirme le prix</b><p>Prix fixe et délai par écrit. Tu paies seulement si tu es d’accord.</p></li>
-      <li><b>3 · Tu reçois le résultat</b><p>Tu relis, on corrige si besoin, et c’est toi qui envoies ou publies.</p></li>
+      <li><b>2 · Un Brigadier s’en charge</b><p>Il propose de réaliser la mission au forfait conseillé, ou à son prix. Tu choisis.</p></li>
+      <li><b>3 · Tu reçois le résultat</b><p>Tu relis, tu demandes une correction si besoin, et c’est toi qui envoies ou publies.</p></li>
     </ol>
   </section>
 
+  <section class="bloc">
+    <p class="surtitre">Résoudre une flemme</p>
+    <h2 class="titre">Tu préfères aider&#8239;? Sois rémunéré(e).</h2>
+    <ol class="etapes">
+      <li><b>1 · Choisis une mission</b><p>Des demandes à distance, relues par l’équipe, avec un forfait affiché.</p></li>
+      <li><b>2 · Propose de t’en charger</b><p>Au forfait conseillé ou à ton prix, avec ton délai.</p></li>
+      <li><b>3 · Livre et sois payé(e)</b><p>Tu reçois tout le forfait. Les frais Flemme sont payés par la personne qui délègue.</p></li>
+    </ol>
+    <div class="boutons"><a class="bouton vert" href="resoudre.html">Voir les flemmes à résoudre</a></div>
+  </section>
+
   <section class="bloc serre">
-    <p class="surtitre">Nos garanties</p>
-    <h2 class="titre">Ce sur quoi tu peux compter</h2>
+    <p class="surtitre">Confiance</p>
+    <h2 class="titre">Ce qui vous protège, l’un comme l’autre</h2>
     <div class="grille" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
-      <div class="carte"><b>Un prix fixe</b><p class="doux">Annoncé avant de payer. Aucun supplément sans ton accord.</p></div>
-      <div class="carte"><b>Une correction incluse</b><p class="doux">Si le résultat ne correspond pas à ta demande, on le reprend.</p></div>
+      <div class="carte"><b>Chaque flemme est relue</b><p class="doux">L’équipe relit les demandes et les propositions avant qu’elles soient visibles.</p></div>
+      <div class="carte"><b>Un prix clair</b><p class="doux">Le forfait, les 10&#8239;% de frais Flemme et le total sont affichés avant d’accepter.</p></div>
       <div class="carte"><b>Rien sans ton accord</b><p class="doux">Aucun envoi, aucune publication, aucun achat en ton nom. Jamais de mot de passe demandé.</p></div>
-      <div class="carte"><b>Remboursé si on ne livre pas</b><p class="doux">Si on ne peut pas faire ce qui était convenu, tu es remboursé.</p></div>
+      <div class="carte"><b>Un examen humain en cas de désaccord</b><p class="doux">Un désaccord se signale depuis la mission. Messages et historique sont conservés.</p></div>
     </div>
   </section>
 
@@ -84,8 +96,8 @@
   <section class="bloc" style="text-align:center;align-items:center">
     <p class="surtitre">Une flemme en tête&#8239;?</p>
     <h2 class="titre">Une tâche en moins, sans y penser.</h2>
-    <p class="doux">Décris-la en quelques lignes. On te répond sous un jour ouvré.</p>
-    <div class="boutons" style="justify-content:center"><a class="bouton" href="app.html#deposer">Décris ta flemme</a></div>
+    <p class="doux">Décris-la en quelques lignes, ou aide quelqu’un à se débarrasser de la sienne.</p>
+    <div class="boutons" style="justify-content:center"><a class="bouton" href="app.html#deposer">Décris ta flemme</a><a class="bouton vert" href="resoudre.html">Résoudre une flemme</a></div>
   </section>
 </main>
 <!--#pied-->
