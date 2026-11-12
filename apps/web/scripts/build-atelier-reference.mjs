@@ -12,7 +12,7 @@ rmSync(target,{recursive:true,force:true});mkdirSync(target,{recursive:true});
 const env=Object.fromEntries(Object.entries(process.env).filter(([key])=>! /^(VITE_|BETA_|TESTS_INTERNES_|SUPABASE|RESEND|STRIPE|OPENAI)/.test(key)));
 env.VITE_PAIEMENT_EN_LIGNE='non';
 for(const version of reference.versions){
- if(!/^[a-z0-9]{2,12}$/.test(version.id)||!/^[a-f0-9]{40}$/.test(version.commit)||!['v05','v06','v63'].includes(version.family))throw Error('Version invalide : '+JSON.stringify(version));
+ if(!/^[a-z0-9]{2,12}$/.test(version.id)||!/^[a-f0-9]{40}$/.test(version.commit)||!['v05','v06','p55','v63'].includes(version.family))throw Error('Version invalide : '+JSON.stringify(version));
  try{execFileSync('git',['cat-file','-e',version.commit+'^{commit}'],{cwd:root,stdio:'ignore'});}catch{execFileSync('git',['fetch','--depth=1','origin',version.commit],{cwd:root,stdio:'inherit'});}
  const temp=mkdtempSync(join(tmpdir(),'flemme-reference-'));
  try{
