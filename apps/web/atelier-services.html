@@ -21,10 +21,17 @@
   </div>
   <a class="at-lien" href="./#services">Voir l’accueil</a>
 </header>
+<div class="at-collant">
+<div class="at-barre">
+  <span class="at-etat" id="etat" role="status">Aucune modification.</span>
+  <button type="button" class="at-sec" id="annuler">Tout annuler</button>
+  <button type="button" class="at-prim" id="enregistrer">Enregistrer…</button>
+</div>
 <nav class="at-onglets" aria-label="Vue">
   <button type="button" id="ongletEd" aria-pressed="true">Modifier</button>
   <button type="button" id="ongletAp" aria-pressed="false">Aperçu</button>
 </nav>
+</div>
 <div class="at-cadre">
   <section class="at-vue" id="vueEd" aria-label="Modifier les services"><div id="editeur"></div></section>
   <section class="at-vue at-apercu" id="vueAp" aria-label="Aperçu en direct" hidden>
@@ -34,11 +41,6 @@
       <section class="bloc"><p class="surtitre">Carrousel de l’accueil</p><div class="at-exemples" id="apercuExemples"></div></section>
     </div>
   </section>
-</div>
-<div class="at-barre">
-  <span class="at-etat" id="etat" role="status">Aucune modification.</span>
-  <button type="button" class="at-sec" id="annuler">Revenir à la version en ligne</button>
-  <button type="button" class="at-prim" id="enregistrer">Enregistrer…</button>
 </div>
 <dialog id="dlg" class="at-dlg" aria-labelledby="dlgTitre">
   <h2 id="dlgTitre">Enregistrer sur le site</h2>

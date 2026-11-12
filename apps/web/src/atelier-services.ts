@@ -221,8 +221,8 @@ $('copier').addEventListener('click', async () => {
 let confirmer = false;
 $('annuler').addEventListener('click', () => {
   const b = $<HTMLButtonElement>('annuler');
-  if (!confirmer) { confirmer = true; b.textContent = 'Effacer mon brouillon ? Toucher encore'; window.setTimeout(() => { confirmer = false; b.textContent = 'Revenir à la version en ligne'; }, 4000); return; }
-  confirmer = false; b.textContent = 'Revenir à la version en ligne';
+  if (!confirmer) { confirmer = true; b.textContent = 'Sûr ? Toucher encore'; window.setTimeout(() => { confirmer = false; b.textContent = 'Tout annuler'; }, 4000); return; }
+  confirmer = false; b.textContent = 'Tout annuler';
   cat = reference(); ecrireBrouillon(null);
   $('atSource').textContent = 'Version de départ : celle de ce déploiement.';
   dessiner(); rafraichir();
