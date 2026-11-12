@@ -1,4 +1,5 @@
 import { AccountAccess } from './beta/AccountAccess.tsx';
+import { formuleDepuisHash } from './formules.ts';
 import { useEffect, useRef, useState } from 'react';
 import type { MouseEvent, ReactNode } from 'react';
 import { backLabel, contractFields, footer, money, rights, taskFields } from '../../../packages/shared/src/index.ts';
@@ -9,6 +10,7 @@ import pied from './site/pied.html?raw';
 import './site/site.css';
 import './site/reglages.css';
 import './site/reglages-retenus.css';
+import './site/reglages-pr55.css';
 import type { Ctx, Draft, FieldOptions, Place } from './ecrans/contexte.ts';
 import { Accueil } from './ecrans/Accueil.tsx';
 import { Accord } from './ecrans/Accord.tsx';
@@ -28,9 +30,13 @@ import { Signalement } from './ecrans/Signalement.tsx';
 // Différence web : chaque écran est une entrée d’historique, le bouton Retour du navigateur remplace BackHandler.
 
 // Lien direct depuis la vitrine : app.html#mine ou app.html#find.
-// app.html#deposer ouvre directement le formulaire « Déléguer ma flemme ».
-const initialTab = location.hash === '#find' ? 'find' : location.hash === '#mine' || location.hash === '#deposer' || location.hash.startsWith('#paiement') ? 'mine' : null;
-const start: Place = { screen: location.hash === '#deposer' ? 'new' : initialTab ? 'list' : 'home', tab: initialTab || 'mine', taskId: '', offerId: '', depth: 0 };
+// app.html#deposer ouvre directement le formulaire « Déléguer ma flemme » ;
+// app.html#deposer-autre et #deposer-devis l’ouvrent sur la formule « Autres services » ou « Demande de devis » (src/formules.ts).
+const formule = formuleDepuisHash(location.hash);
+const deposer = location.hash === '#deposer' || !!formule;
+const initialTab = location.hash === '#find' ? 'find' : location.hash === '#mine' || deposer || location.hash.startsWith('#paiement') ? 'mine' : null;
+const start: Place = { screen: deposer ? 'new' : initialTab ? 'list' : 'home', tab: initialTab || 'mine', taskId: '', offerId: '', depth: 0 };
+const startDraft: Draft = formule === 'autre' ? { formule, category: 'autre' } : formule ? { formule } : {};
 // Écrans ouverts depuis la fiche d’une flemme : combien de pas pour y revenir.
 const aboveDetail: Partial<Record<Screen, number>> = { offer: 1, review: 2, report: 1, edit: 1, contract: 1 };
 // Formulaire prérempli à l’ouverture d’un écran : modification d’une demande ou reprise d’un brouillon.
@@ -50,7 +56,7 @@ function initialDraft(next: Place): Draft {
 export default function App() {
   const state = useSession();
   const { gateway, actorId, busy, ready, error, notice, tasks, recovering } = state;
-  const [place, setPlace] = useState<Place>(start), [draft, setDraft] = useState<Draft>({}), [visit, setVisit] = useState(0);
+  const [place, setPlace] = useState<Place>(start), [draft, setDraft] = useState<Draft>(startDraft), [visit, setVisit] = useState(0);
   const main = useRef<HTMLElement>(null), flash = useRef('');
   const { screen, taskId, offerId } = place;
   const task = tasks.find(t => t.id === taskId) || state.found?.tasks.find(t => t.id === taskId), offer = task?.offers.find(o => o.id === offerId);
@@ -130,20 +136,18 @@ export default function App() {
   return <>
     <div className="flemme-chrome-home bandeau app-bandeau" data-flemme-page="deleguer">
       <header className="entete">
-        {/* En-tête V0.6 : FLEMME. · Home · Déléguer · Résoudre · Menu · Connexion · Aide (même ordre que la vitrine, src/site/entete.html). */}
+        {/* En-tête : FLEMME. · Home · Déléguer · Résoudre (section Devenir Brigadier) · Menu · Connexion · Aide (même ordre que la vitrine, src/site/entete.html). */}
         <div className="entete-gauche">
           <a className="logo" href="./" aria-label="FLEMME · retour à la présentation">FLEMME.</a>
           <a className="pastille entete-home" href="./"><svg className="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="square" strokeLinejoin="miter"><path d="M5 11l7-6 7 6v8H5z"/></g></svg><span>Home</span></a>
           {connecte && <button type="button" className="pastille deleguer" onClick={() => go('new', { tab: 'mine', draftId: undefined })}>{plus}<span>Déléguer</span></button>}
-          <a className="pastille entete-resoudre" href="resoudre.html">{loupe}<span>Résoudre</span></a>
+          <a className="pastille entete-resoudre" href="resoudre.html#devenir-brigadier">{loupe}<span>Résoudre</span></a>
         </div>
         <details className="burger menu-principal">
           <summary aria-label="Menu"><svg className="ico" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="square" strokeLinejoin="miter"><path d="M6 8h12M6 12h12M6 16h12"/></g></svg></summary>
           <nav className="burger-menu" aria-label="Menu">
-            <a className="burger-resoudre" href="resoudre.html">Résoudre</a>
             {connecte && <a href="#mine" onClick={menu(() => go('list', { tab: 'mine' }))}>Mon espace</a>}
-            <a href="comment-ca-marche.html#concept">À propos de Flemme</a><a href="comment-ca-marche.html">Comment ça marche</a><a href="faq.html">Questions fréquentes</a><a href="contact.html">Contact</a>
-            <p className="burger-langues"><span>Langue</span><b aria-current="true">FR</b><span aria-disabled="true" title="Bientôt">EN</span><span aria-disabled="true" title="Bientôt">ES</span><small>EN et ES bientôt</small></p>
+            <a href="comment-ca-marche.html#concept">À propos de Flemme</a><a href="./#services">Nos services</a><a href="comment-ca-marche.html">Comment ça marche</a><a href="faq.html">Questions fréquentes</a><a href="contact.html">Contact</a>
           </nav>
         </details>
         <div className="entete-droite">{connecte
