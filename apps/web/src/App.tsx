@@ -1,4 +1,5 @@
 import { AccountAccess } from './beta/AccountAccess.tsx';
+import { formuleDepuisHash } from './formules.ts';
 import { useEffect, useRef, useState } from 'react';
 import type { MouseEvent, ReactNode } from 'react';
 import { backLabel, contractFields, footer, money, rights, taskFields } from '../../../packages/shared/src/index.ts';
@@ -28,9 +29,13 @@ import { Signalement } from './ecrans/Signalement.tsx';
 // Différence web : chaque écran est une entrée d’historique, le bouton Retour du navigateur remplace BackHandler.
 
 // Lien direct depuis la vitrine : app.html#mine ou app.html#find.
-// app.html#deposer ouvre directement le formulaire « Déléguer ma flemme ».
-const initialTab = location.hash === '#find' ? 'find' : location.hash === '#mine' || location.hash === '#deposer' || location.hash.startsWith('#paiement') ? 'mine' : null;
-const start: Place = { screen: location.hash === '#deposer' ? 'new' : initialTab ? 'list' : 'home', tab: initialTab || 'mine', taskId: '', offerId: '', depth: 0 };
+// app.html#deposer ouvre directement le formulaire « Déléguer ma flemme » ;
+// app.html#deposer-autre et #deposer-devis l’ouvrent sur la formule « Autres services » ou « Demande de devis » (src/formules.ts).
+const formule = formuleDepuisHash(location.hash);
+const deposer = location.hash === '#deposer' || !!formule;
+const initialTab = location.hash === '#find' ? 'find' : location.hash === '#mine' || deposer || location.hash.startsWith('#paiement') ? 'mine' : null;
+const start: Place = { screen: deposer ? 'new' : initialTab ? 'list' : 'home', tab: initialTab || 'mine', taskId: '', offerId: '', depth: 0 };
+const startDraft: Draft = formule === 'autre' ? { formule, category: 'autre' } : formule ? { formule } : {};
 // Écrans ouverts depuis la fiche d’une flemme : combien de pas pour y revenir.
 const aboveDetail: Partial<Record<Screen, number>> = { offer: 1, review: 2, report: 1, edit: 1, contract: 1 };
 // Formulaire prérempli à l’ouverture d’un écran : modification d’une demande ou reprise d’un brouillon.
@@ -50,7 +55,7 @@ function initialDraft(next: Place): Draft {
 export default function App() {
   const state = useSession();
   const { gateway, actorId, busy, ready, error, notice, tasks, recovering } = state;
-  const [place, setPlace] = useState<Place>(start), [draft, setDraft] = useState<Draft>({}), [visit, setVisit] = useState(0);
+  const [place, setPlace] = useState<Place>(start), [draft, setDraft] = useState<Draft>(startDraft), [visit, setVisit] = useState(0);
   const main = useRef<HTMLElement>(null), flash = useRef('');
   const { screen, taskId, offerId } = place;
   const task = tasks.find(t => t.id === taskId) || state.found?.tasks.find(t => t.id === taskId), offer = task?.offers.find(o => o.id === offerId);
