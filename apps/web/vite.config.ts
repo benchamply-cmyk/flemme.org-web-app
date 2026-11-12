@@ -37,8 +37,8 @@ export default defineConfig(({ command, mode }) => {
   if (problem && command === 'build') throw new Error(problem);
   return {
     plugins: [react(), habillage],
-    // Branche du déploiement (Netlify fournit BRANCH) : l'atelier des services ouvre le fichier sur cette branche dans GitHub.
-    define: { __BRANCHE__: JSON.stringify(process.env.BRANCH || 'preprod') },
+    // Branche du déploiement (Netlify : HEAD = branche de la PR sur un aperçu, sinon BRANCH) : l'atelier des services ouvre le fichier sur cette branche dans GitHub.
+    define: { __BRANCHE__: JSON.stringify(process.env.HEAD || process.env.BRANCH || 'preprod') },
     // Toujours la config TypeScript du site, y compris pour les fichiers de packages/shared.
     tsconfig: './tsconfig.json',
     server: { fs: { allow: ['../..'] } },
