@@ -1,10 +1,10 @@
 name: Site web (apps/web)
 on:
   push:
-    branches: [prod, preprod, beta]
-    paths: ['apps/web/**', 'packages/shared/**', 'beta/**', 'atelier/**', '.github/workflows/web.yml']
+    branches: [prod, preprod]
+    paths: ['apps/web/**', 'packages/shared/**', 'beta/**', '.github/workflows/web.yml']
   pull_request:
-    paths: ['apps/web/**', 'packages/shared/**', 'beta/**', 'atelier/**', '.github/workflows/web.yml']
+    paths: ['apps/web/**', 'packages/shared/**', 'beta/**', '.github/workflows/web.yml']
 permissions:
   contents: read
 jobs:

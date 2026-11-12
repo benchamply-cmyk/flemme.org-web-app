@@ -19,7 +19,3 @@ jobs:
             echo 'La production accepte uniquement la branche preprod de ce dépôt.'
             exit 1
           fi
-          if [ "$HEAD" = beta ] && [ "$BASE" != preprod ]; then
-            echo 'beta doit passer par preprod.'
-            exit 1
-          fi
