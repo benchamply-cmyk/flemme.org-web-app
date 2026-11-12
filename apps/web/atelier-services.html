@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#3a4f7a">
+<meta name="robots" content="noindex,nofollow">
+<title>Atelier des services — Flemme.org</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap">
+</head>
+<body data-page="atelier-services" class="atelier">
+<!-- Atelier des services (12 nov. 2026) : Ben modifie le catalogue de l'accueil depuis son téléphone et voit le rendu réel en direct.
+     Rien n'est publié d'ici : le fichier obtenu se colle dans GitHub (apps/web/contenu/services.json). Page non référencée. -->
+<header class="at-haut">
+  <div>
+    <h1>Atelier des services</h1>
+    <p id="atSource">Version de départ : celle de ce déploiement.</p>
+  </div>
+  <a class="at-lien" href="./#services">Voir l’accueil</a>
+</header>
+<nav class="at-onglets" aria-label="Vue">
+  <button type="button" id="ongletEd" aria-pressed="true">Modifier</button>
+  <button type="button" id="ongletAp" aria-pressed="false">Aperçu</button>
+</nav>
+<div class="at-cadre">
+  <section class="at-vue" id="vueEd" aria-label="Modifier les services"><div id="editeur"></div></section>
+  <section class="at-vue at-apercu" id="vueAp" aria-label="Aperçu en direct" hidden>
+    <p class="at-note">Aperçu en direct, avec le style réel du site.</p>
+    <div class="at-site">
+      <section class="bloc" id="services"><p class="surtitre">Nos services</p><div id="apercuCatalogue"></div></section>
+      <section class="bloc"><p class="surtitre">Carrousel de l’accueil</p><div class="at-exemples" id="apercuExemples"></div></section>
+    </div>
+  </section>
+</div>
+<div class="at-barre">
+  <span class="at-etat" id="etat" role="status">Aucune modification.</span>
+  <button type="button" class="at-sec" id="annuler">Revenir à la version en ligne</button>
+  <button type="button" class="at-prim" id="enregistrer">Enregistrer…</button>
+</div>
+<dialog id="dlg" class="at-dlg" aria-labelledby="dlgTitre">
+  <h2 id="dlgTitre">Enregistrer sur le site</h2>
+  <ol>
+    <li><button type="button" class="at-prim" id="copier">1. Copier le fichier</button> <span id="copieNote" class="at-petit"></span></li>
+    <li><a class="at-prim" id="ouvrirGithub" target="_blank" rel="noopener">2. Ouvrir GitHub</a></li>
+    <li>Dans GitHub : tout sélectionner, coller, puis « Commit changes ». Le site se met à jour en 1 à 2 minutes.</li>
+  </ol>
+  <p class="at-petit" id="dlgBranche"></p>
+  <textarea id="fichier" readonly rows="6" aria-label="Contenu du fichier services.json"></textarea>
+  <button type="button" class="at-sec" id="fermer">Fermer</button>
+</dialog>
+<script type="module" src="/src/atelier-services.ts"></script>
+</body>
+</html>

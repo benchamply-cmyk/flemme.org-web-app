@@ -2,6 +2,10 @@
 
 Tout le catalogue de l’accueil est dans **`apps/web/contenu/services.json`** : familles, services, prix, option urgence, cartes « Autres services » et « Demande de devis », exemples du carrousel. Les liens « Nos services » du pied de page suivent les familles.
 
+## Depuis le téléphone : l’atelier
+
+Ouvrir `/atelier-services.html` sur le site déployé (aperçu de PR, puis preprod). On modifie dans l’onglet « Modifier », on voit le rendu réel dans « Aperçu » (côte à côte sur ordinateur). Le brouillon reste dans le navigateur. « Enregistrer… » copie le fichier et ouvre GitHub sur la bonne branche : tout sélectionner, coller, « Commit changes ». L’atelier ne publie rien lui-même (aucun jeton GitHub dans le site).
+
 ## Depuis GitHub, en 4 clics
 
 1. Ouvrir le fichier sur la branche voulue, puis cliquer sur le crayon (Edit this file).
