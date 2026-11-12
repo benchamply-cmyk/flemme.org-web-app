@@ -5,7 +5,7 @@
   command = "npm run build"
   publish = "dist"
   # Ne reconstruit que si le site ou le code partagé avec l'app mobile (packages/shared) ont changé.
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ../../packages/shared ../../atelier ../../netlify.toml"
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ../../packages/shared ../../beta ../../atelier ../../netlify.toml"
 
 [build.environment]
   NODE_VERSION = "22"
@@ -73,16 +73,34 @@
   to = "/"
   status = 302
 
-# Beta is dormant until a branch-specific opt-in; never enable globally.
-[context.beta.environment]
-  VITE_BETA_ENABLED = "oui"
-  VITE_PAIEMENT_EN_LIGNE = "non"
+# One project, two branches. Test aliases never select a Git ref themselves.
+[[redirects]]
+  from = "/beta/testprod"
+  to = "https://flemme.org/beta"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/beta/testpreprod"
+  to = "https://preprod--flemmeorg.netlify.app/beta"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/beta"
+  to = "/beta.html"
+  status = 200
 
 [[headers]]
   for = "/beta*"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
     Cache-Control = "no-store"
+    Referrer-Policy = "no-referrer"
+
+# Laboratoire beta (site flemmeorg-beta) : paiement en ligne toujours coupé.
+[context.beta.environment]
+  VITE_PAIEMENT_EN_LIGNE = "non"
 
 # Atelier visuel : aperçu indépendant, sans modifier la production.
 [[redirects]]

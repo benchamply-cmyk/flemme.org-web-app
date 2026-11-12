@@ -1,4 +1,5 @@
-import { betaEnabled } from './beta/config.ts';
+import { AccountAccess } from './beta/AccountAccess.tsx';
+import { formuleDepuisHash } from './formules.ts';
 import { useEffect, useRef, useState } from 'react';
 import type { MouseEvent, ReactNode } from 'react';
 import { backLabel, contractFields, footer, money, rights, taskFields } from '../../../packages/shared/src/index.ts';
@@ -8,6 +9,8 @@ import { Action } from './ui.tsx';
 import pied from './site/pied.html?raw';
 import './site/site.css';
 import './site/reglages.css';
+import './site/reglages-retenus.css';
+import './site/reglages-pr55.css';
 import type { Ctx, Draft, FieldOptions, Place } from './ecrans/contexte.ts';
 import { Accueil } from './ecrans/Accueil.tsx';
 import { Accord } from './ecrans/Accord.tsx';
@@ -27,9 +30,13 @@ import { Signalement } from './ecrans/Signalement.tsx';
 // Différence web : chaque écran est une entrée d’historique, le bouton Retour du navigateur remplace BackHandler.
 
 // Lien direct depuis la vitrine : app.html#mine ou app.html#find.
-// app.html#deposer ouvre directement le formulaire « Déléguer ma flemme ».
-const initialTab = location.hash === '#find' ? 'find' : location.hash === '#mine' || location.hash === '#deposer' || location.hash.startsWith('#paiement') ? 'mine' : null;
-const start: Place = { screen: location.hash === '#deposer' ? 'new' : initialTab ? 'list' : 'home', tab: initialTab || 'mine', taskId: '', offerId: '', depth: 0 };
+// app.html#deposer ouvre directement le formulaire « Déléguer ma flemme » ;
+// app.html#deposer-autre et #deposer-devis l’ouvrent sur la formule « Autres services » ou « Demande de devis » (src/formules.ts).
+const formule = formuleDepuisHash(location.hash);
+const deposer = location.hash === '#deposer' || !!formule;
+const initialTab = location.hash === '#find' ? 'find' : location.hash === '#mine' || deposer || location.hash.startsWith('#paiement') ? 'mine' : null;
+const start: Place = { screen: deposer ? 'new' : initialTab ? 'list' : 'home', tab: initialTab || 'mine', taskId: '', offerId: '', depth: 0 };
+const startDraft: Draft = formule === 'autre' ? { formule, category: 'autre' } : formule ? { formule } : {};
 // Écrans ouverts depuis la fiche d’une flemme : combien de pas pour y revenir.
 const aboveDetail: Partial<Record<Screen, number>> = { offer: 1, review: 2, report: 1, edit: 1, contract: 1 };
 // Formulaire prérempli à l’ouverture d’un écran : modification d’une demande ou reprise d’un brouillon.
@@ -49,7 +56,7 @@ function initialDraft(next: Place): Draft {
 export default function App() {
   const state = useSession();
   const { gateway, actorId, busy, ready, error, notice, tasks, recovering } = state;
-  const [place, setPlace] = useState<Place>(start), [draft, setDraft] = useState<Draft>({}), [visit, setVisit] = useState(0);
+  const [place, setPlace] = useState<Place>(start), [draft, setDraft] = useState<Draft>(startDraft), [visit, setVisit] = useState(0);
   const main = useRef<HTMLElement>(null), flash = useRef('');
   const { screen, taskId, offerId } = place;
   const task = tasks.find(t => t.id === taskId) || state.found?.tasks.find(t => t.id === taskId), offer = task?.offers.find(o => o.id === offerId);
@@ -129,26 +136,31 @@ export default function App() {
   return <>
     <div className="flemme-chrome-home bandeau app-bandeau" data-flemme-page="deleguer">
       <header className="entete">
+        {/* En-tête : FLEMME. · Home · Déléguer · Résoudre (section Devenir Brigadier) · Menu · Connexion · Aide (même ordre que la vitrine, src/site/entete.html). */}
         <div className="entete-gauche">
           <a className="logo" href="./" aria-label="FLEMME · retour à la présentation">FLEMME.</a>
-          {connecte && <button type="button" className="pastille deleguer" onClick={() => go('new', { tab: 'mine', draftId: undefined })}>{plus}<span>Déléguer<span className="long"> ma flemme</span></span></button>}
-          <a className="pastille entete-resoudre" href="resoudre.html">{loupe}<span>Flemmes à résoudre</span></a>
-          <a className="pastille entete-comment" href="comment-ca-marche.html"><svg className="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="currentColor"><circle cx="6" cy="6" r="1.6"/><circle cx="6" cy="12" r="1.6"/><circle cx="6" cy="18" r="1.6"/><circle cx="10" cy="6" r="1.6"/><circle cx="10" cy="12" r="1.6"/><circle cx="10" cy="18" r="1.6"/><circle cx="14" cy="6" r="1.6"/><circle cx="14" cy="12" r="1.6"/><circle cx="14" cy="18" r="1.6"/><circle cx="18" cy="6" r="1.6"/><circle cx="18" cy="12" r="1.6"/><circle cx="18" cy="18" r="1.6"/></g></svg><span>Comment ça marche</span></a>
+          <a className="pastille entete-home" href="./"><svg className="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="square" strokeLinejoin="miter"><path d="M5 11l7-6 7 6v8H5z"/></g></svg><span>Home</span></a>
+          {connecte && <button type="button" className="pastille deleguer" onClick={() => go('new', { tab: 'mine', draftId: undefined })}>{plus}<span>Déléguer</span></button>}
+          <a className="pastille entete-resoudre" href="resoudre.html#devenir-brigadier">{loupe}<span>Résoudre</span></a>
         </div>
-        <details className="burger">
-          <summary aria-label="Aide : FAQ, contact et langues"><svg className="ico" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="square" strokeLinejoin="miter"><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.7"/><path d="M12 17.5v.5"/></g></svg></summary>
-          <nav className="burger-menu" aria-label="Aide et langues">
-            <a className="burger-resoudre" href="resoudre.html">Flemmes à résoudre</a>
+        <details className="burger menu-principal">
+          <summary aria-label="Menu"><svg className="ico" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="square" strokeLinejoin="miter"><path d="M6 8h12M6 12h12M6 16h12"/></g></svg></summary>
+          <nav className="burger-menu" aria-label="Menu">
             {connecte && <a href="#mine" onClick={menu(() => go('list', { tab: 'mine' }))}>Mon espace</a>}
-            {connecte && <a href="#aide" onClick={menu(() => go('help'))}>Aide</a>}
-            {betaEnabled && <a href="beta.html">Bêta</a>}<a href="comment-ca-marche.html">Comment ça marche</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a>
-            <a className="burger-comment" href="comment-ca-marche.html">Comment ça marche</a><a href="faq.html">FAQ</a><a href="contact.html">Contact</a>
-            <p className="burger-langues"><span>Langue</span><b aria-current="true">FR</b><span aria-disabled="true" title="Bientôt">EN</span><span aria-disabled="true" title="Bientôt">ES</span><small>EN et ES bientôt</small></p>
+            <a href="comment-ca-marche.html#concept">À propos de Flemme</a><a href="./#services">Nos services</a><a href="comment-ca-marche.html">Comment ça marche</a><a href="faq.html">Questions fréquentes</a><a href="contact.html">Contact</a>
           </nav>
         </details>
         <div className="entete-droite">{connecte
-          ? <><button type="button" className="pastille mon-espace" aria-label="Mon espace" onClick={() => go('list', { tab: 'mine' })}><span className="pastille-initiale" aria-hidden="true">{gateway?.actor.name.slice(0, 1).toUpperCase()}</span><span>Mon espace</span></button></>
-          : <span className="pastille deleguer" aria-current="page"><svg className="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="square" strokeLinejoin="miter"><path d="M5 11l7-6 7 6v8H5z"/></g></svg><span>Connexion</span></span>}</div>
+          ? <><AccountAccess gateway={gateway} compact/><button type="button" className="pastille mon-espace" aria-label="Mon espace" onClick={() => go('list', { tab: 'mine' })}><span className="pastille-initiale" aria-hidden="true">{gateway?.actor.name.slice(0, 1).toUpperCase()}</span><span>Mon espace</span></button></>
+          : <span className="pastille deleguer" aria-current="page"><svg className="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="square" strokeLinejoin="miter"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 19c1.2-3.3 3.8-5 7-5s5.8 1.7 7 5"/></g></svg><span>Connexion</span></span>}
+          <details className="burger menu-aide">
+            <summary aria-label="Aide : FAQ et contact"><svg className="ico" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="square" strokeLinejoin="miter"><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.7"/><path d="M12 17.5v.5"/></g></svg></summary>
+            <nav className="burger-menu" aria-label="Aide">
+              <a href="faq.html">FAQ</a><a href="contact.html">Contact</a>
+              {connecte && <a href="#aide" onClick={menu(() => go('help'))}>Aide en ligne</a>}
+            </nav>
+          </details>
+        </div>
       </header>
     </div>
     <main ref={main} tabIndex={-1} className="app" aria-busy={busy}>

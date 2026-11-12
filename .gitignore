@@ -6,5 +6,6 @@ dist/
 .DS_Store
 .netlify/
 
+apps/web/public/beta/version.json
 apps/web/public/atelier-reference/
 apps/web/public/atelier-build.json

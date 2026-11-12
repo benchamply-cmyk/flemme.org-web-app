@@ -7,7 +7,6 @@ export function normalize(value: unknown): Variant {
     navigation: ['burger', 'visible', 'compacte'].includes(v?.navigation || '') ? v!.navigation! : defaults.navigation,
     features: { aide: typeof v?.features?.aide === 'boolean' ? v.features.aide : true, premium: typeof v?.features?.premium === 'boolean' ? v.features.premium : true } };
 }
-export const betaEnabled = import.meta.env.VITE_BETA_ENABLED === 'oui' && !['flemme.org', 'www.flemme.org'].includes(location.hostname);
 export function readVariant(): Variant {
   try { return normalize(JSON.parse(localStorage.getItem('flemme.beta.v1') || 'null')); } catch { return normalize(null); }
 }
