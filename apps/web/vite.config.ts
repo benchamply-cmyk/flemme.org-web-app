@@ -7,7 +7,7 @@ import { verifierCatalogue, htmlCatalogue, htmlPiedFamilles, type Catalogue } fr
 
 // La vitrine (index.html et ses pages intérieures, maquette V0.3), le parcours de l’app (app.html),
 // l’admin de l’équipe (admin.html) et l’aperçu isolé de la future interface (apercu.html).
-const pages = ['index', 'atelier-services', 'concept', 'comment-ca-marche', 'faq', 'contact', 'premium', 'resoudre', 'mentions', 'confidentialite', 'app', 'admin', 'apercu', 'beta', 'atelier'];
+const pages = ['index', 'atelier-services', 'builds', 'concept', 'comment-ca-marche', 'faq', 'contact', 'premium', 'resoudre', 'mentions', 'confidentialite', 'app', 'admin', 'apercu', 'beta', 'atelier'];
 // En-tête et pied de page de la vitrine, écrits une fois dans src/site et insérés dans chaque page au build.
 const morceau = (nom: string) => readFileSync(fileURLToPath(new URL(`./src/site/${nom}.html`, import.meta.url)), 'utf8').trim();
 // Catalogue des services (contenu/services.json, modifiable sans code) : relu à chaque page, vérifié, puis inséré.

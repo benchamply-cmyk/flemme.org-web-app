@@ -4,6 +4,7 @@ Chaque PR ajoute une ligne sous « À venir ». À chaque mise en production (`p
 
 ## À venir
 
+- Beta : page d’arrivée de flemmeorg-beta = sélecteur de builds (12 nov. 2026, demande de Ben) : le site preprod déployé s’affiche par défaut, avec un menu déroulant pour passer à beta ou à l’aperçu Netlify de chaque PR vers beta (liste lue en direct dans GitHub, numéro de PR à saisir si GitHub ne répond pas), choix de la page (accueil, app, Résoudre, ateliers), lien partageable et bouton « Ouvrir ». `/beta` garde l’atelier visuel, le site beta reste à `/index.html`. `builds.html`, `src/builds.ts`, test `tests/builds.test.ts`. Aucune migration.
 - Beta : retrait de la #56 sur preprod (#61) intégré sans l’appliquer (12 nov. 2026) ; beta garde #55, #56 et #57. Aucun changement de contenu, aucune migration.
 - Beta : historique de preprod intégré sans appliquer l’annulation #59 (12 nov. 2026), pour qu’une future fusion preprod → beta ne supprime plus l’atelier visuel. Aucun changement de contenu, aucune migration.
 - Fusion de la PR #56 (services modifiables, atelier des services, contenu des PR #44/#45/#49/#51/#55 de preprod) dans beta (12 nov. 2026, demande de Ben) : système bêta de preprod (accès vérifié par le serveur, invitations) à la place de l’ancien interrupteur `VITE_BETA_ENABLED` ; atelier visuel `/atelier` conservé ; `/atelier-services.html` disponible sur flemmeorg-beta. Aucune migration.
