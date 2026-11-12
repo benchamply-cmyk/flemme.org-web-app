@@ -5,7 +5,7 @@
   command = "npm run build"
   publish = "dist"
   # Ne reconstruit que si le site ou le code partagé avec l'app mobile (packages/shared) ont changé.
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ../../packages/shared ../../beta ../../atelier ../../netlify.toml"
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ../../packages/shared ../../beta ../../netlify.toml"
 
 [build.environment]
   NODE_VERSION = "22"
@@ -97,19 +97,3 @@
     X-Robots-Tag = "noindex, nofollow"
     Cache-Control = "no-store"
     Referrer-Policy = "no-referrer"
-
-# Laboratoire beta (site flemmeorg-beta) : paiement en ligne toujours coupé.
-[context.beta.environment]
-  VITE_PAIEMENT_EN_LIGNE = "non"
-
-# Atelier visuel : aperçu indépendant, sans modifier la production.
-[[redirects]]
-  from = "/atelier"
-  to = "/atelier.html"
-  status = 200
-
-[[headers]]
-  for = "/atelier*"
-  [headers.values]
-    X-Robots-Tag = "noindex, nofollow"
-    Cache-Control = "no-store"

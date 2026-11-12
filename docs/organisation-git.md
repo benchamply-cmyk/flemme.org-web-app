@@ -48,11 +48,6 @@ Les préfixes autorisés sont `feature/`, `fix/`, `docs/`, `chore/` et `mobile/`
 - Activer la suppression automatique des branches fusionnées.
 - Dans « Pull requests », n'autoriser que les merge commits (désactiver squash et rebase). Pas encore fait : #24 a été squashée le 04/11.
 
-## Laboratoire beta
-
-Branche persistante issue de preprod, isolée des environnements réels. Flux obligatoire : beta → PR ciblées preprod → PR preprod vers prod. Aucune PR beta vers prod. Ne pas supprimer beta après fusion ; protéger cette branche. Voir [audit et configuration](beta.md).
-
-Depuis la PR #46, la branche beta publie l’atelier visuel sur le site Netlify flemmeorg-beta ; les tests internes (comptes testeurs, invitations, PR #44 et #45) restent sur preprod. Répartition des PR et incohérences à corriger : [organisation des versions](organisation-versions.md).
 ## Tests de variantes (décision du 7 novembre 2026)
 
 Le configurateur fait partie des branches preprod et prod ; aucun environnement permanent beta n’est nécessaire. Une branche courte feature/beta-testeurs remplace les PR #42/#43. Voir [configuration et invitations](beta-testeurs.md). Promotion : PR vers preprod, recette, puis PR preprod vers prod avec merge commit.
