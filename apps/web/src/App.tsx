@@ -143,7 +143,7 @@ export default function App() {
         <details className="burger menu-principal">
           <summary aria-label="Menu"><svg className="ico" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="square" strokeLinejoin="miter"><path d="M6 8h12M6 12h12M6 16h12"/></g></svg></summary>
           <nav className="burger-menu" aria-label="Menu">
-            <a href="resoudre.html#devenir-brigadier">Résoudre une flemme · Devenir Brigadier</a>
+            <a href="resoudre.html#devenir-brigadier">Devenir Brigadier</a>
             {connecte && <a href="#mine" onClick={menu(() => go('list', { tab: 'mine' }))}>Mon espace</a>}
             <a href="comment-ca-marche.html#concept">À propos de Flemme</a><a href="./#services">Nos services</a><a href="comment-ca-marche.html">Comment ça marche</a><a href="faq.html">Questions fréquentes</a><a href="contact.html">Contact</a>
           </nav>
