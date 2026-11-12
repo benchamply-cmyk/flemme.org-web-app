@@ -11,6 +11,13 @@
    "family": "v06"
   },
   {
+   "id": "p55",
+   "label": "Preprod · PR #55",
+   "detail": "preprod · PR #55 (catalogue de services à prix fixes, réglages « Design PR55 » du canevas) ; état de preprod après #61",
+   "commit": "d2170d7e83110bc5dd73857bc47220c4ff7df5a9",
+   "family": "p55"
+  },
+  {
    "id": "v05",
    "label": "Design V0.5",
    "detail": "preprod · PR #41 (titre alterné, menu « ? », icônes, réglages V0.5)",

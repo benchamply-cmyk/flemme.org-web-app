@@ -3,3 +3,4 @@
 .versions{display:grid;gap:8px}
 .versions .preset small{white-space:normal}
 .presets .hint,.presets .saved-row,.presets .save-row{grid-column:1/-1}
+.tweak-presets{display:flex;flex-wrap:wrap;gap:6px}.tweak-presets button{font-size:12px;padding:6px 9px}.tweak-group,.plan-group{border:1px solid #dce1d8;border-radius:8px;background:#fff;padding:6px 10px;margin-top:6px}.tweak-group summary,.plan-group summary{cursor:pointer;font-weight:600;font-size:13px}.tweak-group summary small,.plan-group summary small{font-weight:400;color:#6e7868}.tweak-group[open],.plan-group[open]{padding-bottom:10px}.tweak-group label{margin-top:8px}.plan-group .section-row label{font-size:12px;overflow:hidden;text-overflow:ellipsis}.color-line{display:flex;align-items:end;gap:8px}.color-line small{color:#6e7868;padding-bottom:8px}.plan>button{margin-top:8px}

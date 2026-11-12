@@ -19,3 +19,11 @@ Validation : build complet, tests du modèle de variantes, vérification HTTP du
 ## Version V0.6 (PR #49)
 
 Version `v06` ajoutée en tête et par défaut : commit 494264e de la PR brouillon #49 (`feature/v0-6`), visuel V0.5. Famille `v06` : accueil à 5 blocs réglables (trois étapes, « Qu’est-ce que tu aimerais déléguer ? », Confiance, Écris-nous, appel final) et deux options propres : effet des accroches alternées (flou d’origine, fondu, glisse, volet, ou fixe) et boutons de l’en-tête (icône et texte, texte seul, icônes seules). Ces options et les blocs ne modifient pas le style de la référence. Si #49 reçoit d’autres commits, mettre à jour le commit de `v06` dans une PR. Le build extrait aussi le dossier `beta/` des versions qui en ont besoin (preprod depuis #44).
+
+## Tweaks du canevas, boutons et plan de page (12 nov. 2026)
+
+Panneau « 04 · Tweaks du canevas » : les réglages des artboards « 00 · Réglages communs » des pages V0.5, V0.6, V0.7 et Design PR55 du canevas 63uk3vECEJaGSNwhxWcXeB (69 Tweaks, dont les 16 options B6). L’aperçu reçoit les classes `t-<réglage>-<option>` sur `<body>` et les règles CSS du canevas (mêmes classes que le site, familles v05, v06 et p55 ; pas la v6.3000). « Référence » laisse un réglage tel qu’il est dans la version ; un bouton par page du canevas applique ses valeurs par défaut (correspondance par libellé pour V0.5, dont la numérotation diffère). Les anciennes options retirées du canevas (classes `t-…-x…`) ne sont pas reprises, sauf « Bleu V0.3 » (fond du haut, option 14).
+
+`src/atelier/tweaks.ts` est généré : lire les quatre artboards 00 du canevas dans un dossier, puis `python3 -I atelier/canevas/extraire-tweaks.py <dossier>`. Ne pas le modifier à la main.
+
+Panneau « 05 · Les boutons » : fond, texte et contour libres des grands boutons et pastilles. Panneau « 06 · Plan de la page » : pour la page affichée, masquer ou déplacer les boutons de l’en-tête, les entrées des menus ☰ et « ? », le haut de page, les boutons, les sections, les colonnes et liens du pied de page. Les éléments sont repérés par leur position d’origine ; les textes modifiés restent attachés à leur élément quand on déplace un bloc. Version « Preprod · PR #55 » (famille p55, preprod d2170d7) ajoutée pour essayer les Tweaks « Design PR55 » sur le site correspondant.
