@@ -4,6 +4,7 @@ Chaque PR ajoute une ligne sous « À venir ». À chaque mise en production (`p
 
 ## À venir
 
+- Demandes de test (12 nov. 2026) : scripts SQL `supabase/demandes-test/` pour créer deux comptes test marqués `compte_test` (Flemmard et Brigadier, @example.com), insérer 10 demandes « [TEST] » (publiées, en attente, à corriger) et une proposition, puis tout supprimer ; chaque script s'annule par défaut (rollback). Aucune migration.
 - Retrait de la PR #56 (services modifiables, atelier des services) de preprod à la demande de Ben (12 nov. 2026) : preprod revient à l’état de la #55 ; la #56 reste sur beta. Aucune migration.
 - Réglages visuels de la page « Design PR55 » du canevas (12 nov. 2026, PR #55) : `apps/web/src/site/reglages-pr55.css`, chargé après `reglages-retenus.css` (vitrine et app) : haut de l’accueil avec texte à gauche et carrousel à droite (empilés sous 900 px), boutons en dégradé violet-bleu texte blanc, cartes en ombre douce chromée, contours gris clair, fond de page en dégradé gris clair, reflets intenses, Space Grotesk partout, bouton Menu sans fond, étiquettes en contour seul, exemples à ombre douce floue. Aucune migration.
 - En-tête (vitrine et app) : pastille « Résoudre » rétablie à côté de « Déléguer », vers la section Devenir Brigadier (12 nov. 2026, PR #55). Aucune migration.
