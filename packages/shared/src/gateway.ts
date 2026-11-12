@@ -251,6 +251,16 @@ export class RemoteGateway implements Gateway {
     if (Date.now() > this.expires - 60000) await this.refresh();
     return this.request('/rest/v1/rpc/' + fn, body, this.access);
   }
+  // Web only: exchange the current session for a same-origin test cookie.
+  // Never place this bearer token in a URL or forward it to a preview origin.
+  async betaAccess(): Promise<boolean> {
+    if (Date.now() > this.expires - 60000) await this.refresh();
+    const response = await this.transport('/.netlify/functions/beta-auth', {
+      method: 'POST', headers: { Authorization: 'Bearer ' + this.access, 'Content-Type': 'application/json' },
+      body: '{}', signal: AbortSignal.timeout(10000),
+    });
+    return response.ok && (await response.json()).allowed === true;
+  }
   // Paiement en ligne (Stripe Connect) via les fonctions Edge : renvoie l'adresse Stripe à ouvrir.
   // 'onboarding' : le Brigadier active ses paiements. 'checkout' : le déposant paie une tâche terminée.
   async paymentLink(kind: 'onboarding' | 'checkout', taskId?: string): Promise<string> {

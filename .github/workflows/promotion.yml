@@ -8,13 +8,15 @@ jobs:
   promotion:
     runs-on: ubuntu-latest
     steps:
-      - name: Vérifier la destination
+      - name: Imposer preprod vers prod
         env:
           BASE: ${{ github.base_ref }}
           HEAD: ${{ github.head_ref }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          REPO: ${{ github.repository }}
         run: |
-          if [ "$BASE" = prod ] && [ "$HEAD" != preprod ]; then
-            echo 'Production accepte uniquement preprod.'
+          if [ "$BASE" = prod ] && { [ "$HEAD" != preprod ] || [ "$HEAD_REPO" != "$REPO" ]; }; then
+            echo 'La production accepte uniquement la branche preprod de ce dépôt.'
             exit 1
           fi
           if [ "$HEAD" = beta ] && [ "$BASE" != preprod ]; then

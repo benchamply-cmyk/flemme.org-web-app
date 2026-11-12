@@ -21,8 +21,8 @@
 .entete { display: grid; grid-template-columns: auto auto 1fr; align-items: center; gap: 16px; width: 100%; max-width: var(--largeur); margin: 0 auto; padding: 20px 24px; box-sizing: border-box; position: relative; z-index: 10; }
 .entete-gauche { display: flex; align-items: center; gap: 16px; justify-self: start; min-width: 0; }
 .entete-droite { justify-self: end; display: flex; align-items: center; gap: 14px; }
-.pastille.deleguer, .pastille.entete-resoudre, .pastille.entete-comment { background: var(--glacier); color: var(--encre); box-shadow: 3px 4px 0 var(--violet); }
-.pastille.deleguer:hover, .pastille.entete-resoudre:hover, .pastille.entete-comment:hover { background: var(--glacier-clair); border-color: var(--encre); }
+.pastille.deleguer, .pastille.entete-resoudre, .pastille.entete-comment, .pastille.entete-home { background: var(--glacier); color: var(--encre); box-shadow: 3px 4px 0 var(--violet); }
+.pastille.deleguer:hover, .pastille.entete-resoudre:hover, .pastille.entete-comment:hover, .pastille.entete-home:hover { background: var(--glacier-clair); border-color: var(--encre); }
 .burger-menu .burger-connexion, .burger-menu .burger-resoudre, .burger-menu .burger-comment { display: none; }
 /* Flemmes à résoudre n’apparaît dans le menu que lorsque la pastille de l’en-tête est masquée (petits écrans). */
 .logo { display: inline-flex; align-items: center; height: 44px; padding: 0 12px; box-sizing: border-box; font: 900 24px/1 var(--police); letter-spacing: -1px; color: var(--encre); text-decoration: none; background: var(--vert-logo); border: 2.5px solid var(--encre); border-radius: 12px; }
@@ -53,6 +53,9 @@
 .burger-langues small { flex-basis: 100%; font-weight: 400; font-size: 12px; opacity: .7; }
 /* « Comment ça marche » passe dans le menu « ? » quand l’en-tête manque de place. */
 @media (max-width: 1100px) { .entete-comment { display: none; } .burger-menu .burger-comment { display: block; } }
+/* V0.6 : le menu « ? » (Aide) est à droite, à côté de Connexion : sa liste s’ouvre vers la gauche. Home passe dans le logo sur petit écran. */
+.entete-droite .burger-menu { left: auto; right: 0; transform: none; min-width: 200px; }
+@media (max-width: 860px) { .entete-home { display: none; } }
 @media (max-width: 560px) {
   .entete { display: flex; gap: 8px; padding: 16px; }
   .entete .burger { margin-left: auto; }
@@ -82,3 +85,11 @@
 .pied-marque span { font-size: 14px; }
 .pied-marque .pied-doux { font-size: 13px; color: #a9b4cc; max-width: 34ch; }
 .pied-bas { max-width: var(--largeur); margin: 32px auto 0; border-top: 1px solid var(--texte-doux); padding-top: 18px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; font-size: 13px; }
+
+/* Compte testeur : garder Test et le compte côte à côte, y compris sur petit écran. */
+.entete:has(.beta-test) .entete-droite { gap: 8px; }
+@media (max-width: 560px) {
+  .entete:has(.beta-test) { flex-wrap: wrap; }
+  .entete:has(.beta-test) .entete-droite { margin-left: auto; }
+  .entete:has(.beta-test) .pastille.mon-espace { display: inline-flex; }
+}
