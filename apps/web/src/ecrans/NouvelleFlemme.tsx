@@ -1,6 +1,7 @@
 import { BUDGET_RANGES, CATEGORIES, DEADLINES, MODES, TASK_FIELDS, commissionNote, notices, price, money, parseMoney, taskInput } from '../../../../packages/shared/src/index.ts';
 import { session } from '../session.ts';
 import { Action } from '../ui.tsx';
+import { AssistantQualification, qualificationEnabled } from './AssistantQualification.tsx';
 import { Dictee } from './Dictee.tsx';
 import type { Ctx } from './contexte.ts';
 import { FORMULES, titreAvecFormule, type Formule } from '../formules.ts';
@@ -29,6 +30,7 @@ export function NouvelleFlemme({ state: { busy }, place, task, draft, field, cho
     <p className="muted">{f ? f.intro : 'Pas besoin d’un brief parfait. Commence avec tes mots.'}</p>
     {f && <ol className="note">{f.etapes.map(e => <li key={e}>{e}</li>)}</ol>}
     {field('Décris ce dont tu as besoin', 'details', { multiline: true, hint: f ? f.aide : 'Exemple : « J’aimerais mettre mon CV à jour avant vendredi. » Le résultat attendu, ce qui te bloque…' })}
+    {!editing && qualificationEnabled && <AssistantQualification key={place.draftId || "new"} details={draft.details || ""} disabled={busy} onApply={details => fill({ details })} />}
     <Dictee disabled={busy} current={draft.details || ''} onText={details => fill({ details })}/>
     {field('Un titre court pour ta demande', 'title', { hint: 'Ex. Mettre mon CV à jour' })}
     {!draft.title && suggestion.length > 3 && <button type="button" className="btn small secondary" disabled={busy} onClick={() => fill({ title: suggestion[0].toUpperCase() + suggestion.slice(1) })}>Utiliser « {suggestion} » comme titre</button>}

@@ -18,6 +18,7 @@ export default defineConfig(({ command, mode }) => {
   const problem = supabaseConfigProblem(env.VITE_SUPABASE_URL, env.VITE_SUPABASE_PUBLISHABLE_KEY);
   if (problem && command === 'build') throw new Error(problem);
   return {
+    define: { __QUALIFICATION_ENABLED__: JSON.stringify(loadEnv(mode, process.cwd(), 'QUALIFICATION_ENABLED').QUALIFICATION_ENABLED === 'true') },
     plugins: [react(), habillage],
     // Toujours la config TypeScript du site, y compris pour les fichiers de packages/shared.
     tsconfig: './tsconfig.json',
