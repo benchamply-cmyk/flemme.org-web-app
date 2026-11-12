@@ -130,15 +130,17 @@ export default function App() {
   }
   // Lien du menu burger : referme le menu puis change d’écran dans l’app.
   const menu = (action: () => void) => (e: MouseEvent<HTMLAnchorElement>) => { e.preventDefault(); (e.currentTarget.closest('details') as HTMLDetailsElement).open = false; action(); };
+  const loupe = <svg className="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="currentColor"><circle cx="16.5" cy="10.5" r="1.6"/><circle cx="14.7" cy="14.7" r="1.6"/><circle cx="10.5" cy="16.5" r="1.6"/><circle cx="6.3" cy="14.7" r="1.6"/><circle cx="4.5" cy="10.5" r="1.6"/><circle cx="6.3" cy="6.3" r="1.6"/><circle cx="10.5" cy="4.5" r="1.6"/><circle cx="14.7" cy="6.3" r="1.6"/><circle cx="19" cy="19" r="2.2"/></g></svg>;
   const plus = <svg className="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="square" strokeLinejoin="miter"><path d="M12 6v12M6 12h12"/></g></svg>;
   return <>
     <div className="flemme-chrome-home bandeau app-bandeau" data-flemme-page="deleguer">
       <header className="entete">
-        {/* En-tête V0.6 : FLEMME. · Home · Déléguer · Menu (Résoudre une flemme dedans) · Connexion · Aide (même ordre que la vitrine, src/site/entete.html). */}
+        {/* En-tête : FLEMME. · Home · Déléguer · Résoudre (section Devenir Brigadier) · Menu · Connexion · Aide (même ordre que la vitrine, src/site/entete.html). */}
         <div className="entete-gauche">
           <a className="logo" href="./" aria-label="FLEMME · retour à la présentation">FLEMME.</a>
           <a className="pastille entete-home" href="./"><svg className="ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="square" strokeLinejoin="miter"><path d="M5 11l7-6 7 6v8H5z"/></g></svg><span>Home</span></a>
           {connecte && <button type="button" className="pastille deleguer" onClick={() => go('new', { tab: 'mine', draftId: undefined })}>{plus}<span>Déléguer</span></button>}
+          <a className="pastille entete-resoudre" href="resoudre.html#devenir-brigadier">{loupe}<span>Résoudre</span></a>
         </div>
         <details className="burger menu-principal">
           <summary aria-label="Menu"><svg className="ico" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="square" strokeLinejoin="miter"><path d="M6 8h12M6 12h12M6 16h12"/></g></svg></summary>
