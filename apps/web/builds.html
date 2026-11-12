@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#3a4f7a">
+<title>Builds Flemme</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<style>
+  /* Barre de choix en haut, site choisi dans le cadre en dessous (toute la hauteur restante). */
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { display: flex; flex-direction: column; background: #eef2f8; color: #1d2433; font: 14px/1.4 Inter, system-ui, -apple-system, sans-serif; }
+  .barre { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; padding: calc(8px + env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) 8px max(12px, env(safe-area-inset-left, 0px)); background: #fff; border-bottom: 1px solid #d9dfea; }
+  .barre b { font: 700 15px "Space Grotesk", system-ui, sans-serif; margin-right: 4px; }
+  select, input, button, .ouvrir { font: 500 14px Inter, system-ui, sans-serif; color: inherit; border: 1px solid #d9dfea; border-radius: 8px; padding: 7px 9px; background: #f6f8fc; }
+  #build { flex: 1 1 260px; min-width: 0; max-width: 520px; }
+  #page { flex: 0 1 200px; min-width: 0; }
+  form { display: flex; gap: 4px; }
+  input { width: 84px; }
+  button, .ouvrir { background: #3a4f7a; border-color: #3a4f7a; color: #fff; cursor: pointer; text-decoration: none; white-space: nowrap; }
+  #etat { flex: 1 1 100%; font-size: 12px; color: #5b6478; }
+  iframe { flex: 1; width: 100%; border: 0; background: #fff; }
+  :focus-visible { outline: 2px solid #3a4f7a; outline-offset: 2px; }
+</style>
+</head>
+<body>
+<!-- Page d'arrivée du site flemmeorg-beta (12 nov. 2026) : choisir quel build afficher. Rien n'est publié d'ici. -->
+<div class="barre">
+  <b>Builds</b>
+  <select id="build" aria-label="Build affiché"></select>
+  <select id="page" aria-label="Page"></select>
+  <form id="autre"><input id="numero" type="number" min="1" inputmode="numeric" placeholder="PR n°" aria-label="Numéro de PR"><button>OK</button></form>
+  <a class="ouvrir" id="ouvrir" target="_blank" rel="noopener">Ouvrir ↗</a>
+  <span id="etat" role="status">Chargement de la liste des PR…</span>
+</div>
+<iframe id="cadre" title="Site du build choisi"></iframe>
+<script type="module" src="/src/builds-page.ts"></script>
+</body>
+</html>
