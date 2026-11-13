@@ -30,10 +30,10 @@ import { Signalement } from './ecrans/Signalement.tsx';
 // Différence web : chaque écran est une entrée d’historique, le bouton Retour du navigateur remplace BackHandler.
 
 // Lien direct depuis la vitrine : app.html#mine ou app.html#find.
-// app.html#deposer ouvre directement le formulaire « Déléguer ma flemme » ;
-// app.html#deposer-autre et #deposer-devis l’ouvrent sur la formule « Autres services » ou « Demande de devis » (src/formules.ts).
+// app.html#deleguer ouvre directement le formulaire « Déléguer ma flemme » (#deposer, l’ancienne adresse, aussi) ;
+// app.html#deleguer-autre et #deleguer-devis (ou #deposer-autre, #deposer-devis) l’ouvrent sur la formule « Autres services » ou « Demande de devis » (src/formules.ts).
 const formule = formuleDepuisHash(location.hash);
-const deposer = location.hash === '#deposer' || !!formule;
+const deposer = location.hash === '#deleguer' || location.hash === '#deposer' || !!formule;
 const initialTab = location.hash === '#find' ? 'find' : location.hash === '#mine' || deposer || location.hash.startsWith('#paiement') ? 'mine' : null;
 const start: Place = { screen: deposer ? 'new' : initialTab ? 'list' : 'home', tab: initialTab || 'mine', taskId: '', offerId: '', depth: 0 };
 const startDraft: Draft = formule === 'autre' ? { formule, category: 'autre' } : formule ? { formule } : {};

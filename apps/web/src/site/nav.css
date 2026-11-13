@@ -43,7 +43,6 @@
 
 @media (prefers-reduced-motion: reduce) { .pn { transition: none; } }
 
-/* Plan du site du 13/11/2026 : plus de bouton « Décris ta flemme » dans la nav (il reste dans les pages).
-   Le bouton Menu se cale donc à droite, et la barre garde de l'air après le dernier lien. */
+/* Plan du site du 13/11/2026 : le bouton « Déléguer » passe en tête, juste après le logo.
+   Le bouton Menu se cale à droite, et la barre garde de l'air après le dernier lien. */
 .pn-liens { padding-right: 14px; }
-@media (max-width: 860px) { .pn-menu { margin-left: auto; } }

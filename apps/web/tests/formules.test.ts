@@ -3,6 +3,10 @@ import assert from 'node:assert/strict';
 import { FORMULES, formuleDepuisHash, titreAvecFormule } from '../src/formules.ts';
 
 test('formules : lecture du lien de la vitrine', () => {
+  assert.equal(formuleDepuisHash('#deleguer-autre'), 'autre');
+  assert.equal(formuleDepuisHash('#deleguer-devis'), 'devis');
+  assert.equal(formuleDepuisHash('#deleguer'), null);
+  // Anciennes adresses, toujours reconnues.
   assert.equal(formuleDepuisHash('#deposer-autre'), 'autre');
   assert.equal(formuleDepuisHash('#deposer-devis'), 'devis');
   assert.equal(formuleDepuisHash('#deposer'), null);
