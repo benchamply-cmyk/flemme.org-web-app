@@ -6,7 +6,7 @@ import { supabaseConfigProblem } from './src/supabaseConfig.ts';
 
 // La vitrine (index.html et ses pages intérieures, maquette V0.3), le parcours de l’app (app.html),
 // l’admin de l’équipe (admin.html) et l’aperçu isolé de la future interface (apercu.html).
-const pages = ['index', 'deleguer-une-flemme', 'concept', 'comment-ca-marche', 'faq', 'contact', 'premium', 'resoudre', 'mentions', 'confidentialite', 'app', 'admin', 'apercu', 'beta'];
+const pages = ['index', 'deleguer-une-flemme', 'espace-connecte', 'concept', 'comment-ca-marche', 'faq', 'contact', 'premium', 'resoudre', 'mentions', 'confidentialite', 'app', 'admin', 'apercu', 'beta'];
 // En-tête et pied de page de la vitrine, écrits une fois dans src/site et insérés dans chaque page au build.
 const morceau = (nom: string) => readFileSync(fileURLToPath(new URL(`./src/site/${nom}.html`, import.meta.url)), 'utf8').trim();
 const habillage = { name: 'flemme-habillage', transformIndexHtml: (html: string) => html.replace('<!--#entete-->', morceau('entete')).replace('<!--#pied-->', morceau('pied')) };

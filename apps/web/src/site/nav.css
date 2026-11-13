@@ -11,7 +11,7 @@
 .pn.cachee { transform: translate(-50%, calc(-100% - 24px)); opacity: 0; }
 .pn-barre { display: flex; align-items: center; gap: 22px; padding: 6px 6px 6px 8px; }
 .pn-logo { display: inline-flex; align-items: center; height: 38px; padding: 0 10px; font: 900 20px/1 var(--pn-police); letter-spacing: -1px; text-decoration: none; background: var(--vert-logo); border: 2px solid var(--encre); border-radius: 10px; }
-.pn-liens { display: flex; gap: 22px; }
+.pn-liens { display: flex; align-items: center; gap: 20px; }
 .pn-liens a, .pn-panneau a { position: relative; font-size: 14px; font-weight: 500; text-decoration: none; color: var(--texte-doux); transition: color .25s ease; }
 .pn-liens a:hover, .pn-liens a:focus-visible { color: var(--encre); }
 .pn-liens a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 2px; border-radius: 2px; background: var(--violet); transform: scaleX(0); transform-origin: left; transition: transform .35s var(--pn-ease); }
@@ -22,14 +22,23 @@
 .pn-panneau { display: flex; flex-direction: column; padding: 6px 18px 16px; gap: 4px; }
 .pn-panneau[hidden] { display: none; }
 .pn-panneau a { padding: 10px 0; font-size: 17px; color: var(--encre); border-top: 1px solid rgba(22, 19, 31, .08); }
-@media (max-width: 860px) {
+/* Boutons dans la barre (plan du site, 3e version) : Déléguer plein, Résoudre et Connexion en contour. */
+.pn-liens .pn-cta, .pn-liens .pn-btn { height: 38px; padding: 0 16px; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; border-radius: 999px; white-space: nowrap; }
+.pn-liens .pn-cta { color: #fff; }
+.pn-liens .pn-btn { color: var(--encre); background: #fff; border: 1px solid rgba(22, 19, 31, .22); transition: border-color .25s ease, background .25s ease; }
+.pn-liens .pn-btn:hover, .pn-liens .pn-btn:focus-visible { border-color: var(--violet); color: var(--violet); }
+.pn-liens .pn-btn[aria-current="page"] { border: 2px solid var(--encre); font-weight: 700; }
+.pn-liens .pn-cta::after, .pn-liens .pn-btn::after { display: none; }
+.pn-liens .pn-cta + .pn-btn, .pn-liens .pn-btn + .pn-btn { margin-left: -12px; }
+.pn-mobile { display: none; }
+@media (max-width: 920px) {
   .pn { width: calc(100% - 24px); }
   .pn-liens { display: none; }
   .pn-barre { gap: 8px; }
-  .pn-cta { margin-left: auto; }
+  .pn-mobile { display: inline-flex; margin-left: auto; }
   .pn-menu { display: inline-flex; align-items: center; }
 }
-@media (max-width: 380px) { .pn-cta { display: none; } .pn-menu { margin-left: auto; } }
+@media (max-width: 380px) { .pn-mobile { display: none; } .pn-menu { margin-left: auto; } }
 .pn .pn-cta, .pn .pn-cta:hover, .pn .pn-cta:focus-visible { color: #fff; }
 .pn .pn-logo, .pn .pn-logo:hover { color: var(--encre); }
 .pn-liens a[aria-current="page"], .pn-panneau a[aria-current="page"] { color: var(--encre); font-weight: 700; }
@@ -43,6 +52,5 @@
 
 @media (prefers-reduced-motion: reduce) { .pn { transition: none; } }
 
-/* Plan du site du 13/11/2026 : le bouton « Déléguer » passe en tête, juste après le logo.
-   Le bouton Menu se cale à droite, et la barre garde de l'air après le dernier lien. */
+/* La barre garde de l'air après le dernier lien. */
 .pn-liens { padding-right: 14px; }

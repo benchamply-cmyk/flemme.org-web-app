@@ -1,5 +1,5 @@
 // Navigation pastille de la vitrine (src/site/entete.html), commune à l’accueil (landing.ts) et aux pages intérieures (commun.ts).
-// Cachée quand on descend, visible dès qu’on remonte ; panneau « Menu » sous 860 px ; page courante marquée.
+// Cachée quand on descend, visible dès qu’on remonte ; panneau « Menu » sous 920 px ; page courante marquée.
 const pn = document.getElementById('pn');
 const menu = document.getElementById('pnMenu') as HTMLButtonElement | null;
 const panneau = document.getElementById('pnPanneau');
