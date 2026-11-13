@@ -9,7 +9,7 @@
 -- AVANT DE LANCER : remplacer les deux 'A-REMPLACER' par des mots de passe choisis
 -- (ils ne doivent pas être commités). Le script refuse de tourner sinon.
 -- Sans risque à relancer : un compte qui existe déjà est ignoré (mot de passe inchangé).
--- Le 12 nov. 2026, ces deux comptes ont déjà été créés sur la base de production.
+-- Le 12 nov. 2026, ces deux comptes ont déjà été créés sur la production et sur flemme-preprod.
 --
 -- PAR DÉFAUT CE SCRIPT S'ANNULE (ROLLBACK, dernière ligne) : il affiche ce qu'il ferait.
 -- Pour l'appliquer vraiment, remplacer la dernière ligne « rollback; » par « commit; ».

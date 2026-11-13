@@ -1,5 +1,7 @@
 # Mise en service de Supabase (site réel)
 
+> **Mise à jour du 12 nov. 2026** : la preprod a désormais son propre projet Supabase (`flemme-preprod`) et les variables Netlify ont une valeur par contexte. La configuration actuelle et la procédure pour la refaire sont dans `docs/supabase-preprod.md` ; l'étape 3 ci-dessous décrit la mise en service initiale du 03/11.
+
 Aujourd'hui, https://flemme.org est construit sans `VITE_SUPABASE_URL` ni `VITE_SUPABASE_PUBLISHABLE_KEY` : `app.html` tourne en **démonstration locale** (données fictives dans le navigateur). Pour passer en mode réel, il faut deux choses, dans cet ordre :
 
 1. le backend `flemme_v2` (migrations de `supabase/migrations`) sur le projet Supabase de production : **appliqué le 03/11/2026** dans l'éditeur SQL, à vérifier (étape 1) ;

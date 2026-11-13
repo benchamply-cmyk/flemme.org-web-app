@@ -4,6 +4,7 @@ Chaque PR ajoute une ligne sous « À venir ». À chaque mise en production (`p
 
 ## À venir
 
+- Supabase de preprod et données de test (13 nov. 2026) : guide `docs/supabase-preprod.md` (projet `flemme-preprod` séparé de la production, migrations et historique, URL d'authentification, SMTP Resend, admin, alertes Vault, variables Netlify par contexte, redéploiement de preprod, comptes et demandes de test, recette) ; script en lecture seule `supabase/demandes-test/04-verifier.sql` ; README des demandes de test mis à jour (bases séparées, état preprod et prod, centimes). Aucun secret, aucune migration, ni catalogue de services ni réglages visuels.
 - Demandes de test : budgets et montant de la proposition exprimés en centimes dans `supabase/demandes-test/02-demandes-exemple.sql` (25 € et non 0,25 €) ; données déjà insérées corrigées en prod et en preprod le 12 nov. 2026. Aucune migration.
 - Demandes de test (12 nov. 2026) : scripts SQL `supabase/demandes-test/` pour créer deux comptes test marqués `compte_test` (Flemmard et Brigadier, @example.com), insérer 10 demandes « [TEST] » (publiées, en attente, à corriger) et une proposition, puis tout supprimer ; chaque script s'annule par défaut (rollback). Aucune migration.
 - Retrait de la PR #56 (services modifiables, atelier des services) de preprod à la demande de Ben (12 nov. 2026) : preprod revient à l’état de la #55 ; la #56 reste sur beta. Aucune migration.
