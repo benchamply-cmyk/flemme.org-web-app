@@ -1,30 +1,25 @@
 <!-- Navigation pastille de la vitrine, commune à toutes les pages (styles : nav.css, comportement : nav.ts).
-     Elle se cache quand on descend et revient dès qu’on remonte. Sous 1040 px, les liens passent dans le panneau « Menu ».
-     Liens et ordre choisis par Ben dans le plan du site (13/11/2026, 3e version) : liens texte, puis les boutons
-     Déléguer, Résoudre et Connexion, puis Contact, puis le menu déroulant « Menu » (ordinateur seulement, 4e version).
+     Elle se cache quand on descend et revient dès qu’on remonte. Sous 720 px, les liens passent dans le panneau « Menu ».
+     Liens et ordre choisis par Ben dans le plan du site (13/11/2026, 5e version) : sur ordinateur, la barre ne garde que
+     les boutons Déléguer, Résoudre et Connexion ; les liens texte passent dans le menu déroulant « Menu ».
      Sur mobile, le bouton Déléguer reste visible à côté de Menu. -->
 <nav class="pn" id="pn" aria-label="Navigation principale">
   <div class="pn-barre">
     <a class="pn-logo" href="./" aria-label="FLEMME · accueil">FLEMME.</a>
     <div class="pn-liens">
-      <a href="./#services">Services</a>
-      <a href="comment-ca-marche.html">Concept</a>
-      <a href="./#comparatif">Pourquoi Flemme</a>
-      <a href="faq.html">FAQ</a>
       <a class="pn-cta" href="deleguer-une-flemme.html">Déléguer</a>
       <a class="pn-btn" href="resoudre.html">Résoudre</a>
       <a class="pn-btn" href="espace-connecte.html">Connexion</a>
-      <a href="contact.html">Contact</a>
       <div class="pn-plus">
         <button type="button" class="pn-btn pn-plus-btn" id="pnPlus" aria-expanded="false" aria-controls="pnDeroulant">Menu<svg viewBox="0 0 12 8" width="12" height="8" aria-hidden="true"><path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <div class="pn-deroulant" id="pnDeroulant" hidden>
-          <a href="comment-ca-marche.html#concept">Le concept</a>
-          <a href="comment-ca-marche.html#prix">Prix et paiement</a>
-          <a href="comment-ca-marche.html#confiance">Confiance et sécurité</a>
-          <a href="resoudre.html#liste">Les flemmes disponibles</a>
-          <a href="resoudre.html#devenir-brigadier">Devenir Brigadier</a>
+          <a href="./#services">Services</a>
+          <a href="./#comparatif">Pourquoi Flemme</a>
+          <a href="comment-ca-marche.html">Concept</a>
           <a href="./#garanties">Nos garanties</a>
-          <a href="premium.html">Brigadier Premium</a>
+          <a href="resoudre.html#liste">Flemmes</a>
+          <a href="faq.html">FAQ</a>
+          <a href="contact.html">Contact</a>
         </div>
       </div>
     </div>

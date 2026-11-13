@@ -1,5 +1,5 @@
 // Navigation pastille de la vitrine (src/site/entete.html), commune à l’accueil (landing.ts) et aux pages intérieures (commun.ts).
-// Cachée quand on descend, visible dès qu’on remonte ; panneau « Menu » sous 1040 px ; menu déroulant « Menu » dans la barre (ordinateur) ; page courante marquée.
+// Cachée quand on descend, visible dès qu’on remonte ; panneau « Menu » sous 720 px ; menu déroulant « Menu » dans la barre (ordinateur) ; page courante marquée.
 const pn = document.getElementById('pn');
 const menu = document.getElementById('pnMenu') as HTMLButtonElement | null;
 const panneau = document.getElementById('pnPanneau');
@@ -28,7 +28,7 @@ if (pn && menu && panneau) {
   deroulant?.addEventListener('click', e => { if ((e.target as Element).closest('a')) ouvrirDeroulant(false); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && deroulant && !deroulant.hidden) { ouvrirDeroulant(false); plus?.focus(); } });
   document.addEventListener('click', e => { if (deroulant && !deroulant.hidden && !plus?.parentElement?.contains(e.target as Node)) ouvrirDeroulant(false); });
-  addEventListener('resize', () => { if (deroulant && !deroulant.hidden && matchMedia('(max-width: 1040px)').matches) ouvrirDeroulant(false); });
+  addEventListener('resize', () => { if (deroulant && !deroulant.hidden && matchMedia('(max-width: 720px)').matches) ouvrirDeroulant(false); });
 
   let dernierY = scrollY;
   addEventListener('scroll', () => {

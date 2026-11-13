@@ -31,7 +31,7 @@
 .pn-liens .pn-cta::after, .pn-liens .pn-btn::after { display: none; }
 .pn-liens .pn-cta + .pn-btn, .pn-liens .pn-btn + .pn-btn { margin-left: -12px; }
 .pn-mobile { display: none; }
-@media (max-width: 1040px) {
+@media (max-width: 720px) {
   .pn { width: calc(100% - 24px); }
   .pn-liens { display: none; }
   .pn-barre { gap: 8px; }
