@@ -54,8 +54,11 @@
 /* Menu déroulant de la barre (ordinateur), plan du site du 13/11/2026 (4e version). */
 .pn-plus { position: relative; }
 .pn-liens .pn-plus-btn { gap: 6px; cursor: pointer; font-family: var(--pn-police); }
-.pn-plus-btn svg { transition: transform .25s ease; }
-.pn-plus-btn[aria-expanded="true"] svg { transform: rotate(180deg); }
+/* Icône des boutons Menu : 4 pastilles de couleur, en losange quand le menu est ouvert. */
+.pn-ico { flex: none; transition: transform .35s var(--pn-ease); }
+.pn-menu { gap: 8px; }
+.pn-plus-btn[aria-expanded="true"] .pn-ico, .pn-menu[aria-expanded="true"] .pn-ico { transform: rotate(45deg) scale(.9); }
+.pn-plus-btn:hover .pn-ico, .pn-menu:hover .pn-ico { transform: rotate(45deg); }
 .pn-deroulant { position: absolute; top: calc(100% + 14px); right: 0; z-index: 2; min-width: 240px; display: flex; flex-direction: column; padding: 8px; background: #fff; border: 1px solid rgba(22, 19, 31, .1); border-radius: 18px; box-shadow: 0 14px 34px rgba(58, 47, 160, .16); }
 .pn-deroulant[hidden] { display: none; }
 .pn-liens .pn-deroulant a { padding: 10px 12px; border-radius: 10px; color: var(--encre); white-space: nowrap; }
