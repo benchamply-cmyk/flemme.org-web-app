@@ -1,0 +1,44 @@
+/* Navigation pastille de la vitrine (13/11/2026), commune à l’accueil et aux pages intérieures.
+   Le HTML est écrit une fois dans entete.html et inséré au build ; le comportement est dans nav.ts.
+   Les variables --pn-* sont locales pour que la nav soit identique quelle que soit la feuille de la page
+   (accueil-union.css ou vitrine.css + reglages*.css). */
+.pn { --pn-police: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif; --pn-ease: cubic-bezier(.2, .7, .2, 1); font-family: var(--pn-police); line-height: 1.55; color: var(--encre); }
+.pn a { color: inherit; }
+.pn { position: fixed; top: 14px; left: 50%; z-index: 50; width: max-content; max-width: calc(100% - 24px); transform: translateX(-50%);
+  background: rgba(255, 255, 255, .72); -webkit-backdrop-filter: blur(16px) saturate(150%); backdrop-filter: blur(16px) saturate(150%);
+  border: 1px solid rgba(22, 19, 31, .1); border-radius: 28px; box-shadow: 0 10px 30px rgba(58, 47, 160, .14);
+  transition: transform .45s var(--pn-ease), opacity .3s ease; }
+.pn.cachee { transform: translate(-50%, calc(-100% - 24px)); opacity: 0; }
+.pn-barre { display: flex; align-items: center; gap: 22px; padding: 6px 6px 6px 8px; }
+.pn-logo { display: inline-flex; align-items: center; height: 38px; padding: 0 10px; font: 900 20px/1 var(--pn-police); letter-spacing: -1px; text-decoration: none; background: var(--vert-logo); border: 2px solid var(--encre); border-radius: 10px; }
+.pn-liens { display: flex; gap: 22px; }
+.pn-liens a, .pn-panneau a { position: relative; font-size: 14px; font-weight: 500; text-decoration: none; color: var(--texte-doux); transition: color .25s ease; }
+.pn-liens a:hover, .pn-liens a:focus-visible { color: var(--encre); }
+.pn-liens a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 2px; border-radius: 2px; background: var(--violet); transform: scaleX(0); transform-origin: left; transition: transform .35s var(--pn-ease); }
+.pn-liens a:hover::after, .pn-liens a:focus-visible::after { transform: scaleX(1); }
+.pn-cta { display: inline-flex; align-items: center; height: 40px; padding: 0 18px; border-radius: 999px; background: var(--encre); color: #fff; font-weight: 600; font-size: 14px; text-decoration: none; transition: background .25s ease; }
+.pn-cta:hover { background: var(--violet); }
+.pn-menu { display: none; height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(22, 19, 31, .2); background: #fff; font-weight: 600; font-size: 14px; cursor: pointer; }
+.pn-panneau { display: flex; flex-direction: column; padding: 6px 18px 16px; gap: 4px; }
+.pn-panneau[hidden] { display: none; }
+.pn-panneau a { padding: 10px 0; font-size: 17px; color: var(--encre); border-top: 1px solid rgba(22, 19, 31, .08); }
+@media (max-width: 860px) {
+  .pn { width: calc(100% - 24px); }
+  .pn-liens { display: none; }
+  .pn-barre { gap: 8px; }
+  .pn-cta { margin-left: auto; }
+  .pn-menu { display: inline-flex; align-items: center; }
+}
+@media (max-width: 380px) { .pn-cta { display: none; } .pn-menu { margin-left: auto; } }
+.pn .pn-cta, .pn .pn-cta:hover, .pn .pn-cta:focus-visible { color: #fff; }
+.pn .pn-logo, .pn .pn-logo:hover { color: var(--encre); }
+.pn-liens a[aria-current="page"], .pn-panneau a[aria-current="page"] { color: var(--encre); font-weight: 700; }
+.pn-liens a[aria-current="page"]::after { transform: scaleX(1); }
+.pn-menu { color: var(--encre); font-family: var(--pn-police); }
+
+/* Pages intérieures : la nav est fixe, on réserve sa hauteur au-dessus du titre de la page. */
+.bandeau:has(> .pn) { padding-top: 76px; position: relative; z-index: 40; }
+/* Panneau ouvert : fond presque opaque, le texte de la page ne transparaît plus. */
+.pn:has(.pn-panneau:not([hidden])) { background: rgba(255, 255, 255, .97); }
+
+@media (prefers-reduced-motion: reduce) { .pn { transition: none; } }

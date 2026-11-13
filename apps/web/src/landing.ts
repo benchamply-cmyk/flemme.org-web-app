@@ -1,5 +1,6 @@
 import './beta/runtime.ts';
 import './site/accueil-union.css';
+import './site/nav.ts';
 
 // Accueil de la vitrine (13/11/2026) : proposition de la PR #67, inspirée de l’implémentation d’UNION :
 // navigation qui se cache, titre écrit lettre par lettre, apparitions en cascade, moments de vie, test de flemme.
@@ -13,26 +14,7 @@ const racine = document.documentElement;
 const reduit = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const observe = 'IntersectionObserver' in window;
 
-/* ---------- Navigation pastille : cachée quand on descend, visible dès qu’on remonte ---------- */
-const pn = document.getElementById('pn')!;
-const menu = document.getElementById('pnMenu') as HTMLButtonElement;
-const panneau = document.getElementById('pnPanneau')!;
-function ouvrirMenu(ouvert: boolean) {
-  panneau.hidden = !ouvert;
-  menu.setAttribute('aria-expanded', String(ouvert));
-  menu.querySelector('span')!.textContent = ouvert ? 'Fermer' : 'Menu';
-  if (ouvert) pn.classList.remove('cachee');
-}
-menu.addEventListener('click', () => ouvrirMenu(panneau.hidden === true));
-panneau.querySelectorAll('a').forEach(a => a.addEventListener('click', () => ouvrirMenu(false)));
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && !panneau.hidden) { ouvrirMenu(false); menu.focus(); } });
-document.addEventListener('click', e => { if (!panneau.hidden && !pn.contains(e.target as Node)) ouvrirMenu(false); });
-let dernierY = scrollY;
-addEventListener('scroll', () => {
-  const y = scrollY;
-  if (panneau.hidden && !pn.contains(document.activeElement)) pn.classList.toggle('cachee', y > dernierY && y > 160);
-  dernierY = y;
-}, { passive: true });
+/* ---------- Navigation pastille : partagée avec les pages intérieures (site/nav.ts) ---------- */
 
 /* ---------- Titre du hero écrit lettre par lettre, puis l’italique et le reste en fondu ---------- */
 const titre = document.querySelector<HTMLElement>('[data-ecrire]');
