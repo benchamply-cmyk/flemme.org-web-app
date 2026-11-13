@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0c0b13">
+<title>Flemme.org — Ta flemme, on s’en charge</title>
+<meta name="description" content="Résiliation, réclamation, annonce, dossier, voyage : décris ce que tu repousses, Flemme s’en charge à prix fixe et tu valides avant tout envoi.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="FLEMME">
+<meta property="og:title" content="Flemme.org — Ta flemme, on s’en charge">
+<meta property="og:description" content="Décris ce que tu repousses. Prix fixe affiché, résultat en 2 à 3 jours ouvrés, rien n’est envoyé sans ton accord.">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/flemme-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap">
+<script>/* Les animations ne démarrent que si le JS est actif : sans JS, tout est visible. */document.documentElement.classList.add('js');</script>
+</head>
+<body data-page="landing" class="lp">
+
+<!-- Navigation pastille (même structure que l’accueil), en version sombre au-dessus du hero. -->
+<nav class="pn pn-sombre" id="pn" aria-label="Navigation principale">
+  <div class="pn-barre">
+    <a class="pn-logo" href="./" aria-label="FLEMME · accueil">FLEMME.</a>
+    <div class="pn-liens">
+      <a href="#exemples">Exemples</a>
+      <a href="#methode">Méthode</a>
+      <a href="#prix">Prix</a>
+      <a href="#faq">FAQ</a>
+      <a href="app.html#mine">Connexion</a>
+    </div>
+    <a class="pn-cta" href="app.html#deposer">Décris ta flemme</a>
+    <button type="button" class="pn-menu" id="pnMenu" aria-expanded="false" aria-controls="pnPanneau"><span>Menu</span></button>
+  </div>
+  <div class="pn-panneau" id="pnPanneau" hidden>
+    <a href="#exemples">Exemples</a>
+    <a href="#methode">Notre méthode</a>
+    <a href="#prix">Prix</a>
+    <a href="#faq">Questions fréquentes</a>
+    <a href="contact.html">Contact</a>
+    <a href="app.html#mine">Connexion</a>
+  </div>
+</nav>
+
+<!-- Hero : fond de page réutilisable (src/site/fond-flemme.css), ouverture sur le ciel et objet qui flotte. -->
+<header class="lp-hero fond-flemme">
+  <div class="ff-decor" aria-hidden="true"><div class="ff-ciel"><i></i><i></i><i></i></div></div>
+  <svg class="ff-objet" viewBox="0 0 520 440" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="ffChrome" x1="0" y1="0" x2="1" y2=".35">
+        <stop offset="0" stop-color="#1b1e28"/><stop offset=".18" stop-color="#f6f8fc"/><stop offset=".32" stop-color="#5d6679"/>
+        <stop offset=".5" stop-color="#ffffff"/><stop offset=".64" stop-color="#202431"/><stop offset=".82" stop-color="#cfd7e4"/><stop offset="1" stop-color="#3a4152"/>
+      </linearGradient>
+      <linearGradient id="ffChromeBord" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#ffffff" stop-opacity=".95"/><stop offset="1" stop-color="#ffffff" stop-opacity=".1"/>
+      </linearGradient>
+      <linearGradient id="ffVerre" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#e9fff3"/><stop offset=".35" stop-color="#8ef0b9"/><stop offset=".7" stop-color="#57d68d"/><stop offset="1" stop-color="#1f7d4f"/>
+      </linearGradient>
+      <linearGradient id="ffReflet" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <!-- « F » chromé, en relief : une ombre décalée puis la face. -->
+    <path d="M128 52q0-22 22-22h176q22 0 22 22v28q0 22-22 22H212v58h92q22 0 22 22v24q0 22-22 22h-92v120q0 22-22 22h-40q-22 0-22-22z" fill="#0d0f16" fill-opacity=".55" transform="translate(14 12)"/>
+    <path d="M128 52q0-22 22-22h176q22 0 22 22v28q0 22-22 22H212v58h92q22 0 22 22v24q0 22-22 22h-92v120q0 22-22 22h-40q-22 0-22-22z" fill="url(#ffChrome)"/>
+    <path d="M128 52q0-22 22-22h176q22 0 22 22v28q0 22-22 22H212v58h92q22 0 22 22v24q0 22-22 22h-92v120q0 22-22 22h-40q-22 0-22-22z" fill="none" stroke="url(#ffChromeBord)" stroke-width="2.5"/>
+    <!-- Coussin en verre menthe, posé contre le F : c’est là qu’on fait la sieste pendant qu’on s’occupe du reste. -->
+    <g class="ff-coussin">
+      <rect x="196" y="250" width="286" height="118" rx="54" transform="translate(10 14) rotate(-24 339 309)" fill="#0d3a26" opacity=".55"/>
+      <rect x="196" y="250" width="286" height="118" rx="54" transform="rotate(-24 339 309)" fill="url(#ffVerre)" opacity=".94"/>
+      <rect x="196" y="250" width="286" height="118" rx="54" transform="rotate(-24 339 309)" fill="none" stroke="#f2fff7" stroke-opacity=".8" stroke-width="3"/>
+      <rect class="ff-reflet" x="236" y="262" width="150" height="16" rx="8" transform="rotate(-24 339 309)" fill="url(#ffReflet)"/>
+    </g>
+  </svg>
+
+  <div class="lp-hero-contenu">
+    <h1 class="lp-hero-titre">
+      <span class="lp-rotation" data-rotation="Ta résiliation,|Ta réclamation,|Ton annonce Vinted,|Ton dossier de location,|Ton voyage à Lisbonne,|Ton changement d’adresse,"><span class="lp-mot">Ta résiliation,</span></span>
+      <em>on s’en charge.</em>
+    </h1>
+    <div class="lp-hero-bas">
+      <div class="lp-hero-actions">
+        <a class="lp-bouton" href="app.html#deposer">Décris ta flemme</a>
+        <a class="lp-bouton fantome" href="#exemples">Voir des exemples</a>
+      </div>
+      <p class="lp-hero-note">Prix fixe affiché avant de payer, résultat en 2 à 3 jours ouvrés, et <span class="lp-souligne">rien n’est envoyé sans ton accord</span>.</p>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- Chiffres clés : uniquement des engagements réels (pas de faux avis ni de faux volumes). -->
+  <section class="lp-chiffres lp-sombre" aria-label="Nos engagements en chiffres">
+    <div class="lp-chiffre revele"><span class="lp-ico" aria-hidden="true">€</span><b><span data-compte="15">15</span>–<span data-compte="89">89</span>&#8239;€</b><small>Prix fixes, affichés</small></div>
+    <div class="lp-chiffre revele"><span class="lp-ico" aria-hidden="true">◷</span><b><span data-compte="3">3</span>&#8239;jours</b><small>Au plus, ouvrés</small></div>
+    <div class="lp-chiffre revele"><span class="lp-ico" aria-hidden="true">↺</span><b><span data-compte="1">1</span></b><small>Correction incluse</small></div>
+    <div class="lp-chiffre revele"><span class="lp-ico" aria-hidden="true">✓</span><b><span data-compte="0">0</span>&#8239;envoi</b><small>Sans ton accord</small></div>
+  </section>
+
+  <!-- Exemples de résultats : carrousel avec barre de progression (fictifs, signalés comme tels). -->
+  <section class="lp-section lp-sombre" id="exemples">
+    <p class="lp-etiquette">Exemples de flemmes</p>
+    <h2 class="lp-titre titre-p">Des flemmes <em>qu’on reconnaît.</em></h2>
+    <p class="lp-intro">Trois demandes typiques, trois résultats. Une même exigence&#8239;: que ce soit prêt à envoyer.</p>
+    <div class="lp-carrousel" id="carrousel" aria-roledescription="carrousel" aria-label="Exemples de résultats (fictifs)">
+      <div class="lp-diapos">
+        <article class="lp-diapo actif" aria-roledescription="diapositive" aria-label="1 sur 3">
+          <div class="lp-diapo-texte">
+            <span class="lp-meta">Démarches et courriers · Exemple</span>
+            <h3>Résilier ma salle de sport</h3>
+            <p>«&#8239;Je paie depuis 8 mois sans y aller, le contrat parle d’un préavis mais je ne sais pas comment l’envoyer.&#8239;»</p>
+            <dl><div><dt>Ce que tu reçois</dt><dd>Lettre prête, adresse, mode d’envoi conseillé</dd></div><div><dt>Prix et délai</dt><dd>19&#8239;€ · 2 jours ouvrés</dd></div></dl>
+          </div>
+          <div class="lp-visuel" aria-hidden="true"><div class="lp-papier"><i></i><i></i><i></i><i class="court"></i><b>Objet&#8239;: résiliation</b><span class="lp-tampon">Prêt à envoyer</span></div></div>
+        </article>
+        <article class="lp-diapo" aria-roledescription="diapositive" aria-label="2 sur 3">
+          <div class="lp-diapo-texte">
+            <span class="lp-meta">Vente et annonces · Exemple</span>
+            <h3>Vendre ma poussette</h3>
+            <p>«&#8239;Elle prend la poussière dans l’entrée. Je ne sais ni quoi écrire, ni à quel prix la mettre.&#8239;»</p>
+            <dl><div><dt>Ce que tu reçois</dt><dd>Titre, texte, prix conseillé, conseils photo</dd></div><div><dt>Prix et délai</dt><dd>15&#8239;€ · 2 jours ouvrés</dd></div></dl>
+          </div>
+          <div class="lp-visuel menthe" aria-hidden="true"><div class="lp-papier annonce"><span class="lp-photo"></span><b>Poussette pliable, très bon état</b><i></i><i class="court"></i><span class="lp-prix">120&#8239;€</span></div></div>
+        </article>
+        <article class="lp-diapo" aria-roledescription="diapositive" aria-label="3 sur 3">
+          <div class="lp-diapo-texte">
+            <span class="lp-meta">Voyage et sorties · Exemple</span>
+            <h3>Trois jours à Lisbonne</h3>
+            <p>«&#8239;En mars, à deux, budget raisonnable. J’ai ouvert quinze onglets et je n’ai rien réservé.&#8239;»</p>
+            <dl><div><dt>Ce que tu reçois</dt><dd>3 options transport et hébergement comparées</dd></div><div><dt>Prix et délai</dt><dd>39&#8239;€ · 3 jours ouvrés</dd></div></dl>
+          </div>
+          <div class="lp-visuel lavande" aria-hidden="true"><div class="lp-papier options"><b>Option A</b><i></i><b>Option B</b><i></i><b>Option C</b><i class="court"></i></div></div>
+        </article>
+      </div>
+      <div class="lp-pistes" role="tablist" aria-label="Choisir un exemple">
+        <button type="button" role="tab" aria-selected="true" data-diapo="0"><span class="lp-barre"><i></i></span><small>01</small>Résiliation</button>
+        <button type="button" role="tab" aria-selected="false" data-diapo="1"><span class="lp-barre"><i></i></span><small>02</small>Annonce</button>
+        <button type="button" role="tab" aria-selected="false" data-diapo="2"><span class="lp-barre"><i></i></span><small>03</small>Voyage</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparatif : la colonne Flemme est mise en avant et se remplit ligne par ligne. -->
+  <section class="lp-section lp-sombre" id="pourquoi">
+    <p class="lp-etiquette">Pourquoi Flemme</p>
+    <h2 class="lp-titre titre-p">Ce qui change <em>quand tu délègues.</em></h2>
+    <p class="lp-intro">Faire soi-même, c’est gratuit sur le papier. Un prestataire classique, c’est souvent sur devis. Flemme, c’est entre les deux&#8239;: simple, fixe, relu par toi.</p>
+    <div class="lp-tableau revele" role="table" aria-label="Comparatif Flemme, faire soi-même, prestataire classique">
+      <div class="lp-ligne lp-tete" role="row"><span role="columnheader"></span><span role="columnheader" class="lp-flemme">Flemme</span><span role="columnheader">Soi-même</span><span role="columnheader">Prestataire</span></div>
+      <div class="lp-ligne" role="row"><span role="rowheader">Prix connu avant de commencer</span><span role="cell" class="lp-flemme"><i class="oui">Oui</i></span><span role="cell"><i class="bof">Ton temps</i></span><span role="cell"><i class="bof">Sur devis</i></span></div>
+      <div class="lp-ligne" role="row"><span role="rowheader">Quelques lignes suffisent</span><span role="cell" class="lp-flemme"><i class="oui">Oui</i></span><span role="cell"><i class="non">Non</i></span><span role="cell"><i class="bof">Rendez-vous</i></span></div>
+      <div class="lp-ligne" role="row"><span role="rowheader">Résultat en 2 à 3 jours</span><span role="cell" class="lp-flemme"><i class="oui">Oui</i></span><span role="cell"><i class="bof">Quand tu peux</i></span><span role="cell"><i class="bof">Selon planning</i></span></div>
+      <div class="lp-ligne" role="row"><span role="rowheader">Tu valides avant tout envoi</span><span role="cell" class="lp-flemme"><i class="oui">Oui</i></span><span role="cell"><i class="oui">Oui</i></span><span role="cell"><i class="bof">Parfois</i></span></div>
+      <div class="lp-ligne" role="row"><span role="rowheader">Une correction incluse</span><span role="cell" class="lp-flemme"><i class="oui">Oui</i></span><span role="cell"><i class="non">Non</i></span><span role="cell"><i class="bof">Facturée</i></span></div>
+      <div class="lp-ligne" role="row"><span role="rowheader">Aucun mot de passe demandé</span><span role="cell" class="lp-flemme"><i class="oui">Oui</i></span><span role="cell"><i class="oui">Oui</i></span><span role="cell"><i class="bof">Parfois</i></span></div>
+    </div>
+  </section>
+
+  <!-- Méthode : trois cartes avec un petit schéma animé chacune. -->
+  <section class="lp-section lp-sombre" id="methode">
+    <p class="lp-etiquette">Notre méthode</p>
+    <h2 class="lp-titre titre-p">Trois étapes, <em>c’est tout.</em></h2>
+    <p class="lp-intro">Ce qui fatigue dans une démarche, rarement le fond&#8239;: c’est de s’y mettre. On enlève cette partie-là.</p>
+    <div class="lp-cartes">
+      <article class="lp-carte revele">
+        <svg class="lp-schema" viewBox="0 0 200 110" aria-hidden="true"><g class="s-orbite"><circle cx="100" cy="55" r="34" fill="none" stroke="currentColor" stroke-opacity=".25" stroke-dasharray="2 5"/><circle cx="134" cy="55" r="4" fill="#57d68d"/></g><circle cx="100" cy="55" r="7" fill="#57d68d"/><circle cx="100" cy="55" r="14" fill="none" stroke="#57d68d" stroke-opacity=".4" class="s-pouls"/></svg>
+        <span class="lp-num">01</span><h3>Tu décris ta flemme</h3><p>Quelques lignes, depuis ton téléphone. Pas de formulaire de trois pages, pas de rendez-vous.</p>
+      </article>
+      <article class="lp-carte revele">
+        <svg class="lp-schema" viewBox="0 0 200 110" aria-hidden="true"><g stroke="currentColor" stroke-opacity=".25"><path d="M40 30v50M70 30v50M130 30v50M160 30v50"/></g><path class="s-curseur" d="M100 20v70" stroke="#57d68d" stroke-width="2.5"/><text x="100" y="104" text-anchor="middle" fill="#57d68d" font-size="10" font-family="ui-monospace,monospace">19 €</text></svg>
+        <span class="lp-num">02</span><h3>On te confirme le prix</h3><p>Un prix fixe et un délai, par écrit. Tu paies seulement si tu es d’accord. Sinon, rien.</p>
+      </article>
+      <article class="lp-carte revele">
+        <svg class="lp-schema" viewBox="0 0 200 110" aria-hidden="true"><path d="M30 60h140" stroke="currentColor" stroke-opacity=".25" stroke-dasharray="3 6"/><g class="s-points"><circle cx="70" cy="60" r="3" fill="currentColor" fill-opacity=".5"/><circle cx="100" cy="60" r="3" fill="currentColor" fill-opacity=".5"/><circle cx="130" cy="60" r="3" fill="currentColor" fill-opacity=".5"/></g><path d="M40 60V30" stroke="#57d68d" stroke-width="2.5"/><circle cx="40" cy="60" r="6" fill="#57d68d"/><text x="40" y="22" text-anchor="middle" fill="#57d68d" font-size="10" font-family="ui-monospace,monospace">LIVRÉ</text></svg>
+        <span class="lp-num">03</span><h3>Tu relis, tu envoies</h3><p>Tu reçois le résultat, on corrige une fois si besoin. C’est toi qui envoies ou publies.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- Tout est compris : la liste défile dans une carte inclinée. -->
+  <section class="lp-section lp-sombre lp-compris">
+    <div>
+      <p class="lp-etiquette">Ce qui est inclus</p>
+      <h2 class="lp-titre titre-p">Tout est <em>compris.</em></h2>
+      <p class="lp-intro">Pas d’options cachées. Le prix couvre la recherche, la rédaction, la mise en forme et une correction.</p>
+      <a class="lp-bouton fantome" href="#prix">Voir les prix</a>
+    </div>
+    <div class="lp-liste revele" aria-label="Inclus dans chaque flemme">
+      <p class="lp-liste-tete"><span>Inclus</span><span>8 lignes</span></p>
+      <ul>
+        <li>Lecture attentive de ta demande</li><li>Recherche des bonnes adresses et des bons modèles</li><li>Rédaction complète, prête à envoyer</li><li>Mise en forme propre (PDF ou texte)</li><li>Conseils d’envoi ou de publication</li><li>Une correction incluse</li><li>Aucun mot de passe demandé</li><li>Remboursé si on ne livre pas</li>
+      </ul>
+      <p class="lp-liste-pied">Un seul prix</p>
+    </div>
+  </section>
+
+  <!-- Bascule claire : « Reste le prix. » puis les deux façons de payer. -->
+  <section class="lp-section lp-clair" id="prix">
+    <div class="lp-reste">
+      <p class="lp-intro">Tu sais ce qu’on fait, comment on le fait et ce qu’il y a dedans.</p>
+      <h2 class="lp-geant" data-mots>Reste le prix.</h2>
+    </div>
+    <div class="lp-offres">
+      <article class="lp-offre vedette revele">
+        <span class="lp-etiquette">Catalogue</span>
+        <p class="lp-montant">De 15 à 89&#8239;€ <small>TTC</small></p>
+        <p>Dix-huit flemmes courantes à prix fixe&#8239;: courriers, réclamations, annonces, logement, voyage, comparatifs.</p>
+        <ul><li>Prix affiché avant de payer</li><li>2 à 3 jours ouvrés</li><li>Urgence sous 24&#8239;h&#8239;: +10&#8239;€</li><li>Une correction incluse</li></ul>
+        <a class="lp-bouton noir" href="index.html#services">Voir le catalogue</a>
+      </article>
+      <article class="lp-offre revele">
+        <span class="lp-etiquette">Hors catalogue</span>
+        <p class="lp-montant">Sur devis <small>dès 69&#8239;€</small></p>
+        <p>Un dossier long, plusieurs démarches liées, un besoin très précis&#8239;: on chiffre avant de commencer.</p>
+        <ul><li>Devis gratuit, sans engagement</li><li>Réponse sous un jour ouvré</li><li>Périmètre, étapes, prix et délai écrits</li><li>Tu acceptes ou non</li></ul>
+        <a class="lp-bouton contour" href="app.html#deposer-devis">Demander un devis</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="lp-section lp-clair lp-faq" id="faq">
+    <div>
+      <p class="lp-etiquette">Questions fréquentes</p>
+      <h2 class="lp-titre titre-p">Ce qu’on <em>nous demande.</em></h2>
+      <p class="lp-intro">Il manque une réponse&#8239;? <a href="contact.html">Écris-nous</a>, on répond nous-mêmes.</p>
+    </div>
+    <div class="lp-questions">
+      <details open><summary>Combien de temps ça prend&#8239;?</summary><p>2 à 3 jours ouvrés selon la flemme, après confirmation du prix. Avec l’option urgence (+10&#8239;€), c’est traité sous 24&#8239;h.</p></details>
+      <details><summary>Est-ce que vous envoyez quelque chose à ma place&#8239;?</summary><p>Non. Rien n’est envoyé, publié ou acheté en ton nom. Tu reçois le résultat, tu relis, et c’est toi qui envoies.</p></details>
+      <details><summary>Faut-il vous donner mes mots de passe&#8239;?</summary><p>Jamais. Si une démarche nécessite un compte, on te prépare tout et tu fais la dernière étape toi-même.</p></details>
+      <details><summary>Et si le résultat ne me convient pas&#8239;?</summary><p>Une correction est incluse. Si on ne peut pas faire ce qui était convenu, tu es remboursé.</p></details>
+      <details><summary>Qui s’occupe de ma demande&#8239;?</summary><p>Pendant la bêta, l’équipe Flemme réalise chaque flemme elle-même. Ensuite, des Brigadiers vérifiés prendront le relais.</p></details>
+    </div>
+  </section>
+
+  <!-- Appel final : fond clair réutilisable, avec une colline de dégradés qui monte au défilement. -->
+  <section class="lp-fin fond-flemme" data-fond="clair">
+    <div class="ff-decor" aria-hidden="true"></div>
+    <div class="lp-collines" aria-hidden="true"><i></i><i></i><i></i></div>
+    <p class="lp-etiquette">Une flemme en tête&#8239;?</p>
+    <h2 class="lp-titre titre-p">Parle-nous de ce que <em>tu repousses.</em></h2>
+    <p class="lp-intro">Quelques lignes suffisent. On te répond sous un jour ouvré, avec un prix fixe.</p>
+    <a class="lp-bouton noir" href="app.html#deposer">Décris ta flemme</a>
+  </section>
+
+  <div class="lp-marque" aria-hidden="true">FLEMME.</div>
+</main>
+<!--#pied-->
+<script type="module" src="/src/landing-page.ts"></script>
+</body>
+</html>
