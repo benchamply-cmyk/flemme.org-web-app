@@ -8,7 +8,6 @@
   background: rgba(255, 255, 255, .72); -webkit-backdrop-filter: blur(16px) saturate(150%); backdrop-filter: blur(16px) saturate(150%);
   border: 1px solid rgba(22, 19, 31, .1); border-radius: 28px; box-shadow: 0 10px 30px rgba(58, 47, 160, .14);
   transition: transform .45s var(--pn-ease), opacity .3s ease; }
-.pn.cachee { transform: translate(-50%, calc(-100% - 24px)); opacity: 0; }
 .pn-barre { display: flex; align-items: center; gap: 22px; padding: 6px 6px 6px 8px; }
 .pn-logo { display: inline-flex; align-items: center; height: 38px; padding: 0 10px; font: 900 20px/1 var(--pn-police); letter-spacing: -1px; text-decoration: none; background: var(--vert-logo); border: 2px solid var(--encre); border-radius: 10px; }
 .pn-liens { display: flex; align-items: center; gap: 20px; }

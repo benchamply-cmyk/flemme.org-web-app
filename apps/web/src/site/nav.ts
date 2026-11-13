@@ -1,5 +1,5 @@
 // Navigation pastille de la vitrine (src/site/entete.html), commune à l’accueil (landing.ts) et aux pages intérieures (commun.ts).
-// Cachée quand on descend, visible dès qu’on remonte ; panneau « Menu » sous 720 px ; menu déroulant « Menu » dans la barre (ordinateur) ; page courante marquée.
+// Toujours visible, fixe en haut de l’écran pendant le défilement (demande de Ben, 14/11/2026) ; panneau « Menu » sous 720 px ; menu déroulant « Menu » dans la barre (ordinateur) ; page courante marquée.
 const pn = document.getElementById('pn');
 const menu = document.getElementById('pnMenu') as HTMLButtonElement | null;
 const panneau = document.getElementById('pnPanneau');
@@ -9,7 +9,6 @@ if (pn && menu && panneau) {
     panneau.hidden = !ouvert;
     menu.setAttribute('aria-expanded', String(ouvert));
     menu.querySelector('span')!.textContent = ouvert ? 'Fermer' : 'Menu';
-    if (ouvert) pn.classList.remove('cachee');
   };
   menu.addEventListener('click', () => ouvrirMenu(panneau.hidden === true));
   panneau.addEventListener('click', e => { if ((e.target as Element).closest('a')) ouvrirMenu(false); });
@@ -29,13 +28,6 @@ if (pn && menu && panneau) {
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && deroulant && !deroulant.hidden) { ouvrirDeroulant(false); plus?.focus(); } });
   document.addEventListener('click', e => { if (deroulant && !deroulant.hidden && !plus?.parentElement?.contains(e.target as Node)) ouvrirDeroulant(false); });
   addEventListener('resize', () => { if (deroulant && !deroulant.hidden && matchMedia('(max-width: 720px)').matches) ouvrirDeroulant(false); });
-
-  let dernierY = scrollY;
-  addEventListener('scroll', () => {
-    const y = scrollY;
-    if (panneau.hidden && (!deroulant || deroulant.hidden) && !pn.contains(document.activeElement)) pn.classList.toggle('cachee', y > dernierY && y > 160);
-    dernierY = y;
-  }, { passive: true });
 
   // Page courante : lien marqué (aria-current) dans la barre et dans le panneau.
   const page = location.pathname.split('/').pop() || 'index.html';
