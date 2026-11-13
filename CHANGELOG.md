@@ -4,6 +4,7 @@ Chaque PR ajoute une ligne sous « À venir ». À chaque mise en production (`p
 
 ## À venir
 
+- Boutons de la barre (Déléguer, Résoudre, Connexion, Menu) transparents avec contour, noirs au survol, au clic, menu ouvert et sur la page courante (14 nov. 2026, PR #70, commentaire de Ben sur l’aperçu). Aucune migration.
 - Boutons « Menu » (ordinateur et mobile) : nouvelle icône à quatre pastilles de couleur, qui pivote en losange au survol et à l’ouverture, à la place du chevron (14 nov. 2026, PR #70, commentaire de Ben sur l’aperçu). Aucune migration.
 - Navigation pastille toujours visible (14 nov. 2026, PR #70, commentaire de Ben sur l’aperçu) : elle reste fixe en haut de l’écran quand on fait défiler la page, vers le bas comme vers le haut. Aucune migration.
 - Plan du site, 5e version validée par Ben (14 nov. 2026, PR #70) : sur ordinateur, la barre ne garde que les boutons Déléguer, Résoudre, Connexion et « Menu » ; le menu déroulant devient Services, Pourquoi Flemme, Concept, Nos garanties, Flemmes, FAQ, Contact (Le concept, Prix et paiement, Confiance et sécurité, Devenir Brigadier et Brigadier Premium retirés) ; lien Bêta placé dans le menu déroulant ; accueil réordonné (… Services, Le concept en 3 étapes, Nos garanties, Pourquoi Flemme, appel final, Contact), section « Vos besoins » avec l’ancre #besoins (au lieu de #moments). La barre étant plus courte, le panneau mobile ne prend le relais que sous 720 px (au lieu de 1040). Panneau mobile et pied inchangés. Aucune migration.

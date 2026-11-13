@@ -68,3 +68,14 @@
 
 /* La barre garde de l'air après le dernier lien. */
 .pn-liens { padding-right: 14px; }
+
+/* Boutons de la barre (Déléguer, Résoudre, Connexion, Menu ; ordinateur et mobile), demande de Ben du 14/11/2026 :
+   transparents avec contour par défaut, noirs au survol, au clic, menu ouvert et sur la page courante. */
+.pn .pn-barre .pn-cta, .pn .pn-barre .pn-btn, .pn .pn-barre .pn-menu {
+  background: transparent; color: var(--encre); border: 1px solid rgba(22, 19, 31, .35); font-family: var(--pn-police); font-weight: 600;
+  transition: background .2s ease, color .2s ease, border-color .2s ease; }
+.pn .pn-barre .pn-cta:hover, .pn .pn-barre .pn-btn:hover, .pn .pn-barre .pn-menu:hover,
+.pn .pn-barre .pn-cta:focus-visible, .pn .pn-barre .pn-btn:focus-visible, .pn .pn-barre .pn-menu:focus-visible,
+.pn .pn-barre .pn-cta:active, .pn .pn-barre .pn-btn:active, .pn .pn-barre .pn-menu:active,
+.pn .pn-barre [aria-expanded="true"], .pn .pn-barre .pn-cta[aria-current="page"], .pn .pn-barre .pn-btn[aria-current="page"] {
+  background: var(--encre); color: #fff; border-color: var(--encre); }
