@@ -86,3 +86,4 @@
 /* Recherche tout à gauche de la barre (avant le logo) : son menu s’ouvre aligné à gauche. */
 .pn-liens-gauche { padding-right: 0; }
 .pn-liens-gauche .pn-deroulant { right: auto; left: 0; }
+.pn-liens .pn-plus + .pn-btn { margin-left: -12px; }

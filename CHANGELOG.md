@@ -4,6 +4,7 @@ Chaque PR ajoute une ligne sous « À venir ». À chaque mise en production (`p
 
 ## À venir
 
+- Barre ordinateur : boutons Déléguer et Résoudre retirés (accessibles par Recherche), Connexion placé tout à droite après Menu ; sur mobile, le bouton Déléguer à côté de Menu est gardé (14 nov. 2026, PR #70, commentaires de Ben sur l’aperçu). Aucune migration.
 - Nouveau bouton « Recherche » dans la barre ordinateur, tout à gauche (avant le logo) : menu déroulant Déléguer, Résoudre, Catalogue (`./#services`) ; un seul menu déroulant ouvert à la fois (14 nov. 2026, PR #70, commentaire de Ben sur l’aperçu). Aucune migration.
 - Boutons de la barre (Déléguer, Résoudre, Connexion, Menu) transparents avec contour, noirs au survol, au clic, menu ouvert et sur la page courante (14 nov. 2026, PR #70, commentaire de Ben sur l’aperçu). Aucune migration.
 - Boutons « Menu » (ordinateur et mobile) : nouvelle icône à quatre pastilles de couleur, qui pivote en losange au survol et à l’ouverture, à la place du chevron (14 nov. 2026, PR #70, commentaire de Ben sur l’aperçu). Aucune migration.
