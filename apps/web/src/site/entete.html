@@ -1,26 +1,27 @@
 <!-- Navigation pastille de la vitrine, commune à toutes les pages (styles : nav.css, comportement : nav.ts).
-     Elle se cache quand on descend et revient dès qu’on remonte. Sous 860 px, les liens passent dans le panneau « Menu ». -->
+     Elle se cache quand on descend et revient dès qu’on remonte. Sous 860 px, les liens passent dans le panneau « Menu ».
+     Liens et ordre choisis par Ben dans le plan du site (13/11/2026). -->
 <nav class="pn" id="pn" aria-label="Navigation principale">
   <div class="pn-barre">
     <a class="pn-logo" href="./" aria-label="FLEMME · accueil">FLEMME.</a>
     <div class="pn-liens">
+      <a href="resoudre.html">Rechercher</a>
       <a href="./#services">Services</a>
-      <a href="comment-ca-marche.html">Comment ça marche</a>
-      <a href="resoudre.html">Résoudre une flemme</a>
-      <a href="faq.html">FAQ</a>
+      <a href="comment-ca-marche.html">Concept</a>
+      <a href="./#comparatif">Pourquoi Flemme</a>
       <a href="app.html#mine">Connexion</a>
+      <a href="contact.html">Contact</a>
+      <a href="faq.html">FAQ</a>
     </div>
-    <a class="pn-cta" href="app.html#deposer">Décris ta flemme</a>
     <button type="button" class="pn-menu" id="pnMenu" aria-expanded="false" aria-controls="pnPanneau"><span>Menu</span></button>
   </div>
   <div class="pn-panneau" id="pnPanneau" hidden>
+    <a href="resoudre.html">Rechercher</a>
     <a href="./#services">Services</a>
-    <a href="comment-ca-marche.html">Comment ça marche</a>
-    <a href="resoudre.html">Résoudre une flemme</a>
+    <a href="comment-ca-marche.html">Concept</a>
     <a href="./#comparatif">Pourquoi Flemme</a>
-    <a href="./#test">Le test de flemme</a>
-    <a href="faq.html">FAQ</a>
-    <a href="contact.html">Contact</a>
     <a href="app.html#mine">Connexion</a>
+    <a href="contact.html">Contact</a>
+    <a href="faq.html">FAQ</a>
   </div>
 </nav>
