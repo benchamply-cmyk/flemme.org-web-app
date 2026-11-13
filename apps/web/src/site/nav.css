@@ -31,7 +31,7 @@
 .pn-liens .pn-cta::after, .pn-liens .pn-btn::after { display: none; }
 .pn-liens .pn-cta + .pn-btn, .pn-liens .pn-btn + .pn-btn { margin-left: -12px; }
 .pn-mobile { display: none; }
-@media (max-width: 920px) {
+@media (max-width: 1040px) {
   .pn { width: calc(100% - 24px); }
   .pn-liens { display: none; }
   .pn-barre { gap: 8px; }
@@ -51,6 +51,18 @@
 .pn:has(.pn-panneau:not([hidden])) { background: rgba(255, 255, 255, .97); }
 
 @media (prefers-reduced-motion: reduce) { .pn { transition: none; } }
+
+/* Menu déroulant de la barre (ordinateur), plan du site du 13/11/2026 (4e version). */
+.pn-plus { position: relative; }
+.pn-liens .pn-plus-btn { gap: 6px; cursor: pointer; font-family: var(--pn-police); }
+.pn-plus-btn svg { transition: transform .25s ease; }
+.pn-plus-btn[aria-expanded="true"] svg { transform: rotate(180deg); }
+.pn-deroulant { position: absolute; top: calc(100% + 14px); right: 0; z-index: 2; min-width: 240px; display: flex; flex-direction: column; padding: 8px; background: #fff; border: 1px solid rgba(22, 19, 31, .1); border-radius: 18px; box-shadow: 0 14px 34px rgba(58, 47, 160, .16); }
+.pn-deroulant[hidden] { display: none; }
+.pn-liens .pn-deroulant a { padding: 10px 12px; border-radius: 10px; color: var(--encre); white-space: nowrap; }
+.pn-liens .pn-deroulant a:hover, .pn-liens .pn-deroulant a:focus-visible { background: var(--glacier-clair, #eef3ff); }
+.pn-liens .pn-deroulant a::after { display: none; }
+.pn-liens .pn-deroulant a[aria-current="page"] { font-weight: 700; }
 
 /* La barre garde de l'air après le dernier lien. */
 .pn-liens { padding-right: 14px; }

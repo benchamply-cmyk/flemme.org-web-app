@@ -30,7 +30,6 @@
     <div class="hero-actions apparait">
       <a class="go" href="app.html#deleguer">Décris ta flemme<span class="go-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="20" height="12"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
       <a class="go clair" href="resoudre.html#devenir-brigadier">Résoudre une flemme<span class="go-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="20" height="12"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-      <a class="rond" href="#test"><span>Ton niveau<br>de flemme</span><small>1 min</small></a>
     </div>
     <p class="hero-note apparait">Pendant la bêta, chaque flemme est réalisée par l’équipe Flemme, puis par des Brigadiers vérifiés.</p>
     <!-- Exemples de résultats : trois cartes fictives qui se relaient en CSS (cycle de 15 s), comme le carrousel d’affiches d’UNION. -->
@@ -90,7 +89,7 @@
   <!-- Catalogue : repris de l’accueil actuel, cartes en cascade. -->
   <section class="bloc-p" id="services">
     <p class="surtitre">Nos services</p>
-    <h2 class="titre-p">Six familles de flemmes, <em>des prix fixes.</em></h2>
+    <h2 class="titre-p">Catégories et prix <em>des services.</em></h2>
     <p class="doux-p">Le prix affiché est le prix payé&#8239;: une correction incluse, tout se fait à distance.</p>
     <div class="familles">
       <div class="famille revele"><span class="pastille-p" style="--c:var(--glacier-clair)">Démarches et courriers</span><ul class="tarifs-p"><li><span>Courrier de résiliation ou de changement</span><b>19&#8239;€</b></li><li><span>Changement d’adresse groupé (8 organismes)</span><b>29&#8239;€</b></li><li><span>Dossier d’aide (CAF, logement, bourse)</span><b>49&#8239;€</b></li></ul></div>
@@ -126,34 +125,7 @@
     <p class="cmp-chute"><span>Seul, tu mises sur ta motivation.</span> <em>Avec Flemme, sur ton temps libre.</em></p>
   </section>
 
-  <!-- Test de flemme : 6 questions, score sur 18, une famille conseillée. Rien n’est enregistré ni envoyé. -->
-  <section class="bloc-p" id="test">
-    <p class="surtitre">Le test</p>
-    <h2 class="titre-p">Quel est ton niveau <em>de flemme administrative&#8239;?</em></h2>
-    <div class="test" id="testCarte">
-      <div class="test-couverture" id="testCouverture">
-        <p>Six questions, une minute, aucune donnée enregistrée. À la fin&#8239;: ton niveau et la flemme à nous confier en premier.</p>
-        <button type="button" class="go" id="testLancer">Lancer le test<span class="go-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="20" height="12"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
-      </div>
-      <div class="test-jeu" id="testJeu" hidden>
-        <div class="test-progres"><span id="testCompte">Question 1 / 6</span><div class="test-barre"><i id="testBarre"></i></div></div>
-        <p class="test-question" id="testQuestion" aria-live="polite"></p>
-        <div class="test-reponses" id="testReponses" role="radiogroup" aria-labelledby="testQuestion"></div>
-        <button type="button" class="test-retour" id="testRetour">← Question précédente</button>
-      </div>
-      <div class="test-resultat" id="testResultat" hidden>
-        <p class="surtitre">Ton résultat</p>
-        <b class="test-niveau" id="testNiveau" tabindex="-1"></b>
-        <div class="jauge"><i id="testJauge"></i></div>
-        <p id="testMessage"></p>
-        <p class="test-conseil" id="testConseil"></p>
-        <div class="hero-actions">
-          <a class="go" id="testAction" href="app.html#deleguer">Décris ta flemme<span class="go-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="20" height="12"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <button type="button" class="test-retour" id="testRecommencer">Refaire le test</button>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- Le test de flemme a été retiré de l’accueil (plan du site de Ben, 13/11/2026). Son code reste dans landing.ts, inactif sans la section #test. -->
 
   <section class="bloc-p" id="etapes">
     <p class="surtitre">Comment ça marche</p>
