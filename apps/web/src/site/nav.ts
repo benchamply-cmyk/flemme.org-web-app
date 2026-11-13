@@ -15,19 +15,27 @@ if (pn && menu && panneau) {
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !panneau.hidden) { ouvrirMenu(false); menu.focus(); } });
   document.addEventListener('click', e => { if (!panneau.hidden && !pn.contains(e.target as Node)) ouvrirMenu(false); });
 
-  // Menu déroulant de la barre (ordinateur) : liste de liens choisie dans le plan du site.
-  const plus = document.getElementById('pnPlus') as HTMLButtonElement | null;
-  const deroulant = document.getElementById('pnDeroulant');
-  const ouvrirDeroulant = (ouvert: boolean) => {
-    if (!plus || !deroulant) return;
-    deroulant.hidden = !ouvert;
-    plus.setAttribute('aria-expanded', String(ouvert));
+  // Menus déroulants de la barre (ordinateur) : « Recherche » et « Menu », listes de liens choisies par Ben.
+  // Un seul ouvert à la fois ; fermeture par Échap, clic ailleurs, clic sur un lien ou passage sous 720 px.
+  const groupes = [...pn.querySelectorAll<HTMLElement>('.pn-plus')].map(g => ({
+    g, btn: g.querySelector<HTMLButtonElement>('.pn-plus-btn')!, liste: g.querySelector<HTMLElement>('.pn-deroulant')!,
+  })).filter(x => x.btn && x.liste);
+  const ouvrirDeroulant = (x: typeof groupes[number], ouvert: boolean) => {
+    x.liste.hidden = !ouvert;
+    x.btn.setAttribute('aria-expanded', String(ouvert));
   };
-  plus?.addEventListener('click', () => ouvrirDeroulant(deroulant?.hidden === true));
-  deroulant?.addEventListener('click', e => { if ((e.target as Element).closest('a')) ouvrirDeroulant(false); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && deroulant && !deroulant.hidden) { ouvrirDeroulant(false); plus?.focus(); } });
-  document.addEventListener('click', e => { if (deroulant && !deroulant.hidden && !plus?.parentElement?.contains(e.target as Node)) ouvrirDeroulant(false); });
-  addEventListener('resize', () => { if (deroulant && !deroulant.hidden && matchMedia('(max-width: 720px)').matches) ouvrirDeroulant(false); });
+  const fermerTout = (sauf?: typeof groupes[number]) => groupes.forEach(x => { if (x !== sauf && !x.liste.hidden) ouvrirDeroulant(x, false); });
+  groupes.forEach(x => {
+    x.btn.addEventListener('click', () => { const ouvrir = x.liste.hidden === true; fermerTout(x); ouvrirDeroulant(x, ouvrir); });
+    x.liste.addEventListener('click', e => { if ((e.target as Element).closest('a')) ouvrirDeroulant(x, false); });
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    const ouvert = groupes.find(x => !x.liste.hidden);
+    if (ouvert) { ouvrirDeroulant(ouvert, false); ouvert.btn.focus(); }
+  });
+  document.addEventListener('click', e => groupes.forEach(x => { if (!x.liste.hidden && !x.g.contains(e.target as Node)) ouvrirDeroulant(x, false); }));
+  addEventListener('resize', () => { if (matchMedia('(max-width: 720px)').matches) fermerTout(); });
 
   // Page courante : lien marqué (aria-current) dans la barre et dans le panneau.
   const page = location.pathname.split('/').pop() || 'index.html';

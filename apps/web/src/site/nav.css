@@ -79,3 +79,7 @@
 .pn .pn-barre .pn-cta:active, .pn .pn-barre .pn-btn:active, .pn .pn-barre .pn-menu:active,
 .pn .pn-barre [aria-expanded="true"], .pn .pn-barre .pn-cta[aria-current="page"], .pn .pn-barre .pn-btn[aria-current="page"] {
   background: var(--encre); color: #fff; border-color: var(--encre); }
+/* La loupe du bouton Recherche ne pivote pas : elle grossit légèrement. */
+.pn .pn-barre #pnRecherche .pn-ico { transform: none; }
+.pn .pn-barre #pnRecherche:hover .pn-ico, .pn .pn-barre #pnRecherche[aria-expanded="true"] .pn-ico { transform: scale(1.12); }
+.pn-liens .pn-btn + .pn-plus, .pn-liens .pn-plus + .pn-plus { margin-left: -12px; }
