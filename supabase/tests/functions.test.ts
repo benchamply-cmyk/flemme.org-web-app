@@ -54,7 +54,7 @@ test('checkout : montants de l’accord serveur, commission en application_fee, 
   assert.equal(p.get('line_items[0][price_data][unit_amount]'), '4400');
   assert.equal(p.get('payment_intent_data[application_fee_amount]'), '400');
   assert.equal(p.get('payment_intent_data[transfer_data][destination]'), 'acct_B');
-  assert.equal(p.get('success_url'), 'https://preprod--flemmeorg.netlify.app/app.html#paiement-ok');
+  assert.equal(p.get('success_url'), 'https://preprod--flemmeorg.netlify.app/paiement/ok');
   assert.equal(stripe.headers.Authorization, 'Bearer sk_test_factice');
   assert.equal(stripe.headers['Idempotency-Key'], 'flemme-checkout-' + TASK + '-2026-11-03T20');
   const ctx = JSON.parse(calls.find(c => c.body.includes('checkout_context'))!.body);
@@ -102,7 +102,7 @@ test('onboarding : compte Express créé une seule fois puis lien Stripe', async
   const acc = new URLSearchParams(calls.find(c => c.url.endsWith('/v1/accounts'))!.body);
   assert.deepEqual([acc.get('type'), acc.get('country'), acc.get('capabilities[transfers][requested]')], ['express', 'FR', 'true']);
   const link = new URLSearchParams(calls.find(c => c.url.endsWith('/v1/account_links'))!.body);
-  assert.equal(link.get('return_url'), 'https://preprod--flemmeorg.netlify.app/app.html#compte');
+  assert.equal(link.get('return_url'), 'https://preprod--flemmeorg.netlify.app/compte');
 });
 
 const sign = (payload: string, secret: string, t: number) => `t=${t},v1=${createHmac('sha256', secret).update(`${t}.${payload}`).digest('hex')}`;

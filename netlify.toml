@@ -36,6 +36,87 @@
   to = "/admin.html"
   status = 200
 
+# Vitrine sans « .html » (plan d'adresses, PR 2) : chaque page est servie à son adresse courte
+# (/faq sert faq.html, comportement par défaut de Netlify), et l'ancienne adresse y renvoie en 301.
+# « force » : le fichier .html existe, la règle doit passer avant lui.
+[[redirects]]
+  from = "/index.html"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/comment-ca-marche.html"
+  to = "/concept"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/comment-ca-marche"
+  to = "/concept"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/concept.html"
+  to = "/concept"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deleguer-une-flemme.html"
+  to = "/deleguer"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deleguer-une-flemme"
+  to = "/deleguer"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deleguer.html"
+  to = "/deleguer"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/resoudre.html"
+  to = "/resoudre"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/premium.html"
+  to = "/premium"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/faq.html"
+  to = "/faq"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/contact.html"
+  to = "/contact"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/mentions.html"
+  to = "/mentions"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/confidentialite.html"
+  to = "/confidentialite"
+  status = 301
+  force = true
+
 # Espace connecté : une adresse par écran, la même sur le site et dans l'app mobile
 # (plan d'adresses validé par Ben le 14/11/2026, table dans packages/shared/src/adresses.ts).
 # Netlify sert app.html sans changer l'adresse ; l'app lit le chemin et ouvre le bon écran.

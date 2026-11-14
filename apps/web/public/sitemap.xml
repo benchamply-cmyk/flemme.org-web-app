@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://flemme.org/</loc><lastmod>2026-11-05</lastmod></url>
-  
-  <url><loc>https://flemme.org/deleguer-une-flemme.html</loc><lastmod>2026-11-13</lastmod></url>
-  <url><loc>https://flemme.org/comment-ca-marche.html</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://flemme.org/faq.html</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://flemme.org/contact.html</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://flemme.org/resoudre.html</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://flemme.org/premium.html</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://flemme.org/mentions.html</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://flemme.org/confidentialite.html</loc><lastmod>2026-11-05</lastmod></url>
+  <url><loc>https://flemme.org/</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://flemme.org/deleguer</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://flemme.org/concept</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://flemme.org/faq</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://flemme.org/contact</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://flemme.org/resoudre</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://flemme.org/premium</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://flemme.org/mentions</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://flemme.org/confidentialite</loc><lastmod>2026-11-14</lastmod></url>
 </urlset>

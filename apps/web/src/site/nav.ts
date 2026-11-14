@@ -38,7 +38,7 @@ if (pn && menu && panneau) {
   addEventListener('resize', () => { if (matchMedia('(max-width: 720px)').matches) fermerTout(); });
 
   // Page courante : lien marqué (aria-current) dans la barre et dans le panneau.
-  const page = location.pathname.split('/').pop() || 'index.html';
+  const page = location.pathname.split('/').pop()?.replace(/\.html$/, '') || 'index';
   pn.querySelectorAll<HTMLAnchorElement>('.pn-liens a, .pn-panneau a').forEach(a => {
     if (a.getAttribute('href') === page) a.setAttribute('aria-current', 'page');
   });
