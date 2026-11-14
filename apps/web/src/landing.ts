@@ -1,6 +1,7 @@
 import './beta/runtime.ts';
 import './site/accueil-union.css';
 import './site/nav.ts';
+import './site/marque.css';
 
 // Accueil de la vitrine (13/11/2026) : proposition de la PR #67, inspirée de l’implémentation d’UNION :
 // navigation qui se cache, titre écrit lettre par lettre, apparitions en cascade, moments de vie, test de flemme.
