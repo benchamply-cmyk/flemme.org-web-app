@@ -202,3 +202,22 @@ button, input, textarea, select { font: inherit; color: inherit; }
 .texte-legal mark { background: #fff3b0; padding: 0 2px; }
 
 @media (prefers-reduced-motion: reduce) { .cta { transition: none; } }
+
+/* Page /services : une carte par famille, chaque service est un lien vers /deleguer avec son prix à droite. */
+.famille-s { gap: 12px; }
+.pastille-s { align-self: flex-start; background: var(--c); border: 2px solid var(--encre); border-radius: 999px; padding: 4px 12px; font-weight: 800; font-size: 14px; }
+.tarifs-s { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.tarifs-s li + li { border-top: 1px solid var(--bordure, #d9dce6); }
+.tarifs-s a { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 10px 4px; color: var(--encre); text-decoration: none; border-radius: 8px; }
+.tarifs-s a:hover, .tarifs-s a:focus-visible { background: var(--glacier-clair); }
+.tarifs-s b { white-space: nowrap; font-size: 17px; }
+.titre-page > p.intro-s { margin: 0; font-size: 19px; max-width: 640px; }
+/* Les lignes du catalogue sont des liens : une flèche le montre, aussi sur mobile où il n’y a pas de survol. */
+.tarifs-s a::after { content: "›"; font-weight: 800; color: var(--acier); margin-left: -4px; }
+.tarifs-s span { flex: 1; }
+.delai-s { margin: 0; align-self: flex-start; background: var(--peche); border: 2px solid var(--encre); border-radius: 14px; padding: 10px 16px; }
+/* Ancres (#catalogue, #conditions…) : le titre ne passe plus sous la barre fixe. */
+main [id] { scroll-margin-top: 112px; }
+.nom-s { display: flex; flex-direction: column; gap: 4px; }
+.nom-s small { font-size: 13px; line-height: 1.4; color: var(--texte-doux); }
+.nom-s small b { font-size: inherit; font-weight: 700; color: var(--encre); white-space: normal; }

@@ -13,6 +13,9 @@ const FORMULES = [
 const depart = lireBrouillon();
 const texte = document.getElementById('deleguerDetails') as HTMLTextAreaElement;
 texte.value = depart.details || '';
+// Venu d’une ligne du catalogue (/services) : le nom du service commence la description, la formule « catalogue » est choisie.
+const service = new URLSearchParams(location.search).get('service')?.trim().slice(0, 100);
+if (service && !texte.value.includes(service)) { texte.value = service + ' : ' + (texte.value ? '\n' + texte.value : ''); depart.formule = 'catalogue'; }
 const garder = () => ecrireBrouillon({ ...choix, details: texte.value, formule: choix.formule === 'catalogue' ? '' : choix.formule });
 const choix = monterFiltres(document.getElementById('filtresDeleguer')!, [
   { cle: 'category', nom: 'Catégorie', options: CATEGORIES },
