@@ -17,7 +17,7 @@ menus.forEach(burger => {
   document.addEventListener('click', e => { if (!navVisible() && burger.open && !burger.contains(e.target as Node)) burger.open = false; });
   document.addEventListener('keydown', e => { if (!navVisible() && e.key === 'Escape' && burger.open) { burger.open = false; burger.querySelector('summary')?.focus(); } });
   // La page courante est marquée dans le menu.
-  const page = location.pathname.split('/').pop() || 'index.html';
+  const page = location.pathname.split('/').pop()?.replace(/\.html$/, '') || 'index';
   burger.querySelectorAll('a').forEach(a => { if (a.getAttribute('href') === page) a.setAttribute('aria-current', 'page'); });
 });
 

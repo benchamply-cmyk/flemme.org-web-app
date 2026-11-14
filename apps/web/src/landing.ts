@@ -7,7 +7,7 @@ import './site/nav.ts';
 // Tout reste lisible sans JS et avec « mouvements réduits ».
 
 // Anciennes ancres de la page unique : renvoyées vers leur nouvelle page.
-const anciennes: Record<string, string> = { '#concept': 'comment-ca-marche.html#concept', '#prix': 'comment-ca-marche.html#prix', '#comment': 'comment-ca-marche.html', '#faq': 'faq.html' };
+const anciennes: Record<string, string> = { '#concept': 'concept#concept', '#prix': 'concept#prix', '#comment': 'concept', '#faq': 'faq' };
 if (anciennes[location.hash]) location.replace(anciennes[location.hash]);
 
 const racine = document.documentElement;

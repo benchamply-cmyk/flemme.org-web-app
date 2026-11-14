@@ -3,6 +3,7 @@
 Nouveau site, indépendant du site historique flemme.org (dossier `flemme-web-beta` du dépôt FlemmeV2.0), qui reprend le modèle de `apps/mobile` : deux actions (« Mes flemmes », « Résoudre une flemme »), des Brigadiers qui proposent un forfait et une commission FLEMME de 10 % ajoutée au forfait accepté.
 
 - `index.html` : vitrine (les deux actions, les quatre étapes, un calculateur du prix et ce que la version de test ne fait pas).
+- Pages intérieures de la vitrine : un fichier par adresse, sans « .html » en ligne (`concept.html` → `/concept`, `deleguer.html` → `/deleguer`, `faq.html` → `/faq`…). Les anciennes adresses en `.html`, `comment-ca-marche` et `deleguer-une-flemme` renvoient en 301 (`netlify.toml`, test `tests/vitrine-adresses.test.ts`).
 - `app.html` : le parcours de l’app dans le navigateur, avec les mêmes écrans et les mêmes textes que l’app mobile. `src/App.tsx` gère la navigation et choisit l’écran ; chaque écran est un fichier de `src/ecrans/`, avec le même nom que son pendant mobile.
 - `admin.html` (servie sur /admin) : la page de l’équipe pour les signalements, les litiges, les comptes et les alertes. Sans variables d’environnement, elle affiche une démonstration avec des données fictives. En mode connecté, elle n’ouvre qu’aux comptes admin (voir `../../supabase/README-admin.md`).
 - `netlify/functions/alerte.mjs` : reçoit les alertes envoyées par Supabase et les transmet par e-mail via Resend.
