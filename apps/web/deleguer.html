@@ -19,7 +19,8 @@
 </head>
 <body data-page="deleguer">
 <!-- Page créée d’après le plan du site validé par Ben (13/11/2026) : cible du bouton « Déléguer » de la navigation.
-     Textes repris de l’accueil et de « Comment ça marche » ; le formulaire reste dans l’app (/deleguer/nouvelle). -->
+     14/11/2026 : même structure que Résoudre (texte principal puis filtres). On commence sans compte ; « Continuer »
+     ouvre le formulaire de l’app (/deleguer/nouvelle), qui demande un compte et reprend le brouillon (src/site/pages/deleguer.ts). -->
 <section class="flemme-chrome-home bandeau">
 <!--#entete-->
   <div class="titre-page">
@@ -28,15 +29,25 @@
   </div>
 </section>
 <main>
+  <section class="bloc" id="decrire" style="padding-bottom:0">
+    <form class="decrire" id="deleguerForm" novalidate>
+      <label for="deleguerDetails" class="decrire-titre">Décris ta flemme avec tes mots</label>
+      <textarea id="deleguerDetails" name="details" rows="5" maxlength="1000" placeholder="Ex. « J’aimerais mettre mon CV à jour avant vendredi. » Le résultat attendu, ce qui te bloque, ce que tu as déjà…" aria-describedby="deleguerAide"></textarea>
+      <p class="doux" id="deleguerAide" aria-live="polite">Pas besoin d’un brief parfait. Précise ensuite avec les filtres&#8239;: tu relis tout avant l’envoi.</p>
+      <div class="filtres" id="filtresDeleguer"><b>Préciser :</b></div>
+      <div class="decrire-bas"><button type="submit">Continuer ma demande</button><span class="doux">Gratuit et sans engagement. Un compte est demandé pour publier ta demande&#8239;: ton texte est gardé.</span></div>
+    </form>
+  </section>
+
   <section class="bloc" id="formules">
     <p class="surtitre">Trois façons de déléguer</p>
     <h2 class="titre">Choisis ce qui correspond à ta flemme</h2>
     <div class="grille">
       <div class="carte"><b>Un service du catalogue</b><p class="doux">Démarches, réclamations, annonces, logement, voyage, comparatifs&#8239;: six familles de flemmes à prix fixe affiché.</p><a class="lien-fort" href="./#services">Voir le catalogue et les prix →</a></div>
-      <div class="carte"><b>Un autre service</b><p class="doux">Ton besoin n’est pas dans le catalogue&#8239;? Décris-le&#8239;: l’équipe l’analyse sous un jour ouvré et te propose un prix fixe et un délai.</p><a class="lien-fort" href="deleguer/nouvelle?formule=autre">Décrire un autre service →</a></div>
-      <div class="carte"><b>Une demande de devis</b><p class="doux">Pour un dossier long ou difficile à chiffrer&#8239;: un devis détaillé, gratuit et sans engagement. À partir de 69&#8239;€.</p><a class="lien-fort" href="deleguer/nouvelle?formule=devis">Demander un devis →</a></div>
+      <div class="carte"><b>Un autre service</b><p class="doux">Ton besoin n’est pas dans le catalogue&#8239;? Décris-le&#8239;: l’équipe l’analyse sous un jour ouvré et te propose un prix fixe et un délai.</p><a class="lien-fort" href="deleguer/nouvelle?formule=autre" data-formule="autre">Décrire un autre service →</a></div>
+      <div class="carte"><b>Une demande de devis</b><p class="doux">Pour un dossier long ou difficile à chiffrer&#8239;: un devis détaillé, gratuit et sans engagement. À partir de 69&#8239;€.</p><a class="lien-fort" href="deleguer/nouvelle?formule=devis" data-formule="devis">Demander un devis →</a></div>
     </div>
-    <div class="boutons"><a class="bouton" href="deleguer/nouvelle">Décrire ma flemme</a></div>
+    <div class="boutons"><a class="bouton" href="#decrire">Décrire ma flemme</a></div>
   </section>
 
   <section class="bloc" id="etapes">
@@ -51,6 +62,6 @@
   </section>
 </main>
 <!--#pied-->
-<script type="module" src="/src/site/commun.ts"></script>
+<script type="module" src="/src/site/pages/deleguer.ts"></script>
 </body>
 </html>

@@ -4,11 +4,20 @@ import { Action } from '../ui.tsx';
 import { Dictee } from './Dictee.tsx';
 import type { Ctx } from './contexte.ts';
 import { FORMULES, titreAvecFormule, type Formule } from '../formules.ts';
+import { reprendreBrouillon } from '../site/brouillon.ts';
+import { useEffect } from 'react';
 
 // Dépôt d’une demande (écran « new », éventuellement repris d’un brouillon) et modification (écran « edit »).
 // Les contrôles sont ceux de packages/shared/src/parcours.ts, refaits par le serveur.
 export function NouvelleFlemme({ state: { busy }, place, task, draft, field, choice, mutate, validated, keepDraft, fill }: Ctx) {
   const editing = place.screen === 'edit' && !!task;
+  // Demande commencée sans compte sur la page Déléguer de la vitrine : reprise une fois, à l’ouverture du formulaire
+  // (après connexion ou création du compte). La formule de l’adresse (?formule=) est remise si la connexion l’a effacée.
+  useEffect(() => {
+    if (editing || place.draftId) return;
+    const b = reprendreBrouillon(), formuleAdresse = !draft.formule && place.formule ? { formule: place.formule } : {};
+    if (Object.keys(b).length || place.formule) fill({ ...formuleAdresse, ...b, ...(b.formule === 'autre' && !b.category ? { category: 'autre' } : {}) });
+  }, []);
   const mode = draft.mode || 'distance';
   const fields = () => Object.fromEntries(TASK_FIELDS.filter(k => draft[k]).map(k => [k, draft[k]]));
   const estimate = (() => { try { const n = parseMoney(draft.amount || '', true); return n ? price(n) : null; } catch { return null; } })();
