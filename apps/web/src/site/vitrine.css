@@ -211,3 +211,13 @@ button, input, textarea, select { font: inherit; color: inherit; }
 .tarifs-s a { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 10px 4px; color: var(--encre); text-decoration: none; border-radius: 8px; }
 .tarifs-s a:hover, .tarifs-s a:focus-visible { background: var(--glacier-clair); }
 .tarifs-s b { white-space: nowrap; font-size: 17px; }
+.titre-page > p.intro-s { margin: 0; font-size: 19px; max-width: 640px; }
+.sommaire-s { display: flex; flex-wrap: wrap; gap: 8px; }
+.sommaire-s a { border: 2px solid var(--encre); border-radius: 999px; padding: 6px 14px; font-weight: 700; font-size: 14px; background: #fff; color: var(--encre); text-decoration: none; }
+.sommaire-s a:hover, .sommaire-s a:focus-visible { background: var(--glacier-clair); }
+/* Les lignes du catalogue sont des liens : une flèche le montre, aussi sur mobile où il n’y a pas de survol. */
+.tarifs-s a::after { content: "›"; font-weight: 800; color: var(--acier); margin-left: -4px; }
+.tarifs-s span { flex: 1; }
+.urgence-s { margin: 0; align-self: flex-start; background: var(--peche); border: 2px solid var(--encre); border-radius: 14px; padding: 10px 16px; }
+/* Ancres (#catalogue, #conditions…) : le titre ne passe plus sous la barre fixe. */
+main [id] { scroll-margin-top: 96px; }
