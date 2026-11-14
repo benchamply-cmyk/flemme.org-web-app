@@ -317,3 +317,10 @@
 /* Retour aperçu (étapes) : même animation, schéma un peu plus petit. */
 .lp-schema { width: 78%; margin-left: auto; margin-right: auto; margin-bottom: 18px; }
 @media (max-width: 900px) { .lp-schema { width: 70%; } }
+
+/* Retour aperçu (comparatif) : neuf lignes, les dernières arrivent à la suite. */
+.lp-tableau .lp-ligne:nth-child(8) { transition-delay: .7s; } .lp-tableau .lp-ligne:nth-child(9) { transition-delay: .8s; }
+.lp-tableau .lp-ligne:nth-child(10) { transition-delay: .9s; }
+.lp-ligne { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1.1fr) minmax(0, 1.1fr); }
+.lp-ligne > span { overflow-wrap: anywhere; hyphens: auto; }
+@media (max-width: 900px) { .lp-ligne { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr); } }
