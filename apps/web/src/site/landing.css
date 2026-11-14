@@ -333,7 +333,7 @@
 
 /* Retour aperçu (le haut de page remplit l’écran, responsive) : le hero remplit exactement la hauteur de l’écran
    (bandeau Nos engagements juste en dessous : le retour « bandeau collé, moins de vide » a été annulé par Ben) ; contenu centré verticalement ; titre proportionné à la largeur ET à la hauteur ; décor menthe étendu. */
-.lp { --lp-bande-h: 0px; }
+.lp { --lp-bande-h: 93px; } /* bandeau Nos engagements (marge comprise) visible dès l’arrivée, confirmé par Ben */
 .lp-hero { min-height: calc(100vh - var(--lp-bande-h)); min-height: calc(100svh - var(--lp-bande-h)); align-items: center;
   padding-top: clamp(84px, 12svh, 112px); padding-bottom: clamp(20px, 4svh, 40px); }
 .lp-hero-titre { font-size: clamp(32px, min(4.8vw, 8svh), 72px); }
@@ -353,8 +353,8 @@
 .lp-hero { perspective: 1400px; }
 @media (min-width: 901px) { .lp-hero .ff-objet { width: min(26vw, 380px); left: 75%; top: 50%; } }
 @media (max-width: 900px) {
-  .lp-hero { padding-top: 232px; align-items: flex-start; }
-  .lp-hero .ff-objet { width: min(30vw, 116px); left: 50%; top: 150px; }
+  .lp-hero { padding-top: 176px; padding-bottom: 20px; align-items: flex-start; }
+  .lp-hero .ff-objet { width: min(24vw, 90px); left: 50%; top: 122px; }
 }
 @media (max-width: 900px) and (max-height: 720px) {
   .lp-hero { padding-top: 182px; }
