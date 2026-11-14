@@ -19,16 +19,13 @@
 </head>
 <body data-page="services">
 <!-- Page /services (demande de Ben, 14/11/2026) : le catalogue complet, cible des liens « Services » et « Catalogue »
-     de la navigation et du pied de page. Les prix sont les mêmes que la section #services de l’accueil : les changer aux deux endroits.
+     de la navigation et du pied de page. Le catalogue (noms, prix, délais, livrables) vient de src/site/catalogue.ts, inséré au build : ne pas l’écrire ici.
      Chaque service ouvre /deleguer avec son nom déjà écrit dans la description (?service=…, ajouté par src/site/pages/services.ts). -->
 <section class="flemme-chrome-home bandeau">
 <!--#entete-->
   <div class="titre-page">
     <h1>Nos services</h1>
     <p class="intro-s">Six familles de flemmes à prix fixe. Le prix affiché est le prix payé&#8239;: une correction incluse, tout se fait à distance, et rien n’est envoyé sans ton accord.</p>
-    <nav class="sommaire-s" aria-label="Sections de la page">
-      <a href="#catalogue">Le catalogue</a><a href="#horscatalogue">Hors catalogue</a><a href="#conditions">Inclus dans chaque service</a>
-    </nav>
   </div>
 </section>
 <main>
@@ -37,38 +34,9 @@
     <h2 class="titre">Choisis un service, on s’occupe du reste</h2>
     <p class="doux">Touche un service pour commencer ta demande&#8239;: son nom est déjà écrit, tu n’as plus qu’à préciser. Sans compte jusqu’à l’envoi.</p>
     <div class="grille large services">
-      <div class="carte famille-s" style="--c:var(--glacier-clair)" id="demarches"><span class="pastille-s">Démarches et courriers</span><ul class="tarifs-s">
-        <li><a href="deleguer#decrire"><span>Courrier de résiliation ou de changement</span><b>19&#8239;€</b></a></li>
-        <li><a href="deleguer#decrire"><span>Changement d’adresse groupé (8 organismes)</span><b>29&#8239;€</b></a></li>
-        <li><a href="deleguer#decrire"><span>Dossier d’aide (CAF, logement, bourse)</span><b>49&#8239;€</b></a></li>
-      </ul></div>
-      <div class="carte famille-s" style="--c:var(--vert-tendre)" id="reclamations"><span class="pastille-s">SAV et réclamations</span><ul class="tarifs-s">
-        <li><a href="deleguer#decrire"><span>Réclamation produit ou colis, avec une relance</span><b>19&#8239;€</b></a></li>
-        <li><a href="deleguer#decrire"><span>Litige opérateur, énergie ou abonnement</span><b>29&#8239;€</b></a></li>
-        <li><a href="deleguer#decrire"><span>Indemnisation d’un vol retardé ou annulé</span><b>29&#8239;€</b></a></li>
-      </ul></div>
-      <div class="carte famille-s" style="--c:var(--peche)" id="annonces"><span class="pastille-s">Vente et annonces</span><ul class="tarifs-s">
-        <li><a href="deleguer#decrire"><span>1 annonce (titre, texte, prix, conseils photo)</span><b>15&#8239;€</b></a></li>
-        <li><a href="deleguer#decrire"><span>Pack 3 annonces Leboncoin ou Vinted</span><b>39&#8239;€</b></a></li>
-        <li><a href="deleguer#decrire"><span>Pack vide-grenier : 10 annonces et grille de prix</span><b>89&#8239;€</b></a></li>
-      </ul></div>
-      <div class="carte famille-s" style="--c:var(--lagon)" id="logement"><span class="pastille-s">Logement</span><ul class="tarifs-s">
-        <li><a href="deleguer#decrire"><span>Dossier de location complet et vérifié</span><b>39&#8239;€</b></a></li>
-        <li><a href="deleguer#decrire"><span>Veille : 10 logements sélectionnés en 7 jours</span><b>49&#8239;€</b></a></li>
-        <li><a href="deleguer#decrire"><span>Pack déménagement administratif</span><b>59&#8239;€</b></a></li>
-      </ul></div>
-      <div class="carte famille-s" style="--c:var(--menthe)" id="voyage"><span class="pastille-s">Voyage et sorties</span><ul class="tarifs-s">
-        <li><a href="deleguer#decrire"><span>Organisation d’une sortie ou d’un anniversaire</span><b>29&#8239;€</b></a></li>
-        <li><a href="deleguer#decrire"><span>Comparatif voyage : 3 options</span><b>39&#8239;€</b></a></li>
-        <li><a href="deleguer#decrire"><span>Itinéraire clés en main, jour par jour</span><b>59&#8239;€</b></a></li>
-      </ul></div>
-      <div class="carte famille-s" style="--c:var(--lavande)" id="comparatifs"><span class="pastille-s">Recherche et comparaison</span><ul class="tarifs-s">
-        <li><a href="deleguer#decrire"><span>Comparatif matériel ou achat : 3 produits</span><b>29&#8239;€</b></a></li>
-        <li><a href="deleguer#decrire"><span>Comparatif énergie, box ou mutuelle</span><b>39&#8239;€</b></a></li>
-        <li><a href="deleguer#decrire"><span>Trouver 3 artisans vérifiés et comparer leurs devis</span><b>49&#8239;€</b></a></li>
-      </ul></div>
+      <!--#catalogue-->
     </div>
-    <p class="urgence-s"><b>Délai&#8239;: 2 à 3 jours ouvrés.</b> Pressé&#8239;? Option urgence&#8239;: traité sous 24&#8239;h pour <b>10&#8239;€</b> de plus.</p>
+    <p class="urgence-s"><b>Délai&#8239;: 2 à 3 jours ouvrés.</b> Pressé&#8239;? Option urgence&#8239;: traité sous 24&#8239;h pour <b><!--#urgence--></b> de plus.</p>
   </section>
 
   <section class="bloc" id="horscatalogue">

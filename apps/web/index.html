@@ -34,9 +34,9 @@
     <p class="hero-note apparait">Pendant la bêta, chaque flemme est réalisée par l’équipe Flemme, puis par des Brigadiers vérifiés.</p>
     <!-- Exemples de résultats : trois cartes fictives qui se relaient en CSS (cycle de 15 s), comme le carrousel d’affiches d’UNION. -->
     <div class="exemples-p apparait" aria-label="Exemples de résultats livrés (fictifs)">
-      <div class="ex"><span class="ex-cat">Démarches et courriers</span><b>Résilier ma salle de sport…</b><span class="ex-meta">19&#8239;€ · 2 jours ouvrés</span><p><b>Ce que tu reçois</b><br>La lettre de résiliation prête à envoyer, l’adresse et le mode d’envoi conseillé.</p></div>
-      <div class="ex"><span class="ex-cat">Vente et annonces</span><b>Vendre ma poussette sur Leboncoin…</b><span class="ex-meta">15&#8239;€ · 2 jours ouvrés</span><p><b>Ce que tu reçois</b><br>Titre, description, prix conseillé et trois conseils pour les photos.</p></div>
-      <div class="ex"><span class="ex-cat">Voyage et sorties</span><b>Trois jours à Lisbonne en mars…</b><span class="ex-meta">39&#8239;€ · 3 jours ouvrés</span><p><b>Ce que tu reçois</b><br>Trois options transport et hébergement comparées, avec les prix et les liens.</p></div>
+      <div class="ex"><span class="ex-cat">Démarches et courriers</span><b>Résilier ma salle de sport…</b><span class="ex-meta"><!--#prix:demarches.0--> · 2 jours ouvrés</span><p><b>Ce que tu reçois</b><br>La lettre de résiliation prête à envoyer, l’adresse et le mode d’envoi conseillé.</p></div>
+      <div class="ex"><span class="ex-cat">Vente et annonces</span><b>Vendre ma poussette sur Leboncoin…</b><span class="ex-meta"><!--#prix:annonces.0--> · 2 jours ouvrés</span><p><b>Ce que tu reçois</b><br>Titre, description, prix conseillé et trois conseils pour les photos.</p></div>
+      <div class="ex"><span class="ex-cat">Voyage et sorties</span><b>Trois jours à Lisbonne en mars…</b><span class="ex-meta"><!--#prix:voyage.1--> · 3 jours ouvrés</span><p><b>Ce que tu reçois</b><br>Trois options transport et hébergement comparées, avec les prix et les liens.</p></div>
       <span class="ex-badge">Exemple ✦</span>
     </div>
   </div>
@@ -59,9 +59,9 @@
     <p class="surtitre">Notre modèle</p>
     <h2 class="titre-p">Tu décris. On s’en occupe. <em>Tu valides.</em></h2>
     <div class="args">
-      <article class="arg revele" style="--c:var(--glacier)"><span class="arg-chiffre">15 à 89&#8239;€</span><b>Un prix fixe, affiché</b><p>Le prix est annoncé avant de payer. Aucun supplément sans ton accord.</p></article>
+      <article class="arg revele" style="--c:var(--glacier)"><span class="arg-chiffre"><!--#fourchette--></span><b>Un prix fixe, affiché</b><p>Le prix est annoncé avant de payer. Aucun supplément sans ton accord.</p></article>
       <article class="arg revele" style="--c:var(--menthe)"><span class="arg-chiffre">0 envoi</span><b>Rien sans ton accord</b><p>Aucun envoi, aucune publication, aucun achat en ton nom. Tu relis, c’est toi qui envoies.</p></article>
-      <article class="arg revele" style="--c:var(--lavande)"><span class="arg-chiffre">2 à 3 jours</span><b>Un résultat rapide</b><p>Livré en 2 à 3 jours ouvrés, une correction incluse. Urgence sous 24&#8239;h pour 10&#8239;€ de plus.</p></article>
+      <article class="arg revele" style="--c:var(--lavande)"><span class="arg-chiffre">2 à 3 jours</span><b>Un résultat rapide</b><p>Livré en 2 à 3 jours ouvrés, une correction incluse. Urgence sous 24&#8239;h pour <!--#urgence--> de plus.</p></article>
     </div>
   </section>
 
@@ -78,28 +78,23 @@
       </div>
     </div>
     <ol class="moments" id="momentsPiste">
-      <li class="moment" style="--c:var(--glacier)"><span class="moment-num">01</span><b>Tu déménages</b><p>Les cartons, c’est toi. Les organismes à prévenir, c’est nous.</p><ul><li><span>Changement d’adresse groupé</span><b>29&#8239;€</b></li><li><span>Pack déménagement administratif</span><b>59&#8239;€</b></li></ul></li>
-      <li class="moment" style="--c:var(--peche)"><span class="moment-num">02</span><b>Un colis ou un vol tourne mal</b><p>Colis perdu, vol annulé, opérateur qui ne répond pas&#8239;: on rédige et on relance.</p><ul><li><span>Réclamation produit ou colis</span><b>19&#8239;€</b></li><li><span>Indemnisation d’un vol</span><b>29&#8239;€</b></li></ul></li>
-      <li class="moment" style="--c:var(--menthe)"><span class="moment-num">03</span><b>Tu fais le tri</b><p>Ce qui dort au placard se vend mieux avec une bonne annonce.</p><ul><li><span>Pack 3 annonces</span><b>39&#8239;€</b></li><li><span>Pack vide-grenier, 10 annonces</span><b>89&#8239;€</b></li></ul></li>
-      <li class="moment" style="--c:var(--lavande)"><span class="moment-num">04</span><b>Tu pars enfin</b><p>Trois options comparées, ou un itinéraire jour par jour prêt à suivre.</p><ul><li><span>Comparatif voyage</span><b>39&#8239;€</b></li><li><span>Itinéraire clés en main</span><b>59&#8239;€</b></li></ul></li>
+      <li class="moment" style="--c:var(--glacier)"><span class="moment-num">01</span><b>Tu déménages</b><p>Les cartons, c’est toi. Les organismes à prévenir, c’est nous.</p><ul><li><span>Changement d’adresse groupé</span><b><!--#prix:demarches.1--></b></li><li><span>Pack déménagement administratif</span><b><!--#prix:logement.2--></b></li></ul></li>
+      <li class="moment" style="--c:var(--peche)"><span class="moment-num">02</span><b>Un colis ou un vol tourne mal</b><p>Colis perdu, vol annulé, opérateur qui ne répond pas&#8239;: on rédige et on relance.</p><ul><li><span>Réclamation produit ou colis</span><b><!--#prix:reclamations.0--></b></li><li><span>Indemnisation d’un vol</span><b><!--#prix:reclamations.2--></b></li></ul></li>
+      <li class="moment" style="--c:var(--menthe)"><span class="moment-num">03</span><b>Tu fais le tri</b><p>Ce qui dort au placard se vend mieux avec une bonne annonce.</p><ul><li><span>Pack 3 annonces</span><b><!--#prix:annonces.1--></b></li><li><span>Pack vide-grenier, 10 annonces</span><b><!--#prix:annonces.2--></b></li></ul></li>
+      <li class="moment" style="--c:var(--lavande)"><span class="moment-num">04</span><b>Tu pars enfin</b><p>Trois options comparées, ou un itinéraire jour par jour prêt à suivre.</p><ul><li><span>Comparatif voyage</span><b><!--#prix:voyage.1--></b></li><li><span>Itinéraire clés en main</span><b><!--#prix:voyage.2--></b></li></ul></li>
     </ol>
     <div class="moments-points" id="momentsPoints" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
   </section>
 
-  <!-- Catalogue : repris de l’accueil actuel, cartes en cascade. -->
+  <!-- Catalogue : extrait (un service par famille) inséré au build depuis src/site/catalogue.ts ; le catalogue complet est sur /services. -->
   <section class="bloc-p" id="services">
     <p class="surtitre">Nos services</p>
-    <h2 class="titre-p">Catégories et prix <em>des services.</em></h2>
+    <h2 class="titre-p">Six familles <em>de services.</em></h2>
     <p class="doux-p">Le prix affiché est le prix payé&#8239;: une correction incluse, tout se fait à distance.</p>
     <div class="familles">
-      <div class="famille revele"><span class="pastille-p" style="--c:var(--glacier-clair)">Démarches et courriers</span><ul class="tarifs-p"><li><span>Courrier de résiliation ou de changement</span><b>19&#8239;€</b></li><li><span>Changement d’adresse groupé (8 organismes)</span><b>29&#8239;€</b></li><li><span>Dossier d’aide (CAF, logement, bourse)</span><b>49&#8239;€</b></li></ul></div>
-      <div class="famille revele"><span class="pastille-p" style="--c:var(--vert-tendre)">SAV et réclamations</span><ul class="tarifs-p"><li><span>Réclamation produit ou colis, avec une relance</span><b>19&#8239;€</b></li><li><span>Litige opérateur, énergie ou abonnement</span><b>29&#8239;€</b></li><li><span>Indemnisation d’un vol retardé ou annulé</span><b>29&#8239;€</b></li></ul></div>
-      <div class="famille revele"><span class="pastille-p" style="--c:var(--peche)">Vente et annonces</span><ul class="tarifs-p"><li><span>1 annonce (titre, texte, prix, conseils photo)</span><b>15&#8239;€</b></li><li><span>Pack 3 annonces Leboncoin ou Vinted</span><b>39&#8239;€</b></li><li><span>Pack vide-grenier : 10 annonces et grille de prix</span><b>89&#8239;€</b></li></ul></div>
-      <div class="famille revele"><span class="pastille-p" style="--c:var(--lagon)">Logement</span><ul class="tarifs-p"><li><span>Dossier de location complet et vérifié</span><b>39&#8239;€</b></li><li><span>Veille : 10 logements sélectionnés en 7 jours</span><b>49&#8239;€</b></li><li><span>Pack déménagement administratif</span><b>59&#8239;€</b></li></ul></div>
-      <div class="famille revele"><span class="pastille-p" style="--c:var(--menthe)">Voyage et sorties</span><ul class="tarifs-p"><li><span>Organisation d’une sortie ou d’un anniversaire</span><b>29&#8239;€</b></li><li><span>Comparatif voyage : 3 options</span><b>39&#8239;€</b></li><li><span>Itinéraire clés en main, jour par jour</span><b>59&#8239;€</b></li></ul></div>
-      <div class="famille revele"><span class="pastille-p" style="--c:var(--lavande)">Recherche et comparaison</span><ul class="tarifs-p"><li><span>Comparatif matériel ou achat : 3 produits</span><b>29&#8239;€</b></li><li><span>Comparatif énergie, box ou mutuelle</span><b>39&#8239;€</b></li><li><span>Trouver 3 artisans vérifiés et comparer leurs devis</span><b>49&#8239;€</b></li></ul></div>
+      <!--#catalogue-extrait-->
     </div>
-    <p class="doux-p">Pressé&#8239;? Option urgence&#8239;: traité sous 24&#8239;h pour <b>10&#8239;€</b> de plus.</p>
+    <p class="doux-p">Pressé&#8239;? Option urgence&#8239;: traité sous 24&#8239;h pour <b><!--#urgence--></b> de plus.</p>
     <a class="lien-p" href="services">Voir tous les services →</a>
     <!-- Hors catalogue (12 nov. 2026) : « Autres services » (analyse puis prix fixe proposé) et « Demande de devis ». Formulaire : src/formules.ts. -->
     <h3 class="sous-titre-p">Ton besoin n’est pas dans la liste&#8239;?</h3>
