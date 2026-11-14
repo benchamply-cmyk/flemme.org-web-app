@@ -148,7 +148,7 @@ export default function App() {
     document.querySelectorAll<HTMLAnchorElement>('.pn a[href="mon-espace"]').forEach(a => { a.textContent = connecte ? 'Mon espace' : 'Connexion'; });
   }, [connecte]);
   return <>
-    <main ref={main} tabIndex={-1} className="app" aria-busy={busy}>
+    <main ref={main} tabIndex={-1} className={'app ecran-' + screen} aria-busy={busy}>
       {connecte && <div className="app-nav">{screen !== 'home' && <Action secondary onClick={back}>{backLabel(screen)}</Action>}{screen !== 'account' && <button type="button" className="btn small secondary" onClick={() => go('account')}>Mon compte</button>}{screen !== 'help' && <button type="button" className="btn small secondary" data-beta-feature="aide" onClick={() => go('help')}>Aide en ligne</button>}</div>}
       {!!error && <div role="alert" className="alert">{error}</div>}
       {!!notice && <p aria-live="polite" className="notice">{notice}</p>}

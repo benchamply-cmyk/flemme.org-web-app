@@ -118,3 +118,15 @@ p > .tag + .tag { margin-left: 6px; }
 .propose { background: var(--menthe, #b8f0de); border-width: 2.5px; box-shadow: 5px 6px 0 var(--violet); }
 .propose .field input, .propose .field textarea { background: #fff; }
 .foot { padding-bottom: 16px; }
+
+/* Mon espace sur ordinateur (demande de Ben, 14/11/2026) : l’accueil prend la largeur du site au lieu d’une colonne de téléphone.
+   Les deux choix passent côte à côte, les deux liens aussi. Les autres écrans gardent leur colonne de lecture. */
+.home-liens { display: grid; gap: 14px; }
+@media (min-width: 900px) {
+  .app.ecran-home { max-width: 1080px; }
+  .ecran-home .home { gap: 36px; padding-top: 8px; }
+  .ecran-home .heading { font-size: clamp(40px, 5vw, 56px); }
+  .ecran-home .home .choices { grid-template-columns: 1fr 1fr; padding-right: 0; }
+  .ecran-home .choice { min-height: 220px; padding: 32px; align-content: end; }
+  .ecran-home .home-liens { grid-template-columns: 1fr 1fr; gap: 18px; }
+}
