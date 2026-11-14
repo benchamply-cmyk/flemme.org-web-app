@@ -324,3 +324,9 @@
 .lp-ligne { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1.1fr) minmax(0, 1.1fr); }
 .lp-ligne > span { overflow-wrap: anywhere; hyphens: auto; }
 @media (max-width: 900px) { .lp-ligne { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr); } }
+
+/* Retour aperçu (haut de page) : le hero ne prend plus tout l’écran, contenu remonté sous la navigation. */
+.lp-hero { min-height: 0; align-items: flex-start; padding-top: 118px; padding-bottom: clamp(40px, 7vh, 72px); }
+.lp-hero .lp-etiquette { margin-bottom: 16px; }
+@media (max-width: 900px) { .lp-hero { padding-top: 96px; padding-bottom: 32px; } }
+@media (max-width: 900px) { .lp-hero .ff-objet { width: min(22vw, 88px); left: 88%; top: 14%; } }
