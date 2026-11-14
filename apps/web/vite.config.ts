@@ -6,7 +6,8 @@ import { supabaseConfigProblem } from './src/supabaseConfig.ts';
 import { estAdresseApp } from '../../packages/shared/src/adresses.ts';
 import { htmlCatalogue, htmlMoments, htmlPoints, remplacerPrix } from './src/site/catalogue.ts';
 
-// La vitrine (index.html et ses pages intérieures, maquette V0.3 ; chaque fichier porte le nom de son adresse : concept.html → /concept), le parcours de l’app (app.html),
+// La vitrine (index.html et ses pages intérieures, maquette V0.3 ; chaque fichier porte le nom de son adresse : concept.html → /concept),
+// le parcours de l’app (app.html),
 // l’admin de l’équipe (admin.html) et l’aperçu isolé de la future interface (apercu.html).
 const pages = ['index', 'services', 'deleguer', 'concept', 'faq', 'contact', 'premium', 'resoudre', 'mentions', 'confidentialite', 'app', 'admin', 'apercu', 'beta'];
 // En-tête et pied de page de la vitrine, écrits une fois dans src/site et insérés dans chaque page au build.

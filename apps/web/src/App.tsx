@@ -145,7 +145,12 @@ export default function App() {
   const connecte = actorId !== '';
   // Barre de navigation commune au site (src/site/entete.html, insérée dans app.html) : « Connexion » devient « Mon espace ».
   useEffect(() => {
-    document.querySelectorAll<HTMLAnchorElement>('.pn a[href="mon-espace"]').forEach(a => { a.textContent = connecte ? 'Mon espace' : 'Connexion'; });
+    // Ne remplace que le mot (pas l’icône ni la pastille du mot qui glisse, comme sur les autres pages).
+    const mot = connecte ? 'Mon espace' : 'Connexion';
+    document.querySelectorAll<HTMLAnchorElement>('.pn a[href="mon-espace"]').forEach(a => {
+      const cible = a.querySelector('.pn-mot') ?? [...a.childNodes].reverse().find(n => n.nodeType === Node.TEXT_NODE && n.textContent?.trim());
+      if (cible) cible.textContent = mot; else a.append(mot);
+    });
   }, [connecte]);
   return <>
     <main ref={main} tabIndex={-1} className={'app ecran-' + screen} aria-busy={busy}>
