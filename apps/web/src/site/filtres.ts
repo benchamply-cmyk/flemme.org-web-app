@@ -29,7 +29,19 @@ export function monterFiltres(zone: HTMLElement, menus: Menu[], depart: Record<s
     if (t.type === 'radio') (t.closest('details') as HTMLDetailsElement).open = false;
     rafraichir(); onChange();
   });
-  zone.addEventListener('toggle', e => { const d = e.target as HTMLDetailsElement; if (d.open) zone.querySelectorAll<HTMLDetailsElement>('.filtre').forEach(x => { if (x !== d) x.open = false; }); }, true);
+  zone.addEventListener('toggle', e => {
+    const d = e.target as HTMLDetailsElement;
+    if (!d.open) return;
+    zone.querySelectorAll<HTMLDetailsElement>('.filtre').forEach(x => { if (x !== d) x.open = false; });
+    // Sur téléphone, un menu ouvert depuis une pastille à droite sortait de l’écran : on le recale dans la largeur visible.
+    const choix = d.querySelector<HTMLElement>('.filtre-choix');
+    if (!choix) return;
+    choix.style.left = '';
+    const marge = 16, r = choix.getBoundingClientRect(), largeur = document.documentElement.clientWidth;
+    if (r.right > largeur - marge) choix.style.left = `${Math.min(0, largeur - marge - r.right)}px`;
+    const r2 = choix.getBoundingClientRect();
+    if (r2.left < marge) choix.style.left = `${parseFloat(choix.style.left || '0') + marge - r2.left}px`;
+  }, true);
   document.addEventListener('click', e => { if (!(e.target as Element).closest('.filtre')) zone.querySelectorAll<HTMLDetailsElement>('.filtre').forEach(x => { x.open = false; }); });
   zone.querySelector('.effacer')!.addEventListener('click', () => {
     for (const k of Object.keys(valeurs)) delete valeurs[k];

@@ -221,3 +221,8 @@ main [id] { scroll-margin-top: 112px; }
 .nom-s { display: flex; flex-direction: column; gap: 4px; }
 .nom-s small { font-size: 13px; line-height: 1.4; color: var(--texte-doux); }
 .nom-s small b { font-size: inherit; font-weight: 700; color: var(--encre); white-space: normal; }
+
+/* PR 80 – vue téléphone : questions de la FAQ plus faciles à toucher. */
+.questions summary { min-height: 44px; display: flex; align-items: center; }
+@media (max-width: 640px) { .filtre-choix { min-width: min(280px, calc(100vw - 32px)); } }
+@media (max-width: 640px) { .lien-fort { display: inline-flex; align-items: center; min-height: 44px; } }
