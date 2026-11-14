@@ -5,7 +5,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 // Vitrine sans « .html » (plan d’adresses validé par Ben le 14/11/2026, PR 2) :
 // chaque page publique est servie à son adresse courte et l’ancienne adresse y renvoie en 301.
 const lire = (chemin: string) => readFileSync(new URL('../' + chemin, import.meta.url), 'utf8');
-const PAGES = ['concept', 'deleguer', 'resoudre', 'premium', 'faq', 'contact', 'mentions', 'confidentialite'];
+const PAGES = ['services', 'concept', 'deleguer', 'resoudre', 'premium', 'faq', 'contact', 'mentions', 'confidentialite'];
 const regles = [...lire('../../netlify.toml').matchAll(/\[\[redirects\]\]\s*from = "([^"]+)"\s*to = "([^"]+)"\s*status = (\d+)(\s*force = true)?/g)]
   .map(m => ({ from: m[1], to: m[2], status: m[3], force: !!m[4] }));
 

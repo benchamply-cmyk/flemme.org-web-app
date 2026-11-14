@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#3a4f7a">
+<title>Nos services et leurs prix — Flemme.org</title>
+<meta name="description" content="Démarches, réclamations, annonces, logement, voyage, comparatifs : tous les services Flemme à prix fixe, plus les demandes hors catalogue et sur devis.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="FLEMME">
+<meta property="og:title" content="Nos services et leurs prix — Flemme.org">
+<meta property="og:description" content="Démarches, réclamations, annonces, logement, voyage, comparatifs : tous les services Flemme à prix fixe, plus les demandes hors catalogue et sur devis.">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/flemme-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+</head>
+<body data-page="services">
+<!-- Page /services (demande de Ben, 14/11/2026) : le catalogue complet, cible des liens « Services » et « Catalogue »
+     de la navigation et du pied de page. Les prix sont les mêmes que la section #services de l’accueil : les changer aux deux endroits.
+     Chaque service ouvre /deleguer avec son nom déjà écrit dans la description (?service=…, ajouté par src/site/pages/services.ts). -->
+<section class="flemme-chrome-home bandeau">
+<!--#entete-->
+  <div class="titre-page">
+    <h1>Nos services</h1>
+    <p>Six familles de flemmes à prix fixe. Le prix affiché est le prix payé&#8239;: une correction incluse, tout se fait à distance, et rien n’est envoyé sans ton accord.</p>
+  </div>
+</section>
+<main>
+  <section class="bloc" id="catalogue">
+    <p class="surtitre">Le catalogue</p>
+    <h2 class="titre">Choisis un service, on s’occupe du reste</h2>
+    <div class="grille large services">
+      <div class="carte famille-s" style="--c:var(--glacier-clair)" id="demarches"><span class="pastille-s">Démarches et courriers</span><ul class="tarifs-s">
+        <li><a href="deleguer#decrire"><span>Courrier de résiliation ou de changement</span><b>19&#8239;€</b></a></li>
+        <li><a href="deleguer#decrire"><span>Changement d’adresse groupé (8 organismes)</span><b>29&#8239;€</b></a></li>
+        <li><a href="deleguer#decrire"><span>Dossier d’aide (CAF, logement, bourse)</span><b>49&#8239;€</b></a></li>
+      </ul></div>
+      <div class="carte famille-s" style="--c:var(--vert-tendre)" id="reclamations"><span class="pastille-s">SAV et réclamations</span><ul class="tarifs-s">
+        <li><a href="deleguer#decrire"><span>Réclamation produit ou colis, avec une relance</span><b>19&#8239;€</b></a></li>
+        <li><a href="deleguer#decrire"><span>Litige opérateur, énergie ou abonnement</span><b>29&#8239;€</b></a></li>
+        <li><a href="deleguer#decrire"><span>Indemnisation d’un vol retardé ou annulé</span><b>29&#8239;€</b></a></li>
+      </ul></div>
+      <div class="carte famille-s" style="--c:var(--peche)" id="annonces"><span class="pastille-s">Vente et annonces</span><ul class="tarifs-s">
+        <li><a href="deleguer#decrire"><span>1 annonce (titre, texte, prix, conseils photo)</span><b>15&#8239;€</b></a></li>
+        <li><a href="deleguer#decrire"><span>Pack 3 annonces Leboncoin ou Vinted</span><b>39&#8239;€</b></a></li>
+        <li><a href="deleguer#decrire"><span>Pack vide-grenier : 10 annonces et grille de prix</span><b>89&#8239;€</b></a></li>
+      </ul></div>
+      <div class="carte famille-s" style="--c:var(--lagon)" id="logement"><span class="pastille-s">Logement</span><ul class="tarifs-s">
+        <li><a href="deleguer#decrire"><span>Dossier de location complet et vérifié</span><b>39&#8239;€</b></a></li>
+        <li><a href="deleguer#decrire"><span>Veille : 10 logements sélectionnés en 7 jours</span><b>49&#8239;€</b></a></li>
+        <li><a href="deleguer#decrire"><span>Pack déménagement administratif</span><b>59&#8239;€</b></a></li>
+      </ul></div>
+      <div class="carte famille-s" style="--c:var(--menthe)" id="voyage"><span class="pastille-s">Voyage et sorties</span><ul class="tarifs-s">
+        <li><a href="deleguer#decrire"><span>Organisation d’une sortie ou d’un anniversaire</span><b>29&#8239;€</b></a></li>
+        <li><a href="deleguer#decrire"><span>Comparatif voyage : 3 options</span><b>39&#8239;€</b></a></li>
+        <li><a href="deleguer#decrire"><span>Itinéraire clés en main, jour par jour</span><b>59&#8239;€</b></a></li>
+      </ul></div>
+      <div class="carte famille-s" style="--c:var(--lavande)" id="comparatifs"><span class="pastille-s">Recherche et comparaison</span><ul class="tarifs-s">
+        <li><a href="deleguer#decrire"><span>Comparatif matériel ou achat : 3 produits</span><b>29&#8239;€</b></a></li>
+        <li><a href="deleguer#decrire"><span>Comparatif énergie, box ou mutuelle</span><b>39&#8239;€</b></a></li>
+        <li><a href="deleguer#decrire"><span>Trouver 3 artisans vérifiés et comparer leurs devis</span><b>49&#8239;€</b></a></li>
+      </ul></div>
+    </div>
+    <p class="doux">Pressé&#8239;? Option urgence&#8239;: traité sous 24&#8239;h pour <b>10&#8239;€</b> de plus. Sinon, compte 2 à 3 jours ouvrés.</p>
+  </section>
+
+  <section class="bloc" id="hors-catalogue">
+    <p class="surtitre">Hors catalogue</p>
+    <h2 class="titre">Ton besoin n’est pas dans la liste&#8239;?</h2>
+    <div class="grille">
+      <div class="carte"><b>Autres services</b><p class="doux">Décris ton besoin en quelques lignes&#8239;: on l’analyse sous un jour ouvré et on te propose un prix fixe et un délai. Tu acceptes ou non.</p><a class="lien-fort" href="deleguer/nouvelle?formule=autre">Décrire un autre service →</a></div>
+      <div class="carte"><b>Demande de devis</b><p class="doux">Un dossier long, plusieurs démarches liées, un besoin très spécifique&#8239;: un devis détaillé (périmètre, étapes, prix, délai), gratuit et sans engagement. À partir de 69&#8239;€.</p><a class="lien-fort" href="deleguer/nouvelle?formule=devis">Demander un devis →</a></div>
+    </div>
+    <p class="doux">Si une demande n’est pas pour nous, on te le dit franchement.</p>
+  </section>
+
+  <section class="bloc" id="inclus">
+    <p class="surtitre">Inclus dans chaque service</p>
+    <h2 class="titre">Ce sur quoi tu peux compter</h2>
+    <div class="grille etroite">
+      <div class="carte"><b>Un prix fixe</b><p class="doux">Annoncé avant de payer. Aucun supplément sans ton accord.</p></div>
+      <div class="carte"><b>Une correction incluse</b><p class="doux">Si le résultat ne correspond pas à ta demande, on le reprend.</p></div>
+      <div class="carte"><b>Rien sans ton accord</b><p class="doux">Aucun envoi, aucune publication, aucun achat en ton nom. Jamais de mot de passe demandé.</p></div>
+      <div class="carte"><b>Remboursé si on ne livre pas</b><p class="doux">Si on ne peut pas faire ce qui était convenu, tu es remboursé.</p></div>
+    </div>
+    <div class="boutons"><a class="bouton" href="deleguer#decrire">Décrire ma flemme</a><a class="bouton clair" href="concept#prix">Prix et paiement</a></div>
+  </section>
+</main>
+<!--#pied-->
+<script type="module" src="/src/site/pages/services.ts"></script>
+</body>
+</html>

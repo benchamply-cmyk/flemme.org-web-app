@@ -202,3 +202,12 @@ button, input, textarea, select { font: inherit; color: inherit; }
 .texte-legal mark { background: #fff3b0; padding: 0 2px; }
 
 @media (prefers-reduced-motion: reduce) { .cta { transition: none; } }
+
+/* Page /services : une carte par famille, chaque service est un lien vers /deleguer avec son prix à droite. */
+.famille-s { gap: 12px; }
+.pastille-s { align-self: flex-start; background: var(--c); border: 2px solid var(--encre); border-radius: 999px; padding: 4px 12px; font-weight: 800; font-size: 14px; }
+.tarifs-s { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.tarifs-s li + li { border-top: 1px solid var(--bordure, #d9dce6); }
+.tarifs-s a { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 10px 4px; color: var(--encre); text-decoration: none; border-radius: 8px; }
+.tarifs-s a:hover, .tarifs-s a:focus-visible { background: var(--glacier-clair); }
+.tarifs-s b { white-space: nowrap; font-size: 17px; }
