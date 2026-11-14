@@ -2,6 +2,7 @@ import './beta/runtime.ts';
 import './site/accueil-union.css';
 import './site/nav.ts';
 import './site/marque.css';
+import './site/hero-lp.css';
 
 // Accueil de la vitrine (13/11/2026) : proposition de la PR #67, inspirée de l’implémentation d’UNION :
 // navigation qui se cache, titre écrit lettre par lettre, apparitions en cascade, moments de vie, test de flemme.
@@ -48,6 +49,26 @@ if (titre && !reduit) {
   };
   setTimeout(frappe, 350);
 } else heroPret();
+
+/* ---------- Titre repris de la landing (14/11/2026) : le début change toutes les 3 s ---------- */
+const rotation = document.querySelector<HTMLElement>('[data-rotation]');
+const motTitre = rotation?.querySelector<HTMLElement>('.lp-mot');
+if (rotation && motTitre && !reduit) {
+  const mots = rotation.dataset.rotation!.split('|');
+  let k = 0;
+  setInterval(() => {
+    if (document.hidden) return;
+    motTitre.classList.remove('entre');
+    motTitre.classList.add('sort');
+    setTimeout(() => {
+      k = (k + 1) % mots.length;
+      motTitre.textContent = mots[k];
+      motTitre.classList.remove('sort');
+      void motTitre.offsetWidth;
+      motTitre.classList.add('entre');
+    }, 430);
+  }, 3000);
+}
 
 /* ---------- Apparition en cascade : les éléments qui entrent ensemble s’affichent l’un après l’autre ---------- */
 const aReveler = [...document.querySelectorAll<HTMLElement>('.revele, .titre-p, .cmp-case')];

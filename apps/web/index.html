@@ -23,15 +23,23 @@
 <!--#entete-->
 
 <header class="hero flemme-chrome-home">
-  <div class="hero-contenu">
-    <p class="surtitre">Le droit d’avoir la Flemme.</p>
-    <h1 class="hero-titre" data-ecrire>Tes démarches et corvées numériques, <em>on s’en charge.</em></h1>
-    <p class="hero-accroche apparait">Un courrier, une réclamation, une annonce, un dossier de location, un voyage à organiser&#8239;? Prix fixe affiché, résultat en 2 à 3 jours ouvrés, et rien n’est envoyé sans ton accord.</p>
-    <div class="hero-actions apparait">
-      <a class="go" href="deleguer#decrire">Décris ta flemme<span class="go-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="20" height="12"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-      <a class="go clair" href="resoudre#devenir-brigadier">Résoudre une flemme<span class="go-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="20" height="12"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+  <!-- Contenu du haut de page de la landing (14/11/2026, demande de Ben), sur le fond de l’accueil (styles : src/site/hero-lp.css). -->
+  <div class="hero-contenu hero-lp">
+    <p class="lp-etiquette">Le droit d’avoir la Flemme.</p>
+    <h1 class="lp-hero-titre">
+      <span class="lp-rotation" data-rotation="Tes démarches et corvées numériques,|Ta résiliation,|Ta réclamation,|Ton annonce Vinted,|Ton dossier de location,|Ton voyage à Lisbonne,"><span class="lp-mot">Tes démarches et corvées numériques,</span></span>
+      <em>on s’en charge.</em>
+    </h1>
+    <div class="lp-hero-bas">
+      <div>
+        <p class="lp-hero-accroche">Un courrier, une réclamation, une annonce, un dossier de location, un voyage à organiser&#8239;? Prix fixe affiché, résultat en 2 à 3 jours ouvrés, et <span class="lp-souligne">rien n’est envoyé sans ton accord</span>.</p>
+        <div class="lp-hero-actions">
+          <a class="lp-bouton noir" href="deleguer#decrire">Décris ta flemme<span class="lp-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="18" height="11"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="lp-bouton contour" href="resoudre#devenir-brigadier">Résoudre une flemme<span class="lp-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="18" height="11"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+        </div>
+      </div>
+      <p class="lp-hero-note">Pendant la bêta, chaque flemme est réalisée par l’équipe Flemme, puis par des Brigadiers vérifiés.</p>
     </div>
-    <p class="hero-note apparait">Pendant la bêta, chaque flemme est réalisée par l’équipe Flemme, puis par des Brigadiers vérifiés.</p>
     <!-- Exemples de résultats : trois cartes fictives qui se relaient en CSS (cycle de 15 s), comme le carrousel d’affiches d’UNION. -->
     <div class="exemples-p apparait" aria-label="Exemples de résultats livrés (fictifs)">
       <div class="ex"><span class="ex-cat">Démarches et courriers</span><b>Résilier ma salle de sport…</b><span class="ex-meta"><!--#prix:demarches.0--> · 2 jours ouvrés</span><p><b>Ce que tu reçois</b><br>La lettre de résiliation prête à envoyer, l’adresse et le mode d’envoi conseillé.</p></div>
