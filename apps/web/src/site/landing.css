@@ -372,3 +372,17 @@
   100% { rotate: -0.3 1 0 -8deg; }
 }
 @media (prefers-reduced-motion: reduce) { .lp-hero .ff-objet { animation: none; rotate: none; } }
+
+/* Navigation : même apparence que sur les autres pages (demande de Ben, 14/11/2026). Reprend les règles de nav de
+   marque.css, que la landing et l’accueil n’importent pas : icônes aux couleurs du ruban, boutons noirs au survol. */
+.lp { --marque-noir: #121212; --marque-vert: #57d68d; --marque-vert-profond: #225337; --marque-contour: #a3e8c0; }
+.lp .pn-deroulant { box-shadow: 0 14px 34px rgba(34, 83, 55, .16); }
+.lp .pn .pn-barre .pn-cta:hover, .lp .pn .pn-barre .pn-btn:hover, .lp .pn .pn-barre .pn-menu:hover,
+.lp .pn .pn-barre .pn-cta:focus-visible, .lp .pn .pn-barre .pn-btn:focus-visible, .lp .pn .pn-barre .pn-menu:focus-visible,
+.lp .pn .pn-barre [aria-expanded="true"], .lp .pn .pn-barre .pn-cta[aria-current="page"], .lp .pn .pn-barre .pn-btn[aria-current="page"] {
+  background: var(--marque-noir); border-color: var(--marque-noir); color: #fff; }
+.lp .pn-ico circle:nth-of-type(1) { fill: var(--marque-vert); }
+.lp .pn-ico circle:nth-of-type(2) { fill: var(--marque-vert-profond); }
+.lp .pn-ico circle:nth-of-type(3) { fill: var(--marque-contour); }
+.lp .pn-ico circle:nth-of-type(4) { fill: var(--marque-noir); }
+.lp .pn .pn-barre [aria-expanded="true"] .pn-ico circle:nth-of-type(4) { fill: #fff; }
