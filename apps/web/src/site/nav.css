@@ -116,3 +116,12 @@
 @keyframes pn-tuile { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .pn-deroulant:not([hidden]), .pn-deroulant:not([hidden]) > a { animation: none; } }
 .pn-liens-gauche .pn-deroulant { min-width: 290px; }
+
+/* Boutons de la barre en icône seule, le mot glisse au survol, au focus ou à l’ouverture (retour aperçu, 14/11/2026). */
+.pn .pn-barre .pn-liens .pn-btn { gap: 0; padding: 0 12px; }
+.pn-mot { display: inline-block; max-width: 0; opacity: 0; overflow: hidden; white-space: nowrap; margin-left: 0; transform: translateX(-8px);
+  transition: max-width .38s var(--pn-ease, cubic-bezier(.2, .8, .2, 1)), opacity .25s ease, margin-left .38s var(--pn-ease, cubic-bezier(.2, .8, .2, 1)), transform .38s var(--pn-ease, cubic-bezier(.2, .8, .2, 1)); }
+.pn-btn:hover .pn-mot, .pn-btn:focus-visible .pn-mot, .pn-btn[aria-expanded="true"] .pn-mot, .pn-btn[aria-current="page"] .pn-mot,
+.pn-plus:hover .pn-mot { max-width: 120px; opacity: 1; margin-left: 8px; transform: none; }
+.pn-liens .pn-btn + .pn-plus, .pn-liens .pn-plus + .pn-plus, .pn-liens .pn-plus + .pn-btn { margin-left: -8px; }
+@media (prefers-reduced-motion: reduce) { .pn-mot { transition: none; } }
