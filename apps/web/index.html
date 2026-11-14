@@ -65,12 +65,16 @@
     </div>
   </section>
 
-  <!-- Vos besoins (4 moments de vie) : défilement horizontal aimanté, flèches et points. Ancre #besoins (plan du site, 13/11/2026). -->
-  <section class="bloc-p" id="besoins">
+  <!-- Nos services : « Vos besoins » et « Nos services » réunis (choix de Ben, 14/11/2026, variante A).
+       Une carte par famille : situation de vie, deux services et leurs prix, lien vers la famille sur /services.
+       Cartes et points insérés au build depuis src/site/catalogue.ts. Défilement horizontal aimanté, flèches et points (landing.ts). -->
+  <section class="bloc-p" id="services">
+    <span id="besoins"></span>
     <div class="moments-tete">
       <div>
-        <p class="surtitre">Vos besoins</p>
-        <h2 class="titre-p">Quatre moments où <em>la flemme gagne.</em></h2>
+        <p class="surtitre">Nos services</p>
+        <h2 class="titre-p">Six moments où <em>la flemme gagne.</em></h2>
+        <p class="doux-p">Prix fixe affiché, une correction incluse, tout à distance.</p>
       </div>
       <div class="moments-fleches">
         <button type="button" data-moment="-1" aria-label="Moment précédent"><svg viewBox="0 0 20 12" width="20" height="12" style="transform:scaleX(-1)"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -78,32 +82,13 @@
       </div>
     </div>
     <ol class="moments" id="momentsPiste">
-      <li class="moment" style="--c:var(--glacier)"><span class="moment-num">01</span><b>Tu déménages</b><p>Les cartons, c’est toi. Les organismes à prévenir, c’est nous.</p><ul><li><span>Changement d’adresse groupé</span><b><!--#prix:demarches.1--></b></li><li><span>Pack déménagement administratif</span><b><!--#prix:logement.2--></b></li></ul></li>
-      <li class="moment" style="--c:var(--peche)"><span class="moment-num">02</span><b>Un colis ou un vol tourne mal</b><p>Colis perdu, vol annulé, opérateur qui ne répond pas&#8239;: on rédige et on relance.</p><ul><li><span>Réclamation produit ou colis</span><b><!--#prix:reclamations.0--></b></li><li><span>Indemnisation d’un vol</span><b><!--#prix:reclamations.2--></b></li></ul></li>
-      <li class="moment" style="--c:var(--menthe)"><span class="moment-num">03</span><b>Tu fais le tri</b><p>Ce qui dort au placard se vend mieux avec une bonne annonce.</p><ul><li><span>Pack 3 annonces</span><b><!--#prix:annonces.1--></b></li><li><span>Pack vide-grenier, 10 annonces</span><b><!--#prix:annonces.2--></b></li></ul></li>
-      <li class="moment" style="--c:var(--lavande)"><span class="moment-num">04</span><b>Tu pars enfin</b><p>Trois options comparées, ou un itinéraire jour par jour prêt à suivre.</p><ul><li><span>Comparatif voyage</span><b><!--#prix:voyage.1--></b></li><li><span>Itinéraire clés en main</span><b><!--#prix:voyage.2--></b></li></ul></li>
+      <!--#catalogue-moments-->
     </ol>
-    <div class="moments-points" id="momentsPoints" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="moments-points" id="momentsPoints" aria-hidden="true"><!--#catalogue-points--></div>
+    <!-- Hors catalogue : « Autres services » (prix proposé) et « Demande de devis », sur une ligne. -->
+    <p class="services-pied">Pas dans la liste&#8239;? <a class="lien-p" href="deleguer/nouvelle?formule=autre">Décris ton besoin, on te propose un prix →</a> <span>ou</span> <a class="lien-p" href="deleguer/nouvelle?formule=devis">demande un devis gratuit →</a></p>
+    <a class="lien-p" href="services">Voir tout le catalogue et les prix →</a>
   </section>
-
-  <!-- Catalogue : extrait (un service par famille) inséré au build depuis src/site/catalogue.ts ; le catalogue complet est sur /services. -->
-  <section class="bloc-p" id="services">
-    <p class="surtitre">Nos services</p>
-    <h2 class="titre-p">Six familles <em>de services.</em></h2>
-    <p class="doux-p">Le prix affiché est le prix payé&#8239;: une correction incluse, tout se fait à distance.</p>
-    <div class="familles">
-      <!--#catalogue-extrait-->
-    </div>
-    <a class="lien-p" href="services">Voir tous les services →</a>
-    <!-- Hors catalogue (12 nov. 2026) : « Autres services » (analyse puis prix fixe proposé) et « Demande de devis ». Formulaire : src/formules.ts. -->
-    <h3 class="sous-titre-p">Ton besoin n’est pas dans la liste&#8239;?</h3>
-    <div class="familles">
-      <div class="famille revele"><span class="pastille-p" style="--c:var(--glacier-clair)">Autres services</span><b>Décris ton besoin, on te propose un prix</b><p class="doux-p">Un service hors catalogue&#8239;? Décris-le en quelques lignes&#8239;: on analyse ta demande sous un jour ouvré et on te propose un prix fixe et un délai. Tu acceptes ou non.</p><a class="lien-p" href="deleguer/nouvelle?formule=autre">Décrire un autre service →</a></div>
-      <div class="famille revele"><span class="pastille-p" style="--c:var(--lavande)">Demande de devis</span><b>Pour les services précis ou difficiles à chiffrer</b><p class="doux-p">Un dossier long, plusieurs démarches liées, un besoin très spécifique&#8239;: on t’envoie un devis détaillé (périmètre, étapes, prix, délai), gratuit et sans engagement. À partir de 69&#8239;€.</p><a class="lien-p" href="deleguer/nouvelle?formule=devis">Demander un devis →</a></div>
-    </div>
-    <p class="doux-p petit">Si une demande n’est pas pour nous, on te le dit franchement.</p>
-  </section>
-
 
   <section class="bloc-p" id="etapes">
     <p class="surtitre">Le concept en 3 étapes</p>

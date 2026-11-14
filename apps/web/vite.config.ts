@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { supabaseConfigProblem } from './src/supabaseConfig.ts';
 import { estAdresseApp } from '../../packages/shared/src/adresses.ts';
-import { htmlCatalogue, htmlExtrait, remplacerPrix } from './src/site/catalogue.ts';
+import { htmlCatalogue, htmlMoments, htmlPoints, remplacerPrix } from './src/site/catalogue.ts';
 
 // La vitrine (index.html et ses pages intérieures, maquette V0.3 ; chaque fichier porte le nom de son adresse : concept.html → /concept), le parcours de l’app (app.html),
 // l’admin de l’équipe (admin.html) et l’aperçu isolé de la future interface (apercu.html).
@@ -12,8 +12,8 @@ const pages = ['index', 'services', 'deleguer', 'concept', 'faq', 'contact', 'pr
 // En-tête et pied de page de la vitrine, écrits une fois dans src/site et insérés dans chaque page au build.
 const morceau = (nom: string) => readFileSync(fileURLToPath(new URL(`./src/site/${nom}.html`, import.meta.url)), 'utf8').trim();
 const habillage = { name: 'flemme-habillage', transformIndexHtml: (html: string) => remplacerPrix(html.replace('<!--#entete-->', morceau('entete')).replace('<!--#pied-->', morceau('pied'))
-  // Catalogue des services (src/site/catalogue.ts, seule source des prix) : complet sur /services, extrait sur l’accueil.
-  .replace('<!--#catalogue-->', htmlCatalogue()).replace('<!--#catalogue-extrait-->', htmlExtrait())) };
+  // Catalogue des services (src/site/catalogue.ts, seule source des prix) : complet sur /services, une carte par famille sur l’accueil.
+  .replace('<!--#catalogue-->', htmlCatalogue()).replace('<!--#catalogue-moments-->', htmlMoments()).replace('<!--#catalogue-points-->', htmlPoints())) };
 // Adresses de l’espace connecté (/mon-espace, /flemme/123…) : app.html, comme les règles de netlify.toml en ligne.
 type Requete = { url?: string };
 const versApp = (req: Requete, _res: unknown, next: () => void) => {

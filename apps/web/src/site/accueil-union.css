@@ -247,3 +247,7 @@ main { background: linear-gradient(180deg, #fff 0%, #f1f5ff 40%, #fff 75%); }
   .js .revele, .js .titre-p, .js .cmp-case, .js .apparait, .ecrit em { opacity: 1; transform: none; transition: none; }
   .flemme-chrome-home { --flemme-motion: paused; }
 }
+
+/* Nos services (accueil) : ligne « hors catalogue » sous le carrousel, lien de chaque carte. */
+.services-pied { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; margin: 0; }
+.moment .lien-p { font-size: 14px; }
