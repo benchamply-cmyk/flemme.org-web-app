@@ -313,3 +313,7 @@
 .lp-papier { width: 48%; }
 .lp-pistes { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
 @media (max-width: 900px) { .lp-visuel { max-width: 260px; justify-self: start; } .lp-pistes { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 18px; } }
+
+/* Retour aperçu (étapes) : même animation, schéma un peu plus petit. */
+.lp-schema { width: 78%; margin-left: auto; margin-right: auto; margin-bottom: 18px; }
+@media (max-width: 900px) { .lp-schema { width: 70%; } }
