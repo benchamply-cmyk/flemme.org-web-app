@@ -93,3 +93,12 @@
   .entete:has(.beta-test) .entete-droite { margin-left: auto; }
   .entete:has(.beta-test) .pastille.mon-espace { display: inline-flex; }
 }
+
+/* PR 80 – vue téléphone : pied de page sur deux colonnes, liens plus faciles à toucher. */
+@media (max-width: 640px) {
+  .pied-colonnes { grid-template-columns: 1fr 1fr; gap: 24px 16px; }
+  .pied-colonnes > .pied-marque, .pied-colonnes > :not(nav) { grid-column: 1 / -1; }
+  .pied-colonnes nav { gap: 0; }
+  .pied-colonnes nav b { margin-bottom: 4px; }
+  .pied-colonnes nav a { display: flex; align-items: center; min-height: 40px; line-height: 1.25; padding: 4px 0; box-sizing: border-box; }
+}
