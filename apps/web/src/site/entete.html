@@ -5,7 +5,8 @@
      Sur mobile, le bouton Déléguer reste visible à côté de Menu.
      14/11/2026 (commentaires de Ben sur l’aperçu) : boutons Déléguer et Résoudre retirés de la barre ordinateur (ils restent dans Recherche) ; Connexion tout à droite.
      Bouton « Recherche » (14/11/2026), juste à droite du logo, qui reste fixe tout à gauche : second menu déroulant, Déléguer, Résoudre, Catalogue.
-     Icône des boutons Menu : quatre pastilles aux couleurs des familles de services, qui pivotent en losange à l’ouverture (14/11/2026). -->
+     Icône des boutons Menu : quatre pastilles aux couleurs des familles de services, qui pivotent en losange à l’ouverture (14/11/2026).
+     Retour aperçu (14/11/2026) : une icône au trait sur chaque bouton et chaque lien des menus (classe pn-ico-t). -->
 <nav class="pn" id="pn" aria-label="Navigation principale">
   <div class="pn-barre">
     <a class="pn-logo" href="./" aria-label="FLEMME · accueil">FLEMME.</a>
@@ -13,9 +14,9 @@
       <div class="pn-plus">
         <button type="button" class="pn-btn pn-plus-btn" id="pnRecherche" aria-expanded="false" aria-controls="pnRechercheListe"><svg class="pn-ico" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><circle cx="7" cy="7" r="4.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10.5 10.5l3.6 3.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Recherche</button>
         <div class="pn-deroulant" id="pnRechercheListe" hidden>
-          <a href="deleguer">Déléguer</a>
-          <a href="resoudre">Résoudre</a>
-          <a href="services">Catalogue</a>
+          <a href="deleguer"><svg class="pn-ico pn-ico-t" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 8h9M8.5 4.5L12 8l-3.5 3.5"/><path d="M14 3v10"/></svg>Déléguer</a>
+          <a href="resoudre"><svg class="pn-ico pn-ico-t" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="5.6"/><path d="M5.6 8.2l1.7 1.7 3.2-3.4"/></svg>Résoudre</a>
+          <a href="services"><svg class="pn-ico pn-ico-t" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="4.5" height="4.5" rx="1.2"/><rect x="9" y="2.5" width="4.5" height="4.5" rx="1.2"/><rect x="2.5" y="9" width="4.5" height="4.5" rx="1.2"/><rect x="9" y="9" width="4.5" height="4.5" rx="1.2"/></svg>Catalogue</a>
         </div>
       </div>
     </div>
@@ -23,28 +24,28 @@
       <div class="pn-plus">
         <button type="button" class="pn-btn pn-plus-btn" id="pnPlus" aria-expanded="false" aria-controls="pnDeroulant"><svg class="pn-ico" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><circle cx="4" cy="4" r="2.6" fill="#6b8cff"/><circle cx="12" cy="4" r="2.6" fill="#2fbf8f"/><circle cx="4" cy="12" r="2.6" fill="#ff9a62"/><circle cx="12" cy="12" r="2.6" fill="#8b7bff"/></svg>Menu</button>
         <div class="pn-deroulant" id="pnDeroulant" hidden>
-          <a href="services">Services</a>
-          <a href="./#comparatif">Pourquoi Flemme</a>
-          <a href="concept">Concept</a>
-          <a href="./#garanties">Nos garanties</a>
-          <a href="resoudre#liste">Flemmes</a>
-          <a href="faq">FAQ</a>
-          <a href="contact">Contact</a>
+          <a href="services"><svg class="pn-ico pn-ico-t" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="4.5" height="4.5" rx="1.2"/><rect x="9" y="2.5" width="4.5" height="4.5" rx="1.2"/><rect x="2.5" y="9" width="4.5" height="4.5" rx="1.2"/><rect x="9" y="9" width="4.5" height="4.5" rx="1.2"/></svg>Services</a>
+          <a href="./#comparatif"><svg class="pn-ico pn-ico-t" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13.5s-5-3-5-6.6A2.8 2.8 0 0 1 8 5a2.8 2.8 0 0 1 5 1.9c0 3.6-5 6.6-5 6.6z"/></svg>Pourquoi Flemme</a>
+          <a href="concept"><svg class="pn-ico pn-ico-t" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12.5h4M6.5 14.5h3"/><path d="M8 1.8a4.2 4.2 0 0 0-2.4 7.6c.4.3.6.8.6 1.3v.3h3.6v-.3c0-.5.2-1 .6-1.3A4.2 4.2 0 0 0 8 1.8z"/></svg>Concept</a>
+          <a href="./#garanties"><svg class="pn-ico pn-ico-t" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.8l5 2v4c0 3-2.2 5.3-5 6.4-2.8-1.1-5-3.4-5-6.4v-4z"/><path d="M5.8 8l1.5 1.5 2.9-3"/></svg>Nos garanties</a>
+          <a href="resoudre#liste"><svg class="pn-ico pn-ico-t" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h10M3 8h10M3 12h6"/></svg>Flemmes</a>
+          <a href="faq"><svg class="pn-ico pn-ico-t" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="5.8"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.4"/><path d="M8 11.6h.01"/></svg>FAQ</a>
+          <a href="contact"><svg class="pn-ico pn-ico-t" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3.5" width="12" height="9" rx="1.8"/><path d="M2.6 4.5L8 8.6l5.4-4.1"/></svg>Contact</a>
         </div>
       </div>
-      <a class="pn-btn" href="mon-espace">Connexion</a>
+      <a class="pn-btn" href="mon-espace"><svg class="pn-ico pn-ico-t" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="5.6" r="2.8"/><path d="M2.8 14c.6-2.6 2.7-4.2 5.2-4.2s4.6 1.6 5.2 4.2"/></svg>Connexion</a>
     </div>
-    <a class="pn-cta pn-mobile" href="deleguer">Déléguer</a>
+    <a class="pn-cta pn-mobile" href="deleguer"><svg class="pn-ico pn-ico-t" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 8h9M8.5 4.5L12 8l-3.5 3.5"/><path d="M14 3v10"/></svg>Déléguer</a>
     <button type="button" class="pn-menu" id="pnMenu" aria-expanded="false" aria-controls="pnPanneau"><svg class="pn-ico" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><circle cx="4" cy="4" r="2.6" fill="#6b8cff"/><circle cx="12" cy="4" r="2.6" fill="#2fbf8f"/><circle cx="4" cy="12" r="2.6" fill="#ff9a62"/><circle cx="12" cy="12" r="2.6" fill="#8b7bff"/></svg><span>Menu</span></button>
   </div>
   <div class="pn-panneau" id="pnPanneau" hidden>
-    <a href="services">Services</a>
-    <a href="concept">Concept</a>
-    <a href="./#comparatif">Pourquoi Flemme</a>
-    <a href="faq">FAQ</a>
-    <a href="deleguer">Déléguer une flemme</a>
-    <a href="resoudre">Résoudre</a>
-    <a href="mon-espace">Connexion</a>
-    <a href="contact">Contact</a>
+    <a href="services"><svg class="pn-ico pn-ico-t" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="4.5" height="4.5" rx="1.2"/><rect x="9" y="2.5" width="4.5" height="4.5" rx="1.2"/><rect x="2.5" y="9" width="4.5" height="4.5" rx="1.2"/><rect x="9" y="9" width="4.5" height="4.5" rx="1.2"/></svg>Services</a>
+    <a href="concept"><svg class="pn-ico pn-ico-t" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12.5h4M6.5 14.5h3"/><path d="M8 1.8a4.2 4.2 0 0 0-2.4 7.6c.4.3.6.8.6 1.3v.3h3.6v-.3c0-.5.2-1 .6-1.3A4.2 4.2 0 0 0 8 1.8z"/></svg>Concept</a>
+    <a href="./#comparatif"><svg class="pn-ico pn-ico-t" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13.5s-5-3-5-6.6A2.8 2.8 0 0 1 8 5a2.8 2.8 0 0 1 5 1.9c0 3.6-5 6.6-5 6.6z"/></svg>Pourquoi Flemme</a>
+    <a href="faq"><svg class="pn-ico pn-ico-t" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="5.8"/><path d="M6.3 6.3a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.7.6-.7 1.1v.4"/><path d="M8 11.6h.01"/></svg>FAQ</a>
+    <a href="deleguer"><svg class="pn-ico pn-ico-t" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 8h9M8.5 4.5L12 8l-3.5 3.5"/><path d="M14 3v10"/></svg>Déléguer une flemme</a>
+    <a href="resoudre"><svg class="pn-ico pn-ico-t" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="5.6"/><path d="M5.6 8.2l1.7 1.7 3.2-3.4"/></svg>Résoudre</a>
+    <a href="mon-espace"><svg class="pn-ico pn-ico-t" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="5.6" r="2.8"/><path d="M2.8 14c.6-2.6 2.7-4.2 5.2-4.2s4.6 1.6 5.2 4.2"/></svg>Connexion</a>
+    <a href="contact"><svg class="pn-ico pn-ico-t" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3.5" width="12" height="9" rx="1.8"/><path d="M2.6 4.5L8 8.6l5.4-4.1"/></svg>Contact</a>
   </div>
 </nav>

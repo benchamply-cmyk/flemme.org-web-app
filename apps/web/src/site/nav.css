@@ -87,3 +87,10 @@
 .pn-liens-gauche { padding-right: 0; }
 .pn-liens-gauche .pn-deroulant { right: auto; left: 0; }
 .pn-liens .pn-plus + .pn-btn { margin-left: -12px; }
+
+/* Icônes au trait sur chaque bouton et lien des menus (retour aperçu, 14/11/2026). */
+.pn-ico-t { width: 16px; height: 16px; opacity: .85; }
+.pn .pn-barre .pn-btn, .pn .pn-barre .pn-cta, .pn-plus-btn { gap: 8px; }
+.pn-liens .pn-deroulant a, .pn-panneau a { display: flex; align-items: center; gap: 10px; }
+.pn-deroulant .pn-ico-t, .pn-panneau .pn-ico-t { color: var(--marque-vert-moyen, #3a8f5e); opacity: 1; }
+.pn .pn-barre .pn-btn:hover .pn-ico-t { transform: none; }
