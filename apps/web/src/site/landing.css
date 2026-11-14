@@ -347,3 +347,28 @@
   .lp-hero-titre { font-size: clamp(30px, min(8.4vw, 6.2svh), 48px); }
 }
 @media (max-height: 560px) and (min-width: 901px) { .lp-hero-note { display: none; } }
+
+/* Retour aperçu (logo du haut de page) : plus grand, centré dans la moitié droite, rotation 3D continue
+   (balancement sur l’axe vertical et légère inclinaison) + suivi 3D de la souris. */
+.lp-hero { perspective: 1400px; }
+@media (min-width: 901px) { .lp-hero .ff-objet { width: min(26vw, 380px); left: 75%; top: 50%; } }
+@media (max-width: 900px) {
+  .lp-hero { padding-top: 232px; align-items: flex-start; }
+  .lp-hero .ff-objet { width: min(30vw, 116px); left: 50%; top: 150px; }
+}
+@media (max-width: 900px) and (max-height: 720px) {
+  .lp-hero { padding-top: 182px; }
+  .lp-hero .ff-objet { width: 84px; top: 124px; }
+}
+.lp-hero .ff-objet {
+  transform-origin: 50% 50%;
+  transform: translate(calc(var(--ff-x) * 18px), calc(var(--ff-y) * 14px)) rotateY(calc(var(--ff-x) * 14deg)) rotateX(calc(var(--ff-y) * -10deg));
+  animation: ff-flotte 9s ease-in-out infinite, lp-logo-3d 11s ease-in-out infinite alternate;
+}
+@keyframes lp-logo-3d {
+  0% { rotate: 0.25 1 0 -34deg; }
+  35% { rotate: -0.2 1 0.08 12deg; }
+  70% { rotate: 0.15 1 -0.06 38deg; }
+  100% { rotate: -0.3 1 0 -8deg; }
+}
+@media (prefers-reduced-motion: reduce) { .lp-hero .ff-objet { animation: none; rotate: none; } }
