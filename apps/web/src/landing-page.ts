@@ -1,36 +1,17 @@
 import './beta/runtime.ts';
 import './site/landing.css';
+import './site/nav.ts';
 import { animerFonds } from './site/fond-flemme.ts';
 
-// Landing page (landing.html, 14/11/2026), d’après l’aperçu vidéo envoyé par Ben le 13/11.
-// Nav qui se cache, titre dont le début change, chiffres qui comptent, carrousel d’exemples,
-// apparitions au défilement, « Reste le prix. » mot par mot, collines qui montent.
+// Landing page (landing.html, 14/11/2026), d’après l’aperçu vidéo envoyé par Ben le 13/11, en thème clair
+// et sur le plan de l’accueil actuel (PR #76). Nav commune (nav.ts), titre dont le début change, chiffres qui comptent,
+// phrase « Tu décris. On s’en occupe. Tu valides. » mot par mot, carrousel d’exemples, moments du catalogue
+// avec flèches et barre de progression, apparitions au défilement, collines qui montent, copie de l’adresse e-mail.
 // Tout reste lisible sans JS et avec « mouvements réduits ».
 
 const racine = document.documentElement;
 const reduit = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const observe = 'IntersectionObserver' in window;
-
-/* ---------- Navigation pastille : cachée quand on descend, visible dès qu’on remonte ---------- */
-const pn = document.getElementById('pn')!;
-const menu = document.getElementById('pnMenu') as HTMLButtonElement;
-const panneau = document.getElementById('pnPanneau')!;
-function ouvrirMenu(ouvert: boolean) {
-  panneau.hidden = !ouvert;
-  menu.setAttribute('aria-expanded', String(ouvert));
-  menu.querySelector('span')!.textContent = ouvert ? 'Fermer' : 'Menu';
-  if (ouvert) pn.classList.remove('cachee');
-}
-menu.addEventListener('click', () => ouvrirMenu(panneau.hidden === true));
-panneau.querySelectorAll('a').forEach(a => a.addEventListener('click', () => ouvrirMenu(false)));
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && !panneau.hidden) { ouvrirMenu(false); menu.focus(); } });
-document.addEventListener('click', e => { if (!panneau.hidden && !pn.contains(e.target as Node)) ouvrirMenu(false); });
-let dernierY = scrollY;
-addEventListener('scroll', () => {
-  const y = scrollY;
-  if (panneau.hidden && !pn.contains(document.activeElement)) pn.classList.toggle('cachee', y > dernierY && y > 160);
-  dernierY = y;
-}, { passive: true });
 
 /* ---------- Hero : apparition floue, puis le début du titre change toutes les 3 s ---------- */
 requestAnimationFrame(() => setTimeout(() => racine.classList.add('pret'), 80));
@@ -53,7 +34,7 @@ if (rotation && mot && !reduit) {
   }, 3000);
 }
 
-/* ---------- « Reste le prix. » découpé en mots pour l’apparition floue ---------- */
+/* ---------- Phrase géante découpée en mots pour l’apparition floue ---------- */
 document.querySelectorAll<HTMLElement>('[data-mots]').forEach(el => {
   const texte = el.textContent!.trim();
   el.setAttribute('aria-label', texte);
@@ -130,6 +111,37 @@ if (carrousel) {
   if (observe) new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) montrer(actif); else relancer(); }, { threshold: .3 }).observe(carrousel);
   montrer(0);
 }
+
+/* ---------- Nos services : flèches et barre de progression calées sur le défilement horizontal ---------- */
+const piste = document.getElementById('momentsPiste');
+const barreMoments = document.getElementById('momentsBarre');
+if (piste && piste.children.length > 1) {
+  const cartes = [...piste.children] as HTMLElement[];
+  const [precedent, suivant] = [...document.querySelectorAll<HTMLButtonElement>('[data-moment]')];
+  const pas = () => cartes[1].offsetLeft - cartes[0].offsetLeft || 1;
+  const majMoments = () => {
+    const max = piste.scrollWidth - piste.clientWidth;
+    const vu = piste.clientWidth / piste.scrollWidth;
+    if (barreMoments) barreMoments.style.width = `${Math.min(100, (vu + (max > 0 ? piste.scrollLeft / max : 1) * (1 - vu)) * 100)}%`;
+    if (precedent) precedent.disabled = piste.scrollLeft < 4;
+    if (suivant) suivant.disabled = piste.scrollLeft >= max - 4;
+  };
+  document.querySelectorAll<HTMLButtonElement>('[data-moment]').forEach(b => b.addEventListener('click', () => {
+    const k = Math.max(0, Math.min(cartes.length - 1, Math.round(piste.scrollLeft / pas()) + Number(b.dataset.moment)));
+    piste.scrollTo({ left: cartes[k].offsetLeft - cartes[0].offsetLeft, behavior: reduit ? 'auto' : 'smooth' });
+  }));
+  piste.addEventListener('scroll', () => requestAnimationFrame(majMoments), { passive: true });
+  addEventListener('resize', majMoments);
+  majMoments();
+}
+
+/* ---------- Copier l’adresse e-mail (repli : sélection du texte si le presse-papiers est refusé) ---------- */
+document.querySelectorAll<HTMLButtonElement>('[data-copier]').forEach(b => b.addEventListener('click', async () => {
+  const cible = document.getElementById(b.dataset.copier || ''), note = document.getElementById(b.dataset.note || '');
+  if (!cible) return;
+  try { await navigator.clipboard.writeText(cible.textContent || ''); if (note) note.textContent = 'Adresse copiée.'; }
+  catch { getSelection()?.selectAllChildren(cible); if (note) note.textContent = 'Adresse sélectionnée : copie-la avec Ctrl+C ou ⌘C.'; }
+}));
 
 /* ---------- Collines de l’appel final : elles montent quand la section entre à l’écran ---------- */
 const fin = document.querySelector<HTMLElement>('.lp-fin');
