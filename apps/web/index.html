@@ -19,12 +19,10 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap">
 <script>/* Les animations ne démarrent que si le JS est actif : sans JS, tout est visible. */document.documentElement.classList.add('js');</script>
 </head>
-<!-- Accueil (14/11/2026) : demande de Ben sur l’aperçu 71 (« tous les commentaires et changements de cet aperçu et de la landing
-     doivent être appliqués sur l’ancien accueil »). Même contenu et mêmes animations que landing.html (qui reste en place),
-     avec le fond de l’accueil : rubans chromés menthe (fonds-chromes.css, .flemme-chrome-home). Entrée : src/accueil-page.ts.
-     Ancienne note de la landing : proposition de nouvel accueil. Même plan, mêmes textes, même catalogue, même menu et même pied
-     que l’accueil actuel (index.html, PR #76), avec le design de la landing : thème clair (blanc, dégradés menthe),
-     logo et palette de l’identité visuelle FLEMME, animations et présentations de la PR #71. -->
+<!-- Accueil (14/11/2026) : combinaison de la landing de la PR #71 et de l’ancien accueil, demandée par Ben.
+     Contenu, animations et retours de la landing (thème clair, logo et palette FLEMME), sur le fond de l’ancien accueil :
+     rubans chromés menthe (fonds-chromes.css, .flemme-chrome-home). La page landing.html séparée a été retirée.
+     Entrée : src/accueil-page.ts (landing-page.ts + anciennes ancres) ; styles : src/site/landing.css + accueil-lp.css. -->
 <body data-page="accueil" class="lp lp-accueil">
 <svg class="lp-sprite" width="0" height="0" aria-hidden="true" focusable="false">
   <defs>

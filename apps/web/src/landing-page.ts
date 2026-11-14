@@ -3,7 +3,7 @@ import './site/landing.css';
 import './site/nav.ts';
 import { animerFonds } from './site/fond-flemme.ts';
 
-// Landing page (landing.html, 14/11/2026), d’après l’aperçu vidéo envoyé par Ben le 13/11, en thème clair
+// Accueil (index.html, via accueil-page.ts ; ex-landing.html, 14/11/2026), d’après l’aperçu vidéo envoyé par Ben le 13/11, en thème clair
 // et sur le plan de l’accueil actuel (PR #76). Nav commune (nav.ts), titre dont le début change, chiffres qui comptent,
 // phrase « Tu décris. On s’en occupe. Tu valides. » mot par mot, carrousel d’exemples, moments du catalogue
 // avec flèches et barre de progression, apparitions au défilement, collines qui montent, copie de l’adresse e-mail.
