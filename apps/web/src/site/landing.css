@@ -339,3 +339,20 @@
 .lp-section { padding-top: clamp(48px, 7vw, 88px); padding-bottom: clamp(48px, 7vw, 88px); }
 .lp-fin { padding-top: clamp(64px, 9vw, 112px); padding-bottom: clamp(120px, 15vw, 190px); }
 @media (max-width: 900px) { .lp-hero { padding-top: 92px; padding-bottom: 20px; } }
+
+/* Retour aperçu (le haut de page remplit l’écran, responsive) : hero + bandeau Nos engagements = exactement la hauteur
+   de l’écran ; contenu centré verticalement ; titre proportionné à la largeur ET à la hauteur ; décor menthe étendu. */
+.lp { --lp-bande-h: 57px; }
+.lp-hero { min-height: calc(100vh - var(--lp-bande-h)); min-height: calc(100svh - var(--lp-bande-h)); align-items: center;
+  padding-top: clamp(84px, 12svh, 112px); padding-bottom: clamp(20px, 4svh, 40px); }
+.lp-hero-titre { font-size: clamp(32px, min(4.8vw, 8svh), 72px); }
+.lp-hero-bas { margin-top: clamp(16px, 3.4svh, 32px); }
+.lp-hero .lp-hero-actions { margin-top: clamp(18px, 3.6svh, 30px); }
+.lp-hero .ff-ciel { inset: 3% -6% 0 30%; }
+.fond-flemme.lp-hero[data-fond="lumiere"] .ff-decor::before { background: radial-gradient(140% 100% at 50% 40%, transparent 60%, rgba(255, 255, 255, .85) 82%), linear-gradient(180deg, transparent 80%, rgba(255, 255, 255, .7) 100%); }
+@media (max-width: 900px) {
+  .lp-hero { align-items: center; padding-top: 88px; }
+  .lp-hero .ff-ciel { inset: 0 -30% 38% 6%; }
+  .lp-hero-titre { font-size: clamp(30px, min(8.4vw, 6.2svh), 48px); }
+}
+@media (max-height: 560px) and (min-width: 901px) { .lp-hero-note { display: none; } }
