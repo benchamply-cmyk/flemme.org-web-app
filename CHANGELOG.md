@@ -4,6 +4,7 @@ Chaque PR ajoute une ligne sous « À venir ». À chaque mise en production (`p
 
 ## À venir
 
+- Fil d’Ariane (« Accueil › … ») retiré en haut de toutes les pages intérieures, avec son style (14 nov. 2026, PR #70, commentaire de Ben sur l’aperçu). Aucune migration.
 - Page `espace-connecte.html` renommée « Mon espace » (titre, fil d’Ariane, titre de l’onglet ; adresse inchangée) (14 nov. 2026, PR #70, commentaire de Ben sur l’aperçu). Aucune migration.
 - Barre ordinateur : boutons Déléguer et Résoudre retirés (accessibles par Recherche), Connexion placé tout à droite après Menu ; sur mobile, le bouton Déléguer à côté de Menu est gardé (14 nov. 2026, PR #70, commentaires de Ben sur l’aperçu). Aucune migration.
 - Nouveau bouton « Recherche » dans la barre ordinateur, juste à droite du logo (le logo reste tout à gauche) : menu déroulant Déléguer, Résoudre, Catalogue (`./#services`) ; un seul menu déroulant ouvert à la fois (14 nov. 2026, PR #70, commentaire de Ben sur l’aperçu). Aucune migration.

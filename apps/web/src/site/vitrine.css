@@ -12,8 +12,6 @@ button, input, textarea, select { font: inherit; color: inherit; }
 
 /* Titre des pages intérieures, dans le haut de page chromé. */
 .titre-page { width: 100%; max-width: var(--largeur); margin: 0 auto; padding: 24px 24px 48px; display: flex; flex-direction: column; gap: 12px; }
-.ariane { margin: 0; font-size: 13px; color: var(--acier); }
-.ariane a { color: inherit; }
 .titre-page h1 { margin: 0; font-size: clamp(36px, 6vw, 52px); line-height: 1.02; font-weight: 900; letter-spacing: -1.5px; text-wrap: balance; }
 .titre-page > p:last-child { margin: 0; font-size: 19px; max-width: 640px; }
 
