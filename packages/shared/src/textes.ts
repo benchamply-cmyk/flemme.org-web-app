@@ -47,7 +47,7 @@ export function paymentNote(a: Agreement, online: boolean, money: (n: number) =>
     ? `Paiement en ligne une fois la tâche terminée : ${money(a.total)} par carte via Stripe. ${money(a.payout ?? a.amount)} sont versés au Brigadier, ${money(a.commission)} reviennent à FLEMME.`
     : `Paiement direct : ${money(a.amount)} au Brigadier. Commission FLEMME : ${money(a.commission)} à régler séparément, non encaissée dans cette version.`;
 }
-/** Message au retour de Stripe Checkout (app.html#paiement-ok / #paiement-annule). */
+/** Message au retour de Stripe Checkout (/paiement/ok, /paiement/annule ; anciennement app.html#paiement-ok, #paiement-annule). */
 export const paymentReturn = (hash: string) => hash === '#paiement-ok'
   ? 'Paiement accepté par Stripe. Il apparaîtra dans l’historique de la flemme d’ici quelques secondes, actualise si besoin.'
   : hash === '#paiement-annule' ? 'Paiement annulé. Rien n’a été débité.' : '';
