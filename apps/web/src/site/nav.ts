@@ -1,4 +1,4 @@
-// Navigation pastille de la vitrine (src/site/entete.html), commune à l’accueil (landing.ts) et aux pages intérieures (commun.ts).
+// Navigation pastille de la vitrine (src/site/entete.html), commune à l’accueil et à la landing (landing-page.ts) et aux pages intérieures (commun.ts).
 // Toujours visible, fixe en haut de l’écran pendant le défilement (demande de Ben, 14/11/2026) ; panneau « Menu » sous 720 px ; menu déroulant « Menu » dans la barre (ordinateur) ; page courante marquée.
 const pn = document.getElementById('pn');
 const menu = document.getElementById('pnMenu') as HTMLButtonElement | null;

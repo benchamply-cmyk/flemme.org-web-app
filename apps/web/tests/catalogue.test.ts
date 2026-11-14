@@ -17,8 +17,9 @@ test('catalogue : chaque service a un prix entier, un délai et un livrable', ()
 test('catalogue : les pages ne recopient pas les prix, elles portent le repère du build', () => {
   assert.ok(lire('services.html').includes('<!--#catalogue-->'));
   assert.ok(lire('index.html').includes('<!--#catalogue-moments-->'));
-  // Aucun prix écrit en dur (hors devis « à partir de 69 € », qui n’est pas un service du catalogue).
-  for (const f of ['services.html', 'index.html']) assert.deepEqual(lire(f).match(/\d+&#8239;€/g)?.filter(x => x !== '69&#8239;€') ?? [], [], f);
+  // Aucun prix écrit en dur (hors devis « à partir de 69 € », qui n’est pas un service du catalogue,
+  // et hors « 120 € », prix de vente de la poussette dans l’illustration d’annonce de l’accueil).
+  for (const f of ['services.html', 'index.html']) assert.deepEqual(lire(f).match(/\d+&#8239;€/g)?.filter(x => x !== '69&#8239;€' && x !== '120&#8239;€') ?? [], [], f);
 });
 
 test('catalogue : HTML complet (18 liens) et accueil (une carte et un lien par famille)', () => {
