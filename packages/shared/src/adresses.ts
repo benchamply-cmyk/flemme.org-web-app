@@ -1,7 +1,8 @@
 import type { Screen, Tab } from './ecrans.ts';
 
 // Adresses de l’espace connecté, les mêmes sur le site et dans l’app mobile (plan d’adresses validé par Ben le 14/11/2026).
-// Le site sert app.html pour chacune (règles « rewrite » de netlify.toml) ; l’app mobile les lira en lien profond.
+// Le site sert app.html pour chacune (règles « rewrite » de netlify.toml) ; l’app mobile les ouvre en lien profond
+// (flemme-mobile://mes-demandes, flemme-mobile://flemme/123…, ou le lien https://flemme.org/… quand il lui est confié).
 // Les anciennes adresses (app.html#mine, #find, #deleguer, #deposer, #paiement-ok…) restent reconnues.
 //
 //   /mon-espace                      accueil « Que veux-tu faire ? » (connexion si déconnecté)
@@ -97,3 +98,25 @@ export function adresse(a: Adresse): string {
 
 /** Vrai si le chemin est servi par l’app (et non par une page de la vitrine). */
 export const estAdresseApp = (chemin: string) => chemin === '/app.html' || lireAdresse(chemin) !== null;
+
+/** Schéma de l’app mobile (apps/mobile/app.json). flemme-mobile://lien reste réservé aux liens e-mail de connexion. */
+export const SCHEMA_MOBILE = 'flemme-mobile';
+const DOMAINES = ['flemme.org', 'www.flemme.org'];
+
+/** Lien profond vers un écran : flemme-mobile://mes-demandes, flemme-mobile://flemme/123/accord… */
+export const lienMobile = (a: Adresse) => SCHEMA_MOBILE + ':/' + adresse(a);
+
+/** Lit un lien ouvert dans l’app mobile (flemme-mobile://… ou https://flemme.org/…). null : rien à ouvrir. */
+export function lireLien(url: string | null | undefined): Adresse | null {
+  if (!url) return null;
+  const [sansAncre, ancre = ''] = url.split('#'), [base, requete = ''] = sansAncre.split('?');
+  let chemin: string;
+  const schema = base.match(/^flemme-mobile:\/\/\/?(.*)$/i);
+  if (schema) chemin = '/' + schema[1];
+  else {
+    const web = base.match(/^https:\/\/([^/]+)(\/.*)?$/i);
+    if (!web || !DOMAINES.includes(web[1].toLowerCase())) return null;
+    chemin = web[2] || '/';
+  }
+  return lireAdresse(chemin, requete, ancre ? '#' + ancre : '');
+}
