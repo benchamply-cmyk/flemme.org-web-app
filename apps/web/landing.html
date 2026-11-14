@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0c0b13">
+<meta name="theme-color" content="#121212">
 <title>Flemme.org — Ta flemme, on s’en charge</title>
 <meta name="description" content="Résiliation, réclamation, annonce, dossier, voyage : décris ce que tu repousses, Flemme s’en charge à prix fixe et tu valides avant tout envoi.">
 <meta property="og:type" content="website">
@@ -11,6 +11,7 @@
 <meta property="og:site_name" content="FLEMME">
 <meta property="og:title" content="Flemme.org — Ta flemme, on s’en charge">
 <meta property="og:description" content="Décris ce que tu repousses. Prix fixe affiché, résultat en 2 à 3 jours ouvrés, rien n’est envoyé sans ton accord.">
+<link rel="icon" href="/marque/flemme-icone-degrade.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/flemme-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,11 +20,23 @@
 <script>/* Les animations ne démarrent que si le JS est actif : sans JS, tout est visible. */document.documentElement.classList.add('js');</script>
 </head>
 <body data-page="landing" class="lp">
+<!-- Logo FLEMME (ruban), repris des fichiers du Drive « identité visuelle » du 14/11/2026 : un seul dessin, réutilisé dans la nav, le hero et le pied.
+     Le reflet du ruban menthe glisse lentement (animation SVG, arrêtée avec « mouvements réduits » par landing-page.ts). -->
+<svg class="lp-sprite" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="frMenthe" x1="0" y1=".82" x2="1" y2=".24"><stop stop-color="#225337"/><stop offset=".30" stop-color="#57d68d"/><stop offset=".53" stop-color="#d7f5e4"/><stop offset=".81" stop-color="#57d68d"/><stop offset="1" stop-color="#3a8f5e"/>
+      <animateTransform class="fr-reflet" attributeName="gradientTransform" type="translate" values="-.18 0; .18 0; -.18 0" dur="7s" repeatCount="indefinite"/></linearGradient>
+    <linearGradient id="frNoir" x1="0" y1=".82" x2="1" y2=".24"><stop/><stop offset=".30"/><stop offset=".53" stop-color="#535353"/><stop offset=".81"/><stop offset="1"/></linearGradient>
+    <linearGradient id="frOmbre" x1="0" y1=".82" x2="1" y2=".24"><stop/><stop offset=".30"/><stop offset=".53" stop-color="#3a3a3a"/><stop offset=".81"/><stop offset="1"/></linearGradient>
+  </defs>
+  <symbol id="flemmeRuban" viewBox="28 14 234 230"><path d="M44 133C48 107 71 88 105 79C120 102 166 110 192 127C217 143 199 154 169 162L117 183C94 207 87 232 45 237C31 239 31 231 34 214L63 174C47 163 41 149 44 133Z" fill="url(#frNoir)" stroke="#737373" stroke-opacity=".5"/><path d="M47 140C48 118 71 101 101 94C115 111 159 118 191 133C201 139 196 145 179 149C143 153 112 162 75 175C54 166 45 153 47 140Z" fill="url(#frOmbre)" stroke="#737373" stroke-opacity=".5"/><path d="M44 147C40 106 55 71 81 55C110 36 153 37 195 33C218 31 240 27 257 18C237 65 211 84 169 89C125 94 62 93 44 147Z" fill="url(#frMenthe)" stroke="#a3e8c0" stroke-opacity=".5"/><path d="M35 235C30 214 42 184 61 171C91 148 134 145 170 142C190 140 204 136 194 127C215 138 202 150 198 172C194 192 165 195 133 202C90 210 58 213 35 235Z" fill="url(#frMenthe)" stroke="#a3e8c0" stroke-opacity=".5"/></symbol>
+</svg>
+
 
 <!-- Navigation pastille (même structure que l’accueil), en version sombre au-dessus du hero. -->
 <nav class="pn pn-sombre" id="pn" aria-label="Navigation principale">
   <div class="pn-barre">
-    <a class="pn-logo" href="./" aria-label="FLEMME · accueil">FLEMME.</a>
+    <a class="pn-logo lp-logo" href="./" aria-label="FLEMME · accueil"><svg viewBox="0 0 234 230" width="30" height="30" aria-hidden="true"><use href="#flemmeRuban"/></svg><span>FLEMME<b>.</b></span></a>
     <div class="pn-liens">
       <a href="#exemples">Exemples</a>
       <a href="#methode">Méthode</a>
@@ -47,34 +60,8 @@
 <!-- Hero : fond de page réutilisable (src/site/fond-flemme.css), ouverture sur le ciel et objet qui flotte. -->
 <header class="lp-hero fond-flemme">
   <div class="ff-decor" aria-hidden="true"><div class="ff-ciel"><i></i><i></i><i></i></div></div>
-  <svg class="ff-objet" viewBox="0 0 520 440" aria-hidden="true" focusable="false">
-    <defs>
-      <linearGradient id="ffChrome" x1="0" y1="0" x2="1" y2=".35">
-        <stop offset="0" stop-color="#1b1e28"/><stop offset=".18" stop-color="#f6f8fc"/><stop offset=".32" stop-color="#5d6679"/>
-        <stop offset=".5" stop-color="#ffffff"/><stop offset=".64" stop-color="#202431"/><stop offset=".82" stop-color="#cfd7e4"/><stop offset="1" stop-color="#3a4152"/>
-      </linearGradient>
-      <linearGradient id="ffChromeBord" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#ffffff" stop-opacity=".95"/><stop offset="1" stop-color="#ffffff" stop-opacity=".1"/>
-      </linearGradient>
-      <linearGradient id="ffVerre" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stop-color="#e9fff3"/><stop offset=".35" stop-color="#8ef0b9"/><stop offset=".7" stop-color="#57d68d"/><stop offset="1" stop-color="#1f7d4f"/>
-      </linearGradient>
-      <linearGradient id="ffReflet" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
-      </linearGradient>
-    </defs>
-    <!-- « F » chromé, en relief : une ombre décalée puis la face. -->
-    <path d="M128 52q0-22 22-22h176q22 0 22 22v28q0 22-22 22H212v58h92q22 0 22 22v24q0 22-22 22h-92v120q0 22-22 22h-40q-22 0-22-22z" fill="#0d0f16" fill-opacity=".55" transform="translate(14 12)"/>
-    <path d="M128 52q0-22 22-22h176q22 0 22 22v28q0 22-22 22H212v58h92q22 0 22 22v24q0 22-22 22h-92v120q0 22-22 22h-40q-22 0-22-22z" fill="url(#ffChrome)"/>
-    <path d="M128 52q0-22 22-22h176q22 0 22 22v28q0 22-22 22H212v58h92q22 0 22 22v24q0 22-22 22h-92v120q0 22-22 22h-40q-22 0-22-22z" fill="none" stroke="url(#ffChromeBord)" stroke-width="2.5"/>
-    <!-- Coussin en verre menthe, posé contre le F : c’est là qu’on fait la sieste pendant qu’on s’occupe du reste. -->
-    <g class="ff-coussin">
-      <rect x="196" y="250" width="286" height="118" rx="54" transform="translate(10 14) rotate(-24 339 309)" fill="#0d3a26" opacity=".55"/>
-      <rect x="196" y="250" width="286" height="118" rx="54" transform="rotate(-24 339 309)" fill="url(#ffVerre)" opacity=".94"/>
-      <rect x="196" y="250" width="286" height="118" rx="54" transform="rotate(-24 339 309)" fill="none" stroke="#f2fff7" stroke-opacity=".8" stroke-width="3"/>
-      <rect class="ff-reflet" x="236" y="262" width="150" height="16" rx="8" transform="rotate(-24 339 309)" fill="url(#ffReflet)"/>
-    </g>
-  </svg>
+  <!-- Objet du hero : le logo FLEMME en grand, qui flotte et suit la souris. -->
+  <svg class="ff-objet" viewBox="0 0 234 230" aria-hidden="true" focusable="false"><use href="#flemmeRuban"/></svg>
 
   <div class="lp-hero-contenu">
     <h1 class="lp-hero-titre">
@@ -132,7 +119,7 @@
             <p>«&#8239;En mars, à deux, budget raisonnable. J’ai ouvert quinze onglets et je n’ai rien réservé.&#8239;»</p>
             <dl><div><dt>Ce que tu reçois</dt><dd>3 options transport et hébergement comparées</dd></div><div><dt>Prix et délai</dt><dd>39&#8239;€ · 3 jours ouvrés</dd></div></dl>
           </div>
-          <div class="lp-visuel lavande" aria-hidden="true"><div class="lp-papier options"><b>Option A</b><i></i><b>Option B</b><i></i><b>Option C</b><i class="court"></i></div></div>
+          <div class="lp-visuel bleu" aria-hidden="true"><div class="lp-papier options"><b>Option A</b><i></i><b>Option B</b><i></i><b>Option C</b><i class="court"></i></div></div>
         </article>
       </div>
       <div class="lp-pistes" role="tablist" aria-label="Choisir un exemple">
@@ -246,7 +233,7 @@
     <a class="lp-bouton noir" href="app.html#deposer">Décris ta flemme</a>
   </section>
 
-  <div class="lp-marque" aria-hidden="true">FLEMME.</div>
+  <div class="lp-marque" aria-hidden="true"><svg viewBox="0 0 234 230"><use href="#flemmeRuban"/></svg><span>FLEMME<b>.</b></span></div>
 </main>
 <!--#pied-->
 <script type="module" src="/src/landing-page.ts"></script>

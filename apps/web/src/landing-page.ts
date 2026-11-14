@@ -145,4 +145,7 @@ if (fin && !reduit) {
   maj();
 }
 
+/* ---------- Logo : le reflet du ruban (animation SVG) s’arrête avec « mouvements réduits » ---------- */
+if (reduit) document.querySelectorAll<SVGSVGElement>('svg.lp-sprite').forEach(svg => svg.pauseAnimations());
+
 animerFonds();
