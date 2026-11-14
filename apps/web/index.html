@@ -38,7 +38,16 @@
 
 <!-- Hero : fond de l’accueil (rubans chromés menthe), contenu et logo 3D de la landing. -->
 <header class="lp-hero fond-flemme flemme-chrome-home" data-fond="lumiere">
-  <svg class="ff-objet" viewBox="0 0 234 230" aria-hidden="true" focusable="false"><use href="#flemmeRuban"/></svg>
+  <!-- Logo en relief (proposition du 14/11/2026) : les quatre bandes du ruban sur quatre calques espacés en profondeur,
+       qui tournent ensemble ; la profondeur se voit à la parallaxe entre les bandes. -->
+  <div class="ff-objet lp-relief" aria-hidden="true">
+    <div class="lp-relief-pivot">
+      <svg class="lp-calque lp-calque-corps" viewBox="28 14 234 230" focusable="false"><path d="M44 133C48 107 71 88 105 79C120 102 166 110 192 127C217 143 199 154 169 162L117 183C94 207 87 232 45 237C31 239 31 231 34 214L63 174C47 163 41 149 44 133Z" fill="url(#frNoir)" stroke="#737373" stroke-opacity=".5"/></svg>
+      <svg class="lp-calque lp-calque-ombre" viewBox="28 14 234 230" focusable="false"><path d="M47 140C48 118 71 101 101 94C115 111 159 118 191 133C201 139 196 145 179 149C143 153 112 162 75 175C54 166 45 153 47 140Z" fill="url(#frOmbre)" stroke="#737373" stroke-opacity=".5"/></svg>
+      <svg class="lp-calque lp-calque-haut" viewBox="28 14 234 230" focusable="false"><path d="M44 147C40 106 55 71 81 55C110 36 153 37 195 33C218 31 240 27 257 18C237 65 211 84 169 89C125 94 62 93 44 147Z" fill="url(#frMenthe)" stroke="#a3e8c0" stroke-opacity=".5"/></svg>
+      <svg class="lp-calque lp-calque-bas" viewBox="28 14 234 230" focusable="false"><path d="M35 235C30 214 42 184 61 171C91 148 134 145 170 142C190 140 204 136 194 127C215 138 202 150 198 172C194 192 165 195 133 202C90 210 58 213 35 235Z" fill="url(#frMenthe)" stroke="#a3e8c0" stroke-opacity=".5"/></svg>
+    </div>
+  </div>
 
   <div class="lp-hero-contenu">
     <p class="lp-etiquette">Le droit d’avoir la Flemme.</p>
