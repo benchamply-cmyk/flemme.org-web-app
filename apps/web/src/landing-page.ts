@@ -77,12 +77,12 @@ else {
   aReveler.forEach(el => io.observe(el));
 }
 
-/* ---------- Carrousel d’exemples : avance seul, s’arrête au survol, au focus et hors écran ---------- */
+/* ---------- Carrousel d’exemples : avance seul (5 s), même au survol (demande de Ben, 14/11/2026) ; s’arrête au focus clavier et hors écran ---------- */
 const carrousel = document.getElementById('carrousel');
 if (carrousel) {
   const diapos = [...carrousel.querySelectorAll<HTMLElement>('.lp-diapo')];
   const onglets = [...carrousel.querySelectorAll<HTMLButtonElement>('[data-diapo]')];
-  const duree = 6000;
+  const duree = 5000;
   carrousel.style.setProperty('--lp-duree', `${duree}ms`);
   let actif = 0, minuteur = 0, enPause = reduit, visible = true;
   const montrer = (n: number) => {
@@ -104,9 +104,8 @@ if (carrousel) {
   carrousel.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { montrer(actif + (e.key === 'ArrowRight' ? 1 : -1)); onglets[actif].focus(); }
   });
-  carrousel.addEventListener('pointerenter', () => { if (!reduit) { enPause = true; relancer(); } });
-  carrousel.addEventListener('pointerleave', () => { if (!reduit) { enPause = false; montrer(actif); } });
-  carrousel.addEventListener('focusin', () => { enPause = true; relancer(); });
+  // Seul le focus au clavier met en pause (un clic sur un onglet garde le défilement automatique).
+  carrousel.addEventListener('focusin', () => { if (carrousel.matches(':focus-within:has(:focus-visible)')) { enPause = true; relancer(); } });
   carrousel.addEventListener('focusout', () => { if (!reduit) { enPause = false; relancer(); } });
   if (observe) new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) montrer(actif); else relancer(); }, { threshold: .3 }).observe(carrousel);
   montrer(0);

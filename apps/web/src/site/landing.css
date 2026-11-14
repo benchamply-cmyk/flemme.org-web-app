@@ -306,3 +306,10 @@
 .lp-hero .lp-hero-actions .lp-bouton.noir { box-shadow: 0 16px 34px -10px rgba(18, 18, 18, .5); }
 .lp-hero .lp-hero-actions .lp-bouton.contour { background: var(--lp-menthe); color: var(--lp-encre); box-shadow: inset 0 0 0 1.5px var(--lp-vert-moyen), 0 14px 30px -12px rgba(34, 83, 55, .45); }
 .lp-hero .lp-hero-actions .lp-bouton.contour:hover, .lp-hero .lp-hero-actions .lp-bouton.contour:focus-visible { background: var(--lp-contour); }
+
+/* Retour de Ben (14/11/2026) : carrousel à six exemples, visuel de droite plus petit. */
+.lp-diapo { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
+.lp-visuel { width: 100%; max-width: 340px; justify-self: end; aspect-ratio: 5 / 4; border-radius: 22px; }
+.lp-papier { width: 48%; }
+.lp-pistes { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 900px) { .lp-visuel { max-width: 260px; justify-self: start; } .lp-pistes { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 18px; } }
