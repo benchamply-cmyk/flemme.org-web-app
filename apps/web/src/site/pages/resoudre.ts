@@ -4,7 +4,7 @@ import { ouvrirCatalogue } from '../filtre.ts';
 import '../commun.ts';
 
 // Recherche et filtres de la page Résoudre : mêmes choix que la création d’une flemme et que le catalogue de l’app.
-// Les choix sont transmis au catalogue (app.html#find), qui fait la recherche côté serveur.
+// Les choix sont transmis au catalogue (/flemmes), qui fait la recherche côté serveur.
 const filtre: SearchFilter = {};
 const esc = (t: string) => t.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
 const menus: { cle: keyof SearchFilter; nom: string; options: readonly Option[]; ville?: boolean }[] = [

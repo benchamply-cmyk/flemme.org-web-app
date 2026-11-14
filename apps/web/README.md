@@ -24,7 +24,7 @@ Depuis ce dossier, avec Node 22.13 ou supérieur :
     npm ci
     npm run dev
 
-Puis ouvrir http://localhost:5173 (vitrine) ou http://localhost:5173/app.html (app). Les liens `app.html#mine` et `app.html#find` ouvrent directement l’une des deux listes.
+Puis ouvrir http://localhost:5173 (vitrine) ou http://localhost:5173/mon-espace (app). Chaque écran de l’app a son adresse (`/mes-demandes`, `/flemmes`, `/deleguer/nouvelle`, `/flemme/:id`…, table dans `packages/shared/src/adresses.ts`) ; le serveur de développement et Netlify servent `app.html` pour chacune. Les anciennes adresses `app.html#mine`, `#find`… restent reconnues.
 
 Sans variables d’environnement : démonstration locale, avec les trois mêmes personnages et tâches fictives que le mobile (bouton de profil en haut à droite). Les données restent dans le navigateur.
 

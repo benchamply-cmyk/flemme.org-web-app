@@ -107,7 +107,8 @@ p > .tag + .tag { margin-left: 6px; }
 }
 
 /* Habillage V0.3 de l’app : bandeau bleu court, colonne de contenu, pied de page de la vitrine. */
-.app-bandeau { padding-bottom: 8px; margin-bottom: 24px; }
+.app-bandeau { min-height: 96px; padding-bottom: 8px; margin-bottom: 24px; }
+.app-nav { flex-wrap: wrap; }
 .app { min-height: calc(100vh - 360px); }
 .app .heading { color: var(--ink); text-transform: none; font-size: clamp(30px, 6vw, 40px); letter-spacing: -1px; }
 .app-nav { display: flex; gap: 8px; align-items: center; }
