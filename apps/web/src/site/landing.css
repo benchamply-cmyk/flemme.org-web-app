@@ -330,3 +330,12 @@
 .lp-hero .lp-etiquette { margin-bottom: 16px; }
 @media (max-width: 900px) { .lp-hero { padding-top: 96px; padding-bottom: 32px; } }
 @media (max-width: 900px) { .lp-hero .ff-objet { width: min(22vw, 88px); left: 88%; top: 14%; } }
+
+/* Retour aperçu (Nos engagements visibles dès l’arrivée, moins de vide) : le bandeau colle au bas du hero,
+   espacement vertical des sections réduit d’environ un tiers. */
+.lp-hero { padding-top: 108px; padding-bottom: 28px; }
+.lp-engagements { padding-top: 0; }
+.lp-bande { margin-top: 0; }
+.lp-section { padding-top: clamp(48px, 7vw, 88px); padding-bottom: clamp(48px, 7vw, 88px); }
+.lp-fin { padding-top: clamp(64px, 9vw, 112px); padding-bottom: clamp(120px, 15vw, 190px); }
+@media (max-width: 900px) { .lp-hero { padding-top: 92px; padding-bottom: 20px; } }
