@@ -94,3 +94,25 @@
 .pn-liens .pn-deroulant a, .pn-panneau a { display: flex; align-items: center; gap: 10px; }
 .pn-deroulant .pn-ico-t, .pn-panneau .pn-ico-t { color: var(--marque-vert-moyen, #3a8f5e); opacity: 1; }
 .pn .pn-barre .pn-btn:hover .pn-ico-t { transform: none; }
+
+/* Menus déroulants en tuiles, ouverts au survol (retour aperçu, 14/11/2026). */
+.pn-deroulant { padding: 10px; gap: 2px; border-radius: 22px; border-color: rgba(58, 143, 94, .14); transform-origin: top center; }
+.pn-deroulant:not([hidden]) { animation: pn-ouvre .26s var(--pn-ease, cubic-bezier(.2, .8, .2, 1)) both; }
+.pn-deroulant::before { content: ""; position: absolute; left: 0; right: 0; top: -16px; height: 16px; }
+.pn-deroulant-large { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 520px; }
+.pn-deroulant-large[hidden] { display: none; }
+.pn-liens .pn-deroulant a { align-items: flex-start; gap: 12px; padding: 12px 14px; border-radius: 14px; white-space: normal; transition: background .2s ease, transform .2s ease; }
+.pn-liens .pn-deroulant a:hover, .pn-liens .pn-deroulant a:focus-visible { background: var(--marque-menthe, #d7f5e4); transform: translateX(2px); }
+.pn-deroulant .pn-ico-t { box-sizing: content-box; padding: 7px; border-radius: 10px; background: rgba(215, 245, 228, .8); flex: none; }
+.pn-deroulant a:hover .pn-ico-t { background: #fff; }
+.pn-txt { display: flex; flex-direction: column; gap: 2px; line-height: 1.25; }
+.pn-txt b { font-weight: 600; font-size: 14px; color: var(--marque-encre, #101e2a); }
+.pn-txt small { font-size: 12.5px; font-weight: 400; color: var(--marque-doux, #5d6b66); }
+.pn-deroulant:not([hidden]) > a { animation: pn-tuile .3s ease both; }
+.pn-deroulant > a:nth-child(2) { animation-delay: .03s; } .pn-deroulant > a:nth-child(3) { animation-delay: .06s; }
+.pn-deroulant > a:nth-child(4) { animation-delay: .09s; } .pn-deroulant > a:nth-child(5) { animation-delay: .12s; }
+.pn-deroulant > a:nth-child(6) { animation-delay: .15s; } .pn-deroulant > a:nth-child(7) { animation-delay: .18s; }
+@keyframes pn-ouvre { from { opacity: 0; transform: translateY(-6px) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes pn-tuile { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .pn-deroulant:not([hidden]), .pn-deroulant:not([hidden]) > a { animation: none; } }
+.pn-liens-gauche .pn-deroulant { min-width: 290px; }
