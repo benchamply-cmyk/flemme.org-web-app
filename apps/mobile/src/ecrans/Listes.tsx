@@ -59,7 +59,10 @@ export function Listes(ctx: Ctx) {
 function Recherche({ ctx: { state: { busy, found, filter }, place }, card, fallback, skip }: { ctx: Ctx; card: (t: Task) => React.ReactNode; fallback: Task[]; skip: Task[] }) {
   const [f, setF] = useState<SearchFilter>(filter), [open, setOpen] = useState(!!place.recherche);
   const input = useRef<React.ComponentRef<typeof TextInput>>(null);
-  useEffect(() => { if (!found || place.recherche) void session.search(filter); if (place.recherche) setTimeout(() => input.current?.focus(), 50); }, []);
+  useEffect(() => {
+    if (place.categorie) { setOpen(true); run({ ...filter, category: place.categorie }); return; }
+    if (!found || place.recherche) void session.search(filter); if (place.recherche) setTimeout(() => input.current?.focus(), 50);
+  }, []);
   const run = (next: SearchFilter) => { setF(next); void session.search(next); };
   // Chaque filtre est un menu déroulant (demande de Ben, 6 novembre 2026) : fermé, il affiche le choix retenu ;
   // ouvert, il liste les options ; un choix lance la recherche et referme le menu. Un seul menu ouvert à la fois.

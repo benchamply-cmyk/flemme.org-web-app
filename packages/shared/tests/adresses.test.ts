@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { PREFIXES_APP, adresse, estAdresseApp, lireAdresse } from '../src/adresses.ts';
+import { PREFIXES_APP, adresse, estAdresseApp, lienMobile, lireAdresse, lireLien } from '../src/adresses.ts';
 import type { Adresse } from '../src/adresses.ts';
 
 // Table adresse ↔ écran, commune au site et à l’app mobile (plan d’adresses du 14/11/2026).
@@ -73,4 +73,17 @@ test('adresses : Netlify sert app.html pour chaque adresse de l’espace', () =>
   }
   // Une adresse générée doit toujours tomber sous une règle.
   for (const [url] of TABLE) assert.ok(PREFIXES_APP.some(p => url === p || url.startsWith(p + '/') || url.startsWith(p + '?')), url);
+});
+
+test('adresses : mêmes écrans dans l’app mobile (liens profonds)', () => {
+  for (const [url, a] of TABLE) {
+    assert.equal(lienMobile(a), 'flemme-mobile:/' + url, url);
+    assert.deepEqual(lireLien(lienMobile(a)), a, 'mobile ' + url);
+    assert.deepEqual(lireLien('https://flemme.org' + url), a, 'web ' + url);
+  }
+  assert.deepEqual(lireLien('flemme-mobile:///mes-demandes'), { screen: 'list', tab: 'mine' });
+  assert.deepEqual(lireLien('https://www.flemme.org/app.html#find'), { screen: 'list', tab: 'find' });
+  // Le lien e-mail de connexion, un autre site ou une page de la vitrine n’ouvrent aucun écran.
+  for (const u of ['flemme-mobile://lien?code=abc', 'https://exemple.org/mes-demandes', 'http://flemme.org/mes-demandes', 'https://flemme.org/faq', '', null])
+    assert.equal(lireLien(u), null, String(u));
 });
