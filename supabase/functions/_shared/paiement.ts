@@ -102,7 +102,7 @@ export function onboarding(request: Request, deps: Deps) {
         'metadata[flemme_user_id]': user.id }, 'flemme-account-' + user.id);
       account = (await rpc(deps, s, 'account_save', { userId: user.id, accountId: created.id })).account;
     }
-    const back = s.siteUrl + '/app.html#compte';
+    const back = s.siteUrl + '/compte';
     const link = await stripe(deps, s, 'account_links', { account: account.id, type: 'account_onboarding', refresh_url: back, return_url: back },
       'flemme-link-' + user.id + '-' + Math.floor((deps.now?.() ?? Date.now()) / 60000));
     return { url: link.url, chargesEnabled: account.chargesEnabled };
@@ -127,7 +127,7 @@ export function checkout(request: Request, deps: Deps) {
       'line_items[0][price_data][product_data][name]': ('FLEMME · ' + ctx.title).slice(0, 250),
       'payment_intent_data[application_fee_amount]': fee, 'payment_intent_data[transfer_data][destination]': ctx.accountId,
       'payment_intent_data[metadata][task_id]': taskId, 'metadata[task_id]': taskId, 'metadata[user_id]': user.id,
-      success_url: s.siteUrl + '/app.html#paiement-ok', cancel_url: s.siteUrl + '/app.html#paiement-annule',
+      success_url: s.siteUrl + '/paiement/ok', cancel_url: s.siteUrl + '/paiement/annule',
       expires_at: Math.floor(now / 1000) + 23 * 3600,
     }, 'flemme-checkout-' + taskId + '-' + new Date(now).toISOString().slice(0, 13));
     await rpc(deps, s, 'checkout_created', { userId: user.id, taskId, sessionId: session.id, url: session.url, accountId: ctx.accountId, total: ctx.total, commission: fee, payout: ctx.payout });

@@ -1,4 +1,4 @@
-/* Pages de la vitrine (index, concept, comment-ca-marche, faq, contact, premium, resoudre, mentions, confidentialite). */
+/* Pages de la vitrine (index, concept, deleguer, faq, contact, premium, resoudre, mentions, confidentialite). */
 @import './site.css';
 
 * { box-sizing: border-box; }
@@ -12,8 +12,6 @@ button, input, textarea, select { font: inherit; color: inherit; }
 
 /* Titre des pages intérieures, dans le haut de page chromé. */
 .titre-page { width: 100%; max-width: var(--largeur); margin: 0 auto; padding: 24px 24px 48px; display: flex; flex-direction: column; gap: 12px; }
-.ariane { margin: 0; font-size: 13px; color: var(--acier); }
-.ariane a { color: inherit; }
 .titre-page h1 { margin: 0; font-size: clamp(36px, 6vw, 52px); line-height: 1.02; font-weight: 900; letter-spacing: -1.5px; text-wrap: balance; }
 .titre-page > p:last-child { margin: 0; font-size: 19px; max-width: 640px; }
 
@@ -173,6 +171,16 @@ button, input, textarea, select { font: inherit; color: inherit; }
 .filtre.actif summary { background: var(--encre); color: #fff; }
 .filtre-choix { position: absolute; left: 0; top: 52px; z-index: 6; min-width: 280px; max-width: calc(100vw - 32px); background: #fff; border: 2px solid var(--encre); border-radius: 18px; padding: 14px; display: flex; flex-wrap: wrap; gap: 8px; box-shadow: 0 18px 40px rgba(22,19,31,.2); }
 .filtre-choix input[type=text] { width: 100%; border: 2px solid var(--encre); border-radius: 12px; padding: 8px 12px; }
+/* Un bloc avec des filtres (Résoudre, Déléguer) passe au-dessus du bloc suivant : ses menus débordent vers le bas. */
+.bloc:has(> .filtres), .bloc:has(.decrire) { position: relative; z-index: 7; }
+.decrire { display: flex; flex-direction: column; gap: 10px; }
+.decrire-titre { font-weight: 800; font-size: 18px; }
+.decrire textarea { width: 100%; box-sizing: border-box; border: 2px solid var(--encre); border-radius: 22px; background: #fff; padding: 16px 20px; font: inherit; font-size: 16px; line-height: 1.5; resize: vertical; min-height: 140px; box-shadow: 4px 5px 0 var(--violet); }
+.decrire textarea:focus-visible { outline: 3px solid var(--violet); outline-offset: 2px; }
+.decrire .filtres { margin-top: 4px; }
+.decrire-bas { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-top: 6px; }
+.decrire-bas button { border: 2px solid var(--encre); background: var(--glacier); color: var(--encre); border-radius: 999px; padding: 0 24px; min-height: 48px; font-weight: 800; font-size: 16px; cursor: pointer; }
+.decrire-bas .doux { font-size: 13px; flex: 1 1 260px; }
 .effacer { margin-left: auto; font-weight: 700; font-size: 14px; background: none; border: 0; text-decoration: underline; cursor: pointer; padding: 8px 0; }
 .exemple-carte { text-decoration: none; background: #fff; border: 2px solid var(--encre); border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
 .exemple-carte:hover { box-shadow: 4px 5px 0 var(--violet); color: var(--encre); }
@@ -194,3 +202,22 @@ button, input, textarea, select { font: inherit; color: inherit; }
 .texte-legal mark { background: #fff3b0; padding: 0 2px; }
 
 @media (prefers-reduced-motion: reduce) { .cta { transition: none; } }
+
+/* Page /services : une carte par famille, chaque service est un lien vers /deleguer avec son prix à droite. */
+.famille-s { gap: 12px; }
+.pastille-s { align-self: flex-start; background: var(--c); border: 2px solid var(--encre); border-radius: 999px; padding: 4px 12px; font-weight: 800; font-size: 14px; }
+.tarifs-s { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.tarifs-s li + li { border-top: 1px solid var(--bordure, #d9dce6); }
+.tarifs-s a { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 10px 4px; color: var(--encre); text-decoration: none; border-radius: 8px; }
+.tarifs-s a:hover, .tarifs-s a:focus-visible { background: var(--glacier-clair); }
+.tarifs-s b { white-space: nowrap; font-size: 17px; }
+.titre-page > p.intro-s { margin: 0; font-size: 19px; max-width: 640px; }
+/* Les lignes du catalogue sont des liens : une flèche le montre, aussi sur mobile où il n’y a pas de survol. */
+.tarifs-s a::after { content: "›"; font-weight: 800; color: var(--acier); margin-left: -4px; }
+.tarifs-s span { flex: 1; }
+.delai-s { margin: 0; align-self: flex-start; background: var(--peche); border: 2px solid var(--encre); border-radius: 14px; padding: 10px 16px; }
+/* Ancres (#catalogue, #conditions…) : le titre ne passe plus sous la barre fixe. */
+main [id] { scroll-margin-top: 112px; }
+.nom-s { display: flex; flex-direction: column; gap: 4px; }
+.nom-s small { font-size: 13px; line-height: 1.4; color: var(--texte-doux); }
+.nom-s small b { font-size: inherit; font-weight: 700; color: var(--encre); white-space: normal; }

@@ -4,6 +4,7 @@
    Garde la charte Flemme (site.css : encre, glacier, menthe, violet, rubans chromés). L’accueil ne charge pas les
    réglages reglages*.css, que gardent les pages intérieures (commun.ts). */
 @import './site.css';
+@import './nav.css';
 
 :root {
   --pp-police: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
@@ -30,33 +31,7 @@ h1 em, h2 em, .cmp-chute em { font-family: var(--pp-serif); font-style: italic; 
 .lien-p { font-weight: 700; color: var(--violet); text-decoration: none; }
 .lien-p:hover { text-decoration: underline; text-underline-offset: 3px; }
 
-/* ---------- Navigation pastille ---------- */
-.pn { position: fixed; top: 14px; left: 50%; z-index: 50; width: max-content; max-width: calc(100% - 24px); transform: translateX(-50%);
-  background: rgba(255, 255, 255, .72); -webkit-backdrop-filter: blur(16px) saturate(150%); backdrop-filter: blur(16px) saturate(150%);
-  border: 1px solid rgba(22, 19, 31, .1); border-radius: 28px; box-shadow: 0 10px 30px rgba(58, 47, 160, .14);
-  transition: transform .45s var(--pp-ease), opacity .3s ease; }
-.pn.cachee { transform: translate(-50%, calc(-100% - 24px)); opacity: 0; }
-.pn-barre { display: flex; align-items: center; gap: 22px; padding: 6px 6px 6px 8px; }
-.pn-logo { display: inline-flex; align-items: center; height: 38px; padding: 0 10px; font: 900 20px/1 var(--pp-police); letter-spacing: -1px; text-decoration: none; background: var(--vert-logo); border: 2px solid var(--encre); border-radius: 10px; }
-.pn-liens { display: flex; gap: 22px; }
-.pn-liens a, .pn-panneau a { position: relative; font-size: 14px; font-weight: 500; text-decoration: none; color: var(--texte-doux); transition: color .25s ease; }
-.pn-liens a:hover, .pn-liens a:focus-visible { color: var(--encre); }
-.pn-liens a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 2px; border-radius: 2px; background: var(--violet); transform: scaleX(0); transform-origin: left; transition: transform .35s var(--pp-ease); }
-.pn-liens a:hover::after, .pn-liens a:focus-visible::after { transform: scaleX(1); }
-.pn-cta { display: inline-flex; align-items: center; height: 40px; padding: 0 18px; border-radius: 999px; background: var(--encre); color: #fff; font-weight: 600; font-size: 14px; text-decoration: none; transition: background .25s ease; }
-.pn-cta:hover { background: var(--violet); }
-.pn-menu { display: none; height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(22, 19, 31, .2); background: #fff; font-weight: 600; font-size: 14px; cursor: pointer; }
-.pn-panneau { display: flex; flex-direction: column; padding: 6px 18px 16px; gap: 4px; }
-.pn-panneau[hidden] { display: none; }
-.pn-panneau a { padding: 10px 0; font-size: 17px; color: var(--encre); border-top: 1px solid rgba(22, 19, 31, .08); }
-@media (max-width: 860px) {
-  .pn { width: calc(100% - 24px); }
-  .pn-liens { display: none; }
-  .pn-barre { gap: 8px; }
-  .pn-cta { margin-left: auto; }
-  .pn-menu { display: inline-flex; align-items: center; }
-}
-@media (max-width: 380px) { .pn-cta { display: none; } .pn-menu { margin-left: auto; } }
+/* La navigation pastille est partagée avec les pages intérieures : voir nav.css. */
 
 /* ---------- Hero ---------- */
 .hero { min-height: min(100svh, 860px); display: flex; flex-direction: column; justify-content: flex-end; padding-top: 110px; }
@@ -264,7 +239,7 @@ main { background: linear-gradient(180deg, #fff 0%, #f1f5ff 40%, #fff 75%); }
 /* ---------- Mouvements réduits : un seul endroit ---------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .pn, .go, .go-fleche, .arg, .moment, .jauge i, .test-barre i, .test-reponses button { transition: none; }
+  .go, .go-fleche, .arg, .moment, .jauge i, .test-barre i, .test-reponses button { transition: none; }
   .rond, .bande-piste, .go:hover .go-fleche svg, .go:focus-visible .go-fleche svg { animation: none; }
   .test-jeu > *, .test-resultat > * { animation: none; }
   .ex { animation: none; }
@@ -272,3 +247,7 @@ main { background: linear-gradient(180deg, #fff 0%, #f1f5ff 40%, #fff 75%); }
   .js .revele, .js .titre-p, .js .cmp-case, .js .apparait, .ecrit em { opacity: 1; transform: none; transition: none; }
   .flemme-chrome-home { --flemme-motion: paused; }
 }
+
+/* Nos services (accueil) : ligne « hors catalogue » sous le carrousel, lien de chaque carte. */
+.services-pied { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; margin: 0; }
+.moment .lien-p { font-size: 14px; }

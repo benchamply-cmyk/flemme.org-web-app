@@ -36,21 +36,184 @@
   to = "/admin.html"
   status = 200
 
+# Vitrine sans « .html » (plan d'adresses, PR 2) : chaque page est servie à son adresse courte
+# (/faq sert faq.html, comportement par défaut de Netlify), et l'ancienne adresse y renvoie en 301.
+# « force » : le fichier .html existe, la règle doit passer avant lui.
+[[redirects]]
+  from = "/index.html"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/comment-ca-marche.html"
+  to = "/concept"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/comment-ca-marche"
+  to = "/concept"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/concept.html"
+  to = "/concept"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deleguer-une-flemme.html"
+  to = "/deleguer"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deleguer-une-flemme"
+  to = "/deleguer"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deleguer.html"
+  to = "/deleguer"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/services.html"
+  to = "/services"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/resoudre.html"
+  to = "/resoudre"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/premium.html"
+  to = "/premium"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/faq.html"
+  to = "/faq"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/contact.html"
+  to = "/contact"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/mentions.html"
+  to = "/mentions"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/confidentialite.html"
+  to = "/confidentialite"
+  status = 301
+  force = true
+
+# Espace connecté : une adresse par écran, la même sur le site et dans l'app mobile
+# (plan d'adresses validé par Ben le 14/11/2026, table dans packages/shared/src/adresses.ts).
+# Netlify sert app.html sans changer l'adresse ; l'app lit le chemin et ouvre le bon écran.
+[[redirects]]
+  from = "/mon-espace"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/connexion"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/connexion/*"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/mes-demandes"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/flemmes"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/deleguer/nouvelle"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/flemme/*"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/compte"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/profil"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/profil/*"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/aide"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
+  from = "/paiement/*"
+  to = "/app.html"
+  status = 200
+
+# L'ancienne page d'entrée de Connexion est fusionnée dans l'app.
+[[redirects]]
+  from = "/espace-connecte.html"
+  to = "/mon-espace"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/espace-connecte"
+  to = "/mon-espace"
+  status = 301
+  force = true
+
 # Anciennes adresses du site historique (dépôt FlemmeV2.0) : on renvoie vers
 # le nouvel équivalent plutôt qu'une 404. 302 tant que la refonte n'est pas figée.
 [[redirects]]
   from = "/espace*"
-  to = "/app.html#mine"
+  to = "/mes-demandes"
   status = 302
 
 [[redirects]]
   from = "/manager*"
-  to = "/app.html#mine"
+  to = "/mes-demandes"
   status = 302
 
 [[redirects]]
   from = "/rejoindre*"
-  to = "/app.html#find"
+  to = "/flemmes"
   status = 302
 
 [[redirects]]
@@ -58,9 +221,10 @@
   to = "/admin"
   status = 302
 
+# /services est maintenant une page (services.html) ; les anciennes sous-pages y mènent.
 [[redirects]]
-  from = "/services*"
-  to = "/"
+  from = "/services/*"
+  to = "/services"
   status = 302
 
 [[redirects]]

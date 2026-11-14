@@ -1,38 +1,20 @@
 import './beta/runtime.ts';
 import './site/accueil-union.css';
+import './site/nav.ts';
 
 // Accueil de la vitrine (13/11/2026) : proposition de la PR #67, inspirée de l’implémentation d’UNION :
 // navigation qui se cache, titre écrit lettre par lettre, apparitions en cascade, moments de vie, test de flemme.
 // Tout reste lisible sans JS et avec « mouvements réduits ».
 
 // Anciennes ancres de la page unique : renvoyées vers leur nouvelle page.
-const anciennes: Record<string, string> = { '#concept': 'comment-ca-marche.html#concept', '#prix': 'comment-ca-marche.html#prix', '#comment': 'comment-ca-marche.html', '#faq': 'faq.html' };
+const anciennes: Record<string, string> = { '#concept': 'concept#concept', '#prix': 'concept#prix', '#comment': 'concept', '#faq': 'faq' };
 if (anciennes[location.hash]) location.replace(anciennes[location.hash]);
 
 const racine = document.documentElement;
 const reduit = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const observe = 'IntersectionObserver' in window;
 
-/* ---------- Navigation pastille : cachée quand on descend, visible dès qu’on remonte ---------- */
-const pn = document.getElementById('pn')!;
-const menu = document.getElementById('pnMenu') as HTMLButtonElement;
-const panneau = document.getElementById('pnPanneau')!;
-function ouvrirMenu(ouvert: boolean) {
-  panneau.hidden = !ouvert;
-  menu.setAttribute('aria-expanded', String(ouvert));
-  menu.querySelector('span')!.textContent = ouvert ? 'Fermer' : 'Menu';
-  if (ouvert) pn.classList.remove('cachee');
-}
-menu.addEventListener('click', () => ouvrirMenu(panneau.hidden === true));
-panneau.querySelectorAll('a').forEach(a => a.addEventListener('click', () => ouvrirMenu(false)));
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && !panneau.hidden) { ouvrirMenu(false); menu.focus(); } });
-document.addEventListener('click', e => { if (!panneau.hidden && !pn.contains(e.target as Node)) ouvrirMenu(false); });
-let dernierY = scrollY;
-addEventListener('scroll', () => {
-  const y = scrollY;
-  if (panneau.hidden && !pn.contains(document.activeElement)) pn.classList.toggle('cachee', y > dernierY && y > 160);
-  dernierY = y;
-}, { passive: true });
+/* ---------- Navigation pastille : partagée avec les pages intérieures (site/nav.ts) ---------- */
 
 /* ---------- Titre du hero écrit lettre par lettre, puis l’italique et le reste en fondu ---------- */
 const titre = document.querySelector<HTMLElement>('[data-ecrire]');
@@ -99,70 +81,73 @@ addEventListener('resize', majMoments);
 majMoments();
 
 /* ---------- Test de flemme : 6 questions, 0 à 3 points, score sur 18 ---------- */
-// Chaque question correspond à une famille du catalogue : la plus forte réponse donne la flemme à confier en premier.
-const QUESTIONS = [
-  { q: 'Un abonnement que tu voudrais résilier traîne depuis des semaines.', famille: 'un courrier de résiliation (19 €)' },
-  { q: 'Tu as déjà renoncé à un remboursement parce que la réclamation te décourageait.', famille: 'une réclamation avec relance (19 €)' },
-  { q: 'Des objets à vendre dorment chez toi, faute d’avoir écrit l’annonce.', famille: 'un pack 3 annonces (39 €)' },
-  { q: 'Monter un dossier de location ou prévenir les organismes après un déménagement te paralyse.', famille: 'un dossier de location vérifié (39 €)' },
-  { q: 'Tu repousses un voyage parce que comparer les options t’épuise.', famille: 'un comparatif voyage (39 €)' },
-  { q: 'Tu restes chez le même fournisseur d’énergie, de box ou de mutuelle par flemme de comparer.', famille: 'un comparatif énergie, box ou mutuelle (39 €)' },
-];
-const REPONSES = ['Jamais', 'Parfois', 'Souvent', 'Tout le temps'];
-const NIVEAUX = [
-  { max: 4, nom: 'Flemme légère', couleur: '#1f9d5a', texte: 'Tu gères plutôt bien. Garde Flemme pour le jour où une démarche te résiste.' },
-  { max: 9, nom: 'Flemme installée', couleur: '#3a7bd5', texte: 'Quelques corvées s’accumulent. En déléguer une ou deux libère vite la tête.' },
-  { max: 14, nom: 'Flemme chronique', couleur: '#3a2fa0', texte: 'Plusieurs démarches attendent. Commence par celle qui te coûte le plus, on s’occupe du reste.' },
-  { max: 18, nom: 'Flemme olympique', couleur: '#c2185b', texte: 'Le podium est à toi. Décris ta pile de flemmes, on te propose un prix pour chacune.' },
-];
-const $ = (id: string) => document.getElementById(id)!;
-const couverture = $('testCouverture'), jeu = $('testJeu'), resultat = $('testResultat');
-const compte = $('testCompte'), barre = $('testBarre'), question = $('testQuestion'), reponses = $('testReponses');
-const retour = $('testRetour') as HTMLButtonElement;
-let rep: number[] = [], q = 0;
+// Inactif quand la section #test n’est pas sur la page (retirée de l’accueil le 13/11/2026, plan du site de Ben).
+if (document.getElementById('test')) {
+  // Chaque question correspond à une famille du catalogue : la plus forte réponse donne la flemme à confier en premier.
+  const QUESTIONS = [
+    { q: 'Un abonnement que tu voudrais résilier traîne depuis des semaines.', famille: 'un courrier de résiliation (19 €)' },
+    { q: 'Tu as déjà renoncé à un remboursement parce que la réclamation te décourageait.', famille: 'une réclamation avec relance (19 €)' },
+    { q: 'Des objets à vendre dorment chez toi, faute d’avoir écrit l’annonce.', famille: 'un pack 3 annonces (39 €)' },
+    { q: 'Monter un dossier de location ou prévenir les organismes après un déménagement te paralyse.', famille: 'un dossier de location vérifié (39 €)' },
+    { q: 'Tu repousses un voyage parce que comparer les options t’épuise.', famille: 'un comparatif voyage (39 €)' },
+    { q: 'Tu restes chez le même fournisseur d’énergie, de box ou de mutuelle par flemme de comparer.', famille: 'un comparatif énergie, box ou mutuelle (39 €)' },
+  ];
+  const REPONSES = ['Jamais', 'Parfois', 'Souvent', 'Tout le temps'];
+  const NIVEAUX = [
+    { max: 4, nom: 'Flemme légère', couleur: '#1f9d5a', texte: 'Tu gères plutôt bien. Garde Flemme pour le jour où une démarche te résiste.' },
+    { max: 9, nom: 'Flemme installée', couleur: '#3a7bd5', texte: 'Quelques corvées s’accumulent. En déléguer une ou deux libère vite la tête.' },
+    { max: 14, nom: 'Flemme chronique', couleur: '#3a2fa0', texte: 'Plusieurs démarches attendent. Commence par celle qui te coûte le plus, on s’occupe du reste.' },
+    { max: 18, nom: 'Flemme olympique', couleur: '#c2185b', texte: 'Le podium est à toi. Décris ta pile de flemmes, on te propose un prix pour chacune.' },
+  ];
+  const $ = (id: string) => document.getElementById(id)!;
+  const couverture = $('testCouverture'), jeu = $('testJeu'), resultat = $('testResultat');
+  const compte = $('testCompte'), barre = $('testBarre'), question = $('testQuestion'), reponses = $('testReponses');
+  const retour = $('testRetour') as HTMLButtonElement;
+  let rep: number[] = [], q = 0;
 
-reponses.innerHTML = REPONSES.map((r, v) => `<button type="button" role="radio" aria-checked="false" data-v="${v}">${r}</button>`).join('');
-const boutons = [...reponses.querySelectorAll<HTMLButtonElement>('button')];
+  reponses.innerHTML = REPONSES.map((r, v) => `<button type="button" role="radio" aria-checked="false" data-v="${v}">${r}</button>`).join('');
+  const boutons = [...reponses.querySelectorAll<HTMLButtonElement>('button')];
 
-// La carte garde la même hauteur quelle que soit la question : la zone prend la hauteur de la plus longue.
-function caleHauteur() {
-  if (!question.offsetParent) return;
-  const actuel = question.textContent; let max = 0;
-  question.style.minHeight = '0px';
-  QUESTIONS.forEach(x => { question.textContent = x.q; max = Math.max(max, question.offsetHeight); });
-  question.textContent = actuel; question.style.minHeight = `${max}px`;
-}
-
-function afficher() {
-  const fini = q >= QUESTIONS.length;
-  jeu.hidden = fini; resultat.hidden = !fini;
-  if (!fini) {
-    compte.textContent = `Question ${q + 1} / ${QUESTIONS.length}`;
-    barre.style.width = `${(q + 1) / QUESTIONS.length * 100}%`;
-    question.textContent = QUESTIONS[q].q;
-    boutons.forEach((b, v) => b.setAttribute('aria-checked', String(rep[q] === v)));
-    retour.disabled = q === 0;
-    [...jeu.children].forEach(el => { (el as HTMLElement).style.animation = 'none'; void (el as HTMLElement).offsetWidth; (el as HTMLElement).style.animation = ''; });
-    return;
+  // La carte garde la même hauteur quelle que soit la question : la zone prend la hauteur de la plus longue.
+  function caleHauteur() {
+    if (!question.offsetParent) return;
+    const actuel = question.textContent; let max = 0;
+    question.style.minHeight = '0px';
+    QUESTIONS.forEach(x => { question.textContent = x.q; max = Math.max(max, question.offsetHeight); });
+    question.textContent = actuel; question.style.minHeight = `${max}px`;
   }
-  const score = rep.reduce((t, v) => t + v, 0);
-  const niveau = NIVEAUX.find(n => score <= n.max)!;
-  const top = rep.indexOf(Math.max(...rep));
-  resultat.style.setProperty('--niveau', niveau.couleur);
-  $('testNiveau').textContent = niveau.nom;
-  $('testMessage').textContent = `${niveau.texte} (score : ${score} / 18)`;
-  $('testConseil').textContent = Math.max(...rep) === 0
-    ? 'Aucune flemme en vue : reviens nous voir quand une démarche traîne.'
-    : `À confier en premier : ${QUESTIONS[top].famille}.`;
-  const jauge = $('testJauge');
-  jauge.style.width = '0%'; void jauge.offsetWidth; jauge.style.width = `${Math.round(score / 18 * 100)}%`;
-  $('testNiveau').focus({ preventScroll: true });
+
+  function afficher() {
+    const fini = q >= QUESTIONS.length;
+    jeu.hidden = fini; resultat.hidden = !fini;
+    if (!fini) {
+      compte.textContent = `Question ${q + 1} / ${QUESTIONS.length}`;
+      barre.style.width = `${(q + 1) / QUESTIONS.length * 100}%`;
+      question.textContent = QUESTIONS[q].q;
+      boutons.forEach((b, v) => b.setAttribute('aria-checked', String(rep[q] === v)));
+      retour.disabled = q === 0;
+      [...jeu.children].forEach(el => { (el as HTMLElement).style.animation = 'none'; void (el as HTMLElement).offsetWidth; (el as HTMLElement).style.animation = ''; });
+      return;
+    }
+    const score = rep.reduce((t, v) => t + v, 0);
+    const niveau = NIVEAUX.find(n => score <= n.max)!;
+    const top = rep.indexOf(Math.max(...rep));
+    resultat.style.setProperty('--niveau', niveau.couleur);
+    $('testNiveau').textContent = niveau.nom;
+    $('testMessage').textContent = `${niveau.texte} (score : ${score} / 18)`;
+    $('testConseil').textContent = Math.max(...rep) === 0
+      ? 'Aucune flemme en vue : reviens nous voir quand une démarche traîne.'
+      : `À confier en premier : ${QUESTIONS[top].famille}.`;
+    const jauge = $('testJauge');
+    jauge.style.width = '0%'; void jauge.offsetWidth; jauge.style.width = `${Math.round(score / 18 * 100)}%`;
+    $('testNiveau').focus({ preventScroll: true });
+  }
+  boutons.forEach(b => b.addEventListener('click', () => { rep[q] = Number(b.dataset.v); q++; afficher(); if (q < QUESTIONS.length) boutons[0].focus({ preventScroll: true }); }));
+  retour.addEventListener('click', () => { q = Math.max(0, q - 1); afficher(); });
+  $('testLancer').addEventListener('click', () => { couverture.hidden = true; afficher(); caleHauteur(); boutons[0].focus({ preventScroll: true }); });
+  $('testRecommencer').addEventListener('click', () => { rep = []; q = 0; afficher(); boutons[0].focus({ preventScroll: true }); });
+  addEventListener('resize', caleHauteur);
 }
-boutons.forEach(b => b.addEventListener('click', () => { rep[q] = Number(b.dataset.v); q++; afficher(); if (q < QUESTIONS.length) boutons[0].focus({ preventScroll: true }); }));
-retour.addEventListener('click', () => { q = Math.max(0, q - 1); afficher(); });
-$('testLancer').addEventListener('click', () => { couverture.hidden = true; afficher(); caleHauteur(); boutons[0].focus({ preventScroll: true }); });
-$('testRecommencer').addEventListener('click', () => { rep = []; q = 0; afficher(); boutons[0].focus({ preventScroll: true }); });
-addEventListener('resize', caleHauteur);
 
 /* ---------- Copier l’adresse de contact (repli : sélection du texte si le presse-papiers est refusé) ---------- */
 document.querySelectorAll<HTMLButtonElement>('[data-copier]').forEach(b => b.addEventListener('click', async () => {

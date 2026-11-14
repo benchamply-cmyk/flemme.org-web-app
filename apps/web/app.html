@@ -2,10 +2,12 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<!-- L’app répond à plusieurs adresses (/mon-espace, /flemme/123/modifier…) : les liens relatifs partent de la racine. -->
+<base href="/">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#a5ccff">
 <meta name="robots" content="noindex">
-<title>FLEMME — Mes flemmes</title>
+<title>FLEMME — Mon espace</title>
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/flemme-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,6 +16,10 @@
 </head>
 <body data-page="app">
 <noscript><p style="padding:20px">Cette page a besoin de JavaScript.</p></noscript>
+<!-- Même barre de navigation que la vitrine (src/site/entete.html, insérée au build). -->
+<section class="flemme-chrome-home bandeau app-bandeau" data-flemme-page="deleguer">
+<!--#entete-->
+</section>
 <div id="root"></div>
 <script type="module" src="/src/main.tsx"></script>
 </body>

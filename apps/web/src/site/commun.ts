@@ -3,6 +3,8 @@ import './vitrine.css';
 import './reglages.css';
 import './reglages-retenus.css';
 import './reglages-pr55.css';
+import './nav.css';
+import './nav.ts';
 import { ouvrirCatalogue } from './filtre.ts';
 
 // Comportements communs à toutes les pages de la vitrine : menu burger, liens vers le catalogue filtré.
@@ -15,7 +17,7 @@ menus.forEach(burger => {
   document.addEventListener('click', e => { if (!navVisible() && burger.open && !burger.contains(e.target as Node)) burger.open = false; });
   document.addEventListener('keydown', e => { if (!navVisible() && e.key === 'Escape' && burger.open) { burger.open = false; burger.querySelector('summary')?.focus(); } });
   // La page courante est marquée dans le menu.
-  const page = location.pathname.split('/').pop() || 'index.html';
+  const page = location.pathname.split('/').pop()?.replace(/\.html$/, '') || 'index';
   burger.querySelectorAll('a').forEach(a => { if (a.getAttribute('href') === page) a.setAttribute('aria-current', 'page'); });
 });
 

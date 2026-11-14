@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#3a4f7a">
+<title>Nos services et leurs prix — Flemme.org</title>
+<meta name="description" content="Démarches, réclamations, annonces, logement, voyage, comparatifs : tous les services Flemme à prix fixe, plus les demandes hors catalogue et sur devis.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="FLEMME">
+<meta property="og:title" content="Nos services et leurs prix — Flemme.org">
+<meta property="og:description" content="Démarches, réclamations, annonces, logement, voyage, comparatifs : tous les services Flemme à prix fixe, plus les demandes hors catalogue et sur devis.">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/flemme-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+</head>
+<body data-page="services">
+<!-- Page /services (demande de Ben, 14/11/2026) : le catalogue complet, cible des liens « Services » et « Catalogue »
+     de la navigation et du pied de page. Le catalogue (noms, prix, délais, livrables) vient de src/site/catalogue.ts, inséré au build : ne pas l’écrire ici.
+     Chaque service ouvre /deleguer avec son nom déjà écrit dans la description (?service=…, ajouté par src/site/pages/services.ts). -->
+<section class="flemme-chrome-home bandeau">
+<!--#entete-->
+  <div class="titre-page">
+    <h1>Nos services</h1>
+    <p class="intro-s">Six familles de flemmes à prix fixe. Le prix affiché est le prix payé&#8239;: une correction incluse, tout se fait à distance, et rien n’est envoyé sans ton accord.</p>
+  </div>
+</section>
+<main>
+  <section class="bloc" id="catalogue">
+    <p class="surtitre">Le catalogue</p>
+    <h2 class="titre">Choisis un service, on s’occupe du reste</h2>
+    <p class="doux">Touche un service pour commencer ta demande&#8239;: son nom est déjà écrit, tu n’as plus qu’à préciser. Sans compte jusqu’à l’envoi.</p>
+    <div class="grille large services">
+      <!--#catalogue-->
+    </div>
+    <p class="delai-s"><b>Délai</b>&#8239;: indiqué pour chaque service, 2 à 3 jours ouvrés le plus souvent.</p>
+  </section>
+
+  <section class="bloc" id="horscatalogue">
+    <p class="surtitre">Hors catalogue</p>
+    <h2 class="titre">Ton besoin n’est pas dans la liste&#8239;?</h2>
+    <div class="grille">
+      <div class="carte"><b>Autres services</b><p class="doux">Décris ton besoin en quelques lignes&#8239;: on l’analyse sous un jour ouvré et on te propose un prix fixe et un délai. Tu acceptes ou non.</p><a class="lien-fort" href="deleguer/nouvelle?formule=autre">Décrire un autre service →</a></div>
+      <div class="carte"><b>Demande de devis</b><p class="doux">Un dossier long, plusieurs démarches liées, un besoin très spécifique&#8239;: un devis détaillé (périmètre, étapes, prix, délai), gratuit et sans engagement. À partir de 69&#8239;€.</p><a class="lien-fort" href="deleguer/nouvelle?formule=devis">Demander un devis →</a></div>
+    </div>
+    <p class="doux">Si une demande n’est pas pour nous, on te le dit franchement.</p>
+  </section>
+
+  <section class="bloc" id="conditions">
+    <p class="surtitre">Inclus dans chaque service</p>
+    <h2 class="titre">Ce sur quoi tu peux compter</h2>
+    <div class="grille etroite">
+      <div class="carte"><b>Un prix fixe</b><p class="doux">Annoncé avant de payer. Aucun supplément sans ton accord.</p></div>
+      <div class="carte"><b>Une correction incluse</b><p class="doux">Si le résultat ne correspond pas à ta demande, on le reprend.</p></div>
+      <div class="carte"><b>Rien sans ton accord</b><p class="doux">Aucun envoi, aucune publication, aucun achat en ton nom. Jamais de mot de passe demandé.</p></div>
+      <div class="carte"><b>Remboursé si on ne livre pas</b><p class="doux">Si on ne peut pas faire ce qui était convenu, tu es remboursé.</p></div>
+    </div>
+    <div class="boutons"><a class="bouton" href="deleguer">Déléguer une flemme</a><a class="bouton clair" href="concept">Comment ça marche</a></div>
+  </section>
+</main>
+<!--#pied-->
+<script type="module" src="/src/site/pages/services.ts"></script>
+</body>
+</html>

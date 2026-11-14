@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { defaults, readVariant, type Variant } from './config.ts';
 import './beta.css';
 function Beta() {
-  const [v, setV] = useState(readVariant), [page, setPage] = useState('/index.html'), [revision, refresh] = useState(0);
+  const [v, setV] = useState(readVariant), [page, setPage] = useState('/'), [revision, refresh] = useState(0);
   const [status, setStatus] = useState(''), [busy, setBusy] = useState(false);
   const [requestId, setRequestId] = useState(() => crypto.randomUUID());
   const [version, setVersion] = useState('');
@@ -28,6 +28,6 @@ function Beta() {
     <label>Navigation<select value={v.navigation} onChange={e=>update({...v,navigation:e.target.value})}><option value="burger">Menu burger</option><option value="visible">Liens visibles</option><option value="compacte">Compacte</option></select></label>
     <fieldset><legend>Fonctionnalités proposées</legend>{(['aide','premium'] as const).map(k=><label key={k}><input type="checkbox" checked={v.features[k]} onChange={e=>update({...v,features:{...v.features,[k]:e.target.checked}})}/>{k === 'aide' ? 'Accès à l’aide dans l’app' : 'Lien Premium'}</label>)}</fieldset><p>Ces options changent les accès visibles. Les droits, paiements et autorisations restent contrôlés par le serveur.</p><button onClick={()=>update(structuredClone(defaults))}>Réinitialiser</button>
     <h2>Ton retour</h2><p>Destinataire des réponses : ben.champly@gmail.com.</p><form onSubmit={submit}><label>Note<select name="rating" required><option value="">Choisir</option>{[1,2,3,4,5].map(n=><option key={n}>{n}</option>)}</select></label><label>Ce qui fonctionne, ce qui bloque<textarea name="comment" minLength={10} maxLength={3000} required/></label><label className="trap" aria-hidden="true">Site<input name="website" tabIndex={-1} autoComplete="off"/></label><label><input type="checkbox" name="consent" required/>J’accepte l’enregistrement de mes choix et de mon commentaire pour améliorer FLEMME. Ne pas inclure de données personnelles. Conservation prévue : 90 jours après activation de la collecte.</label><button disabled={busy}>{busy?'Enregistrement…':'Envoyer mon retour'}</button></form><p role="status">{status}</p></section>
-    <section aria-label="Aperçu réel"><label>Page à tester<select value={page} onChange={e=>setPage(e.target.value)}>{['/index.html','/comment-ca-marche.html','/resoudre.html','/faq.html','/premium.html','/contact.html','/app.html'].map(p=><option key={p} value={p}>{p}</option>)}</select></label><a href={page} >Ouvrir en plein écran ↗</a><iframe key={revision + page} src={page} title="Aperçu réel de la variante"/><p>La navigation de l’aperçu est réelle. La page choisie ci-dessus est jointe au feedback.</p></section></div></main>;
+    <section aria-label="Aperçu réel"><label>Page à tester<select value={page} onChange={e=>setPage(e.target.value)}>{['/','/concept','/resoudre','/faq','/premium','/contact','/mon-espace'].map(p=><option key={p} value={p}>{p}</option>)}</select></label><a href={page} >Ouvrir en plein écran ↗</a><iframe key={revision + page} src={page} title="Aperçu réel de la variante"/><p>La navigation de l’aperçu est réelle. La page choisie ci-dessus est jointe au feedback.</p></section></div></main>;
 }
 createRoot(document.getElementById('root')!).render(<Beta/>);

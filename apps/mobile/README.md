@@ -1,5 +1,9 @@
 # FLEMME mobile — bêta native
 
+## Liens profonds — 14/11/2026
+
+Chaque écran a la même adresse que sur le site (plan d'adresses validé par Ben, table dans `packages/shared/src/adresses.ts`) : `flemme-mobile://mes-demandes`, `flemme-mobile://flemmes?categorie=maison`, `flemme-mobile://deleguer/nouvelle`, `flemme-mobile://flemme/123` (+ `/modifier`, `/accord`, `/signaler`, `/proposition/456`), `flemme-mobile://compte`, `flemme-mobile://profil/789`, `flemme-mobile://aide`. `App.tsx` ouvre l'écran au démarrage ou pendant que l'app tourne, empilé sur l'accueil. `flemme-mobile://lien` reste réservé aux liens e-mail de connexion. Les liens `https://flemme.org/…` sont déjà reconnus (`lireLien`), mais n'ouvriront l'app qu'avec la publication sur les stores : il faudra alors déclarer le domaine (`associatedDomains` iOS, `intentFilters` Android) et publier sur le site `/.well-known/apple-app-site-association` et `/.well-known/assetlinks.json`. Le formulaire « autre » ou « devis » (`?formule=`) n'existe pas encore sur mobile : le lien ouvre le formulaire classique.
+
 ## Visuel V0.4 et écrans du site — 06/11/2026
 
 L'app reprend l'habillage V0.4 retenu pour le site (`src/ui/styles.ts`, valeurs tirées de `apps/web/src/site/site.css`) : fond blanc et rubans chromés en haut, logo « FLEMME. » vert, loupe (recherche) et silhouette (connexion), menu du bas fixe (Accueil, Flemmes, Contact, Mon compte) sur fond nuit, titres en casse normale, boutons glacier contour encre, cartes contour noir, pied de page nuit. Sur iOS et Android, la police reste celle du système ; le navigateur utilise Archivo.

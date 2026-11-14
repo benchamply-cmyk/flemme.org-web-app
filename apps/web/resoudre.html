@@ -21,7 +21,6 @@
 <section class="flemme-chrome-home bandeau">
 <!--#entete-->
   <div class="titre-page">
-    <p class="ariane"><a href="./">Accueil</a> › Flemmes à résoudre</p>
     <h1>Flemmes à résoudre</h1>
     <p>Trouve une demande disponible près de chez toi ou à distance, et propose ton aide.</p>
   </div>
@@ -34,16 +33,16 @@
     </form>
     <div class="filtres" id="filtres"><b>Filtres :</b></div>
   </section>
-  <section class="bloc serre">
+  <section class="bloc serre" id="liste">
     <p class="surtitre">Pour te donner une idée</p>
-    <h2 class="titre">Exemples de demandes</h2>
+    <h2 class="titre">Les flemmes disponibles</h2>
     <!-- Mêmes exemples que le carrousel de l’accueil (tableur « Flemme – Exemples du carrousel », lignes « En ligne »). -->
     <div class="grille large">
-      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="maison"><span class="etiquette" style="background:var(--vert-tendre)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 11l7-6 7 6v8H5z"/></g></svg> Maison</span><b>Monter mes nouveaux meubles Ikea…</b><span>Lyon · Croix-Rousse · dans la semaine</span><span class="lien-fort">Voir la demande →</span></a>
-      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="numerique"><span class="etiquette" style="background:var(--peche)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><rect x="5" y="6" width="14" height="10"/><path d="M9 19h6"/></g></svg> Numérique</span><b>S’occuper de mon annonce LeBonCoin</b><span>À distance · dans le mois</span><span class="lien-fort">Voir la demande →</span></a>
-      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="administratif"><span class="etiquette" style="background:var(--glacier-clair)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 4h9l3 3v13H6z"/><path d="M9 11h6M9 15h4"/></g></svg> Démarches</span><b>Ce dossier de la CAF qui me fait peur…</b><span>À distance · environ 1 semaine</span><span class="lien-fort">Voir la demande →</span></a>
-      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="organisation"><span class="etiquette" style="background:var(--lavande)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><circle cx="12" cy="12" r="7"/><path d="M12 8v4h3"/></g></svg> Organisation</span><b>L’anniversaire de Léa dans dix jours…</b><span>Paris · 11e · environ 1 mois</span><span class="lien-fort">Voir la demande →</span></a>
-      <a class="exemple-carte" href="app.html#find" data-filtre-categorie="maison"><span class="etiquette" style="background:var(--lagon)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><path d="M12 5v14M5 12h14M7.5 7.5l9 9M16.5 7.5l-9 9"/></g></svg> Quotidien</span><b>Ces cartons du déménagement…</b><span>Nantes · Centre · ce week-end</span><span class="lien-fort">Voir la demande →</span></a>
+      <a class="exemple-carte" href="flemmes?categorie=maison" data-filtre-categorie="maison"><span class="etiquette" style="background:var(--vert-tendre)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><path d="M5 11l7-6 7 6v8H5z"/></g></svg> Maison</span><b>Monter mes nouveaux meubles Ikea…</b><span>Lyon · Croix-Rousse · dans la semaine</span><span class="lien-fort">Voir la demande →</span></a>
+      <a class="exemple-carte" href="flemmes?categorie=numerique" data-filtre-categorie="numerique"><span class="etiquette" style="background:var(--peche)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><rect x="5" y="6" width="14" height="10"/><path d="M9 19h6"/></g></svg> Numérique</span><b>S’occuper de mon annonce LeBonCoin</b><span>À distance · dans le mois</span><span class="lien-fort">Voir la demande →</span></a>
+      <a class="exemple-carte" href="flemmes?categorie=administratif" data-filtre-categorie="administratif"><span class="etiquette" style="background:var(--glacier-clair)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 4h9l3 3v13H6z"/><path d="M9 11h6M9 15h4"/></g></svg> Démarches</span><b>Ce dossier de la CAF qui me fait peur…</b><span>À distance · environ 1 semaine</span><span class="lien-fort">Voir la demande →</span></a>
+      <a class="exemple-carte" href="flemmes?categorie=organisation" data-filtre-categorie="organisation"><span class="etiquette" style="background:var(--lavande)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><circle cx="12" cy="12" r="7"/><path d="M12 8v4h3"/></g></svg> Organisation</span><b>L’anniversaire de Léa dans dix jours…</b><span>Paris · 11e · environ 1 mois</span><span class="lien-fort">Voir la demande →</span></a>
+      <a class="exemple-carte" href="flemmes?categorie=maison" data-filtre-categorie="maison"><span class="etiquette" style="background:var(--lagon)"><svg class="ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" stroke-linejoin="miter"><path d="M12 5v14M5 12h14M7.5 7.5l9 9M16.5 7.5l-9 9"/></g></svg> Quotidien</span><b>Ces cartons du déménagement…</b><span>Nantes · Centre · ce week-end</span><span class="lien-fort">Voir la demande →</span></a>
     </div>
     <p class="doux" style="font-size:13px">Ces cartes sont des exemples. Les vraies demandes, relues par l’équipe, s’ouvrent avec «&#8239;Voir les demandes&#8239;».</p>
   </section>
@@ -58,7 +57,7 @@
       <div class="carte"><b>Indépendant, sans contrat de travail</b><p class="doux">Tu interviens en micro-entrepreneur&#8239;: un SIRET est demandé avant ton premier versement. Ni salaire, ni sous-traitance.</p></div>
       <div class="carte"><b>Vérifié avant la première mission</b><p class="doux">Identité vérifiée, charte de qualité et de confidentialité, et une mission test relue par l’équipe.</p></div>
     </div>
-    <div class="boutons"><a class="bouton vert" href="contact.html">Poser ma candidature</a></div>
+    <div class="boutons"><a class="bouton vert" href="contact">Poser ma candidature</a></div>
   </section>
 
   <section class="bloc">
@@ -70,7 +69,7 @@
       <div class="carte"><b>2 · Envoie ta proposition de prestation</b><p class="doux">Le résultat que tu peux livrer, ton délai et ton forfait.</p></div>
       <div class="carte"><b>3 · Mettez-vous d’accord</b><p class="doux">Si ta proposition est retenue, vous signez l’accord écrit avant de commencer.</p></div>
     </div>
-    <div class="boutons"><a class="bouton vert" href="app.html#find">Voir les demandes disponibles</a><a class="bouton clair" href="comment-ca-marche.html#aider">Comment ça marche</a></div>
+    <div class="boutons"><a class="bouton vert" href="flemmes">Voir les demandes disponibles</a><a class="bouton clair" href="concept#aider">Comment ça marche</a></div>
   </section>
 </main>
 <!--#pied-->
