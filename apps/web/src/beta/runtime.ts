@@ -12,7 +12,9 @@ function apply(){
  document.querySelectorAll<HTMLDetailsElement>('details.burger').forEach(e=>{if(v.navigation==='visible')e.open=true;});
  document.querySelectorAll<HTMLAnchorElement>('a[href]').forEach(e=>{const path=new URL(e.href).pathname.replace(/\.html$/,'');if(path==='/premium'){e.hidden=!v.features.premium;e.dataset.betaHidden='true';}});
  document.querySelectorAll<HTMLElement>('a[href="#aide"], [data-beta-feature="aide"]').forEach(e=>{e.hidden=!v.features.aide;e.dataset.betaHidden='true';});
- document.querySelectorAll('.burger-menu').forEach((menu,i)=>{if(i>0)return;if(!menu.querySelector('[data-beta-link]')){const a=document.createElement('a');a.href='/beta';a.textContent='Bêta';a.dataset.betaLink='true';menu.append(a);}});
+ // Lien Bêta : premier menu burger (app) ou navigation pastille de la vitrine (menu déroulant et panneau).
+ const menus=document.querySelector('.pn')?[...document.querySelectorAll('#pnDeroulant, .pn-panneau')]:[...document.querySelectorAll('.burger-menu')].slice(0,1);
+ menus.forEach(menu=>{if(!menu.querySelector('[data-beta-link]')){const a=document.createElement('a');a.href='/beta';a.textContent='Bêta';a.dataset.betaLink='true';menu.append(a);}});
 }
 addEventListener('flemme-beta-access',apply);addEventListener('storage',apply);
 new MutationObserver(apply).observe(document.body,{childList:true,subtree:true});

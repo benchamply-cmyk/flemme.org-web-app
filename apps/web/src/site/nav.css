@@ -1,0 +1,89 @@
+/* Navigation pastille de la vitrine (13/11/2026), commune à l’accueil et aux pages intérieures.
+   Le HTML est écrit une fois dans entete.html et inséré au build ; le comportement est dans nav.ts.
+   Les variables --pn-* sont locales pour que la nav soit identique quelle que soit la feuille de la page
+   (accueil-union.css ou vitrine.css + reglages*.css). */
+.pn { --pn-police: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif; --pn-ease: cubic-bezier(.2, .7, .2, 1); font-family: var(--pn-police); line-height: 1.55; color: var(--encre); }
+.pn a { color: inherit; }
+.pn { position: fixed; top: 14px; left: 50%; z-index: 50; width: max-content; max-width: calc(100% - 24px); transform: translateX(-50%);
+  background: rgba(255, 255, 255, .72); -webkit-backdrop-filter: blur(16px) saturate(150%); backdrop-filter: blur(16px) saturate(150%);
+  border: 1px solid rgba(22, 19, 31, .1); border-radius: 28px; box-shadow: 0 10px 30px rgba(58, 47, 160, .14);
+  transition: transform .45s var(--pn-ease), opacity .3s ease; }
+.pn-barre { display: flex; align-items: center; gap: 22px; padding: 6px 6px 6px 8px; }
+.pn-logo { display: inline-flex; align-items: center; height: 38px; padding: 0 10px; font: 900 20px/1 var(--pn-police); letter-spacing: -1px; text-decoration: none; background: var(--vert-logo); border: 2px solid var(--encre); border-radius: 10px; }
+.pn-liens { display: flex; align-items: center; gap: 20px; }
+.pn-liens a, .pn-panneau a { position: relative; font-size: 14px; font-weight: 500; text-decoration: none; color: var(--texte-doux); transition: color .25s ease; }
+.pn-liens a:hover, .pn-liens a:focus-visible { color: var(--encre); }
+.pn-liens a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 2px; border-radius: 2px; background: var(--violet); transform: scaleX(0); transform-origin: left; transition: transform .35s var(--pn-ease); }
+.pn-liens a:hover::after, .pn-liens a:focus-visible::after { transform: scaleX(1); }
+.pn-cta { display: inline-flex; align-items: center; height: 40px; padding: 0 18px; border-radius: 999px; background: var(--encre); color: #fff; font-weight: 600; font-size: 14px; text-decoration: none; transition: background .25s ease; }
+.pn-cta:hover { background: var(--violet); }
+.pn-menu { display: none; height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(22, 19, 31, .2); background: #fff; font-weight: 600; font-size: 14px; cursor: pointer; }
+.pn-panneau { display: flex; flex-direction: column; padding: 6px 18px 16px; gap: 4px; }
+.pn-panneau[hidden] { display: none; }
+.pn-panneau a { padding: 10px 0; font-size: 17px; color: var(--encre); border-top: 1px solid rgba(22, 19, 31, .08); }
+/* Boutons dans la barre (plan du site, 3e version) : Déléguer plein, Résoudre et Connexion en contour. */
+.pn-liens .pn-cta, .pn-liens .pn-btn { height: 38px; padding: 0 16px; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; border-radius: 999px; white-space: nowrap; }
+.pn-liens .pn-cta { color: #fff; }
+.pn-liens .pn-btn { color: var(--encre); background: #fff; border: 1px solid rgba(22, 19, 31, .22); transition: border-color .25s ease, background .25s ease; }
+.pn-liens .pn-btn:hover, .pn-liens .pn-btn:focus-visible { border-color: var(--violet); color: var(--violet); }
+.pn-liens .pn-btn[aria-current="page"] { border: 2px solid var(--encre); font-weight: 700; }
+.pn-liens .pn-cta::after, .pn-liens .pn-btn::after { display: none; }
+.pn-liens .pn-cta + .pn-btn, .pn-liens .pn-btn + .pn-btn { margin-left: -12px; }
+.pn-mobile { display: none; }
+@media (max-width: 720px) {
+  .pn { width: calc(100% - 24px); }
+  .pn-liens { display: none; }
+  .pn-barre { gap: 8px; }
+  .pn-mobile { display: inline-flex; margin-left: auto; }
+  .pn-menu { display: inline-flex; align-items: center; }
+}
+@media (max-width: 380px) { .pn-mobile { display: none; } .pn-menu { margin-left: auto; } }
+.pn .pn-cta, .pn .pn-cta:hover, .pn .pn-cta:focus-visible { color: #fff; }
+.pn .pn-logo, .pn .pn-logo:hover { color: var(--encre); }
+.pn-liens a[aria-current="page"], .pn-panneau a[aria-current="page"] { color: var(--encre); font-weight: 700; }
+.pn-liens a[aria-current="page"]::after { transform: scaleX(1); }
+.pn-menu { color: var(--encre); font-family: var(--pn-police); }
+
+/* Pages intérieures : la nav est fixe, on réserve sa hauteur au-dessus du titre de la page. */
+.bandeau:has(> .pn) { padding-top: 76px; position: relative; z-index: 40; }
+/* Panneau ouvert : fond presque opaque, le texte de la page ne transparaît plus. */
+.pn:has(.pn-panneau:not([hidden])) { background: rgba(255, 255, 255, .97); }
+
+@media (prefers-reduced-motion: reduce) { .pn { transition: none; } }
+
+/* Menu déroulant de la barre (ordinateur), plan du site du 13/11/2026 (4e version). */
+.pn-plus { position: relative; }
+.pn-liens .pn-plus-btn { gap: 6px; cursor: pointer; font-family: var(--pn-police); }
+/* Icône des boutons Menu : 4 pastilles de couleur, en losange quand le menu est ouvert. */
+.pn-ico { flex: none; transition: transform .35s var(--pn-ease); }
+.pn-menu { gap: 8px; }
+.pn-plus-btn[aria-expanded="true"] .pn-ico, .pn-menu[aria-expanded="true"] .pn-ico { transform: rotate(45deg) scale(.9); }
+.pn-plus-btn:hover .pn-ico, .pn-menu:hover .pn-ico { transform: rotate(45deg); }
+.pn-deroulant { position: absolute; top: calc(100% + 14px); right: 0; z-index: 2; min-width: 240px; display: flex; flex-direction: column; padding: 8px; background: #fff; border: 1px solid rgba(22, 19, 31, .1); border-radius: 18px; box-shadow: 0 14px 34px rgba(58, 47, 160, .16); }
+.pn-deroulant[hidden] { display: none; }
+.pn-liens .pn-deroulant a { padding: 10px 12px; border-radius: 10px; color: var(--encre); white-space: nowrap; }
+.pn-liens .pn-deroulant a:hover, .pn-liens .pn-deroulant a:focus-visible { background: var(--glacier-clair, #eef3ff); }
+.pn-liens .pn-deroulant a::after { display: none; }
+.pn-liens .pn-deroulant a[aria-current="page"] { font-weight: 700; }
+
+/* La barre garde de l'air après le dernier lien. */
+.pn-liens { padding-right: 14px; }
+
+/* Boutons de la barre (Déléguer, Résoudre, Connexion, Menu ; ordinateur et mobile), demande de Ben du 14/11/2026 :
+   transparents avec contour par défaut, noirs au survol, au clic, menu ouvert et sur la page courante. */
+.pn .pn-barre .pn-cta, .pn .pn-barre .pn-btn, .pn .pn-barre .pn-menu {
+  background: transparent; color: var(--encre); border: 1px solid rgba(22, 19, 31, .35); font-family: var(--pn-police); font-weight: 600;
+  transition: background .2s ease, color .2s ease, border-color .2s ease; }
+.pn .pn-barre .pn-cta:hover, .pn .pn-barre .pn-btn:hover, .pn .pn-barre .pn-menu:hover,
+.pn .pn-barre .pn-cta:focus-visible, .pn .pn-barre .pn-btn:focus-visible, .pn .pn-barre .pn-menu:focus-visible,
+.pn .pn-barre .pn-cta:active, .pn .pn-barre .pn-btn:active, .pn .pn-barre .pn-menu:active,
+.pn .pn-barre [aria-expanded="true"], .pn .pn-barre .pn-cta[aria-current="page"], .pn .pn-barre .pn-btn[aria-current="page"] {
+  background: var(--encre); color: #fff; border-color: var(--encre); }
+/* La loupe du bouton Recherche ne pivote pas : elle grossit légèrement. */
+.pn .pn-barre #pnRecherche .pn-ico { transform: none; }
+.pn .pn-barre #pnRecherche:hover .pn-ico, .pn .pn-barre #pnRecherche[aria-expanded="true"] .pn-ico { transform: scale(1.12); }
+.pn-liens .pn-btn + .pn-plus, .pn-liens .pn-plus + .pn-plus { margin-left: -12px; }
+/* Recherche tout à gauche de la barre (avant le logo) : son menu s’ouvre aligné à gauche. */
+.pn-liens-gauche { padding-right: 0; }
+.pn-liens-gauche .pn-deroulant { right: auto; left: 0; }
+.pn-liens .pn-plus + .pn-btn { margin-left: -12px; }

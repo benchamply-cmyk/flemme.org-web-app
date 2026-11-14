@@ -2,14 +2,16 @@
 // Le catalogue de la vitrine reste à prix fixes ; deux options s'y ajoutent :
 // - « Autres services » : le client décrit un service hors catalogue, l'équipe analyse la demande et propose un prix fixe ;
 // - « Demande de devis » : pour un service précis ou difficile à chiffrer, l'équipe envoie un devis détaillé.
-// Liens depuis la vitrine : app.html#deposer-autre et app.html#deposer-devis.
+// Liens depuis la vitrine : app.html#deleguer-autre et app.html#deleguer-devis (plan du site du 13/11/2026).
+// Les anciennes adresses #deposer-autre et #deposer-devis restent reconnues (liens déjà partagés).
 // Aucune migration : la formule est portée par un préfixe du titre, lisible par l'équipe dans /admin.
 
 export type Formule = 'autre' | 'devis';
 
-export const FORMULES: Record<Formule, { hash: string; prefixe: string; titre: string; intro: string; etapes: readonly string[]; aide: string }> = {
+export const FORMULES: Record<Formule, { hash: string; ancien: string; prefixe: string; titre: string; intro: string; etapes: readonly string[]; aide: string }> = {
   autre: {
-    hash: '#deposer-autre',
+    hash: '#deleguer-autre',
+    ancien: '#deposer-autre',
     prefixe: 'Autre service · ',
     titre: 'Décris l’autre service dont tu as besoin',
     intro: 'Ton besoin n’est pas dans le catalogue ? Décris-le : l’équipe analyse ta demande et te propose un prix fixe.',
@@ -17,7 +19,8 @@ export const FORMULES: Record<Formule, { hash: string; prefixe: string; titre: s
     aide: 'Exemple : « Trier et renommer les photos de mes vacances dans des dossiers par jour. » Le résultat attendu, le délai, ce qui te bloque…',
   },
   devis: {
-    hash: '#deposer-devis',
+    hash: '#deleguer-devis',
+    ancien: '#deposer-devis',
     prefixe: 'Demande de devis · ',
     titre: 'Demande un devis',
     intro: 'Pour un service précis ou difficile à chiffrer : l’équipe étudie ta demande et t’envoie un devis détaillé, gratuit et sans engagement.',
@@ -27,7 +30,7 @@ export const FORMULES: Record<Formule, { hash: string; prefixe: string; titre: s
 };
 
 export function formuleDepuisHash(hash: string): Formule | null {
-  return (Object.keys(FORMULES) as Formule[]).find(f => FORMULES[f].hash === hash) ?? null;
+  return (Object.keys(FORMULES) as Formule[]).find(f => FORMULES[f].hash === hash || FORMULES[f].ancien === hash) ?? null;
 }
 
 // Titre envoyé au serveur : préfixé par la formule (une seule fois), dans la limite de 100 caractères du titre.
