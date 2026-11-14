@@ -215,7 +215,7 @@ button, input, textarea, select { font: inherit; color: inherit; }
 /* Les lignes du catalogue sont des liens : une flèche le montre, aussi sur mobile où il n’y a pas de survol. */
 .tarifs-s a::after { content: "›"; font-weight: 800; color: var(--acier); margin-left: -4px; }
 .tarifs-s span { flex: 1; }
-.urgence-s { margin: 0; align-self: flex-start; background: var(--peche); border: 2px solid var(--encre); border-radius: 14px; padding: 10px 16px; }
+.delai-s { margin: 0; align-self: flex-start; background: var(--peche); border: 2px solid var(--encre); border-radius: 14px; padding: 10px 16px; }
 /* Ancres (#catalogue, #conditions…) : le titre ne passe plus sous la barre fixe. */
 main [id] { scroll-margin-top: 112px; }
 .nom-s { display: flex; flex-direction: column; gap: 4px; }

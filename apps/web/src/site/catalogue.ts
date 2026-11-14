@@ -7,7 +7,7 @@
 export type Service = { nom: string; prix: number; delai: string; recu: string };
 export type Famille = { id: string; nom: string; couleur: string; services: Service[] };
 
-export const URGENCE = { prix: 10, delai: '24 h' };
+// Option urgence (24 h, +10 €) retirée pour l’instant (Ben, 14/11/2026).
 export const DELAI_HABITUEL = '2 à 3 jours ouvrés';
 
 export const CATALOGUE: Famille[] = [
@@ -58,7 +58,7 @@ export const htmlExtrait = () => CATALOGUE.map(f => {
   return `<div class="famille revele"><span class="pastille-p" style="--c:var(--${f.couleur})">${e(f.nom)}</span><ul class="tarifs-p"><li><span>${e(s.nom)}</span><b>${euros(s.prix)}</b></li></ul><a class="lien-p" href="services#${f.id}">${f.services.length} services dès ${euros(min)} →</a></div>`;
 }).join('\n      ');
 
-/** Repères de prix dans les autres textes de l’accueil : <!--#prix:annonces.0--> (famille.rang), <!--#fourchette-->, <!--#urgence-->. */
+/** Repères de prix dans les autres textes de l’accueil : <!--#prix:annonces.0--> (famille.rang), <!--#fourchette-->. */
 export function remplacerPrix(html: string) {
   const tous = CATALOGUE.flatMap(f => f.services.map(s => s.prix));
   return html
@@ -67,6 +67,5 @@ export function remplacerPrix(html: string) {
       if (!s) throw new Error('Prix inconnu dans le HTML : ' + m);
       return euros(s.prix);
     })
-    .replace(/<!--#fourchette-->/g, `${Math.min(...tous)} à ${euros(Math.max(...tous))}`)
-    .replace(/<!--#urgence-->/g, euros(URGENCE.prix));
+    .replace(/<!--#fourchette-->/g, `${Math.min(...tous)} à ${euros(Math.max(...tous))}`);
 }
