@@ -1,4 +1,5 @@
 import { defineConfig, loadEnv } from 'vite';
+import { environnementDepuis } from '../../packages/shared/src/flags.ts';
 import react from '@vitejs/plugin-react';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -38,7 +39,10 @@ export default defineConfig(({ command, mode }) => {
   return {
     plugins: [react(), habillage],
     // Branche du déploiement (Netlify : HEAD = branche de la PR sur un aperçu, sinon BRANCH) : l'atelier des services ouvre le fichier sur cette branche dans GitHub.
-    define: { __BRANCHE__: JSON.stringify(process.env.HEAD || process.env.BRANCH || 'preprod') },
+    // Environnement des feature flags (packages/shared/src/flags.ts) : la colonne lue dans flemme_v2.feature_flags.
+    // BRANCH = branche construite par Netlify (prod, preprod, beta) ; un aperçu de PR lit preprod, le poste local lit « local ».
+    define: { __BRANCHE__: JSON.stringify(process.env.HEAD || process.env.BRANCH || 'preprod'),
+      __FLEMME_ENV__: JSON.stringify(environnementDepuis(process.env.BRANCH, process.env.CONTEXT)) },
     // Toujours la config TypeScript du site, y compris pour les fichiers de packages/shared.
     tsconfig: './tsconfig.json',
     server: { fs: { allow: ['../..'] } },

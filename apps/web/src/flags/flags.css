@@ -1,0 +1,2 @@
+/* Feature flags : un élément rattaché à un flag éteint disparaît (src/flags/runtime.ts). */
+[data-flag-masque] { display: none !important; }
