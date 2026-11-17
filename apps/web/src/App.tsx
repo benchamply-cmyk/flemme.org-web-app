@@ -57,7 +57,7 @@ function initialDraft(next: Place): Draft {
   const o = next.screen === 'offer' ? t?.offers.find(v => v.id === next.offerId && v.brigadier.id === actorId) : undefined;
   if (o) return { amount: (o.amount / 100).toFixed(2).replace('.', ','), slot: o.slot, scope: o.scope, result: o.result || '' };
   // Accord écrit : version enregistrée, sinon reprise de la candidature retenue.
-  if (next.screen === 'contract' && t) return t.contract ? contractFields(t.contract) : { scope: t.agreement?.scope || '', deadline: t.agreement?.slot || '' };
+  if (next.screen === 'contract' && t) return t.contract ? contractFields(t.contract, t.agreement?.amount) : { ...contractFields(null, t.agreement?.amount), scope: t.agreement?.scope || '', deadline: t.agreement?.slot || '' };
   return {};
 }
 

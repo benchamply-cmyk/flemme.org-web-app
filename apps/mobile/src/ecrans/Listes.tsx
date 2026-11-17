@@ -20,6 +20,7 @@ function nextStep(t: Task, actorId: string) {
   if (can.canSign) return 'Relire et signer l’accord';
   if (can.canContract && !t.contract) return 'Rédiger l’accord';
   if (can.canContract && (t.contract?.status === 'draft' || t.contract?.status === 'changes_requested')) return 'Relire l’accord';
+  if (can.canPay) return 'Payer via Flemme';
   if (can.canDeclarePayment) return 'Régler et déclarer le paiement';
   if (can.canConfirmPayment) return 'Confirmer le paiement reçu';
   if (can.canReview) return 'Donner ton avis';

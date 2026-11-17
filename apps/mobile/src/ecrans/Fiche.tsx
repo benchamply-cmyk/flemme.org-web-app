@@ -25,11 +25,12 @@ export function Fiche({ state: { busy, actorId, files }, place, task, can, draft
     {!!task.address && <Text style={styles.note}><Text style={styles.strong}>Adresse précise (privée) : </Text>{task.address}</Text>}
     {canEdit(task, actorId) && <Action secondary disabled={busy} onPress={() => go('edit')}>{review === 'changes_requested' ? 'Corriger ma demande' : 'Modifier ma demande'}</Action>}
     {agreement && <><Text style={styles.sectionTitle}>{agreement.brigadier.name} prend le relais</Text><Text style={styles.body}>{agreement.scope}</Text><Text style={styles.muted}>{agreement.slot}</Text><Bill amount={agreement.amount} agreed={agreement}/>
-      <Text style={styles.note}>{paymentNote(agreement, false, money)}</Text>
+      <Text style={styles.note}>{paymentNote(agreement, false, money, can.viaFlemme)}</Text>
+      {can.canPay && <Action disabled={busy} onPress={() => mutate('pay', {}, 'detail', notices.paid)}>Payer via Flemme · {money(agreement.total)} (simulation)</Action>}
       {can.canComplete && <Action disabled={busy} onPress={() => mutate('complete', {})}>Confirmer la tâche terminée</Action>}
       {can.canDeclarePayment && <Action disabled={busy} onPress={() => mutate('declare_payment', {})}>J’ai payé le Brigadier</Action>}
       {can.canConfirmPayment && <Action disabled={busy} onPress={() => mutate('confirm_payment', {})}>Confirmer avoir reçu le paiement</Action>}
-      <Text style={styles.muted}>{task.payment ? paymentStatus(task, money) : `${paymentStatus(task)}\nCommission : à régler · encaissement non connecté`}</Text>
+      <Text style={styles.muted}>{task.payment || can.viaFlemme ? paymentStatus(task, money) : `${paymentStatus(task)}\nCommission : à régler · encaissement non connecté`}</Text>
       {(contract || can.canContract) && <><Text style={styles.sectionTitle}>Accord écrit</Text>
         {!contract ? <Text style={styles.muted}>Pas encore d’accord écrit. Rédigez-le ensemble : périmètre, résultat attendu, délai, annulation et confidentialité. Une fois commencé, il doit être signé par les deux avant la fin de la tâche.</Text>
           : <View style={styles.card}><Text style={styles.tag}>{contractStatusLabel[contract.status]}</Text>

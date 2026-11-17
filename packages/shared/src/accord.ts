@@ -18,6 +18,10 @@ export type Contract = {
   ownerSignedAt: string | null; ownerSignature: string | null;
   brigadierSignedAt: string | null; brigadierSignature: string | null;
   updatedAt: string; updatedBy: Actor | null;
+  /** v2.0.0 : numéro de version (chaque enregistrement en crée une, les anciennes restent en base). Absent = 1. */
+  version?: number;
+  /** v2.0.0 : date à laquelle les frais de plateforme sont devenus dus (seconde signature). */
+  feeDueAt?: string | null;
 };
 export const contractStatusLabel: Record<ContractStatus, string> = {
   draft: 'Brouillon · à relire puis soumettre', pending: 'En cours de contrôle par l’équipe FLEMME',
@@ -44,11 +48,17 @@ const optional = (value: string | undefined, max: number, what: string) => {
   return v || null;
 };
 
-/** Formulaire de l’accord → données envoyées (agreement_save). */
-export function contractInput(f: Record<string, string | undefined>): ContractTerms {
-  return Object.fromEntries(CONTRACT_FIELDS.map(c => [c.name, need(f[c.name], c.max, c.label)])) as ContractTerms;
+/** Formulaire de l’accord → données envoyées (agreement_save). v2.0.0 : prix convenu facultatif, en euros, envoyé en centimes. */
+export function contractInput(f: Record<string, string | undefined>): ContractTerms & { amount?: number } {
+  const terms = Object.fromEntries(CONTRACT_FIELDS.map(c => [c.name, need(f[c.name], c.max, c.label)])) as ContractTerms;
+  const amount = parseMoney(f.amount || '', true);
+  return amount == null ? terms : { ...terms, amount };
 }
-export const contractFields = (c: Contract | null | undefined): Record<string, string> => c ? { ...c.terms } : {};
+/** Champs du formulaire de l’accord, avec le prix convenu actuel en euros. */
+export const contractFields = (c: Contract | null | undefined, amount?: number | null): Record<string, string> => {
+  const prix: Record<string, string> = amount != null ? { amount: (amount / 100).toFixed(2).replace('.', ',').replace(/,00$/, '') } : {};
+  return c ? { ...c.terms, ...prix } : prix;
+};
 
 /** Formulaire de candidature → données envoyées (apply, apply_edit). Forfait saisi en euros, envoyé en centimes. */
 export function offerInput(f: Record<string, string | undefined>): Input {

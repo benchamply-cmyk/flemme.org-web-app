@@ -71,7 +71,8 @@ export class DemoGateway implements Gateway {
   async create(data: Input, request: string) {
     const prior = this.state.requests[this.actor.id + ':' + request];
     if (prior) return visibleTask(prior, this.actor);
-    const task = await this.commit(createTask(newId(), this.actor, data, new Date().toISOString()), request);
+    // Démo locale : parcours v2.0.0 (paiement via Flemme simulé) pour les nouvelles demandes.
+    const task = await this.commit(createTask(newId(), this.actor, data, new Date().toISOString(), 'simulation'), request);
     if (typeof data.draftId === 'string') await this.deleteDraft(data.draftId);
     return task;
   }
