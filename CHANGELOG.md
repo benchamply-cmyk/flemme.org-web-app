@@ -6,6 +6,17 @@ Chaque PR ajoute une ligne sous « À venir ». Au gel de preprod, « À venir �
 
 ## À venir
 
+## v1.5.0 (candidate) — gel de preprod le 17 nov. 2026
+
+Première promotion avec le nouveau modèle de gestion du code. Tag `v1.5.0-rc.1` sur preprod, puis `v1.5.0` à la fusion de la PR de promotion `preprod` → `prod`. PR incluses : #55, #56 (retirée par #61), #58 (annulée par #59), #59, #61, #65, #66, #68, #69, #70, #72 à #76, #78, #79, #80, #82, #83, #84.
+
+En prod, le flag `modele.version` vaut `ouvert` : le catalogue à prix fixes et les formules du modèle hybride sont masqués. La nouvelle navigation, le nouvel accueil et les adresses sans « .html » partent en prod ; quelques mentions de « prix fixe » restent dans les textes (réécriture prévue en v2.0.0).
+
+À faire au moment de la promotion :
+- appliquer la migration `20261116120000_flemme_v2_feature_flags.sql` sur la base de prod (déjà requise en preprod) ;
+- redéployer la fonction Supabase qui utilise `supabase/functions/_shared/paiement.ts` (nouvelles adresses de retour Stripe, anciennes toujours lues) ;
+- vérifier dans /admin de prod que l'environnement serveur des flags est `prod`.
+
 - Nouveau modèle de gestion du code et des versions (17 nov. 2026, décisions de Ben) : `docs/organisation-git.md` réécrit (deux branches permanentes, numérotation repartie à v1, candidates `-rc.N` en preprod, tags `archive/…`, contrôle avant suppression, retour arrière) ; CHANGELOG renuméroté (v6.x → v1.x) et section v1.4.0 créée pour la mise en production #52 ; notes de release classées (`.github/release.yml`) ; modèle de PR ; tags automatiques renommés `build/<branche>-pr<N>-<sha>` ; rulesets GitHub à 0 approbation et protection des tags (`beta/github-ruleset*.json`). Aucune migration.
 - Nouvel accueil (demandes de Ben du 14 nov. 2026, PR 79 = PR 77 + PR 71) : `/` combine la landing de la PR 71 et le fond de l’ancien accueil (rubans chromés menthe) : haut de page plein écran avec logo FLEMME en rotation 3D, titre dont le début change, bandeau « Nos engagements » visible dès l’arrivée, carrousel de six exemples (5 s), trois étapes animées, comparatif en 8 lignes, garanties, contact avant le pied. Navigation de toutes les pages : icône seule avec le mot qui glisse au survol, menus ouverts au survol en tuiles, icône sur chaque lien ; pied en 4 blocs (familles du catalogue). Palette et logo FLEMME sur tout le site (PR 77). Pas de page `/landing` séparée. Aucune migration.
 - Mon espace sur ordinateur (demande de Ben du 14 nov. 2026) : à partir de 900 px, l’accueil de `/mon-espace` prend la largeur du site (1080 px) au lieu d’une colonne de téléphone ; « Déléguer ma flemme » et « Résoudre une flemme » côte à côte, puis « Mes demandes » et « Brigadier Premium » côte à côte. Les autres écrans et le mobile ne changent pas. Aucune migration.
