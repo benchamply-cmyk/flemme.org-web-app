@@ -263,7 +263,7 @@ export class RemoteGateway implements Gateway {
     return response.ok && (await response.json()).allowed === true;
   }
   // Paiement en ligne (Stripe Connect) via les fonctions Edge : renvoie l'adresse Stripe à ouvrir.
-  // 'onboarding' : le Brigadier active ses paiements. 'checkout' : le déposant paie une tâche terminée.
+  // 'onboarding' : le membre active ses paiements. 'checkout' : le déposant paie une tâche terminée.
   async paymentLink(kind: 'onboarding' | 'checkout', taskId?: string): Promise<string> {
     if (Date.now() > this.expires - 60000) await this.refresh();
     const { url } = await this.request('/functions/v1/stripe-' + kind, kind === 'checkout' ? { taskId } : {}, this.access);

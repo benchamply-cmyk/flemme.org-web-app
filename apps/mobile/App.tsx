@@ -39,7 +39,7 @@ function initialDraft(next: Place): Draft {
   const t = tasks.find(v => v.id === next.taskId) || found?.tasks.find(v => v.id === next.taskId);
   if (next.screen === 'edit') return t ? taskFields(t, money) : {};
   if ((next.screen === 'new' || next.screen === 'detail') && next.draftId) return { ...drafts.find(d => d.id === next.draftId)?.fields };
-  // Proposition à corriger : le Brigadier repart de la sienne.
+  // Proposition à corriger : le membre repart de la sienne.
   const o = next.screen === 'offer' ? t?.offers.find(v => v.id === next.offerId && v.brigadier.id === actorId) : undefined;
   if (o) return { amount: (o.amount / 100).toFixed(2).replace('.', ','), slot: o.slot, scope: o.scope, result: o.result || '' };
   // Accord écrit : version enregistrée, sinon reprise de la proposition retenue.

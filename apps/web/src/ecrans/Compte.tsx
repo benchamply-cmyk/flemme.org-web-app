@@ -12,7 +12,7 @@ export function Compte({ state: { gateway, busy, actorId }, go }: Ctx) {
       {demoActors.map(a => <Action secondary key={a.id} disabled={busy} onClick={() => session.switchActor(a, home)}>{a.name}{a.id === actorId ? ' · actif' : ''}</Action>)}
       <Action secondary disabled={busy} onClick={() => go('profile', { userId: undefined })}>Mon profil public</Action></>
     : <><p>Les comptes, annonces et discussions utilisent le service FLEMME configuré.</p>
-      {onlinePayment && <><p className="note">Brigadier ? Active tes paiements en ligne : Stripe vérifie ton identité et ton IBAN, puis verse ta part après chaque mission payée.</p><Action secondary disabled={busy} onClick={() => openStripe('onboarding')}>Recevoir mes paiements avec Stripe</Action></>}
+      {onlinePayment && <><p className="note">Tu aides d’autres membres ? Active tes paiements en ligne : Stripe vérifie ton identité et ton IBAN, puis verse ta part après chaque mission payée.</p><Action secondary disabled={busy} onClick={() => openStripe('onboarding')}>Recevoir mes paiements avec Stripe</Action></>}
       <Action secondary disabled={busy} onClick={() => go('profile', { userId: undefined })}>Mon profil public · nom, présentation, avis</Action>
       <Action secondary disabled={busy} onClick={() => session.logout(home)}>Me déconnecter</Action></>}</>;
 }

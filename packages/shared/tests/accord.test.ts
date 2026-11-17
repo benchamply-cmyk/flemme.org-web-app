@@ -33,7 +33,7 @@ test('accord : parcours complet en local (candidature, accord, deux signatures, 
   assert.equal(t.offers[0].result, 'Fixée'); assert.equal(t.offers[0].review, 'approved');
   t = applyCommand(t, brig, 'apply_edit', { offerId: 'p', amount: 4200, slot: 'Samedi', scope: 'Montage' }, at);
   assert.equal(t.offers[0].amount, 4200);
-  assert.throws(() => applyCommand(t, owner, 'agreement_save', terms, at), /Brigadier choisi/);
+  assert.throws(() => applyCommand(t, owner, 'agreement_save', terms, at), /membre choisi/);
   t = applyCommand(t, owner, 'accept', { offerId: 'p' }, at);
   assert.throws(() => applyCommand(t, other, 'agreement_save', terms, at), /inaccessible/);
   t = applyCommand(t, brig, 'agreement_save', terms, at);

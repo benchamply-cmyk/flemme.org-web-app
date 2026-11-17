@@ -22,7 +22,7 @@ export type Task = {
   // Parcours complet (migration 20261104120000_flemme_v2_parcours) : absents des flemmes créées avant.
   category?: Category | null; deadline?: Deadline | null; deadlineNote?: string | null;
   budgetRange?: BudgetRange | null; mode?: WorkMode | null;
-  /** Adresse précise : seulement pour le déposant et le Brigadier retenu. */
+  /** Adresse précise : seulement pour le déposant et le membre retenu. */
   address?: string | null;
   /** Validation par l’équipe : seulement pour le déposant. Absent = publiée. */
   review?: Review; reviewNote?: string | null;
@@ -30,15 +30,15 @@ export type Task = {
   payment?: { method: 'stripe' | 'simulation'; status: StatutPaiement; total: number; commission: number; payout: number; at: string };
   /** v2.0.0 : mode de règlement réglé côté serveur (flemme_v2.settings.payment_mode). Absent = « direct » (ancien parcours). */
   paymentMode?: ModePaiement;
-  /** Accord écrit (lot 3) : seulement pour le déposant et le Brigadier retenu ; null tant qu’il n’est pas commencé. */
+  /** Accord écrit (lot 3) : seulement pour le déposant et le membre retenu ; null tant qu’il n’est pas commencé. */
   contract?: Contract | null;
   /** Avis que la personne connectée a laissé sur cette mission. */
   myReview?: MyReview | null;
   /** Démo locale uniquement : avis donnés sur la mission (le serveur les garde dans flemme_v2.reviews). */
   ratings?: { authorId: string; targetId: string; rating: number; text: string | null; at: string }[];
 };
-// amount : forfait proposé par le Brigadier. commission : part FLEMME. total : payé par le déposant.
-// payout : reversé au Brigadier. rateBps et model : règle appliquée, figée au moment de l'accord.
+// amount : forfait proposé par le membre. commission : part FLEMME. total : payé par le déposant.
+// payout : reversé au membre. rateBps et model : règle appliquée, figée au moment de l'accord.
 export type Agreement = Price & { slot: string; scope: string; brigadier: Actor };
 export type Command = 'edit' | 'offer' | 'message' | 'accept' | 'decline' | 'complete' | 'declare_payment' | 'confirm_payment' | 'report'
   | 'apply' | 'apply_edit' | 'agreement_save' | 'agreement_submit' | 'agreement_sign' | 'review' | 'pay';
@@ -46,9 +46,9 @@ export type Input = Record<string, unknown>;
 /*
  * Commission FLEMME, configurable. Le modèle économique n'est pas encore tranché (roadmap V2) :
  * - 'ajout' : la commission s'ajoute au forfait du Brigadier (modèle actuel, 10 %).
- *   Le déposant paie forfait + commission, le Brigadier reçoit tout son forfait.
+ *   Le déposant paie forfait + commission, le membre reçoit tout son forfait.
  * - 'prelevement' : la commission est prise sur le prix payé par le déposant.
- *   Exemple « 65 % reversés au Brigadier » : { model: 'prelevement', rateBps: 3500 }.
+ *   Exemple « 65 % reversés au membre » : { model: 'prelevement', rateBps: 3500 }.
  * rateBps est en points de base (1000 = 10 %). Le serveur garde sa propre copie de ce réglage
  * (table flemme_mobile_v1.settings) ; un test vérifie que les deux restent identiques.
  */
@@ -138,7 +138,7 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
     event('Candidature modifiée');
   } else if (command === 'agreement_save' || command === 'agreement_submit' || command === 'agreement_sign') {
     if (!owner && chosen?.brigadier.id !== actor.id) throw new Error('Accord inaccessible.');
-    if (t.status !== 'assigned') throw new Error('L’accord se prépare une fois le Brigadier choisi, avant la fin de la tâche.');
+    if (t.status !== 'assigned') throw new Error('L’accord se prépare une fois le membre choisi, avant la fin de la tâche.');
     const c = t.contract;
     if (command === 'agreement_save') {
       if (c?.status === 'signed') throw new Error('Accord déjà signé par les deux parties.');
@@ -212,7 +212,7 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
   } else if (command === 'confirm_payment') {
     if (viaFlemme) throw new Error('Cette mission se paie via Flemme.');
     if (chosen?.brigadier.id !== actor.id || !t.paymentDeclared || t.paymentConfirmed) throw new Error('Confirmation impossible.');
-    t.paymentConfirmed = true; event('Réception du paiement confirmée par le Brigadier · non vérifiée par une banque');
+    t.paymentConfirmed = true; event('Réception du paiement confirmée par le membre · non vérifiée par une banque');
   } else if (command === 'report') {
     if (!owner && chosen?.brigadier.id !== actor.id) throw new Error('Signalement inaccessible.');
     t.reports.push({ actor, text: text(data.text), at }); event('Désaccord signalé · examen humain demandé');
