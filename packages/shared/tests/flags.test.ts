@@ -57,10 +57,10 @@ test('lecture : appel public sans session, repli null si erreur', async () => {
   assert.equal(await lireLignes('', '', 'prod'), null);
 });
 
-test('modèle affiché : ouvert partout depuis la v2.0.0, hybride réglable dans la base', () => {
+test('modèle affiché : hybride en preprod et en local, ouvert en prod, réglable dans la base', () => {
   assert.equal(resoudreFlags('prod', null, false)['modele.version'].valeur, 'ouvert');
-  assert.equal(resoudreFlags('preprod', null, false)['modele.version'].valeur, 'ouvert');
-  assert.equal(resoudreFlags('local', null, false)['modele.version'].valeur, 'ouvert');
+  assert.equal(resoudreFlags('preprod', null, false)['modele.version'].valeur, 'hybride');
+  assert.equal(resoudreFlags('local', null, false)['modele.version'].valeur, 'hybride');
   assert.equal(resoudreFlags('prod', [{ key: 'modele.version', state: 'tous', value: 'hybride' }], false)['modele.version'].valeur, 'hybride');
-  assert.equal(resoudreFlags('preprod', [{ key: 'modele.version', state: 'tous', value: 'autre' }], false)['modele.version'].valeur, 'ouvert', 'valeur hors liste : défaut de l’environnement');
+  assert.equal(resoudreFlags('preprod', [{ key: 'modele.version', state: 'tous', value: 'autre' }], false)['modele.version'].valeur, 'hybride', 'valeur hors liste : défaut de l’environnement');
 });
