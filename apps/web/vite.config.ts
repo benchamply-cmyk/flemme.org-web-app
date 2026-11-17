@@ -10,7 +10,7 @@ import { htmlCatalogue, htmlMoments, htmlPoints, remplacerPrix } from './src/sit
 // La vitrine (index.html et ses pages intérieures, maquette V0.3 ; chaque fichier porte le nom de son adresse : concept.html → /concept),
 // le parcours de l’app (app.html),
 // l’admin de l’équipe (admin.html) et l’aperçu isolé de la future interface (apercu.html).
-const pages = ['index', 'services', 'deleguer', 'concept', 'faq', 'contact', 'premium', 'resoudre', 'mentions', 'confidentialite', 'app', 'admin', 'apercu', 'beta'];
+const pages = ['index', 'services', 'deleguer', 'concept', 'faq', 'contact', 'premium', 'resoudre', 'mentions', 'cgu', 'cgv', 'confidentialite', 'app', 'admin', 'apercu', 'beta'];
 // En-tête et pied de page de la vitrine, écrits une fois dans src/site et insérés dans chaque page au build.
 const morceau = (nom: string) => readFileSync(fileURLToPath(new URL(`./src/site/${nom}.html`, import.meta.url)), 'utf8').trim();
 const habillage = { name: 'flemme-habillage', transformIndexHtml: (html: string) => remplacerPrix(html.replace('<!--#entete-->', morceau('entete')).replace('<!--#pied-->', morceau('pied'))

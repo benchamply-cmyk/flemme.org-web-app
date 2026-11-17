@@ -6,6 +6,8 @@ Chaque PR ajoute une ligne sous « À venir ». Au gel de preprod, « À venir �
 
 ## À venir
 
+- Pages légales v2 (brouillons à faire relire par un juriste) : nouvelles pages /cgu et /cgv pour la mise en relation ouverte (compte membre, accord entre membres, paiement via Flemme, frais de plateforme de 10 % pendant la bêta, annulation, rétractation, médiation) ; /mentions et /confidentialite mises à jour (rôle d’intermédiaire, contact@flemme.org, plus de « Brigade », Stripe comme prestataire de paiement) ; onglets, pied de page, sitemap et redirections .html ajoutés.
+
 ## v1.5.1 (candidate) — gel de preprod le 17 nov. 2026
 
 Version corrective : règles et contrôles uniquement, aucun changement du site, de l'app ni de la base. Tag `v1.5.1-rc.1` sur preprod, puis `v1.5.1` à la fusion de la PR de promotion. PR incluses : #87, plus ce gel. Aucune migration.

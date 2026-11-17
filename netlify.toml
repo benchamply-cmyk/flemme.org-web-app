@@ -118,6 +118,18 @@
   force = true
 
 [[redirects]]
+  from = "/cgu.html"
+  to = "/cgu"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cgv.html"
+  to = "/cgv"
+  status = 301
+  force = true
+
+[[redirects]]
   from = "/confidentialite.html"
   to = "/confidentialite"
   status = 301
