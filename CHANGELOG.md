@@ -6,9 +6,13 @@ Chaque PR ajoute une ligne sous « À venir ». Au gel de preprod, « À venir �
 
 ## À venir
 
-## v1.5.1 (candidate) — gel de preprod le 17 nov. 2026
+- Corrections du CHANGELOG et de la procédure de promotion (17 nov. 2026) : la v1.5.1 candidate devient v1.5.2 (tag v1.5.1 posé avant la fusion) ; `docs/organisation-git.md` et `AGENTS.md` précisent de ne créer la release qu'après la fusion de la promotion, sur le merge commit. Aucune migration.
 
-Version corrective : règles et contrôles uniquement, aucun changement du site, de l'app ni de la base. Tag `v1.5.1-rc.1` sur preprod, puis `v1.5.1` à la fusion de la PR de promotion. PR incluses : #87, plus ce gel. Aucune migration.
+## v1.5.2 — 17 nov. 2026 (promotion #89)
+
+Version corrective : règles et contrôles uniquement, aucun changement du site, de l'app ni de la base. PR incluses : #87, #88. Aucune migration.
+
+Le tag `v1.5.1` a été posé par erreur avant la fusion de #89, sur le commit de la v1.5.0 (`07f84bc`) ; sa release étant immuable, il ne peut pas être déplacé. Il reste en place, avec un titre qui le signale, et la version publiée est `v1.5.2` (`d159131`).
 
 - Instructions des assistants (17 nov. 2026, demande de Ben) : `AGENTS.md` réécrit avec toutes les règles du nouveau modèle Git (branches, numéros, tags, releases immuables, CHANGELOG, étiquettes, flags, migrations, ce que l'assistant peut faire seul ou non), `CLAUDE.md` le renvoie ; `docs/organisation-git.md` complété (v1.5.0 promue, releases immuables, verrou Netlify, Manual Deploy Render, ruleset de tags). Le check `promotion` exige désormais, pour toute PR vers `preprod`, une étiquette (`nouveaute`, `correction`, `migration`, `docs`, `promotion`) et une modification de `CHANGELOG.md`. Aucune migration.
 
