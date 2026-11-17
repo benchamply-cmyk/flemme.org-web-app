@@ -3,6 +3,7 @@ import { applyCommand, createTask, text } from '../../../../packages/shared/src/
 import { demoActors, seed } from '../../../../packages/shared/src/gateway.ts';
 import type { Contract } from '../../../../packages/shared/src/accord.ts';
 import type { HelpRequest } from '../../../../packages/shared/src/aide.ts';
+import type { EtatFlag, Environnement } from '../../../../packages/shared/src/flags.ts';
 
 // Types renvoyés par public.flemme_admin_api (supabase/migrations/20261103130000_flemme_v2_admin.sql).
 export type DisputeStatus = 'open' | 'in_review' | 'resolved';
@@ -31,7 +32,11 @@ export type Moderation = { tasks: ModerationTask[]; waiting: number };
 export type ReviewDecision = 'publish' | 'changes' | 'reject';
 export type AlertRow = { id: number; kind: AlertKind; taskId: string; payload: Record<string, unknown>; createdAt: string; dispatchedAt: string | null; error: string | null };
 export type AdminAction = 'overview' | 'reports' | 'disputes' | 'users' | 'alerts' | 'alert_retry' | 'dispute_update' | 'user_suspend' | 'user_restore'
-  | 'moderation' | 'task_review' | 'review_queue' | 'offer_review' | 'agreement_review' | 'help_queue' | 'help_answer';
+  | 'moderation' | 'task_review' | 'review_queue' | 'offer_review' | 'agreement_review' | 'help_queue' | 'help_answer'
+  | 'flags' | 'flag_set' | 'flag_reset' | 'flag_environment';
+// Feature flags (supabase/migrations/20261116120000_flemme_v2_feature_flags.sql) : une ligne par flag réglé et par environnement.
+export type FlagRow = { key: string; environment: Environnement; state: EtatFlag; value: string | null; updatedAt: string; updatedBy: string | null };
+export type FlagsData = { serverEnvironment: Environnement; flags: FlagRow[] };
 
 export interface AdminSource {
   demo: boolean;
@@ -47,6 +52,7 @@ export const logLabel: Record<string, string> = {
   offer_approve: 'Candidature validée', offer_changes: 'Correction de candidature demandée', offer_reject: 'Candidature refusée',
   agreement_approve: 'Accord contrôlé', agreement_changes: 'Correction d’accord demandée',
   help_answered: 'Demande d’aide répondue', help_closed: 'Demande d’aide close',
+  flag_set: 'Flag basculé', flag_reset: 'Flag remis au registre', flag_environment: 'Environnement serveur des flags changé',
   dispute_in_review: 'Litige pris en charge', dispute_resolved: 'Litige clos', user_suspend: 'Compte suspendu', user_restore: 'Compte rétabli',
 };
 export const when = (s: string | null) => s ? new Date(s).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' }) : 'jamais';
@@ -68,6 +74,8 @@ export class DemoAdmin implements AdminSource {
   private disputes: DisputeRow[];
   private users: UserRow[];
   private log: Overview['log'] = [];
+  private flags: FlagRow[] = [];
+  private flagEnv: Environnement = 'prod';
   private alerts: AlertRow[];
   private help: HelpRow[] = [{ id: 'demo-aide', topic: 'compte', text: 'Je ne reçois pas l’e-mail de confirmation.', status: 'open', answer: null, taskId: null,
     at: '2026-11-03T09:00:00.000Z', answeredAt: null, user: demoActors[1], email: 'lou@flemme.example', title: null }];
@@ -126,6 +134,21 @@ export class DemoAdmin implements AdminSource {
       else { h.answer = text(data.answer, 2000); h.status = 'answered'; h.answeredAt = new Date().toISOString(); this.journal('help_answered', h.id, { note: h.answer }); }
       return clone({ ok: true });
     }
+    if (action === 'flags') return clone({ serverEnvironment: this.flagEnv, flags: this.flags });
+    if (action === 'flag_set') {
+      const row = { key: String(data.key), environment: data.environment as Environnement, state: data.state as EtatFlag, value: data.value ? String(data.value) : null, updatedAt: new Date().toISOString(), updatedBy: this.email };
+      this.flags = [...this.flags.filter(f => !(f.key === row.key && f.environment === row.environment)), row].sort((a, b) => (a.key + a.environment).localeCompare(b.key + b.environment));
+      this.journal('flag_set', row.key, { environment: row.environment, state: row.state, value: row.value });
+      return clone({ ok: true });
+    }
+    if (action === 'flag_reset') {
+      const before = this.flags.length;
+      this.flags = this.flags.filter(f => !(f.key === data.key && f.environment === data.environment));
+      if (this.flags.length === before) throw new Error('Ce flag suit déjà le registre');
+      this.journal('flag_reset', String(data.key), { environment: data.environment });
+      return clone({ ok: true });
+    }
+    if (action === 'flag_environment') { this.flagEnv = data.environment as Environnement; this.journal('flag_environment', this.flagEnv, {}); return clone({ ok: true }); }
     if (action === 'users') return clone({ users: this.users });
     if (action === 'alerts') return clone({ alerts: this.alerts });
     if (action === 'alert_retry') {

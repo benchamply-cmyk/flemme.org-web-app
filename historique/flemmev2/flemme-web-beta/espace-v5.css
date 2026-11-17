@@ -1,0 +1,145 @@
+/* =========================================================================
+   FLEMME — V5 de l'espace client (espace.html). 21 octobre 2026.
+   Les styles du Flemme Manager sont dans manager-v5.css.
+   Chargé après styles.css et espace.css : ne change que
+   l'apparence, les identifiants utilisés par les scripts restent les mêmes.
+   ========================================================================= */
+
+/* ---------- 1. Cadre commun ---------- */
+.app-page { max-width: 1120px; margin: auto; padding: 0 24px; }
+.app-page h1 { font-size: clamp(54px, 8vw, 110px); margin: 18px 0 20px; }
+.app-page .lead { margin: 0; max-width: 640px; }
+.app-hero { margin: 4vh 0 36px; }
+.serif { display: block; font-family: var(--serif); font-style: italic; font-weight: 400; text-transform: none; font-size: .78em; letter-spacing: -.02em; line-height: 1; color: var(--violet); }
+.app-narrow { max-width: 640px; margin: 4vh auto 0; }
+/* Le bouton collant « Confier ma flemme » ne sert à rien dans l'espace. */
+body:has(.app-page) .sticky-cta { display: none !important; }
+.head-link[aria-current="page"] { background: var(--ink); color: #fff; }
+
+
+/* ---------- 2. Connexion ---------- */
+.espace .auth:not([hidden]) { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(28px, 5vw, 72px); align-items: start; margin-top: 4vh; }
+.auth-pitch h1 { font-size: clamp(54px, 7.4vw, 104px); }
+.auth-perks { list-style: none; margin: 32px 0 0; padding: 0; display: grid; gap: 14px; }
+.auth-perks li { display: flex; align-items: flex-start; gap: 14px; font-size: 17px; line-height: 1.45; }
+.auth-perks .ico, .tile .ico { width: 24px; height: 24px; flex: none; padding: 10px; box-sizing: content-box; background: var(--acid); border: 2px solid var(--ink); border-radius: 14px; }
+.auth-perks b { font-weight: 700; }
+.auth-card h2, .app-narrow h2 { font-size: clamp(36px, 4.2vw, 54px); }
+
+/* Onglets « Se connecter » / « Créer mon compte » en pilule */
+.espace .tabs { padding: 4px; border: 2px solid var(--ink); border-radius: 999px; background: #fff; }
+.espace .tabs button { border-radius: 999px; font-size: 15px; color: var(--ink); }
+.espace .tabs button[aria-selected="true"] { background: var(--ink); color: #fff; box-shadow: none; }
+.espace .social-btn { border-radius: 999px; }
+.espace .card input[type=password] { border: 2px solid var(--ink); border-radius: 14px; background: var(--soft); }
+.espace .or::before, .espace .or::after { background: var(--ink); opacity: .25; }
+.espace .status-dot { background: var(--ink); color: var(--acid); }
+
+/* ---------- 3. Tableau de bord de l'espace ---------- */
+.espace:has(#space:not([hidden])) { max-width: 1120px; }
+.espace .space-head { align-items: flex-end; margin: 4vh 0 28px; }
+.espace .space-head h1 { margin: 14px 0 12px; }
+.espace .who { font: 14px var(--mono); }
+.espace .who b { font-weight: 500; color: var(--ink); }
+
+/* Raccourcis */
+.space-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 48px; }
+.space-tiles .tile:not([hidden]) { display: flex; align-items: center; gap: 14px; padding: 18px; background: rgba(255, 255, 255, .78); border: 2px solid var(--ink); border-radius: 22px; color: var(--ink); text-decoration: none; transition: transform .15s, box-shadow .15s, background .15s; }
+.tile:hover, .tile:focus-visible { background: #fff; transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--violet); }
+.tile b { display: block; font-family: var(--display); font-stretch: 62%; font-weight: 800; text-transform: uppercase; font-size: 24px; line-height: 1; }
+.tile small { display: block; margin-top: 4px; font-size: 14px; color: var(--muted); line-height: 1.35; }
+.list-title { margin: 0 0 16px; }
+
+/* Cartes de demande */
+.espace .demandes { gap: 24px; }
+.espace .card.demande { padding: clamp(22px, 3.4vw, 36px); box-shadow: 8px 8px 0 var(--violet); }
+.espace .ref { font: 500 12px var(--mono); letter-spacing: .08em; }
+.espace .demande .besoin { font-size: clamp(19px, 2vw, 23px); line-height: 1.4; font-weight: 500; }
+.espace .meta { font: 13px var(--mono); }
+
+/* Pastilles de statut aux couleurs V5 */
+.espace .pill { font: 500 12px var(--mono); letter-spacing: .06em; text-transform: uppercase; padding: 7px 12px; border: 2px solid var(--ink); background: #fff; }
+.espace .pill-en_etude { background: #fff3c4; }
+.espace .pill-acceptee, .espace .pill-en_cours { background: var(--acid); color: var(--ink); }
+.espace .pill-terminee { background: var(--ink); color: var(--acid); }
+.espace .pill-refusee { background: #fde8e6; color: #8a1c12; border-color: #8a1c12; }
+
+/* Le mot de l'équipe */
+.espace .team-msg { background: var(--soft); border-left: 5px solid var(--glacier-deep); border-radius: 4px 16px 16px 4px; }
+.espace .team-msg b { font: 500 12px var(--mono); letter-spacing: .08em; }
+
+/* Frise d'avancement : horizontale sur les grands écrans */
+.espace .timeline div::before { background: #c6d9f5; }
+.espace .timeline div { border-left-color: #c6d9f5; }
+.espace .timeline .complete::before { background: var(--ink); }
+.espace .timeline .active-step::before { width: 16px; height: 16px; left: -9px; background: var(--acid); border: 3px solid var(--ink); box-sizing: border-box; }
+.espace .timeline .refused::before { background: #c0392b; }
+.espace .timeline b { font-family: var(--display); font-stretch: 75%; font-weight: 800; text-transform: uppercase; letter-spacing: .03em; font-size: 15px; color: var(--muted); }
+.espace .timeline .complete b, .espace .timeline .active-step b { color: var(--ink); }
+@media (min-width: 760px) {
+  .espace .demande .timeline { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); margin-top: 28px; }
+  .espace .demande .timeline div { padding: 20px 12px 0 0; border-left: 0; border-top: 3px solid #c6d9f5; }
+  .espace .demande .timeline div:last-child { border-top-color: transparent; }
+  .espace .demande .timeline .complete { border-top-color: var(--ink); }
+  .espace .demande .timeline div::before { left: 0; top: -8px; }
+  .espace .demande .timeline .active-step::before { left: 0; top: -10px; }
+}
+
+/* Discussion avec l'équipe */
+.espace .chat { border-top: 2px dashed var(--ink); padding-top: 18px; }
+.espace .chat summary { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 18px; border: 2px solid var(--ink); border-radius: 999px; background: #fff; font-family: var(--display); font-stretch: 75%; font-weight: 800; font-size: 15px; text-transform: uppercase; letter-spacing: .04em; list-style: none; }
+.espace .chat summary::-webkit-details-marker { display: none; }
+.espace .chat summary::after { content: "+"; font: 500 16px var(--mono); }
+.espace .chat[open] summary { background: var(--ink); color: #fff; }
+.espace .chat[open] summary::after { content: "–"; }
+.espace .msg { border-radius: 20px; padding: 12px 16px; }
+.espace .msg-client { background: var(--ink); color: #fff; border-bottom-right-radius: 6px; }
+.espace .msg-client span { color: var(--acid); }
+.espace .msg-equipe { background: var(--soft); border: 2px solid var(--ink); border-bottom-left-radius: 6px; }
+.espace .msg span { font-family: var(--mono); }
+.espace .chat-form textarea { border: 2px solid var(--ink); border-radius: 16px; background: var(--soft); }
+.espace .chat-form .primary { min-height: 52px; }
+
+/* Aucune demande, compte */
+.espace #empty { border-style: dashed; box-shadow: none; background: rgba(255, 255, 255, .7); }
+.espace #empty h3 { font-size: 30px; }
+.espace .loading { font: 14px var(--mono); }
+.espace .account { margin-top: 48px; box-shadow: none; }
+.espace .account summary { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-family: var(--display); font-stretch: 62%; font-weight: 800; font-size: 26px; text-transform: uppercase; list-style: none; }
+.espace .account summary::-webkit-details-marker { display: none; }
+.espace .account summary::after { content: "+"; display: grid; place-items: center; width: 36px; height: 36px; flex: none; border: 2px solid var(--ink); border-radius: 50%; font: 500 18px var(--mono); }
+.espace .account[open] summary::after { content: "–"; background: var(--acid); }
+.espace .account button.secondary, .espace .danger { border-radius: 999px; }
+#compte { scroll-margin-top: 96px; }
+
+/* ---------- 4. Tablettes et téléphones ---------- */
+@media (max-width: 900px) {
+  .espace .auth:not([hidden]) { grid-template-columns: 1fr; margin-top: 2vh; }
+  .auth-perks { margin-top: 20px; }
+}
+@media (max-width: 600px) {
+  .app-page { padding: 0 16px; }
+  .app-page h1, .auth-pitch h1 { font-size: 54px; }
+  .auth-perks li { font-size: 15px; }
+  .auth-perks .ico { padding: 8px; width: 20px; height: 20px; }
+  .space-tiles { grid-template-columns: 1fr; margin-bottom: 36px; }
+  .espace .card.demande { box-shadow: 5px 5px 0 var(--violet); border-radius: 22px; }
+  .espace .chat-form { flex-direction: column; align-items: stretch; }
+  .espace .auth-card { box-shadow: 5px 5px 0 var(--violet); }
+}
+@media (prefers-reduced-motion: reduce) { .tile { transition: none; } }
+.app-page .back { border: 0; background: none; padding: 8px 0; color: var(--ink); font: 600 15px var(--text); text-transform: none; letter-spacing: 0; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+
+/* Mes conversations avec Flemme Manager (espace-conversations.js) */
+.space-convs { margin-top: 56px; scroll-margin-top: 96px; }
+.space-convs h2 { font-size: clamp(36px, 5vw, 64px); margin: 10px 0 8px; }
+.space-convs > label { margin-top: 18px; }
+.space-convs > select { max-width: 520px; }
+.space-convs .app-notice { margin-top: 16px; }
+#convThread { margin-top: 20px; }
+.conv-messages { display: flex; flex-direction: column; gap: 14px; }
+#convDeliveries { margin-top: 22px; }
+#convDeliveryList article { margin-top: 18px; padding-top: 16px; border-top: 2px dashed var(--ink); }
+#convDeliveryList h3 { font-size: 22px; }
+#convNew { display: block; margin: 18px 0 6px; }
+#convLocked { margin: 8px 0 0; }

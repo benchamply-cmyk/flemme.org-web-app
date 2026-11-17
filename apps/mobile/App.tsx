@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, BackHandler, KeyboardAvoidingView, Linking, Platform, Pressable, RefreshControl, ScrollView, Text, TextInput, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { backLabel, contractFields, footer, money, rights, taskFields } from '../../packages/shared/src/index.ts';
-import type { Command, Input, Option, Screen, Task } from '../../packages/shared/src/index.ts';
+import { backLabel, contractFields, footer, lireLien, money, rights, taskFields } from '../../packages/shared/src/index.ts';
+import type { Adresse, Command, Input, Option, Screen, Task } from '../../packages/shared/src/index.ts';
 import { session, useSession } from './src/session';
 import { linkReceived } from './src/liens';
 import { Action, Bulle, Loupe, Maison, Personne } from './src/ui/composants';
@@ -25,6 +25,13 @@ import { Signalement } from './src/ecrans/Signalement';
 // Coque mobile : en-tête V0.4, pile de navigation, formulaire en cours et choix de l’écran.
 // Règles, état et textes partagés : packages/shared. Écrans : src/ecrans. Pendant web : apps/web/src/App.tsx.
 const start: Place = { screen: 'home', tab: 'mine', taskId: '', offerId: '' };
+// Lien profond (plan d’adresses du 14/11/2026, table dans packages/shared/src/adresses.ts) : flemme-mobile://mes-demandes,
+// flemme-mobile://flemme/123… ouvrent le même écran que flemme.org/mes-demandes, flemme.org/flemme/123… sur le site.
+// L’écran s’empile sur l’accueil : Retour y ramène. Déconnecté, la connexion s’affiche d’abord, puis l’écran demandé.
+function pileDe(a: Adresse): Place[] {
+  if (a.screen === 'home') return [start];
+  return [start, { ...start, screen: a.screen, tab: a.tab || 'mine', taskId: a.taskId || '', offerId: a.offerId || '', userId: a.userId, categorie: a.categorie }];
+}
 
 // Formulaire prérempli à l’ouverture d’un écran, comme initialDraft() du site.
 function initialDraft(next: Place): Draft {
@@ -50,8 +57,14 @@ function Mobile() {
 
   useEffect(() => {
     void session.initialize();
-    // Lien e-mail ouvert pendant que l’app tourne : on relance la session pour l’utiliser.
-    const s = Linking.addEventListener('url', ({ url }) => { linkReceived(url); void session.initialize(); });
+    // Lien vers un écran qui a ouvert l’app.
+    void Linking.getInitialURL().then(url => { const a = lireLien(url); if (a) show(pileDe(a)); }).catch(() => {});
+    // Lien ouvert pendant que l’app tourne : écran demandé, ou lien e-mail (on relance la session pour l’utiliser).
+    const s = Linking.addEventListener('url', ({ url }) => {
+      const a = lireLien(url);
+      if (a) { show(pileDe(a)); return; }
+      linkReceived(url); void session.initialize();
+    });
     return () => s.remove();
   }, []);
   // `visit` remonte l’écran à chaque navigation : son état local (historique déplié…) repart de zéro.

@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react';
-import type { Command, Input, Offer, Option, Screen, SessionState, Tab, Task, rights } from '../../../../packages/shared/src/index.ts';
+import type { Command, Formule, Input, Offer, Option, Screen, SessionState, Tab, Task, rights } from '../../../../packages/shared/src/index.ts';
 
 // depth : nombre d’écrans empilés dans l’app depuis l’arrivée, pour que Retour ne quitte jamais l’app par erreur.
 // draftId : brouillon de demande repris dans le formulaire (écran « new »).
 // userId : profil public ouvert (écran « profile » ; absent = le sien).
-export type Place = { screen: Screen; tab: Tab; taskId: string; offerId: string; depth: number; draftId?: string; userId?: string };
+// formule, categorie : formulaire « autre » ou « devis », filtre de la liste des flemmes (lus dans l’adresse).
+export type Place = { screen: Screen; tab: Tab; taskId: string; offerId: string; depth: number; draftId?: string; userId?: string; formule?: Formule; categorie?: string };
 export type Draft = Record<string, string>;
 export type FieldOptions = { multiline?: boolean; numeric?: boolean; secret?: boolean; max?: number; hint?: string };
 

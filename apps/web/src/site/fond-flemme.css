@@ -1,0 +1,155 @@
+/*
+ * Fond de page Flemme (14/11/2026), réutilisable sur n’importe quelle page.
+ * Inspiré de l’ambiance de l’aperçu envoyé par Ben (hero sombre, ouverture lumineuse, objet brillant
+ * qui flotte), aux couleurs de l’identité visuelle FLEMME (Drive, 14/11/2026) :
+ * noir #121212, vert #57d68d, vert profond #225337, menthe pâle #d7f5e4, bleu nuit #091426.
+ *
+ * Utilisation :
+ *   <section class="fond-flemme"> … contenu … </section>
+ *   Ajouter dans la section, en premier enfant, le décor (facultatif mais conseillé) :
+ *     <div class="ff-decor" aria-hidden="true"><div class="ff-ciel"><i></i><i></i><i></i></div></div>
+ *   et, pour l’objet flottant, le SVG .ff-objet (voir landing.html).
+ * Variantes : data-fond="lumiere" (fond blanc et ouverture menthe, thème clair), data-fond="clair" (menthe pâle, pour sections lumineuses), data-fond="bleu" (bleu nuit du logo).
+ * Le mouvement suit la souris si src/site/fond-flemme.ts est importé ; tout s’arrête avec « mouvements réduits ».
+ */
+.fond-flemme {
+  --ff-nuit: #121212;
+  --ff-nuit-2: #17251d;
+  --ff-ciel-1: #225337;
+  --ff-ciel-2: #57d68d;
+  --ff-ciel-3: #d7f5e4;
+  --ff-texte: #f3faf6;
+  --ff-x: 0;
+  --ff-y: 0;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  overflow: clip;
+  color: var(--ff-texte);
+  background:
+    radial-gradient(120% 80% at 50% 0%, var(--ff-nuit-2), transparent 70%),
+    var(--ff-nuit);
+}
+.fond-flemme[data-fond="bleu"] { --ff-nuit: #091426; --ff-nuit-2: #10233d; --ff-ciel-1: #10233d; --ff-ciel-2: #3a8f5e; --ff-ciel-3: #a3e8c0; }
+.fond-flemme[data-fond="clair"] {
+  --ff-texte: #101e2a;
+  background:
+    radial-gradient(90% 70% at 15% 10%, #ffffff, transparent 60%),
+    radial-gradient(80% 60% at 90% 90%, #c4f0d8, transparent 60%),
+    #ddf8e9;
+}
+
+/* Décor : l’ouverture sur le ciel, qui « respire » lentement. */
+.ff-decor { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.ff-ciel {
+  position: absolute;
+  inset: 8% 5% 16% 3%;
+  border-radius: 38% 62% 30% 70% / 64% 36% 64% 36%;
+  background:
+    radial-gradient(45% 40% at 66% 34%, color-mix(in srgb, var(--ff-ciel-3) 70%, transparent), transparent 70%),
+    linear-gradient(135deg, var(--ff-nuit) 5%, var(--ff-ciel-1) 45%, var(--ff-ciel-2) 100%);
+  box-shadow: 0 0 120px 60px var(--ff-nuit) inset;
+  transform: translate(calc(var(--ff-x) * -10px), calc(var(--ff-y) * -8px));
+  animation: ff-respire 22s ease-in-out infinite alternate;
+  overflow: hidden;
+}
+/* Trois nappes de nuages qui dérivent à des vitesses différentes. */
+.ff-ciel i {
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(28% 18% at 20% 70%, rgba(215,245,228,.35), transparent 70%),
+    radial-gradient(22% 14% at 60% 55%, rgba(215,245,228,.3), transparent 70%),
+    radial-gradient(30% 16% at 85% 80%, rgba(163,232,192,.4), transparent 70%);
+  filter: blur(14px);
+  animation: ff-nuages 60s linear infinite;
+}
+.ff-ciel i:nth-child(2) { opacity: .6; animation-duration: 90s; animation-direction: reverse; top: -35%; }
+.ff-ciel i:nth-child(3) { opacity: .45; animation-duration: 140s; filter: blur(26px); top: 5%; }
+/* Bord rocheux : un liseré sombre irrégulier, puis le fondu vers le bas de la section. */
+.ff-decor::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(140% 100% at 50% 40%, transparent 52%, var(--ff-nuit) 74%),
+    linear-gradient(180deg, transparent 55%, var(--ff-nuit) 98%);
+  z-index: 1;
+}
+/* Grain léger, pour éviter l’effet « dégradé numérique ». */
+.ff-decor::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: .14;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.fond-flemme[data-fond="clair"] .ff-ciel { display: none; }
+.fond-flemme[data-fond="clair"] .ff-decor::before { background: linear-gradient(180deg, transparent 70%, rgba(255,255,255,.6)); }
+
+/* Objet flottant : le logo FLEMME (ruban menthe et noir), en grand. */
+.ff-objet {
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  top: 46%;
+  width: min(40vw, 440px);
+  height: auto;
+  translate: -50% -50%;
+  transform: translate(calc(var(--ff-x) * 18px), calc(var(--ff-y) * 14px)) rotate(calc(var(--ff-x) * 3deg));
+  filter: drop-shadow(0 40px 50px rgba(0, 0, 0, .5)) drop-shadow(0 0 60px rgba(87, 214, 141, .25));
+  animation: ff-flotte 9s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes ff-respire {
+  0% { border-radius: 38% 62% 30% 70% / 64% 36% 64% 36%; }
+  50% { border-radius: 58% 42% 66% 34% / 40% 62% 38% 60%; }
+  100% { border-radius: 30% 70% 46% 54% / 56% 30% 70% 44%; }
+}
+@keyframes ff-nuages { to { transform: translateX(25%); } }
+@keyframes ff-flotte { 50% { margin-top: -18px; } }
+
+@media (max-width: 720px) {
+  .ff-ciel { inset: 7% -12% 22% -12%; }
+  .ff-objet { width: 78vw; top: 34%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ff-ciel, .ff-ciel i, .ff-objet { animation: none; }
+  .ff-ciel, .ff-objet { transform: none; }
+}
+
+/* Variante lumière (14/11/2026, thème clair demandé par Ben) : fond blanc, ouverture en dégradé menthe,
+   vignette blanche au lieu du noir. Même décor animé, mêmes nuages, même objet flottant. */
+.fond-flemme[data-fond="lumiere"] {
+  --ff-nuit: #ffffff;
+  --ff-nuit-2: #f2fbf6;
+  --ff-ciel-1: #ddf8e9;
+  --ff-ciel-2: #a3e8c0;
+  --ff-ciel-3: #ffffff;
+  --ff-texte: #101e2a;
+  background: radial-gradient(120% 80% at 50% 0%, #f2fbf6, transparent 70%), #ffffff;
+}
+.fond-flemme[data-fond="lumiere"] .ff-ciel {
+  background:
+    radial-gradient(40% 36% at 70% 30%, rgba(255, 255, 255, .95), transparent 70%),
+    radial-gradient(60% 50% at 85% 85%, rgba(87, 214, 141, .55), transparent 70%),
+    linear-gradient(135deg, #ffffff 8%, #ddf8e9 42%, #a3e8c0 78%, #57d68d 110%);
+  box-shadow: 0 0 120px 50px #ffffff inset;
+}
+.fond-flemme[data-fond="lumiere"] .ff-ciel i {
+  background:
+    radial-gradient(28% 18% at 20% 70%, rgba(255, 255, 255, .8), transparent 70%),
+    radial-gradient(22% 14% at 60% 55%, rgba(255, 255, 255, .7), transparent 70%),
+    radial-gradient(30% 16% at 85% 80%, rgba(215, 245, 228, .9), transparent 70%);
+}
+.fond-flemme[data-fond="lumiere"] .ff-decor::before {
+  background:
+    radial-gradient(140% 100% at 50% 40%, transparent 55%, rgba(255, 255, 255, .9) 78%),
+    linear-gradient(180deg, transparent 60%, #ffffff 98%);
+}
+.fond-flemme[data-fond="lumiere"] .ff-decor::after { opacity: .06; mix-blend-mode: multiply; }
+.fond-flemme[data-fond="lumiere"] .ff-objet { filter: drop-shadow(0 36px 40px rgba(34, 83, 55, .28)) drop-shadow(0 0 50px rgba(87, 214, 141, .3)); }

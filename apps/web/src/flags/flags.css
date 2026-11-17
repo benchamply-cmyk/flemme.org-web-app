@@ -1,0 +1,5 @@
+/* Feature flags : un élément rattaché à un flag éteint disparaît (src/flags/runtime.ts). */
+[data-flag-masque] { display: none !important; }
+/* Modèle affiché (flag modele.version) : un bloc propre à un modèle disparaît dans l'autre. */
+html:not([data-modele="hybride"]) [data-modele="hybride"],
+html:not([data-modele="ouvert"]) [data-modele="ouvert"] { display: none !important; }

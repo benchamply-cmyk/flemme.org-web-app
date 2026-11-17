@@ -2,6 +2,7 @@ import { authMessage } from '../../../packages/shared/src/gateway.ts';
 
 // Liens envoyés par e-mail (confirmation d’inscription, mot de passe oublié), en flux PKCE :
 // le lien ne contient qu’un code à usage unique, inutilisable sans le secret gardé ici.
+// Retour sur /app.html, l’adresse autorisée dans Supabase, quel que soit l’écran d’où part la demande.
 // localStorage plutôt que sessionStorage : le lien de l’e-mail s’ouvre souvent dans un nouvel onglet.
 export type LinkPurpose = 'signup' | 'recovery';
 const key = 'flemme-web-pkce';
@@ -11,7 +12,7 @@ const b64url = (bytes: ArrayBuffer | Uint8Array) => btoa(String.fromCharCode(...
 export async function prepareLink(purpose: LinkPurpose, store: Storage = localStorage) {
   const verifier = b64url(crypto.getRandomValues(new Uint8Array(32)));
   store.setItem(key, JSON.stringify({ verifier, purpose }));
-  return { redirectTo: new URL('app.html', location.href).href, codeChallenge: b64url(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier))) };
+  return { redirectTo: new URL('/app.html', location.href).href, codeChallenge: b64url(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier))) };
 }
 
 export type LinkReturn = { code: string; verifier: string; purpose: LinkPurpose } | { error: string } | null;

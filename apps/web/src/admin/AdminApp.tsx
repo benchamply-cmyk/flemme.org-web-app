@@ -5,17 +5,21 @@ import { CONTRACT_FIELDS } from '../../../../packages/shared/src/accord.ts';
 import { budgetText, categoryLabel, deadlineLabel, modeLabel } from '../../../../packages/shared/src/parcours.ts';
 import { RemoteGateway } from '../../../../packages/shared/src/gateway.ts';
 import { tokenStore } from '../storage.ts';
-import type { AdminAction, AdminSource, AlertRow, DisputeRow, HelpRow, Moderation, Overview, ReportRow, ReviewDecision, ReviewQueue, UserRow } from './model.ts';
+import type { AdminAction, AdminSource, FlagsData, AlertRow, DisputeRow, HelpRow, Moderation, Overview, ReportRow, ReviewDecision, ReviewQueue, UserRow } from './model.ts';
+import { FLAGS, CLES, ETATS, ETAT_LIBELLE, type CleFlag, type DefinitionFlag, type EtatFlag, type Environnement } from '../../../../packages/shared/src/flags.ts';
+import { ENV } from '../flags/env.ts';
 import { DemoAdmin, alertLabel, disputeLabel, filterDisputes, filterUsers, logLabel, taskLabel, when } from './model.ts';
 
 // Page admin de flemme.org : signalements, litiges, utilisateurs et alertes.
 // Toutes les données passent par public.flemme_admin_api, qui revérifie le rôle admin en base.
-type Tab = 'overview' | 'moderation' | 'queue' | 'help' | 'reports' | 'disputes' | 'users' | 'alerts';
-type Data = { overview?: Overview; moderation?: Moderation; queue?: ReviewQueue; help?: HelpRow[]; reports?: ReportRow[]; disputes?: DisputeRow[]; users?: UserRow[]; alerts?: AlertRow[] };
+type Tab = 'overview' | 'moderation' | 'queue' | 'help' | 'reports' | 'disputes' | 'users' | 'alerts' | 'flags';
+type Data = { overview?: Overview; moderation?: Moderation; queue?: ReviewQueue; help?: HelpRow[]; reports?: ReportRow[]; disputes?: DisputeRow[]; users?: UserRow[]; alerts?: AlertRow[]; flags?: FlagsData };
 const url = import.meta.env.VITE_SUPABASE_URL || '';
 const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
 const remoteMode = !!(url || key);
-const tabs: [Tab, string][] = [['overview', 'Vue d’ensemble'], ['moderation', 'À valider'], ['queue', 'Candidatures et accords'], ['help', 'Aide'], ['reports', 'Signalements'], ['disputes', 'Litiges'], ['users', 'Utilisateurs'], ['alerts', 'Alertes e-mail']];
+const tabs: [Tab, string][] = [['overview', 'Vue d’ensemble'], ['moderation', 'À valider'], ['queue', 'Candidatures et accords'], ['help', 'Aide'], ['reports', 'Signalements'], ['disputes', 'Litiges'], ['users', 'Utilisateurs'], ['alerts', 'Alertes e-mail'], ['flags', 'Fonctionnalités']];
+// Environnements réglables depuis l'admin (« local » suit toujours le registre).
+const ENVS: Environnement[] = ['beta', 'preprod', 'prod'];
 
 function remoteSource(g: RemoteGateway, email: string): AdminSource {
   return { demo: false, email, call: (action: AdminAction, data = {}) => g.call('flemme_admin_api', { p_action: action, p_data: data }) };
@@ -44,7 +48,7 @@ export default function AdminApp() {
   async function load(s: AdminSource, which: Tab) {
     const [field, action]: [keyof Data, AdminAction] = which === 'queue' ? ['queue', 'review_queue'] : which === 'help' ? ['help', 'help_queue'] : [which, which];
     const result = await s.call(action);
-    setData(d => ({ ...d, [field]: which === 'overview' || which === 'moderation' || which === 'queue' ? result : which === 'help' ? result.requests : result[which] }));
+    setData(d => ({ ...d, [field]: which === 'overview' || which === 'moderation' || which === 'queue' || which === 'flags' ? result : which === 'help' ? result.requests : result[which] }));
   }
   async function open(s: AdminSource) {
     // Le premier appel vérifie le rôle : un compte non admin reçoit « Accès réservé » et ne voit rien.
@@ -196,6 +200,31 @@ export default function AdminApp() {
         : !u.admin && <><div className="field"><label htmlFor={'s-' + u.id}>Motif de suspension</label><input id={'s-' + u.id} maxLength={500} value={draft['s-' + u.id] || ''} onChange={set('s-' + u.id)} disabled={busy}/></div>
           <Button secondary disabled={busy} onClick={() => act('user_suspend', { userId: u.id, reason: draft['s-' + u.id] || '' }, 'Compte suspendu.', ['users'])}>Suspendre</Button></>}
       </div>)}
+    </>;
+  } else if (tab === 'flags') {
+    // Feature flags : registre dans packages/shared/src/flags.ts, interrupteurs dans flemme_v2.feature_flags.
+    const f = data.flags;
+    const ligne = (k: CleFlag, env: Environnement) => f?.flags.find(r => r.key === k && r.environment === env);
+    const domaines = [...new Set(CLES.map(k => FLAGS[k].domaine))];
+    content = !f ? <p className="muted">Fonctionnalités indisponibles : la migration feature flags n’est pas encore appliquée sur cette base.</p> : <>
+      <p className="muted">Chaque interrupteur agit tout de suite, sans déploiement. « Testeurs » = visible seulement avec l’accès bêta. Un flag sans réglage suit la valeur par défaut du registre (dans le code). Ce site lit l’environnement « {ENV} ».</p>
+      <div className="field"><label htmlFor="flag-serveur">Environnement contrôlé par la base (nouvelle demande, candidature)</label>
+        <select id="flag-serveur" value={f.serverEnvironment} disabled={busy} onChange={e => act('flag_environment', { environment: e.target.value }, 'Environnement serveur enregistré.', ['flags'])}>{ENVS.map(env => <option key={env} value={env}>{env}</option>)}</select></div>
+      {domaines.map(d => <section key={d}><h2 className="card-title">{d}</h2>
+        {CLES.filter(k => FLAGS[k].domaine === d).map(k => { const def: DefinitionFlag = FLAGS[k]; return <div className="card" key={k}>
+          <div className="row"><span className="card-title">{def.libelle}</span><span className="tag">{def.type}</span><code className="note">{k}</code></div>
+          <p className="muted">{def.description}{def.retraitPrevu ? ' Retrait prévu du code : ' + def.retraitPrevu + '.' : ''}</p>
+          {ENVS.map(env => { const r = ligne(k, env), etat: EtatFlag = r?.state || def.defaut[env], valeur = r?.value || def.valeurs?.[0] || '';
+            const poser = (state: EtatFlag, value: string) => act('flag_set', { key: k, environment: env, state, value: def.valeurs ? value : null }, `${def.libelle} · ${env} : ${ETAT_LIBELLE[state]}${def.valeurs ? ' (' + value + ')' : ''}.`, ['flags']);
+            return <div className="row" key={env}>
+              <label className="note" htmlFor={`${k}-${env}`}>{env}</label>
+              <select id={`${k}-${env}`} value={etat} disabled={busy} onChange={e => poser(e.target.value as EtatFlag, valeur)}>{ETATS.map(s => <option key={s} value={s}>{ETAT_LIBELLE[s]}</option>)}</select>
+              {def.valeurs && <select aria-label={`${def.libelle} · valeur ${env}`} value={valeur} disabled={busy} onChange={e => poser(etat, e.target.value)}>{def.valeurs.map(v => <option key={v}>{v}</option>)}</select>}
+              <span className="note">{r ? `réglé le ${when(r.updatedAt)}${r.updatedBy ? ' par ' + r.updatedBy : ''}` : 'défaut du registre'}</span>
+              {r && <Button secondary disabled={busy} onClick={() => act('flag_reset', { key: k, environment: env }, `${def.libelle} · ${env} : retour au registre.`, ['flags'])}>Revenir au défaut</Button>}
+            </div>; })}
+        </div>; })}
+      </section>)}
     </>;
   } else if (tab === 'alerts') content = <>
     <p className="muted">Chaque nouvelle flemme, accord ou signalement est enregistré ici puis envoyé par e-mail. Une alerte en échec ne bloque jamais l’action du membre.</p>

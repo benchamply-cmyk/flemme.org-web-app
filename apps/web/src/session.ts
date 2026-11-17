@@ -1,19 +1,23 @@
 import { useSyncExternalStore } from 'react';
-import { FlemmeSession, RemoteGateway, paymentReturn } from '../../../packages/shared/src/index.ts';
+import { FlemmeSession, RemoteGateway, lireAdresse, paymentReturn } from '../../../packages/shared/src/index.ts';
 import { readDemo, tokens, writeDemo } from './storage.ts';
 import { readLinkReturn } from './authLinks.ts';
 import { supabaseConfigProblem } from './supabaseConfig.ts';
 
 // Une seule session pour la page app.html. La logique (verrou, idempotence, erreurs) vient de packages/shared.
+// Adresse d’arrivée lue avant que l’app ne la remplace par l’adresse de l’écran (src/App.tsx).
+const arrivee = { search: location.search, hash: location.hash, paiement: lireAdresse(location.pathname, location.search, location.hash)?.paiement };
 const url = import.meta.env.VITE_SUPABASE_URL || '', key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
 export const session = new FlemmeSession({
   url, key, tokens, readDemo: () => readDemo(), writeDemo: s => writeDemo(s),
   configProblem: supabaseConfigProblem(url, key),
   // Retour d’un lien e-mail (confirmation d’inscription ou mot de passe oublié), propre au navigateur.
   onStart: async g => {
-    const link = readLinkReturn(location.search, location.hash);
-    if (!link) return { signedIn: false, notice: paymentReturn(location.hash) || undefined }; // retour de Stripe Checkout
-    history.replaceState(history.state, '', location.pathname); // Le code ne sert qu’une fois : on le retire de l’adresse.
+    const link = readLinkReturn(arrivee.search, arrivee.hash);
+    // Retour de Stripe Checkout : /paiement/ok, /paiement/annule (anciennement app.html#paiement-ok, #paiement-annule).
+    if (!link) return { signedIn: false, notice: (arrivee.paiement && paymentReturn('#paiement-' + arrivee.paiement)) || undefined };
+    // Le code ne sert qu’une fois : il ne doit pas rester dans l’adresse (l’app l’a déjà remplacée par celle de l’écran).
+    if (/[?&#](code|error)=/.test(location.search + location.hash)) history.replaceState(history.state, '', location.pathname);
     if ('error' in link) return { signedIn: false, error: link.error };
     await g.exchangeCode(link.code, link.verifier);
     return { signedIn: true, recovering: link.purpose === 'recovery', notice: link.purpose === 'signup' ? 'Adresse confirmée. Bienvenue !' : undefined };

@@ -1,0 +1,202 @@
+/*
+ * Identité FLEMME sur tout le site (14/11/2026) : logo ruban menthe et noir, thème clair.
+ * Source : dossier Drive « FLEMME-Palette » envoyé par Ben, palette déjà relevée pour la landing (PR #71).
+ *   noir #121212 · bleu nuit #091426 · encre #101e2a · vert #57d68d · vert moyen #3a8f5e · vert profond #225337
+ *   menthe pâle #d7f5e4 · fond menthe #ddf8e9 · contour #a3e8c0
+ * Thème clair demandé par Ben : fond blanc, dégradés et déclinaisons menthe, boutons noirs, fins de titres
+ * au dégradé chromé du ruban.
+ *
+ * Chargée en DERNIER partout (vitrine : commun.ts, accueil : landing.ts, espace connecté : main.tsx, admin : admin.tsx).
+ * Elle remplace les couleurs des anciennes chartes (glacier, violet, bleu acier) sans toucher aux mises en page :
+ * site.css, vitrine.css, accueil-union.css, styles.css et reglages*.css restent tels quels.
+ * Les règles en :root:root … !important passent devant les réglages reglages*.css, eux-mêmes en !important.
+ * Les thèmes de la bêta (html[data-beta-theme]) restent prioritaires sur les variables.
+ */
+
+/* ---------- 1. Variables : les anciennes couleurs prennent celles du logo ---------- */
+:root {
+  --marque-noir: #121212;
+  --marque-nuit: #091426;
+  --marque-encre: #101e2a;
+  --marque-doux: #4c6157;
+  --marque-vert: #57d68d;
+  --marque-vert-moyen: #3a8f5e;
+  --marque-vert-profond: #225337;
+  --marque-menthe: #d7f5e4;
+  --marque-fond: #ddf8e9;
+  --marque-teinte: #f2fbf6;
+  --marque-contour: #a3e8c0;
+  --marque-trait: #cfe9da;
+  --marque-chrome: linear-gradient(100deg, #225337, #3a8f5e 30%, #57d68d 50%, #3a8f5e 72%, #225337);
+  --marque-ombre: 0 1px 0 rgba(16, 30, 42, .04), 0 22px 46px -20px rgba(34, 83, 55, .28);
+  --marque-ombre-bouton: 0 10px 24px -8px rgba(18, 18, 18, .4);
+
+  /* Vitrine (site.css, vitrine.css, accueil-union.css) */
+  --encre: var(--marque-encre);
+  --texte-doux: var(--marque-doux);
+  --violet: var(--marque-vert-profond);
+  --acier: #2f6f4a;
+  --vert-logo: var(--marque-vert);
+  --nuit: var(--marque-nuit);
+  --ciel: var(--marque-contour);
+  --degrade-haut: linear-gradient(160deg, #225337, #3a8f5e 55%, #a3e8c0);
+  --ombre-violette: 5px 6px 0 var(--marque-vert-profond);
+  --pp-ombre: var(--marque-ombre);
+  /* Fonds de cartes et pastilles des familles : déclinaisons menthe, plus deux teintes neutres (nuit, sable)
+     pour que les six familles du catalogue restent distinctes. */
+  --glacier: #e3f7ec;
+  --glacier-clair: var(--marque-teinte);
+  --menthe: var(--marque-menthe);
+  --vert-tendre: #c4f0d8;
+  --lagon: var(--marque-contour);
+  --peche: #f1ece1;
+  --lavande: #e1e8f0;
+
+  /* Espace connecté et admin (styles.css) */
+  --ink: var(--marque-encre);
+  --muted: var(--marque-doux);
+  --soft: var(--marque-teinte);
+  --accent: var(--marque-contour);
+  --glacier-deep: var(--marque-vert-moyen);
+  --green: var(--marque-vert);
+  --shadow: 5px 6px 0 var(--marque-vert-profond);
+}
+/* reglages.css passait le texte des pages « comment » et « app » en gris bleuté : il reprend l’encre du logo. */
+:root body[data-page] { --encre: var(--marque-encre); --texte-doux: var(--marque-doux); --ink: var(--marque-encre); --muted: var(--marque-doux); }
+::selection { background: var(--marque-contour); color: var(--marque-encre); }
+
+/* ---------- 2. Logo : ruban + mot « FLEMME. » (Arial 400, serré), comme les fichiers du Drive ---------- */
+:root .pn-logo, :root .pn .pn-logo, :root .logo {
+  gap: 8px; height: 38px; padding: 0 8px 0 34px; border: 0; border-radius: 0; color: var(--marque-encre);
+  background: url('/marque/flemme-ruban.svg') 2px 50% / 28px auto no-repeat;
+  font: 400 21px/1 'Helvetica Neue', Arial, sans-serif !important; letter-spacing: -.05em; }
+:root .pied-marque .logo { height: 38px; padding: 0 8px 0 34px; }
+
+/* ---------- 3. Navigation pastille ---------- */
+:root .pn { border-color: rgba(16, 30, 42, .08); box-shadow: 0 10px 30px rgba(34, 83, 55, .14); }
+:root .pn-deroulant { box-shadow: 0 14px 34px rgba(34, 83, 55, .16); }
+:root .pn .pn-barre .pn-cta:hover, :root .pn .pn-barre .pn-btn:hover, :root .pn .pn-barre .pn-menu:hover,
+:root .pn .pn-barre .pn-cta:focus-visible, :root .pn .pn-barre .pn-btn:focus-visible, :root .pn .pn-barre .pn-menu:focus-visible,
+:root .pn .pn-barre [aria-expanded="true"], :root .pn .pn-barre .pn-cta[aria-current="page"], :root .pn .pn-barre .pn-btn[aria-current="page"] {
+  background: var(--marque-noir); border-color: var(--marque-noir); color: #fff; }
+/* Quatre pastilles de l’icône Menu : les couleurs du ruban. */
+.pn-ico circle:nth-of-type(1) { fill: var(--marque-vert); }
+.pn-ico circle:nth-of-type(2) { fill: var(--marque-vert-profond); }
+.pn-ico circle:nth-of-type(3) { fill: var(--marque-contour); }
+.pn-ico circle:nth-of-type(4) { fill: var(--marque-noir); }
+:root .pn .pn-barre [aria-expanded="true"] .pn-ico circle:nth-of-type(4) { fill: #fff; }
+
+/* ---------- 4. Haut de page : rubans chromés recolorés en menthe ---------- */
+:root:root .flemme-chrome-home { --flemme-ribbon-tone: saturate(1.05) !important; --flemme-ribbon-opacity: .9 !important; }
+.flemme-chrome-home::before { background-image: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201460%20816%22%20preserveAspectRatio=%22none%22%3E%3Cdefs%3E%3ClinearGradient%20id=%22g%22%20gradientUnits=%22userSpaceOnUse%22%20x1=%220%22%20y1=%220%22%20x2=%22177%22%20y2=%22384%22%3E%3Cstop%20offset=%220%22%20stop-color=%22%23e6f7ed%22/%3E%3Cstop%20offset=%220.25%22%20stop-color=%22%23ffffff%22/%3E%3Cstop%20offset=%220.43%22%20stop-color=%22%238fdfb1%22/%3E%3Cstop%20offset=%220.51%22%20stop-color=%22%23ffffff%22/%3E%3Cstop%20offset=%220.7%22%20stop-color=%22%23d7f5e4%22/%3E%3Cstop%20offset=%220.87%22%20stop-color=%22%23ffffff%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20d=%22M0%200%20H964%20C846%20190%20386%20388%200%20394%20Z%22%20fill=%22url%28%23g%29%22/%3E%3C/svg%3E"); }
+.flemme-chrome-home::after { background-image: url("data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201460%20816%22%20preserveAspectRatio=%22none%22%3E%3Cdefs%3E%3ClinearGradient%20id=%22g%22%20gradientUnits=%22userSpaceOnUse%22%20x1=%221330%22%20y1=%22522%22%20x2=%221475%22%20y2=%22754%22%3E%3Cstop%20offset=%220%22%20stop-color=%22%23ffffff%22/%3E%3Cstop%20offset=%220.22%22%20stop-color=%22%23d7f5e4%22/%3E%3Cstop%20offset=%220.4%22%20stop-color=%22%23ffffff%22/%3E%3Cstop%20offset=%220.67%22%20stop-color=%22%237fd6a3%22/%3E%3Cstop%20offset=%220.83%22%20stop-color=%22%23ffffff%22/%3E%3Cstop%20offset=%221%22%20stop-color=%22%23c4f0d8%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20d=%22M814%20816%20C976%20687%201214%20580%201460%20507%20V816%20Z%22%20fill=%22url%28%23g%29%22/%3E%3C/svg%3E"); }
+.flemme-chrome-home::before, .flemme-chrome-home::after { filter: var(--flemme-ribbon-tone, saturate(1)) drop-shadow(0 var(--shadow-y) 26px rgba(34, 83, 55, .16)); }
+
+/* ---------- 5. Fonds des pages : blanc et menthe ---------- */
+:root:root main { background: linear-gradient(180deg, #fff 0%, var(--marque-teinte) 38%, #fff 72%, #ecfaf2 100%); }
+:root:root body[data-page="comment"] main { background: linear-gradient(115deg, #fff 0%, #eefaf3 24%, #fff 42%, #e3f7ec 64%, #f8fdfa 82%, #eaf9f0 100%) fixed; }
+:root:root body[data-page="app"] main { background: none; }
+
+/* ---------- 6. Boutons : noir (action principale), menthe (secondaire), blanc à contour ---------- */
+:root:root .cta, :root:root .bouton:not(.clair), :root:root .btn:not(.secondary), :root:root .choice:not(.secondary) {
+  background: var(--marque-noir) !important; color: #fff !important; box-shadow: var(--marque-ombre-bouton) !important; }
+:root:root .cta:hover, :root:root .bouton:not(.clair):hover, :root:root .btn:not(.secondary):hover, :root:root .choice:not(.secondary):hover {
+  background: var(--marque-vert-profond) !important; box-shadow: 0 14px 28px -8px rgba(34, 83, 55, .5) !important; }
+:root:root .cta.vert, :root:root .bouton.vert, :root:root .choice.secondary {
+  background: var(--marque-menthe) !important; color: var(--marque-encre) !important; box-shadow: 0 10px 24px -12px rgba(34, 83, 55, .45) !important; }
+:root:root .cta.vert:hover, :root:root .bouton.vert:hover, :root:root .choice.secondary:hover { background: var(--marque-contour) !important; }
+:root:root .cta.vert small { color: var(--marque-encre) !important; }
+:root:root .cta.vert .cta-fleche { background: var(--marque-noir) !important; color: #fff !important; }
+:root:root .bouton.clair, :root:root .btn.secondary { background: #fff !important; color: var(--marque-encre) !important; box-shadow: inset 0 0 0 1px rgba(16, 30, 42, .18), 0 8px 20px -12px rgba(34, 83, 55, .35) !important; }
+:root:root .bouton.clair:hover, :root:root .btn.secondary:hover { background: var(--marque-teinte) !important; box-shadow: inset 0 0 0 1.5px var(--marque-vert-moyen), 0 10px 24px -10px rgba(34, 83, 55, .35) !important; }
+:root:root .pastille.deleguer, :root:root .pastille.entete-resoudre, :root:root .pastille.entete-comment, :root:root .pastille.entete-home { box-shadow: none !important; }
+/* Boutons de formulaires de la vitrine (Résoudre, Déléguer) */
+.barre button, .decrire-bas button { background: var(--marque-noir); color: #fff; border-color: var(--marque-noir); }
+.barre button:hover, .decrire-bas button:hover { background: var(--marque-vert-profond); border-color: var(--marque-vert-profond); }
+/* Accueil (accueil-union.css) */
+.go { background: var(--marque-noir); box-shadow: var(--marque-ombre-bouton); }
+.go:hover, .go:focus-visible { background: var(--marque-vert-profond); box-shadow: 0 14px 28px -8px rgba(34, 83, 55, .5); }
+.go.clair { background: #fff; box-shadow: inset 0 0 0 1.5px var(--marque-encre); }
+.go.clair:hover, .go.clair:focus-visible { background: var(--marque-menthe); }
+
+/* ---------- 7. Cartes : blanches à reflet menthe, ombres vertes douces ---------- */
+:root:root .carte, :root:root .exemple-carte, :root:root .contact-carte, :root:root .etapes li, :root:root .exemple {
+  background: linear-gradient(160deg, #fff 0%, #fbfefc 55%, #f0faf4 100%) !important; box-shadow: var(--marque-ombre) !important; }
+:root:root .exemple-carte { background: linear-gradient(160deg, #fff, var(--marque-teinte)) !important; }
+:root:root .exemple-carte:hover { box-shadow: 0 1px 0 rgba(16, 30, 42, .04), 0 26px 50px -18px rgba(34, 83, 55, .36) !important; }
+:root:root .fond-glacier, :root:root .fond-menthe { background: linear-gradient(160deg, #fff, var(--marque-fond) 60%, var(--marque-teinte)) !important; }
+/* Couleur de l’ombre sur les cartes et pastilles du catalogue : l’arrière-plan propre à chaque famille reste. */
+:root:root .famille-s { background: linear-gradient(160deg, #fff 0%, #fbfefc 60%, color-mix(in srgb, var(--c) 35%, #fff) 100%) !important; }
+:root:root .carte, :root:root .exemple-carte, :root:root .contact-carte, :root:root .exemple, :root:root .parcours-duo > div,
+:root:root .etiquette, :root:root .burger summary { border-color: var(--marque-trait) !important; }
+:root:root body[data-page="app"] .carte, :root:root body[data-page="app"] .exemple-carte, :root:root body[data-page="app"] .contact-carte { border-color: transparent !important; }
+:root:root .etiquette, :root:root .exemple-etiquette { background: #fff !important; }
+.pastille-s { border-color: transparent; box-shadow: inset 0 0 0 1px rgba(16, 30, 42, .12); }
+.delai-s { border-color: transparent; box-shadow: inset 0 0 0 1px rgba(16, 30, 42, .12); }
+.tarifs-s li + li { --bordure: var(--marque-trait); }
+.tarifs-s a::after { color: var(--marque-vert-moyen); }
+.barre, .decrire textarea { box-shadow: 0 14px 30px -16px rgba(34, 83, 55, .4); }
+.categories a:hover { box-shadow: 0 14px 30px -16px rgba(34, 83, 55, .45); }
+.filtre-choix, .burger-menu { box-shadow: 0 18px 40px rgba(34, 83, 55, .18); }
+.premium-bandeau, .premium-court, .offres .sombre { background: var(--marque-nuit); }
+.premium-bandeau ul { color: var(--marque-menthe); }
+.texte-legal mark { background: var(--marque-menthe); }
+.ex { box-shadow: 0 22px 50px -10px rgba(34, 83, 55, .28); }
+
+/* ---------- 8. Titres : la fin en dégradé du ruban, comme sur la landing ---------- */
+h1 em, h2 em, .cmp-chute em, .titre em {
+  color: var(--marque-vert-moyen); background: var(--marque-chrome) 0 0 / 200% 100%;
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  animation: marque-chrome 8s ease-in-out infinite alternate; padding-right: .06em; }
+@keyframes marque-chrome { to { background-position: 100% 0; } }
+.surtitre, .eyebrow { color: var(--acier); }
+.arg-chiffre, .moment-num, .etapes-p li > span, .test-niveau { color: var(--marque-vert-moyen); }
+.bande li::after { color: var(--marque-vert); }
+.lien-p, .lien-fort { color: var(--marque-vert-profond); }
+
+/* ---------- 9. Accueil : comparatif et test en thème clair ---------- */
+.sombre { background: linear-gradient(180deg, var(--marque-teinte), var(--marque-fond)); color: var(--marque-encre); }
+.sombre .surtitre { color: var(--acier); }
+.cmp { background: #fff; box-shadow: var(--marque-ombre); }
+.cmp-case { color: var(--marque-doux); border-bottom-color: rgba(16, 30, 42, .08); }
+.cmp-entete .cmp-case { color: var(--marque-encre); border-bottom-color: rgba(16, 30, 42, .16); }
+.cmp-critere { color: var(--marque-encre); }
+.cmp-flemme { background: rgba(87, 214, 141, .14); color: var(--marque-encre); }
+.cmp-entete .cmp-flemme { background: var(--marque-noir); color: #fff; }
+.cmp-chute span { color: var(--marque-doux); }
+@media (max-width: 760px) {
+  .cmp { background: none; box-shadow: none; }
+  .cmp-ligne { border-bottom-color: rgba(16, 30, 42, .1); }
+  .cmp-critere { color: var(--acier); }
+  .cmp-flemme { background: none; color: var(--marque-vert-profond); }
+  .cmp-flemme::before, .cmp-ligne > .cmp-case:nth-child(3)::before, .cmp-ligne > .cmp-case:nth-child(4)::before { color: var(--marque-doux); }
+}
+.test::before { background: radial-gradient(circle, rgba(163, 232, 192, .55), transparent 70%); }
+.test-barre i { background: linear-gradient(90deg, var(--marque-vert-profond), var(--marque-vert)); }
+.test-reponses button:hover { border-color: var(--marque-vert-moyen); }
+.test-reponses button[aria-checked="true"] { background: var(--marque-noir); border-color: var(--marque-noir); }
+.rond { box-shadow: 0 10px 24px rgba(87, 214, 141, .4); }
+
+/* ---------- 10. Pied de page clair : blanc vers menthe ---------- */
+.pied { background: linear-gradient(180deg, #ffffff, var(--marque-fond)); color: var(--marque-doux); border-top: 1px solid rgba(58, 143, 94, .15); }
+.pied-colonnes b { color: var(--marque-encre); }
+.pied-colonnes nav a { color: var(--marque-doux); }
+.pied-colonnes nav a:hover { color: var(--marque-vert-profond); }
+.pied-bas { border-top-color: rgba(16, 30, 42, .12); color: var(--marque-doux); }
+.pied-bas::before { content: ""; display: inline-block; width: 22px; height: 22px; margin-right: 8px; vertical-align: -6px; background: url('/marque/flemme-ruban.svg') center / contain no-repeat; }
+.pied-marque .pied-doux { color: var(--marque-doux); }
+
+/* ---------- 11. Espace connecté et admin ---------- */
+.tag, .chip { border-color: var(--marque-encre); }
+.chip[aria-selected="true"], .chip[aria-pressed="true"] { background: var(--marque-noir); color: var(--marque-contour); }
+.notice { background: var(--marque-menthe); border-color: var(--marque-contour); }
+.history { border-left-color: var(--marque-contour); }
+.pastille-initiale { background: var(--marque-menthe); }
+.propose { background: var(--marque-teinte); box-shadow: var(--marque-ombre); }
+
+/* ---------- 12. Focus clavier ---------- */
+:focus-visible { outline-color: var(--marque-vert-moyen); }
+
+@media (prefers-reduced-motion: reduce) {
+  h1 em, h2 em, .cmp-chute em, .titre em { animation: none; }
+}
