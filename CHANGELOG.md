@@ -6,7 +6,7 @@ Chaque PR ajoute une ligne sous « À venir ». Au gel de preprod, « À venir �
 
 ## À venir
 
-- Instructions des assistants (17 nov. 2026, demande de Ben) : `AGENTS.md` réécrit avec toutes les règles du nouveau modèle Git (branches, numéros, tags, releases immuables, CHANGELOG, étiquettes, flags, migrations, ce que l'assistant peut faire seul ou non), `CLAUDE.md` le renvoie ; `docs/organisation-git.md` complété (v1.5.0 promue, releases immuables, verrou Netlify, Manual Deploy Render, ruleset de tags). Aucune migration.
+- Instructions des assistants (17 nov. 2026, demande de Ben) : `AGENTS.md` réécrit avec toutes les règles du nouveau modèle Git (branches, numéros, tags, releases immuables, CHANGELOG, étiquettes, flags, migrations, ce que l'assistant peut faire seul ou non), `CLAUDE.md` le renvoie ; `docs/organisation-git.md` complété (v1.5.0 promue, releases immuables, verrou Netlify, Manual Deploy Render, ruleset de tags). Le check `promotion` exige désormais, pour toute PR vers `preprod`, une étiquette (`nouveaute`, `correction`, `migration`, `docs`, `promotion`) et une modification de `CHANGELOG.md`. Aucune migration.
 
 ## v1.5.0 (candidate) — gel de preprod le 17 nov. 2026
 

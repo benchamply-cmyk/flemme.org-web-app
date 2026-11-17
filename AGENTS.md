@@ -20,7 +20,8 @@ Ces règles s'appliquent à tout assistant (Claude, ChatGPT/Codex, Copilot ou au
 
 1. Une PR par sujet. Remplir le modèle `.github/pull_request_template.md`.
 2. Ajouter une ligne sous « ## À venir » dans `CHANGELOG.md` : quoi, date, demande de Ben, migration ou « Aucune migration ».
-3. Proposer une étiquette : `nouveaute`, `correction`, `migration`, `docs` ou `promotion`.
+3. Poser (ou demander à Ben de poser) une étiquette : `nouveaute`, `correction`, `migration`, `docs` ou `promotion`.
+   Le check obligatoire `promotion` refuse toute PR vers `preprod` sans l'une de ces étiquettes ou sans modification de `CHANGELOG.md`.
 4. Lancer les tests et le build pertinents ; les contrôles CI doivent être verts (`promotion` est obligatoire ; `web`, `native`, `migrations`, `python` tournent selon les dossiers modifiés).
 5. Ne poser **aucun** numéro de version, tag ni release pour une PR ordinaire.
 

@@ -1,7 +1,7 @@
 name: Flux de promotion
 on:
   pull_request:
-    types: [opened, synchronize, reopened, edited]
+    types: [opened, synchronize, reopened, edited, labeled, unlabeled]
 permissions:
   contents: read
 jobs:
@@ -17,5 +17,33 @@ jobs:
         run: |
           if [ "$BASE" = prod ] && { [ "$HEAD" != preprod ] || [ "$HEAD_REPO" != "$REPO" ]; }; then
             echo 'La production accepte uniquement la branche preprod de ce dépôt.'
+            exit 1
+          fi
+      # Règles du modèle Git (docs/organisation-git.md) pour toute PR vers preprod :
+      # une étiquette parmi nouveaute, correction, migration, docs, promotion, et une ligne dans CHANGELOG.md.
+      - name: Étiquette obligatoire
+        if: github.base_ref == 'preprod'
+        env:
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ' ') }}
+        run: |
+          for l in $LABELS; do
+            case "$l" in nouveaute|correction|migration|docs|promotion) echo "Étiquette : $l"; exit 0;; esac
+          done
+          echo "::error::Poser une étiquette sur la PR : nouveaute, correction, migration, docs ou promotion."
+          exit 1
+      - uses: actions/checkout@v4
+        if: github.base_ref == 'preprod'
+        with:
+          fetch-depth: 0
+      - name: Ligne de CHANGELOG obligatoire
+        if: github.base_ref == 'preprod'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if git diff --name-only "$BASE_SHA...$HEAD_SHA" | grep -qx 'CHANGELOG.md'; then
+            echo "CHANGELOG.md modifié."
+          else
+            echo "::error::Ajouter une ligne sous « ## À venir » dans CHANGELOG.md."
             exit 1
           fi

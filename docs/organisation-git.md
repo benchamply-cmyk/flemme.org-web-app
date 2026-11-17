@@ -101,7 +101,7 @@ Une fonctionnalité non terminée peut être fusionnée dans `preprod` derrière
 
 Le ruleset des tags doit être créé comme **tag ruleset** (Rulesets › New ruleset › New tag ruleset, ou import de `beta/github-ruleset-tags.json`) : un ruleset de branche nommé « tags » ne protège aucun tag.
 
-Seul `promotion` est requis par le ruleset, car il tourne sur toutes les PR. Les contrôles `web`, `native`, `migrations` et `python` ne tournent que si leurs dossiers changent : rendus obligatoires, ils bloqueraient les PR qui ne touchent pas ces dossiers. Ils doivent tout de même être verts avant de fusionner.
+Seul `promotion` est requis par le ruleset, car il tourne sur toutes les PR. Il vérifie aussi, pour toute PR vers `preprod`, la présence d'une des cinq étiquettes et une modification de `CHANGELOG.md` (depuis le 17/11/2026). Dans le ruleset des branches, « Allowed merge methods » est réglé sur Merge seulement. Les contrôles `web`, `native`, `migrations` et `python` ne tournent que si leurs dossiers changent : rendus obligatoires, ils bloqueraient les PR qui ne touchent pas ces dossiers. Ils doivent tout de même être verts avant de fusionner.
 
 ## Leçons retenues
 
