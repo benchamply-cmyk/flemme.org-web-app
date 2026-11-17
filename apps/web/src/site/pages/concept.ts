@@ -1,4 +1,4 @@
-import { money, parseMoney, price } from '../../../../../packages/shared/src/domain.ts';
+import { COMMISSION, money, parseMoney, price, rateLabel } from '../../../../../packages/shared/src/domain.ts';
 import '../commun.ts';
 
 // Comment ça marche : calculateur « Quel prix vais-je payer ou recevoir ? » : même arrondi au centime que l’accord enregistré par l’app.
@@ -11,6 +11,7 @@ function update() {
     input.removeAttribute('aria-invalid');
   } catch (e) { out('calcError', (e as Error).message); input.setAttribute('aria-invalid', 'true'); }
 }
+out('cFeeLabel', 'Frais de plateforme · ' + rateLabel(COMMISSION));
 input.addEventListener('input', update);
 document.getElementById('calc')!.addEventListener('submit', e => e.preventDefault());
 update();

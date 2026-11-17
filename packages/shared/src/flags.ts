@@ -32,10 +32,11 @@ const partout = (etat: EtatFlag): Record<Environnement, EtatFlag> => ({ local: e
 
 // Clé = domaine.fonction, en minuscules. Ajouter un flag = une ligne ici, dans une PR.
 export const FLAGS = {
-  // Modèle économique affiché (décision de Ben du 17/11/2026) : « hybride » = catalogue à prix fixes (preprod, v1.5.0),
-  // « ouvert » = mise en relation ouverte (prod actuelle, future v2.0.0). Les blocs propres à un modèle portent data-modele.
+  // Modèle économique affiché (décision de Ben du 17/11/2026) : « hybride » = catalogue à prix fixes (v1.5.x),
+  // « ouvert » = mise en relation ouverte (v2.0.0, marketplace ouverte : défaut partout depuis la v2.0.0).
+  // Les blocs propres à un modèle portent data-modele ; l’hybride reste disponible en le choisissant dans /admin.
   'modele.version': { domaine: 'Modèle', libelle: 'Modèle affiché', type: 'variante', defaut: partout('tous'), valeurs: ['ouvert', 'hybride'],
-    valeurDefaut: { local: 'hybride', beta: 'hybride', preprod: 'hybride', prod: 'ouvert' }, creeLe: '2026-11-17',
+    valeurDefaut: { local: 'ouvert', beta: 'ouvert', preprod: 'ouvert', prod: 'ouvert' }, creeLe: '2026-11-17',
     description: 'Hybride : catalogue à prix fixes, formules et Devenir Brigadier. Ouvert : ces blocs sont masqués (mise en relation ouverte).' },
   'espace.mon_espace': { domaine: 'Mon espace', libelle: 'Mon espace', type: 'coupe-circuit', defaut: partout('tous'), creeLe: '2026-11-16',
     description: 'Éteint : la connexion et Mon espace affichent « bientôt disponible ».' },
