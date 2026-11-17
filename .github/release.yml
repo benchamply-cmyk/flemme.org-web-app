@@ -1,0 +1,16 @@
+# Classement des notes de release générées par GitHub (« Generate release notes »).
+# Chaque PR porte une étiquette ; voir docs/organisation-git.md.
+changelog:
+  exclude:
+    labels: [promotion]
+  categories:
+    - title: Nouveautés
+      labels: [nouveaute]
+    - title: Corrections
+      labels: [correction]
+    - title: Base de données (migrations)
+      labels: [migration]
+    - title: Documentation et organisation
+      labels: [docs]
+    - title: Autres changements
+      labels: ["*"]
