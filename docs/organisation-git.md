@@ -33,8 +33,7 @@ En bref : deux branches permanentes, un numéro de version à chaque mise en pro
 | `v6.2000` | `v1.2.0` | `1214ab6` |
 | v6.3000 (jamais taguée) | `v1.3.0` | `c199dfa` |
 | prod #52 (jamais taguée) | `v1.4.0` | `28a2996` |
-| preprod actuelle, modèle hybride derrière le flag `modele.version` | `v1.5.0` | à la promotion |
-| import de FlemmeV2.0 | `v1.6.0` | à la promotion |
+| promotion #86 : modèle hybride derrière le flag `modele.version`, feature flags, import de FlemmeV2.0 | `v1.5.0` | `07f84bc` (17/11/2026, candidate `v1.5.0-rc.1` sur `0e2a9cf`) |
 | mise en relation ouverte | `v2.0.0` | à la promotion |
 
 Les anciens tags `v6.*` et `V5.9000-archive` sont conservés comme anciens noms ; les nouveaux tags sont posés sur les mêmes commits.
@@ -49,6 +48,8 @@ Les anciens tags `v6.*` et `V5.9000-archive` sont conservés comme anciens noms 
 | `build/<branche>-pr<N>-<sha>` | Automatique à chaque fusion dans `preprod` ou `prod` (workflow `beta-version.yml`), sans release | GitHub Actions |
 
 Les tags `v*` et `archive/*` ne se suppriment ni ne se déplacent (ruleset des tags, `beta/github-ruleset-tags.json`). Les anciens tags `beta-*` restent en place.
+
+Les releases sont **immuables** (option « Enable release immutability », choix de Ben du 17/11/2026) : une fois publiée, une release garde son tag et ses fichiers ; seuls le titre et le texte se modifient. On la prépare donc en brouillon, et une erreur de code publiée se corrige par une version corrective (`v1.5.1`), jamais en réécrivant la version. Les releases v6.100, v6.1000 et v6.2000 restent sur leurs tags v6, avec « (Now v1.x.0) » dans le titre.
 
 ## Cycle d'une modification
 
@@ -68,7 +69,7 @@ Rythme : une promotion à chaque fonctionnalité terminée et vérifiée en prep
 2. Migrations : appliquées sur `flemme-preprod`, vérifiées, puis sur la base de production juste avant la fusion.
 3. PR `preprod` → `prod` intitulée « Promotion vX.Y.Z », avec la liste des PR embarquées et des migrations. Fusion en « Create a merge commit ».
 4. Ben pose `vX.Y.Z` sur le merge commit de `prod` et publie la release avec « Generate release notes » (PR classées par `.github/release.yml`).
-5. Vérifier flemme.org, renommer le déploiement Netlify « vX.Y.Z », mettre à jour le registre des versions (Drive) et la section du CHANGELOG (date).
+5. Vérifier flemme.org (si le déploiement de prod est verrouillé dans Netlify, « Start auto publishing » puis publier le dernier déploiement), relancer un Manual Deploy du Manager sur Render (auto-deploy désactivé), renommer le déploiement Netlify « vX.Y.Z », mettre à jour le registre des versions (Drive) et la section du CHANGELOG (date).
 
 ## Consulter ou republier une version
 
@@ -96,6 +97,9 @@ Une fonctionnalité non terminée peut être fusionnée dans `preprod` derrière
 | Rules › Rulesets | Branches (`beta/github-ruleset.json`) | `prod`, `preprod` : PR obligatoire, 0 approbation, contrôle `promotion` requis, pas de suppression ni de force push |
 | Rules › Rulesets | Tags (`beta/github-ruleset-tags.json`) | `v*`, `archive/*` : ni suppression ni modification |
 | Issues › Labels | Étiquettes | `nouveaute`, `correction`, `migration`, `docs`, `promotion` |
+| Settings › General › Releases | Enable release immutability | Activé |
+
+Le ruleset des tags doit être créé comme **tag ruleset** (Rulesets › New ruleset › New tag ruleset, ou import de `beta/github-ruleset-tags.json`) : un ruleset de branche nommé « tags » ne protège aucun tag.
 
 Seul `promotion` est requis par le ruleset, car il tourne sur toutes les PR. Les contrôles `web`, `native`, `migrations` et `python` ne tournent que si leurs dossiers changent : rendus obligatoires, ils bloqueraient les PR qui ne touchent pas ces dossiers. Ils doivent tout de même être verts avant de fusionner.
 
