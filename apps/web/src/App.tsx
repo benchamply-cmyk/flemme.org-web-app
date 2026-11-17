@@ -22,6 +22,7 @@ import { NouvelleFlemme } from './ecrans/NouvelleFlemme.tsx';
 import { Offre } from './ecrans/Offre.tsx';
 import { Profil } from './ecrans/Profil.tsx';
 import { Signalement } from './ecrans/Signalement.tsx';
+import { BientotDisponible, useFlag } from './flags/useFlag.tsx';
 
 // Coque web de l’app : navigation, formulaire en cours et choix de l’écran.
 // Règles, état et textes partagés : packages/shared. Écrans : src/ecrans. Pendant mobile : apps/mobile/App.tsx.
@@ -117,6 +118,8 @@ export default function App() {
     return <div className="field" key={name}><label htmlFor={id}>{label}</label><select id={id} value={draft[name] || ''} disabled={busy} onChange={e => setDraft(d => ({ ...d, [name]: e.target.value }))}>{empty != null && <option value="">{empty}</option>}{options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}</select></div>;
   }
   function keepDraft(id: string) { const next = { ...place, draftId: id }; history.replaceState(next, '', adresseDe(next)); setPlace(next); }
+  // Feature flags (src/flags) : Mon espace et le formulaire « Déléguer » peuvent être éteints depuis /admin.
+  const monEspace = useFlag('espace.mon_espace'), deleguer = useFlag('formulaires.deleguer');
   const ctx: Ctx = {
     state, place, draft, task, offer, can: rights(task, actorId), field, choice, go, mutate, keepDraft,
     fill: values => setDraft(d => ({ ...d, ...values })),
@@ -125,7 +128,8 @@ export default function App() {
   };
 
   let content: ReactNode;
-  if (!ready) content = <p className="muted" role="status">Chargement…</p>;
+  if (!monEspace.actif) content = <BientotDisponible titre="Mon espace"/>;
+  else if (!ready) content = <p className="muted" role="status">Chargement…</p>;
   else if (session.remote && (!gateway || !actorId)) content = <Connexion {...ctx}/>;
   else if (!gateway) content = <><h1 className="heading">Chargement interrompu</h1><Action onClick={() => session.initialize()}>Réessayer sans effacer mes données</Action></>;
   else if (recovering && session.remote) content = <MotDePasse {...ctx}/>;
@@ -133,6 +137,7 @@ export default function App() {
   else if (screen === 'profile') content = <Profil key={visit} {...ctx}/>;
   else if (screen === 'help') content = <Aide key={visit} {...ctx}/>;
   else if (screen === 'home') content = <Accueil {...ctx}/>;
+  else if (screen === 'new' && !deleguer.actif) content = <BientotDisponible titre="Déléguer une flemme"/>;
   else if (screen === 'new') content = <NouvelleFlemme key={visit} {...ctx}/>;
   else if (screen === 'list') content = <Listes key={visit} {...ctx}/>;
   else if (!task) content = <><h1 className="heading">Demande indisponible</h1><Action secondary onClick={() => go('list')}>Revenir à la liste</Action></>;

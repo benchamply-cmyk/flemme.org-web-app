@@ -77,7 +77,7 @@
   </section>
 
   <!-- Notre modèle : la phrase apparaît mot par mot, puis les trois arguments. -->
-  <section class="lp-section" id="modele">
+  <section class="lp-section" id="modele" data-modele="hybride">
     <p class="lp-etiquette">Notre modèle</p>
     <h2 class="lp-geant" data-mots>Tu décris. On s’en occupe. Tu valides.</h2>
     <div class="lp-args">
@@ -156,7 +156,7 @@
 
   <!-- Nos services : une carte par famille (src/site/catalogue.ts, insérées au build), défilement horizontal aimanté,
        flèches, points et barre de progression. Hors catalogue : prix proposé ou devis. -->
-  <section class="lp-section" id="services">
+  <section class="lp-section" id="services" data-modele="hybride">
     <span id="besoins"></span>
     <div class="lp-services-tete">
       <div>
@@ -210,7 +210,7 @@
     <div class="lp-liste revele" aria-label="Nos garanties">
       <p class="lp-liste-tete"><span>Garanties</span><span>Pour chaque flemme</span></p>
       <ul>
-        <li><b>Un prix fixe</b><span>Annoncé avant de payer. Aucun supplément sans ton accord.</span></li>
+        <li data-modele="hybride"><b>Un prix fixe</b><span>Annoncé avant de payer. Aucun supplément sans ton accord.</span></li>
         <li><b>Une correction incluse</b><span>Si le résultat ne correspond pas à ta demande, on le reprend.</span></li>
         <li><b>Rien sans ton accord</b><span>Aucun envoi, aucune publication, aucun achat en ton nom. Jamais de mot de passe demandé.</span></li>
         <li><b>Remboursé si on ne livre pas</b><span>Si on ne peut pas faire ce qui était convenu, tu es remboursé.</span></li>
