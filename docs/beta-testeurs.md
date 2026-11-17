@@ -44,11 +44,11 @@ Tester refus anonyme, lien erroné/expiré, rotation et révocation, connexion c
 
 Les tests sur prod utilisent les connexions de prod : écritures, e-mails et paiements restent réels. Les options du configurateur ne donnent aucun droit supplémentaire et ne modifient aucune configuration backend. Les paiements ne sont pas activés par ce chantier.
 
-Intégration via PR vers preprod avec marqueur [skip netlify] jusqu'à vérification des contextes ; puis recette preprod, puis PR preprod → prod avec merge commit. Le site flemmeorg-beta et la branche beta restent conservés tant que le remplacement n'est pas validé ; les retirer demande une action séparée, sans perte des retours.
+Intégration via PR vers preprod avec marqueur [skip netlify] jusqu'à vérification des contextes ; puis recette preprod, puis PR preprod → prod avec merge commit. La branche beta et le site flemmeorg-beta sont retirés (décision de Ben du 17/11/2026) après le tag archive/beta-atelier-2026-11-12 sur 3f6555f ; le retour enregistré par le formulaire de l'atelier est à exporter avant la suppression du site.
 
 ## Protection GitHub effective
 
-Ruleset 26773580 actif sur prod et preprod : PR, une approbation par un autre compte que l’auteur, contrôles web et promotion obligatoires, branche à jour, discussions résolues, merge commit uniquement, suppression/force push interdits et aucun contournement. Les anciens rulesets sont conservés. Source versionnée : beta/github-ruleset.json.
+Rulesets (décision du 17/11/2026, voir docs/organisation-git.md) : « FLEMME - branches prod et preprod » (26773580), PR obligatoire, 0 approbation, contrôle promotion obligatoire, branche à jour, discussions résolues, merge commit uniquement, suppression et force push interdits ; « FLEMME - tags de version et d'archive » sur v* et archive/*. Sources versionnées : beta/github-ruleset.json et beta/github-ruleset-tags.json.
 
 ## PR Amélioration version test
 
