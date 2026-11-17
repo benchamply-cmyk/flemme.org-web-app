@@ -1,53 +1,107 @@
-# Organisation Git
+# Organisation Git et versions
 
-Ces règles reprennent celles de FlemmeV2.0 (en place depuis le 20/10/2026) et corrigent ce qui y avait posé problème.
+Modèle validé par Ben le 17 novembre 2026. Il remplace les règles précédentes (branches `beta`, numéros `v6.xxxx`, tags `beta-*`). Document de référence complet : « Flemme — nouveau modèle de gestion du code et des versions » (Claude Doc du projet).
+
+En bref : deux branches permanentes, un numéro de version à chaque mise en production, des tags d'archive à la place des branches de sauvegarde, et des feature flags pour livrer sans attendre.
 
 ## Branches
 
-| Branche | Rôle | Déploiement Netlify |
+| Branche | Rôle | Déploiement Netlify (projet `flemmeorg`) |
 |---|---|---|
 | `prod` | Production, ce qui est en ligne | https://flemme.org |
-| `preprod` | Intégration : toutes les PR y sont fusionnées avant la production | adresse de branche `preprod--flemmeorg.netlify.app` |
-| `type/sujet` | Travail en cours, branche courte créée depuis `preprod` | aperçu de PR |
+| `preprod` | Intégration, branche par défaut : toutes les PR y sont fusionnées avant la production | https://preprod--flemmeorg.netlify.app |
+| `type/sujet` | Travail en cours, branche courte créée depuis `preprod`, supprimée après fusion | aperçu `deploy-preview-N--flemmeorg.netlify.app` |
 
-Les préfixes autorisés sont `feature/`, `fix/`, `docs/`, `chore/` et `mobile/`. Le sujet est court, en minuscules, avec des tirets, sans date ni barre oblique : par exemple `feature/paiement-forfait` ou `fix/connexion-expo`.
+- Préfixes : `feature/`, `fix/`, `docs/`, `chore/`, `mobile/`. Sujet court, en minuscules, avec des tirets, sans date ni `/`.
+- Pas de branche `beta`, `V1`, `V2` ni de branche de sauvegarde. Une expérience passe par l'aperçu de sa PR ou derrière un flag en preprod.
+- Une piste abandonnée ou mise de côté devient un tag `archive/<sujet>-<date>`, puis sa branche est supprimée (après le contrôle ci-dessous).
+- Jamais de PR dont la source est `prod`, ni de PR directe vers `prod` depuis une autre branche que `preprod` (le contrôle `promotion` le refuse).
+
+## Numéros de version
+
+- Format `vMAJEUR.MINEUR.CORRECTIF`, en minuscules, sans zéros de remplissage : `v1.4.0`, `v1.4.1`, `v2.0.0`.
+- MAJEUR : changement de modèle (v1 = Flemme V1, v2 = mise en relation ouverte). MINEUR : une fonctionnalité. CORRECTIF : une correction seule.
+- Un seul numéro pour tout le dépôt (site, app, Manager, base). Les maquettes de design (« maquette 1 à 7 », « maquette PR55 ») ne sont pas des versions.
+
+### Correspondance des anciennes versions (renumérotation du 17/11/2026)
+
+| Ancien nom | Nouveau numéro | Commit |
+|---|---|---|
+| ZIP V1 à V2.3, FlemmeV2.0 `v4.1000`, `V.5.1000`, `v5.9000-archive` | avant la v1 : tags `archive/flemmev2/…` | dépôt FlemmeV2.0 |
+| `v6.100` | `v1.0.0` | `6c5f029` |
+| `v6.1000` | `v1.1.0` | `ee10777` |
+| `v6.2000` | `v1.2.0` | `1214ab6` |
+| v6.3000 (jamais taguée) | `v1.3.0` | `c199dfa` |
+| prod #52 (jamais taguée) | `v1.4.0` | `28a2996` |
+| preprod actuelle, modèle hybride derrière le flag `modele.version` | `v1.5.0` | à la promotion |
+| import de FlemmeV2.0 | `v1.6.0` | à la promotion |
+| mise en relation ouverte | `v2.0.0` | à la promotion |
+
+Les anciens tags `v6.*` et `V5.9000-archive` sont conservés comme anciens noms ; les nouveaux tags sont posés sur les mêmes commits.
+
+## Tags
+
+| Tag | Quand | Qui |
+|---|---|---|
+| `vX.Y.Z-rc.N` + pré-release GitHub | Au gel de `preprod` avant une promotion (`-rc.2` après une correction) | Ben pose le tag, Claude prépare les notes |
+| `vX.Y.Z` + release GitHub « Latest » | À la fusion de la PR de promotion, sur le merge commit de `prod` | Ben |
+| `archive/<sujet>-<date>` | Avant de supprimer une branche dont le travail n'est pas fusionné | Ben, d'après la liste de Claude |
+| `build/<branche>-pr<N>-<sha>` | Automatique à chaque fusion dans `preprod` ou `prod` (workflow `beta-version.yml`), sans release | GitHub Actions |
+
+Les tags `v*` et `archive/*` ne se suppriment ni ne se déplacent (ruleset des tags, `beta/github-ruleset-tags.json`). Les anciens tags `beta-*` restent en place.
 
 ## Cycle d'une modification
 
 1. Créer `type/sujet` depuis `preprod`.
-2. Ajouter une ligne sous « À venir » dans `CHANGELOG.md`.
-3. Ouvrir une PR vers `preprod`. La CI doit être verte.
-4. Ben relit et fusionne. Claude peut ouvrir des PR, mais ne fusionne jamais.
-5. Mise en production : une PR `preprod` → `prod`, fusionnée avec **« Create a merge commit »**. Les lignes « À venir » passent alors dans une section versionnée du CHANGELOG, et Ben crée la release et le tag `vX.YYYY` sur GitHub.
+2. Ajouter une ligne sous « À venir » dans `CHANGELOG.md`, et poser une étiquette sur la PR : `nouveaute`, `correction`, `migration`, `docs` ou `promotion`.
+3. Ouvrir une PR vers `preprod`, avec le modèle de PR. Les contrôles doivent être verts.
+4. Ben relit et fusionne (« Create a merge commit »). Claude ouvre des PR mais ne fusionne que sur instruction explicite de Ben.
+5. La branche courte est supprimée automatiquement après la fusion.
 
-## Leçons tirées de FlemmeV2.0
+Aucun numéro, tag ni release à cette étape : seulement la ligne de CHANGELOG et l'étiquette.
 
-- **Pas de squash entre `preprod` et `prod`.** Sur FlemmeV2.0, les squash de #48 et #53 ont séparé les deux historiques alors que leur contenu était identique.
-- **Pas de PR directe vers `prod`.** Sur FlemmeV2.0, #39 et #48 sont allées directement sur `main` et ont dû être reportées dans `beta` après coup.
-- **Une PR par sujet.** Le 20/10, #29 à #35 ont été fusionnées en série, en cascade et entre elles, ce qui a rendu l'état du site illisible.
-- **Pas de branche de sauvegarde.** Pour garder une version, on pose un tag, pas une branche `archive/…` ou `StableVersion/…`.
-- **Des noms de branche simples.** Pas de `claude/project-thread-…`, pas de date, pas de `/` dans le sujet (`BetaVersion/V4.1000-coveredServices-20/10/2016`).
-- **Tags homogènes :** `v5.1000` et pas `V.5.1000`.
+## Mise en production
 
-## Incident du 04/11/2026 : branche `prod` supprimée
+Rythme : une promotion à chaque fonctionnalité terminée et vérifiée en preprod. Une correction urgente part seule, en version corrective.
 
-- 05:17 : PR #24 `preprod` → `prod` fusionnée en **squash** (contraire à la règle ci-dessus). flemme.org publie le commit `4c9bf8c`.
-- 05:18-05:19 : pour réaligner, PR #25 ouverte **depuis `prod` vers `preprod`** puis fusionnée. La suppression automatique des branches fusionnées a alors effacé `prod`, qui était la branche source de la PR. Même risque avec #18 la veille.
-- Rien n'est perdu : `prod` a été recréée sur son dernier commit `7b87ed6`, dont le contenu est identique à celui en ligne et à `preprod`.
+1. Gel de `preprod` : Claude choisit le numéro, transforme « À venir » en « vX.Y.Z (candidate) » par une PR `chore/version-x-y-z`, et rédige les notes. Ben pose `vX.Y.Z-rc.1` et publie la pré-release.
+2. Migrations : appliquées sur `flemme-preprod`, vérifiées, puis sur la base de production juste avant la fusion.
+3. PR `preprod` → `prod` intitulée « Promotion vX.Y.Z », avec la liste des PR embarquées et des migrations. Fusion en « Create a merge commit ».
+4. Ben pose `vX.Y.Z` sur le merge commit de `prod` et publie la release avec « Generate release notes » (PR classées par `.github/release.yml`).
+5. Vérifier flemme.org, renommer le déploiement Netlify « vX.Y.Z », mettre à jour le registre des versions (Drive) et la section du CHANGELOG (date).
 
-À retenir :
+## Consulter ou republier une version
 
-- **Ne jamais ouvrir de PR dont la branche source est `prod` ou `preprod` vers une autre branche que `prod`.** Pour réaligner `preprod` sur `prod` après un incident, passer par une branche `chore/realigner-preprod`.
-- La règle « pas de suppression » sur `prod` et `preprod` (ruleset ci-dessous) empêche ce cas, même avec la suppression automatique activée.
+- Consulter : le tag (onglet Tags ou Releases, ZIP joint à chaque release), le déploiement Netlify de la version, ou le registre des versions.
+- Urgence : dans Netlify, ancien déploiement de prod → « Publish deploy ». C'est temporaire : le prochain déploiement le remplace, il faut donc corriger ensuite par Git.
+- Retour durable : branche `fix/retour-vX-Y-Z` créée depuis le tag, PR vers `preprod`, puis promotion. Une nouvelle version est publiée.
+- Reprendre une piste archivée : branche `feature/<sujet>` créée depuis le tag `archive/…`, adaptée à `preprod`, derrière un flag si besoin.
 
-## Réglages GitHub à faire (Ben)
+La base Supabase ne revient pas en arrière avec le code : les migrations restent additives (on ajoute, on ne supprime ni ne renomme dans la même version). Avant de republier une ancienne version, vérifier dans le CHANGELOG qu'elle ne dépend pas d'une table ou colonne retirée depuis.
 
-- ~~Renommer `main` en `prod` et créer `preprod`~~ (fait par Ben le 03/11/2026). Mettre `preprod` en branche par défaut, pour que les nouvelles PR la visent d'office.
-- Netlify : Production branch = `prod`, et activer les déploiements de branche pour `preprod`.
-- **Urgent (04/11)** : créer un ruleset sur `prod` et `preprod` : PR obligatoire, **pas de suppression** (Restrict deletions), pas de force push, CI `Site web (apps/web)` requise. Settings → Rules → Rulesets → New branch ruleset, cibles `prod` et `preprod`.
-- Activer la suppression automatique des branches fusionnées.
-- Dans « Pull requests », n'autoriser que les merge commits (désactiver squash et rebase). Pas encore fait : #24 a été squashée le 04/11.
+## Contrôle avant toute suppression
 
-## Tests de variantes (décision du 7 novembre 2026)
+Avant de supprimer une branche, un tag ou un dépôt, Claude vérifie que le dernier commit de chaque branche est dans `preprod`, dans `prod`, dans une PR ou sous un tag, et donne la liste « conservé par … ». Ben ne supprime rien qui n'y figure pas. Les PR, elles, ne se suppriment jamais sur GitHub et gardent leurs commits.
 
-Le configurateur fait partie des branches preprod et prod ; aucun environnement permanent beta n’est nécessaire. Une branche courte feature/beta-testeurs remplace les PR #42/#43. Voir [configuration et invitations](beta-testeurs.md). Promotion : PR vers preprod, recette, puis PR preprod vers prod avec merge commit.
+## Feature flags
+
+Une fonctionnalité non terminée peut être fusionnée dans `preprod` derrière un flag (états `off`, `testeurs`, `tous`). Le flag `modele.version` choisit entre le modèle `hybride` (preprod actuelle) et le modèle `ouvert` (v2). Deux semaines après le passage à « tous », une PR retire le flag et l'ancien code ; le tag `archive/…` garde l'ancien code. Voir `docs/feature-flags.md`.
+
+## Réglages GitHub (Ben)
+
+| Où | Réglage | Valeur |
+|---|---|---|
+| Settings › General | Méthodes de fusion | Merge commit seulement |
+| Settings › General | Automatically delete head branches | Activé |
+| Rules › Rulesets | Branches (`beta/github-ruleset.json`) | `prod`, `preprod` : PR obligatoire, 0 approbation, contrôle `promotion` requis, pas de suppression ni de force push |
+| Rules › Rulesets | Tags (`beta/github-ruleset-tags.json`) | `v*`, `archive/*` : ni suppression ni modification |
+| Issues › Labels | Étiquettes | `nouveaute`, `correction`, `migration`, `docs`, `promotion` |
+
+Seul `promotion` est requis par le ruleset, car il tourne sur toutes les PR. Les contrôles `web`, `native`, `migrations` et `python` ne tournent que si leurs dossiers changent : rendus obligatoires, ils bloqueraient les PR qui ne touchent pas ces dossiers. Ils doivent tout de même être verts avant de fusionner.
+
+## Leçons retenues
+
+- Pas de squash entre `preprod` et `prod` (FlemmeV2.0 #48, #53 ; flemme.org #24).
+- Pas de PR depuis `prod` : le 04/11/2026, #25 et #32 ont effacé `prod` par suppression automatique de la branche source. Pour réaligner `preprod`, passer par `chore/realigner-preprod`.
+- Une PR par sujet ; pas de fusions en cascade.
+- Pas de branche de sauvegarde : un tag `archive/…`.
