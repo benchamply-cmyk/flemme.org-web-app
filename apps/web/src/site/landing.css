@@ -411,3 +411,10 @@
 @media (max-width: 640px) {
   .lp .lp-lien, .lp .lien-p { display: inline-flex; align-items: center; min-height: 44px; }
 }
+
+/* v2.1.0 (commentaires de Ben sur l’aperçu v2.0.0, 18/11/2026) : titre « Publier. Proposer. S’accorder. » en dégradé vert,
+   boutons DÉLÉGUER et RÉSOUDRE du héro plus gros. */
+.lp-geant.lp-degrade-vert { max-width: none; }
+.lp-geant.lp-degrade-vert .m { background: linear-gradient(100deg, #57d68d 0%, #3a8f5e 55%, #225337 100%); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; padding-bottom: .08em; }
+.lp-hero .lp-hero-actions .lp-bouton { min-height: 72px; padding: 0 44px; font-size: 20px; letter-spacing: .04em; }
+@media (max-width: 560px) { .lp-hero .lp-hero-actions .lp-bouton { min-height: 64px; padding: 0 28px; font-size: 18px; } }
