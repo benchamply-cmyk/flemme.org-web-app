@@ -28,7 +28,7 @@ Ces règles s'appliquent à tout assistant (Claude, ChatGPT/Codex, Copilot ou au
 ## Versions, tags et releases
 
 - Numéro unique `vMAJEUR.MINEUR.CORRECTIF` (`v1.5.0`, `v1.5.1`, `v2.0.0`). MAJEUR = changement de modèle (v2 = mise en relation ouverte), MINEUR = une fonctionnalité, CORRECTIF = une correction seule. Dernière version : voir le haut du CHANGELOG et les releases GitHub.
-- Une promotion par fonctionnalité terminée. Au gel : PR `chore/version-x-y-z` qui transforme « À venir » en « vX.Y.Z (candidate) », notes de version, tag `vX.Y.Z-rc.N` et pré-release. À la promotion : tag `vX.Y.Z` sur le merge commit de `prod` et release « Latest » (« Generate release notes »).
+- Une promotion par fonctionnalité terminée. Au gel : PR `chore/version-x-y-z` qui transforme « À venir » en « vX.Y.Z (candidate) », notes de version, tag `vX.Y.Z-rc.N` et pré-release. À la promotion, **après la fusion seulement** : tag `vX.Y.Z` sur le merge commit de `prod` (vérifier le SHA avant de publier) et release « Latest » (« Generate release notes »).
 - Les releases sont immuables : les préparer en brouillon ; une erreur publiée se corrige par une nouvelle version, jamais en déplaçant un tag.
 - Tags `v*` et `archive/*` : jamais supprimés ni déplacés. Tags automatiques `build/<branche>-pr<N>-<sha>` (workflow `beta-version.yml`). Anciens noms `v6.*` et `beta-*` conservés.
 - Les maquettes de design (« maquette 1 à 7 ») ne sont pas des versions.

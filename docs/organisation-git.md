@@ -34,6 +34,7 @@ En bref : deux branches permanentes, un numéro de version à chaque mise en pro
 | v6.3000 (jamais taguée) | `v1.3.0` | `c199dfa` |
 | prod #52 (jamais taguée) | `v1.4.0` | `28a2996` |
 | promotion #86 : modèle hybride derrière le flag `modele.version`, feature flags, import de FlemmeV2.0 | `v1.5.0` | `07f84bc` (17/11/2026, candidate `v1.5.0-rc.1` sur `0e2a9cf`) |
+| promotion #89 : instructions des assistants, check `promotion` (le tag `v1.5.1`, posé trop tôt, pointe sur `07f84bc`) | `v1.5.2` | `d159131` (17/11/2026) |
 | mise en relation ouverte | `v2.0.0` | à la promotion |
 
 Les anciens tags `v6.*` et `V5.9000-archive` sont conservés comme anciens noms ; les nouveaux tags sont posés sur les mêmes commits.
@@ -68,7 +69,7 @@ Rythme : une promotion à chaque fonctionnalité terminée et vérifiée en prep
 1. Gel de `preprod` : Claude choisit le numéro, transforme « À venir » en « vX.Y.Z (candidate) » par une PR `chore/version-x-y-z`, et rédige les notes. Ben pose `vX.Y.Z-rc.1` et publie la pré-release.
 2. Migrations : appliquées sur `flemme-preprod`, vérifiées, puis sur la base de production juste avant la fusion.
 3. PR `preprod` → `prod` intitulée « Promotion vX.Y.Z », avec la liste des PR embarquées et des migrations. Fusion en « Create a merge commit ».
-4. Ben pose `vX.Y.Z` sur le merge commit de `prod` et publie la release avec « Generate release notes » (PR classées par `.github/release.yml`).
+4. **Seulement après la fusion**, Ben pose `vX.Y.Z` sur le merge commit de `prod` (cible = ce commit, pas la branche) et publie la release avec « Generate release notes » (PR classées par `.github/release.yml`).
 5. Vérifier flemme.org (si le déploiement de prod est verrouillé dans Netlify, « Start auto publishing » puis publier le dernier déploiement), relancer un Manual Deploy du Manager sur Render (auto-deploy désactivé), renommer le déploiement Netlify « vX.Y.Z », mettre à jour le registre des versions (Drive) et la section du CHANGELOG (date).
 
 ## Consulter ou republier une version
