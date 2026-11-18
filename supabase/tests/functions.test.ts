@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
-import { checkout, form, onboarding, payout, settings, verifySignature, webhook } from '../functions/_shared/paiement.ts';
+import { checkout, form, onboarding, payout, settings, subscribe, verifySignature, webhook } from '../functions/_shared/paiement.ts';
 
 const TASK = '11111111-2222-4333-8444-555555555555';
 const baseEnv: Record<string, string> = {
@@ -176,4 +176,34 @@ test('versement : virement Stripe unique vers le compte du membre, rien si déj�
   assert.deepEqual(await (await payout(post({ taskId: TASK }), { env: env(), fetch: done.fn })).json(), { done: true });
   assert.ok(!done.calls.some(c => c.url.includes('stripe.com')));
   assert.equal((await payout(post({ taskId: 'x' }), { env: env(), fetch: fn })).status, 400);
+});
+
+test('abonnement : session Checkout en mode subscription, essai, portail client ; webhooks d’abonnement transmis', async () => {
+  const { fn, calls } = fakeFetch({ ...user,
+    '/rest/v1/rpc/flemme_paiement_api': body => {
+      const a = rpcAction(body);
+      return a === 'subscription_context' ? { planId: 'membre-premium', name: 'Membre Premium', priceId: 'price_M1', trialDays: 14, customerId: null }
+        : a === 'subscription_customer' ? { customerId: 'cus_1' } : { ok: true };
+    },
+    '/v1/checkout/sessions': () => ({ id: 'cs_test_S1', url: 'https://checkout.stripe.com/c/pay/cs_test_S1' }),
+    '/v1/billing_portal/sessions': () => ({ url: 'https://billing.stripe.com/p/session/x' }) });
+  const deps = { env: env(), fetch: fn, now: () => Date.UTC(2026, 10, 18, 9) };
+  assert.deepEqual(await (await subscribe(post({ planId: 'membre-premium' }), deps)).json(), { url: 'https://checkout.stripe.com/c/pay/cs_test_S1' });
+  const p = new URLSearchParams(calls.find(c => c.url.endsWith('/v1/checkout/sessions'))!.body);
+  assert.deepEqual([p.get('mode'), p.get('line_items[0][price]'), p.get('subscription_data[trial_period_days]'), p.get('customer_email'), p.get('customer')],
+    ['subscription', 'price_M1', '14', 'deposant@example.org', null]);
+  assert.equal(calls.find(c => c.url.endsWith('/v1/checkout/sessions'))!.headers['Idempotency-Key'], 'flemme-subscribe-u-owner-membre-premium-month-2026-11-18T09');
+  assert.deepEqual(JSON.parse(calls.find(c => c.body.includes('subscription_created'))!.body).p_data, { userId: 'u-owner', planId: 'membre-premium', period: 'month', sessionId: 'cs_test_S1' });
+  assert.deepEqual(await (await subscribe(post({ action: 'portal' }), deps)).json(), { url: 'https://billing.stripe.com/p/session/x' });
+  assert.equal(new URLSearchParams(calls.find(c => c.url.endsWith('/v1/billing_portal/sessions'))!.body).get('customer'), 'cus_1');
+  assert.equal((await subscribe(post({ planId: 'Pas Valide' }), deps)).status, 400);
+
+  const now = Date.UTC(2026, 10, 18, 9), t = Math.floor(now / 1000);
+  const hook = fakeFetch({ '/rest/v1/rpc/flemme_paiement_api': () => ({ ok: true }) });
+  const send = (event: unknown) => { const body = JSON.stringify(event); return webhook(post(body, { 'Stripe-Signature': sign(body, 'whsec_factice', t) }), { env: env(), fetch: hook.fn, now: () => now }); };
+  await send({ id: 'evt_a', type: 'checkout.session.completed', data: { object: { id: 'cs_test_S1', mode: 'subscription', subscription: 'sub_1', customer: 'cus_1' } } });
+  await send({ id: 'evt_b', type: 'customer.subscription.updated', data: { object: { id: 'sub_1', customer: 'cus_1', status: 'active', cancel_at_period_end: true, items: { data: [{ current_period_end: 1800000000 }] } } } });
+  assert.deepEqual(hook.calls.map(c => JSON.parse(c.body).p_data), [
+    { eventId: 'evt_a', type: 'checkout.session.completed', sessionId: 'cs_test_S1', mode: 'subscription', subscriptionId: 'sub_1', customerId: 'cus_1' },
+    { eventId: 'evt_b', type: 'customer.subscription.updated', subscriptionId: 'sub_1', customerId: 'cus_1', status: 'active', cancelAtPeriodEnd: true, currentPeriodEnd: 1800000000 }]);
 });

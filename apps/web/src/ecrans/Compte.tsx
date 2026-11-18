@@ -1,6 +1,7 @@
 import { AccountAccess } from '../beta/AccountAccess.tsx';
 import { DemoGateway, demoActors } from '../../../../packages/shared/src/index.ts';
 import { onlinePayment, openStripe, session } from '../session.ts';
+import { Abonnements } from './Abonnements.tsx';
 import { Action } from '../ui.tsx';
 import type { Ctx } from './contexte.ts';
 
@@ -13,6 +14,7 @@ export function Compte({ state: { gateway, busy, actorId }, go }: Ctx) {
       <Action secondary disabled={busy} onClick={() => go('profile', { userId: undefined })}>Mon profil public</Action></>
     : <><p>Les comptes, annonces et discussions utilisent le service FLEMME configuré.</p>
       {onlinePayment && <><p className="note">Tu aides d’autres membres ? Active tes paiements en ligne : Stripe vérifie ton identité et ton IBAN, puis verse ta part après chaque mission payée.</p><Action secondary disabled={busy} onClick={() => openStripe('onboarding')}>Recevoir mes paiements avec Stripe</Action></>}
+      <Abonnements busy={busy}/>
       <Action secondary disabled={busy} onClick={() => go('profile', { userId: undefined })}>Mon profil public · nom, présentation, avis</Action>
       <Action secondary disabled={busy} onClick={() => session.logout(home)}>Me déconnecter</Action></>}</>;
 }
