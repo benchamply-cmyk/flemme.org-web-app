@@ -40,7 +40,7 @@ Ces règles s'appliquent à tout assistant (Claude, ChatGPT/Codex, Copilot ou au
 
 ## Feature flags et migrations
 
-- Une fonctionnalité non terminée peut entrer dans `preprod` derrière un flag (`packages/shared/src/flags.ts`, états `off`/`testeurs`/`tous`, réglés dans /admin › Fonctionnalités). `modele.version` = `hybride` en preprod, `ouvert` en prod. Voir `docs/feature-flags.md`. Un flag masque de l'interface, il ne donne aucun droit.
+- Une fonctionnalité non terminée peut entrer dans `preprod` derrière un flag (`packages/shared/src/flags.ts`, états `off`/`testeurs`/`tous`, réglés dans /admin › Fonctionnalités). `modele.version` = `ouvert` par défaut partout depuis le 18/11/2026 (l’hybride se choisit dans /admin). Voir `docs/feature-flags.md`. Un flag masque de l'interface, il ne donne aucun droit.
 - Migrations Supabase : additives (ajouter, ne pas supprimer ni renommer dans la même version), nommées `AAAAMMJJHHMMSS_sujet.sql`, appliquées d'abord sur preprod puis sur prod juste avant la fusion de la promotion, et inscrites dans `supabase_migrations.schema_migrations`. Montants en centimes.
 
 ## Ce que l'assistant fait seul, et ce qu'il ne fait pas
