@@ -4,7 +4,7 @@ import { CONDITIONS_COMMUNES, FORMULES, prixFormule, souscriptible, verifierForm
 import type { FormuleAbonnement } from '../../../../packages/shared/src/abonnements.ts';
 
 const echapper = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-const prevenir = (f: FormuleAbonnement) => `mailto:contact@flemme.org?subject=${encodeURIComponent('FLEMME · ' + f.nom)}`;
+const prevenir = (f: FormuleAbonnement) => `mailto:bonjour@flemme.org?subject=${encodeURIComponent('FLEMME · ' + f.nom)}`;
 
 export function htmlFormule(f: FormuleAbonnement): string {
   verifierFormule(f);
