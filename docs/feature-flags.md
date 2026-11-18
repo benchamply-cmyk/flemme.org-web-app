@@ -15,7 +15,7 @@ Proposition validée par Ben le 16/11/2026 (première version sur l'ancienne bra
 Flag « variante » ajouté le 17/11/2026 (décision de Ben : garder le modèle hybride en preprod derrière un flag).
 
 - Valeurs : `hybride` (catalogue à prix fixes, formules de « Déléguer », section Devenir Brigadier) et `ouvert` (mise en relation ouverte, future v2.0.0).
-- Défaut sans réglage : `hybride` en preprod et en local, `ouvert` en prod. Réglable par environnement dans /admin.
+- Défaut sans réglage : `ouvert` partout (local, beta, preprod et aperçus de PR, prod) depuis le 18/11/2026, choix de Ben ; avant, `hybride` hors prod. Un réglage enregistré dans /admin reste prioritaire sur ce défaut.
 - Un bloc propre à un modèle porte `data-modele="hybride"` ou `data-modele="ouvert"` ; il est masqué dans l'autre modèle (`apps/web/src/flags/flags.css`, attribut `data-modele` posé sur `<html>`).
 - Blocs marqués `hybride` : accueil `#modele`, `#services` et la garantie « Un prix fixe » ; liens Services de l'en-tête et du pied ; `/deleguer#formules` ; `/resoudre#devenir-brigadier`.
 - Limite : les textes qui parlent de prix fixe ailleurs (titres, descriptions, page `/services`) ne sont pas encore séparés. La v2.0.0 (modèle ouvert) les réécrira derrière ce flag.
