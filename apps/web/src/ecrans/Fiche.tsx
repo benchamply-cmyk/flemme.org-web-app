@@ -1,17 +1,20 @@
 import { useState } from 'react';
-import { CONTRACT_FIELDS, OFFER_FIELDS, PAIEMENT_OBLIGATOIRE, RAPPEL_CONTOURNEMENT, etapeArgent, etapeArgentLabel, budgetText, canEdit, categoryLabel, contractStatusLabel, date, deadlineLabel, modeLabel, money, notices, offerInput, offerReviewLabel, offerStatus, parseMoney, paymentNote, paymentStatus, reviewInput, reviewLabel, signatureInput, stars, taskStatus } from '../../../../packages/shared/src/index.ts';
+import { AVIS_MASQUAGE, AVIS_QUESTIONS, CONTRACT_FIELDS, DELAI_LIBERATION_JOURS, OFFER_FIELDS, liberationPossibleLe, PAIEMENT_OBLIGATOIRE, RAPPEL_CONTOURNEMENT, etapeArgent, etapeArgentLabel, budgetText, canEdit, categoryLabel, contractStatusLabel, date, deadlineLabel, modeLabel, money, notices, offerInput, offerReviewLabel, offerStatus, parseMoney, paymentNote, paymentStatus, reviewInput, reviewLabel, signatureInput, stars, taskStatus } from '../../../../packages/shared/src/index.ts';
 import { onlinePayment, openStripe, payoutStripe, session } from '../session.ts';
 import { Action, Bill, Recap } from '../ui.tsx';
 import { Pieces } from './Pieces.tsx';
-import type { Ctx } from './contexte.ts';
 import { useFlag } from '../flags/useFlag.tsx';
+import type { Ctx } from './contexte.ts';
 import { ComparerOffres, Frise } from './Espace.tsx';
 
 // Fiche d’une flemme : accord, paiement déclaratif, propositions, signalements et historique.
 export function Fiche({ state: { busy, actorId, files }, place, task, can, draft, field, go, mutate, validated, keepDraft }: Ctx) {
   const [showHistory, setShowHistory] = useState(false), [accept, setAccept] = useState(false), [rating, setRating] = useState('');
   const refonte = useFlag('espace.refonte').actif;
+  // Questions publiques et livraison (flag espace.confiance, migration 20261118140000).
+  const confiance = useFlag('espace.confiance').actif;
   if (!task) return null;
+  const questions = task.questions || [];
   const { agreement } = task;
   const preview = (() => { try { const n = parseMoney(draft.amount || ''); return n != null ? <Bill amount={n}/> : null; } catch { return null; } })();
   const review = can.isOwner && task.review && task.review !== 'published' ? task.review : null;
@@ -29,7 +32,13 @@ export function Fiche({ state: { busy, actorId, files }, place, task, can, draft
         ? <Action disabled={busy} onClick={() => openStripe('checkout', task.id, 'signature')}>Payer par carte via Flemme · {money(agreement.total)}</Action>
         : <Action disabled={busy} onClick={() => mutate('pay', {}, 'detail', notices.paid)}>Payer via Flemme · {money(agreement.total)} (simulation)</Action>}</>}
       {can.canPayout && <Action secondary disabled={busy} onClick={() => payoutStripe(task.id)}>Verser la part du membre · {money(agreement.payout ?? agreement.amount)}</Action>}
-      {can.canComplete && <Action disabled={busy} onClick={() => mutate('complete', {})}>Confirmer la tâche terminée</Action>}
+      {confiance && task.deliveredAt && task.status === 'assigned' && <p className="note">Mission déclarée livrée le {date(task.deliveredAt)}. {can.isOwner
+        ? `Vérifie le résultat puis confirme. Sans réponse ni désaccord signalé d’ici le ${date(liberationPossibleLe(task.deliveredAt)).split(' ')[0]}, le membre pourra clôturer et le paiement sera libéré.`
+        : `Le déposant confirme, ou tu pourras clôturer toi-même à partir du ${date(liberationPossibleLe(task.deliveredAt)).split(' ')[0]} si aucun désaccord n’est signalé.`}</p>}
+      {confiance && can.canDeliver && <><p className="note">Mission terminée de ton côté ? Déclare-la livrée : le déposant a {DELAI_LIBERATION_JOURS} jours pour confirmer ou signaler un désaccord.</p>
+        <Action disabled={busy} onClick={() => mutate('deliver', {}, 'detail', 'Mission déclarée livrée. Le déposant est invité à confirmer.')}>J’ai terminé la mission</Action></>}
+      {confiance && can.canRelease && <Action disabled={busy} onClick={() => mutate('complete', {}, 'detail', 'Mission clôturée : le paiement est libéré.')}>Clôturer la mission et libérer mon paiement</Action>}
+      {can.canComplete && <Action disabled={busy} onClick={() => mutate('complete', {})}>{can.viaFlemme ? 'Mission terminée, je libère le paiement' : 'Confirmer la tâche terminée'}</Action>}
       {can.canDeclarePayment && onlinePayment && <Action disabled={busy} onClick={() => openStripe('checkout', task.id)}>Payer en ligne · {money(agreement.total)}</Action>}
       {can.canDeclarePayment && <Action secondary={onlinePayment} disabled={busy} onClick={() => mutate('declare_payment', {})}>J’ai payé le membre{onlinePayment ? ' en direct' : ''}</Action>}
       {can.canConfirmPayment && <Action disabled={busy} onClick={() => mutate('confirm_payment', {})}>Confirmer avoir reçu le paiement</Action>}
@@ -55,12 +64,22 @@ export function Fiche({ state: { busy, actorId, files }, place, task, can, draft
         <div className="field"><label htmlFor="f-rating">Note</label><select id="f-rating" value={rating} disabled={busy} onChange={e => setRating(e.target.value)}><option value="">Choisir</option>{[5, 4, 3, 2, 1].map(n => <option key={n} value={n}>{stars(n)} · {n}/5</option>)}</select></div>
         {field('Commentaire (facultatif)', 'reviewText', { multiline: true, max: 600 })}
         <Action disabled={busy} onClick={() => validated(() => { void mutate('review', reviewInput(rating, draft.reviewText), 'detail', notices.reviewSent); })}>Publier mon avis</Action></>}</>}
+    {confiance && (questions.length > 0 || can.canAsk) && <><h2 className="section-title">Questions publiques{questions.length ? ` (${questions.length})` : ''}</h2>
+      <p className="note">{AVIS_QUESTIONS}</p>
+      {questions.length === 0 && <p className="muted">Pas encore de question. Un détail à préciser avant de proposer ? Demande-le ici.</p>}
+      {questions.map(q => <div className="bubble" key={q.id}><span className="strong">{q.author.name}</span><span>{q.text}</span><span className="note">{date(q.at)}</span>
+        {q.answer ? <><span className="strong">Réponse de {task.owner.name}</span><span>{q.answer}</span></>
+          : can.isOwner && task.status === 'open' ? <>{field('Ta réponse publique', 'answer-' + q.id, { multiline: true, max: 1000 })}
+            <Action secondary disabled={busy} onClick={() => validated(() => { void mutate('answer', { questionId: q.id, text: draft['answer-' + q.id] }, 'detail', 'Réponse publiée.'); })}>Répondre</Action></>
+          : <span className="muted">En attente de réponse</span>}</div>)}
+      {can.canAsk && <>{field('Ta question', 'question', { multiline: true, max: 600 })}
+        <Action secondary disabled={busy} onClick={() => validated(() => { void mutate('ask', { text: draft.question }, 'detail', 'Question publiée.'); })}>Poser ma question</Action></>}</>}
     {refonte && can.isOwner && task.status === 'open' && <ComparerOffres task={task} go={go}/>}
     {task.offers.length > 0 && !(refonte && can.isOwner && task.status === 'open') && <><h2 className="section-title">{can.isOwner ? 'Les propositions' : 'Mes propositions'}</h2>
       {task.offers.map(o => <button type="button" key={o.id} onClick={() => go('offer', { offerId: o.id })} className="card"><span className="row"><span className="strong">{o.brigadier.name}</span><span className="price">{money(o.amount)}</span></span><span>{o.scope}</span>{o.result && <span className="note">Résultat promis : {o.result}</span>}<span className="muted">{offerStatus[o.status]}{o.review && o.review !== 'approved' ? ' · ' + offerReviewLabel[o.review] : ''}</span><span className="link">Discussion et récapitulatif →</span></button>)}</>}
     {can.canOffer && <div className="card propose"><h2 className="section-title" style={{ marginTop: 0 }}>{place.draftId ? 'Reprendre ma proposition' : 'Tu peux t’en charger ?'}</h2><p className="muted">Indique ton prix et précise ce que tu proposes.</p>{field('Mon prix', 'amount', { numeric: true })}{preview}{field('Mes disponibilités', 'slot')}{field('Ce qui est inclus et non inclus', 'scope', { multiline: true })}
       {field('Résultat promis (facultatif)', 'result', { multiline: true, hint: 'Ce que la personne aura à la fin. Ex. : étagère fixée et de niveau.' })}
-      <p className="note">L’équipe FLEMME relit chaque proposition avant de la transmettre à la personne qui a publié la demande.</p>
+      <p className="note">L’équipe FLEMME relit chaque proposition avant de la transmettre à la personne qui a publié la demande. {AVIS_MASQUAGE}</p>
       <Action disabled={busy} onClick={() => validated(() => { void mutate('apply', { ...offerInput(draft), draftId: place.draftId || null }, 'detail', t => notices.applied(t.offers.find(o => o.brigadier.id === actorId && o.status === 'pending'))); })}>Envoyer ma proposition</Action>
       <Action secondary disabled={busy} onClick={() => session.saveDraft({ id: place.draftId, kind: 'offer', taskId: task.id, fields: Object.fromEntries(OFFER_FIELDS.filter(k => draft[k]).map(k => [k, draft[k]])) }, d => keepDraft(d.id))}>Enregistrer le brouillon</Action></div>}
     {(can.isOwner || can.isBrigadier) && <Pieces task={task} actorId={actorId} files={files[task.id]} busy={busy}/>}

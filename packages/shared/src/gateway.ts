@@ -43,7 +43,10 @@ export function seed(): Task[] {
   const at = '2026-10-28T08:00:00.000Z';
   const a = createTask('demo-colis', demoActors[0], { title: 'Faire mes retours de colis', details: 'Deux colis à déposer au point relais. Étiquettes imprimées, déplacement compris dans le forfait proposé.', place: 'Aix-en-Provence', budget: 2000 }, at);
   return [applyCommand(a, demoActors[1], 'offer', { id: 'demo-offer', amount: 2000, slot: 'Samedi matin', scope: 'Récupération à domicile et dépôt des deux colis, déplacement compris.' }, at),
-    createTask('demo-meuble', demoActors[2], { title: 'Monter mon meuble IKEA', details: 'Un petit meuble à monter. Outils disponibles. Sans fixation au mur.', place: 'Aix-en-Provence', budget: 3500 }, at),
+    // Question publique d’exemple (recommandation 1 du comparatif Airtasker / TaskRabbit, 18/11/2026).
+    applyCommand(applyCommand(createTask('demo-meuble', demoActors[2], { title: 'Monter mon meuble IKEA', details: 'Un petit meuble à monter. Outils disponibles. Sans fixation au mur.', place: 'Aix-en-Provence', budget: 3500 }, at),
+      demoActors[1], 'ask', { id: 'demo-question', text: 'C’est quel modèle de meuble, et à quel étage ?' }, at),
+      demoActors[2], 'answer', { questionId: 'demo-question', text: 'Une commode MALM à 3 tiroirs, au 2e étage avec ascenseur.' }, at),
     createTask('demo-cv', demoActors[1], { title: 'Remettre mon CV au propre', details: 'Une page à remettre en forme. Le contenu est déjà rédigé.', place: 'À distance', budget: null }, at)];
 }
 export type DemoProfile = { bio: string | null; skills: string[]; experience: string | null };
@@ -109,6 +112,8 @@ export class DemoGateway implements Gateway {
       .sort((a, b) => b.at.localeCompare(a.at));
     return { id: who.id, name: who.name, ...p, avatar: this.avatars[userId] || null, since: '2026-10-28T08:00:00.000Z',
       missions: done.filter(t => t.agreement?.brigadier.id === userId).length,
+      ongoing: this.state.tasks.filter(t => t.status === 'assigned' && t.agreement?.brigadier.id === userId).length,
+      requests: done.filter(t => t.owner.id === userId).length,
       rating: reviews.length ? Math.round(reviews.reduce((n, r) => n + r.rating, 0) / reviews.length * 10) / 10 : null, reviews };
   }
   async saveProfile(data: Input): Promise<Profile> {
@@ -144,7 +149,7 @@ export class DemoGateway implements Gateway {
     if (prior) return visibleTask(prior, this.actor);
     const task = this.state.tasks.find(t => t.id === taskId);
     if (!task) throw new Error('Flemme introuvable.');
-    const next = await this.commit(applyCommand(task, this.actor, action, action === 'offer' || action === 'apply' ? { ...data, id: newId() } : data, new Date().toISOString()), request);
+    const next = await this.commit(applyCommand(task, this.actor, action, action === 'offer' || action === 'apply' || action === 'ask' ? { ...data, id: newId() } : data, new Date().toISOString()), request);
     if (action === 'apply' && typeof data.draftId === 'string') await this.deleteDraft(data.draftId);
     return next;
   }

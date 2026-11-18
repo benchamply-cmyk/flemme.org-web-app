@@ -88,7 +88,8 @@ function Progression({ task }: { task: Task }) {
 
 /** Carte d’une demande avec son avancement. */
 function CarteDemande({ task: t, actorId, go }: { task: Task; actorId: string; go: Ctx['go'] }) {
-  const action = prochaineAction(t, actorId), mienne = t.owner.id === actorId;
+  const confiance = useFlag('espace.confiance').actif;
+  const action = prochaineAction(t, actorId, { confiance }), mienne = t.owner.id === actorId;
   const offres = t.offers.filter(o => o.status === 'pending').length;
   return <button type="button" className="carte-espace" onClick={() => go('detail', { taskId: t.id })}>
     <span className="row"><span className="carte-titre">{t.title}</span><span className="strong">{t.agreement ? money(t.agreement.amount) : budgetLabel(t, money)}</span></span>
@@ -100,9 +101,9 @@ function CarteDemande({ task: t, actorId, go }: { task: Task; actorId: string; g
 
 /** Accueil : « À faire maintenant », raccourcis et demandes en cours. */
 export function AccueilEspace({ state: { gateway, tasks, actorId, found }, go }: Ctx) {
-  const premium = useFlag('espace.premium');
+  const premium = useFlag('espace.premium'), confiance = useFlag('espace.confiance').actif;
   const { own, helping, available } = partition(tasks, actorId);
-  const aFaire = [...own, ...helping].map(t => ({ t, a: prochaineAction(t, actorId) })).filter(x => x.a);
+  const aFaire = [...own, ...helping].map(t => ({ t, a: prochaineAction(t, actorId, { confiance }) })).filter(x => x.a);
   const enCours = [...own, ...helping].filter(t => t.status !== 'completed' && !aFaire.some(x => x.t.id === t.id));
   const nouvelles = useNouvellesAlertes([...available, ...(found?.tasks || [])], actorId);
   const prenom = (gateway?.actor.name || '').split(' ')[0];

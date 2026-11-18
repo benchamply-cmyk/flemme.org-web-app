@@ -12,11 +12,13 @@ export type Etape = typeof ETAPES[number];
 /**
  * Étape atteinte par une demande (0 à 6), lue dans l’état réel de la flemme.
  * -1 : pas encore publiée (en attente de validation ou à corriger).
- * « Livré » = tâche confirmée terminée ; « Terminé » = avis donné par la personne connectée.
+ * « Livré » = mission déclarée livrée par le membre (deliveredAt, v2.1.0) ou tâche confirmée terminée ;
+ * « Terminé » = tâche terminée et avis donné par la personne connectée.
  */
 export function etapeAtteinte(t: Task): number {
   if (t.review && t.review !== 'published') return -1;
   if (t.status === 'completed') return t.myReview ? 6 : 5;
+  if (t.deliveredAt) return 5;
   const paye = t.payment?.status === 'paid' || t.paymentConfirmed;
   if (paye) return 4;
   if (t.contract?.status === 'signed') return 3;
@@ -32,7 +34,8 @@ export function avancement(t: Task): string {
 }
 
 /** Prochaine action attendue de la personne connectée sur une demande, ou '' si c’est à l’autre d’agir. */
-export function prochaineAction(t: Task, actorId: string): string {
+/** `confiance` : flag espace.confiance allumé (livraison et libération du paiement, v2.1.0). */
+export function prochaineAction(t: Task, actorId: string, { confiance = false }: { confiance?: boolean } = {}): string {
   const can = rights(t, actorId);
   if (can.isOwner && t.review === 'changes_requested') return 'Corriger ta demande';
   if (can.isOwner && t.status === 'open' && t.offers.some(o => o.status === 'pending')) return 'Comparer les offres reçues';
@@ -42,6 +45,8 @@ export function prochaineAction(t: Task, actorId: string): string {
   if (can.canPay) return 'Payer via Flemme';
   if (can.canDeclarePayment) return 'Régler et déclarer le paiement';
   if (can.canConfirmPayment) return 'Confirmer le paiement reçu';
+  if (confiance && can.canDeliver) return 'Déclarer la mission livrée';
+  if (confiance && can.canRelease) return 'Clôturer et libérer le paiement';
   if (can.canComplete) return 'Confirmer la tâche terminée';
   if (can.canReview) return 'Donner ton avis';
   return '';

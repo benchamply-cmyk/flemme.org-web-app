@@ -108,6 +108,8 @@ export type Profile = {
   /** Chemin de la photo dans le bucket privé (lot 4) ; l’app demande une adresse signée. */
   avatar?: string | null;
   missions: number; rating: number | null;
+  /** Repères ajoutés le 18/11/2026 (migration 20261118140000) : missions retenues en cours, demandes menées à terme comme déposant. */
+  ongoing?: number; requests?: number;
   reviews: { rating: number; text: string | null; author: Actor; task: string; at: string }[];
 };
 /** Formulaire du profil → données envoyées (profile_save). Compétences séparées par des virgules. */

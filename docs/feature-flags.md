@@ -20,6 +20,10 @@ Flag « variante » ajouté le 17/11/2026 (décision de Ben : garder le modèle 
 - Blocs marqués `hybride` : accueil `#modele`, `#services` et la garantie « Un prix fixe » ; liens Services de l'en-tête et du pied ; `/deleguer#formules` ; `/resoudre#devenir-brigadier`.
 - Limite : les textes qui parlent de prix fixe ailleurs (titres, descriptions, page `/services`) ne sont pas encore séparés. La v2.0.0 (modèle ouvert) les réécrira derrière ce flag.
 
+## Confiance : `espace.confiance`
+
+Flag de lancement ajouté le 18/11/2026 : questions publiques sous les demandes, bouton « J’ai terminé la mission » du membre retenu et clôture par le membre 7 jours après la livraison. Allumé en local (démo), éteint en beta, preprod et prod. À allumer dans /admin une fois la migration `20261118140000_flemme_v2_confiance.sql` appliquée sur la base de l’environnement. Le masquage des coordonnées (côté serveur dès la migration) et les repères du profil public ne dépendent pas du flag.
+
 ## Lecture
 
 - Environnement fixé au build (`vite.config.ts`, `__FLEMME_ENV__`) : `BRANCH` Netlify `prod` ou `preprod` (`beta` reste accepté pour les anciennes lignes) ; un aperçu de PR lit `preprod` ; le poste local lit `local`.

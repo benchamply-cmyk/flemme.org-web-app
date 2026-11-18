@@ -1,5 +1,6 @@
 import type { Task } from './domain.ts';
 import { payeViaFlemme } from './monetisation.ts';
+import { liberationAutomatique } from './confiance.ts';
 
 // Navigation et droits d’affichage communs aux deux interfaces.
 // Le site garde l’historique du navigateur, le mobile le bouton Retour Android : seul le parcours est partagé.
@@ -36,6 +37,12 @@ export function rights(task: Task | undefined, actorId: string) {
   return {
     isOwner, isBrigadier, viaFlemme,
     canComplete: isOwner && task?.status === 'assigned' && (viaFlemme ? signed && paid : !task.contract || signed),
+    /** Livraison déclarée par le membre retenu (puis confirmation du déposant ou libération automatique). */
+    canDeliver: isBrigadier && task?.status === 'assigned' && !task.deliveredAt && ((viaFlemme || task.contract) ? signed : true) && (!viaFlemme || paid),
+    /** Libération automatique : délai passé sans désaccord signalé depuis la livraison. */
+    canRelease: isBrigadier && task?.status === 'assigned' && !!task && liberationAutomatique(task, new Date().toISOString()),
+    /** Question publique : membres qui voient la demande ouverte, sauf le déposant. */
+    canAsk: !!task && !isOwner && task.status === 'open',
     // « authorized » : paiement différé déjà lancé, on attend l’encaissement.
     canPay: isOwner && viaFlemme && task?.status === 'assigned' && signed && !paid && task.payment?.status !== 'authorized' && task.payment?.status !== 'disputed',
     /** Stripe : versement de la part du membre une fois la mission terminée (une seule fois). */
