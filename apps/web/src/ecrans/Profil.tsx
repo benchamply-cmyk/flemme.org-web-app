@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { date, fileAccept, profileFields, profileInput, stars } from '../../../../packages/shared/src/index.ts';
+import { date, fileAccept, profileFields, profileInput, reperesProfil, stars } from '../../../../packages/shared/src/index.ts';
 import { session } from '../session.ts';
 import { Action } from '../ui.tsx';
 import type { Ctx } from './contexte.ts';
@@ -13,7 +13,9 @@ export function Profil({ state: { busy, actorId, profile }, place: { userId }, d
   if (!profile || profile.id !== id) return busy ? null : <><h1 className="heading">Profil indisponible</h1><Action secondary onClick={() => session.openProfile(id)}>Réessayer</Action></>;
   return <><div className="profile-head">{photo ? <img className="avatar-photo" src={photo} alt={'Photo de ' + profile.name}/> : <span className="avatar-photo" aria-hidden="true">{profile.name.slice(0, 1).toUpperCase()}</span>}
     <h1 className="heading">{own ? 'Mon profil public' : profile.name}</h1></div>
-    <p className="muted">Membre depuis le {date(profile.since).split(' ')[0]} · {profile.missions} mission(s) réalisée(s){profile.rating != null ? ` · ${stars(profile.rating)} ${String(profile.rating).replace('.', ',')}/5` : ' · pas encore d’avis'}</p>
+    <p className="muted">Membre depuis le {date(profile.since).split(' ')[0]}{profile.rating != null ? ` · ${stars(profile.rating)}` : ''}</p>
+    <p>{reperesProfil(profile).map(r => <span className="tag" key={r}>{r}</span>)}</p>
+    <p className="note">Repères calculés à partir des missions et avis sur Flemme. Les profils ne sont pas vérifiés par l’équipe pour l’instant.</p>
     {profile.bio && <p>{profile.bio}</p>}
     {profile.skills.length > 0 && <p>{profile.skills.map(s => <span className="tag" key={s}>{s}</span>)}</p>}
     {profile.experience && <><h2 className="section-title">Expérience</h2><p>{profile.experience}</p></>}

@@ -46,6 +46,12 @@ export const FLAGS = {
   // et une formule « open » avec un prix Stripe (supabase/migrations/20261118130000_flemme_v2_abonnements.sql).
   'abonnements.souscription': { domaine: 'Mon espace', libelle: 'Souscription aux abonnements', type: 'lancement', defaut: partout('off'), creeLe: '2026-11-18',
     description: 'Allumé : Mon espace propose les formules ouvertes et la page Premium affiche « S’abonner ». Éteint : « Bientôt ».' },
+  // Confiance (v2.1.0, 18/11/2026, recommandations 1 à 4 du comparatif Airtasker / TaskRabbit) : questions publiques et livraison avec
+  // libération du paiement. Demande la migration 20261118140000_flemme_v2_confiance.sql : allumer preprod dans /admin une fois
+  // la migration appliquée sur flemme-preprod. Le masquage des coordonnées et les repères du profil ne dépendent pas de ce flag.
+  'espace.confiance': { domaine: 'Mon espace', libelle: 'Questions publiques et livraison', type: 'lancement',
+    defaut: { local: 'tous', beta: 'off', preprod: 'off', prod: 'off' }, creeLe: '2026-11-18', retraitPrevu: '2027-01-31',
+    description: 'Allumé : questions publiques sous les demandes, bouton « mission livrée » et libération automatique après 7 jours. Éteint : masqués.' },
   'espace.premium': { domaine: 'Mon espace', libelle: 'Liens Premium', type: 'lancement', defaut: partout('tous'), creeLe: '2026-11-16',
     description: 'Éteint : masque les liens vers la page Premium (gelée jusqu’à 10 clients payants).' },
   'design.theme': { domaine: 'Design et visuel', libelle: 'Thème du site', type: 'variante', defaut: partout('tous'), valeurs: ['clair', 'nuit', 'papier'], creeLe: '2026-11-16',
