@@ -109,29 +109,63 @@ export function onboarding(request: Request, deps: Deps) {
   });
 }
 
-// POST /functions/v1/stripe-checkout { taskId } : session Stripe Checkout pour une tâche terminée.
-// Paiement « destination » : le Brigadier reçoit total − commission, FLEMME garde application_fee_amount.
+// POST /functions/v1/stripe-checkout { taskId, stage? } : session Stripe Checkout.
+// stage « signature » (v2.0.0, payment_mode = 'stripe') : le déposant paie le total dès la signature de l'accord.
+//   Charges séparées : Flemme encaisse, puis verse la part du membre à la fin de la mission (stripe-payout).
+// sinon (ancien parcours) : tâche terminée, paiement « destination », le membre reçoit total − commission tout de suite.
 export function checkout(request: Request, deps: Deps) {
   return run(request, deps, async s => {
     const user = await currentUser(deps, s, request);
     const body = await request.json().catch(() => ({}));
     const taskId = typeof body?.taskId === 'string' && /^[0-9a-f-]{36}$/i.test(body.taskId) ? body.taskId : '';
     if (!taskId) throw new HttpError(400, 'Flemme introuvable.');
-    const ctx = await rpc(deps, s, 'checkout_context', { userId: user.id, taskId });
+    const signature = body?.stage === 'signature';
+    const ctx = await rpc(deps, s, signature ? 'signature_context' : 'checkout_context', { userId: user.id, taskId });
     if (ctx.openUrl) return { url: ctx.openUrl };
     const fee = ctx.total - ctx.payout;
     const now = deps.now?.() ?? Date.now();
-    const session = await stripe(deps, s, 'checkout/sessions', {
+    const common = {
       mode: 'payment', locale: 'fr', client_reference_id: taskId,
       'line_items[0][quantity]': 1, 'line_items[0][price_data][currency]': 'eur', 'line_items[0][price_data][unit_amount]': ctx.total,
       'line_items[0][price_data][product_data][name]': ('FLEMME · ' + ctx.title).slice(0, 250),
-      'payment_intent_data[application_fee_amount]': fee, 'payment_intent_data[transfer_data][destination]': ctx.accountId,
       'payment_intent_data[metadata][task_id]': taskId, 'metadata[task_id]': taskId, 'metadata[user_id]': user.id,
       success_url: s.siteUrl + '/paiement/ok', cancel_url: s.siteUrl + '/paiement/annule',
       expires_at: Math.floor(now / 1000) + 23 * 3600,
-    }, 'flemme-checkout-' + taskId + '-' + new Date(now).toISOString().slice(0, 13));
+    };
+    const hour = new Date(now).toISOString().slice(0, 13);
+    if (signature) {
+      // Clé d'idempotence liée au montant : un nouveau prix (nouvelle version d'accord) ouvre une nouvelle session.
+      const session = await stripe(deps, s, 'checkout/sessions', { ...common,
+        'line_items[0][price_data][product_data][description]': `Prix convenu ${euros(ctx.payout)} + frais de plateforme ${euros(fee)}`,
+        'payment_intent_data[transfer_group]': 'flemme-' + taskId, 'payment_intent_data[metadata][stage]': 'signature', 'metadata[stage]': 'signature',
+      }, `flemme-signature-${taskId}-${ctx.total}-${hour}`);
+      await rpc(deps, s, 'signature_created', { userId: user.id, taskId, sessionId: session.id, url: session.url, total: ctx.total, commission: fee, payout: ctx.payout });
+      return { url: session.url };
+    }
+    const session = await stripe(deps, s, 'checkout/sessions', { ...common,
+      'payment_intent_data[application_fee_amount]': fee, 'payment_intent_data[transfer_data][destination]': ctx.accountId,
+    }, 'flemme-checkout-' + taskId + '-' + hour);
     await rpc(deps, s, 'checkout_created', { userId: user.id, taskId, sessionId: session.id, url: session.url, accountId: ctx.accountId, total: ctx.total, commission: fee, payout: ctx.payout });
     return { url: session.url };
+  });
+}
+
+const euros = (cents: number) => (cents / 100).toFixed(2).replace('.', ',').replace(/,00$/, '') + ' €';
+
+// POST /functions/v1/stripe-payout { taskId } : verse la part du membre une fois la mission terminée et payée à la signature.
+// Déclenché par le déposant ou le membre ; une seule fois (clé d'idempotence par flemme, et contrôle en base).
+export function payout(request: Request, deps: Deps) {
+  return run(request, deps, async s => {
+    const user = await currentUser(deps, s, request);
+    const body = await request.json().catch(() => ({}));
+    const taskId = typeof body?.taskId === 'string' && /^[0-9a-f-]{36}$/i.test(body.taskId) ? body.taskId : '';
+    if (!taskId) throw new HttpError(400, 'Flemme introuvable.');
+    const ctx = await rpc(deps, s, 'payout_context', { userId: user.id, taskId });
+    if (ctx.done) return { done: true };
+    const transfer = await stripe(deps, s, 'transfers', { amount: ctx.amount, currency: 'eur', destination: ctx.accountId,
+      transfer_group: 'flemme-' + taskId, 'metadata[task_id]': taskId, 'metadata[session_id]': ctx.sessionId }, 'flemme-transfer-' + taskId);
+    await rpc(deps, s, 'payout_done', { userId: user.id, sessionId: ctx.sessionId, transferId: transfer.id });
+    return { done: true };
   });
 }
 
@@ -156,12 +190,19 @@ export function webhook(request: Request, deps: Deps) {
     for (const secret of s.webhookSecrets) if (await verifySignature(payload, request.headers.get('Stripe-Signature'), secret, now)) valid = true;
     if (!valid) throw new HttpError(400, 'Signature Stripe invalide.');
     const event = JSON.parse(payload), o = event.data?.object || {};
-    if ((event.type === 'checkout.session.completed' && o.payment_status === 'paid') || event.type === 'checkout.session.async_payment_succeeded')
-      await rpc(deps, s, 'checkout_paid', { sessionId: o.id, amountTotal: o.amount_total, paymentIntentId: o.payment_intent });
-    else if (event.type === 'checkout.session.expired' || event.type === 'checkout.session.async_payment_failed')
-      await rpc(deps, s, 'checkout_expired', { sessionId: o.id });
+    if (typeof event.id !== 'string' || !/^evt_[A-Za-z0-9_]+$/.test(event.id)) throw new HttpError(400, 'Événement Stripe invalide.');
+    // Tout passe par une seule action en base, dans une transaction : l'identifiant evt_… y est enregistré,
+    // un événement rejoué ne fait donc rien deux fois. Les types non suivis sont notés puis ignorés.
+    const data: Record<string, unknown> = { eventId: event.id, type: event.type };
+    if (String(event.type).startsWith('checkout.session.'))
+      Object.assign(data, { sessionId: o.id, paymentStatus: o.payment_status, amountTotal: o.amount_total, paymentIntentId: o.payment_intent });
+    else if (event.type === 'charge.refunded')
+      Object.assign(data, { paymentIntentId: o.payment_intent, refunded: !!o.refunded, amountRefunded: o.amount_refunded });
+    else if (event.type === 'charge.dispute.created' || event.type === 'charge.dispute.closed')
+      Object.assign(data, { paymentIntentId: o.payment_intent, disputeStatus: o.status });
     else if (event.type === 'account.updated')
-      await rpc(deps, s, 'account_update', { accountId: o.id, chargesEnabled: !!o.charges_enabled, payoutsEnabled: !!o.payouts_enabled });
+      Object.assign(data, { accountId: o.id, chargesEnabled: !!o.charges_enabled, payoutsEnabled: !!o.payouts_enabled });
+    await rpc(deps, s, 'webhook', data);
     return { received: true };
   }, false);
 }

@@ -25,8 +25,10 @@ export function Fiche({ state: { busy, actorId, files }, place, task, can, draft
     {!!task.address && <Text style={styles.note}><Text style={styles.strong}>Adresse précise (privée) : </Text>{task.address}</Text>}
     {canEdit(task, actorId) && <Action secondary disabled={busy} onPress={() => go('edit')}>{review === 'changes_requested' ? 'Corriger ma demande' : 'Modifier ma demande'}</Action>}
     {agreement && <><Text style={styles.sectionTitle}>{agreement.brigadier.name} prend le relais</Text><Text style={styles.body}>{agreement.scope}</Text><Text style={styles.muted}>{agreement.slot}</Text><Bill amount={agreement.amount} agreed={agreement}/>
-      <Text style={styles.note}>{paymentNote(agreement, false, money, can.viaFlemme)}</Text>
-      {can.canPay && <Action disabled={busy} onPress={() => mutate('pay', {}, 'detail', notices.paid)}>Payer via Flemme · {money(agreement.total)} (simulation)</Action>}
+      <Text style={styles.note}>{paymentNote(agreement, false, money, can.viaFlemme, task.paymentMode !== 'stripe')}</Text>
+      {can.canPay && (task.paymentMode === 'stripe'
+        ? <Text style={styles.note}>Le paiement par carte se fait sur flemme.org, depuis la fiche de cette demande.</Text>
+        : <Action disabled={busy} onPress={() => mutate('pay', {}, 'detail', notices.paid)}>Payer via Flemme · {money(agreement.total)} (simulation)</Action>)}
       {can.canComplete && <Action disabled={busy} onPress={() => mutate('complete', {})}>Confirmer la tâche terminée</Action>}
       {can.canDeclarePayment && <Action disabled={busy} onPress={() => mutate('declare_payment', {})}>J’ai payé le membre</Action>}
       {can.canConfirmPayment && <Action disabled={busy} onPress={() => mutate('confirm_payment', {})}>Confirmer avoir reçu le paiement</Action>}
@@ -35,7 +37,7 @@ export function Fiche({ state: { busy, actorId, files }, place, task, can, draft
         {!contract ? <Text style={styles.muted}>Pas encore d’accord écrit. Rédigez-le ensemble : périmètre, résultat attendu, délai, annulation et confidentialité. Une fois commencé, il doit être signé par les deux avant la fin de la tâche.</Text>
           : <View style={styles.card}><Text style={styles.tag}>{contractStatusLabel[contract.status]}</Text>
             {!!contract.reviewNote && <View accessibilityRole="alert" style={contract.status === 'changes_requested' ? styles.error : styles.notice}><Text style={styles.body}>{contract.reviewNote}</Text></View>}
-            {CONTRACT_FIELDS.map(c => <Text key={c.name} style={styles.body}><Text style={styles.strong}>{c.label} : </Text>{contract.terms[c.name]}</Text>)}
+            {CONTRACT_FIELDS.filter(c => contract.terms[c.name]).map(c => <Text key={c.name} style={styles.body}><Text style={styles.strong}>{c.label} : </Text>{contract.terms[c.name]}</Text>)}
             <Text style={styles.note}>Déposant : {contract.ownerSignedAt ? `signé « ${contract.ownerSignature} » le ${date(contract.ownerSignedAt)}` : 'pas encore signé'}{'\n'}Membre qui aide : {contract.brigadierSignedAt ? `signé « ${contract.brigadierSignature} » le ${date(contract.brigadierSignedAt)}` : 'pas encore signé'}</Text></View>}
         {can.canContract && contract?.status !== 'signed' && <Action secondary disabled={busy} onPress={() => go('contract')}>{contract ? 'Modifier l’accord' : 'Rédiger l’accord'}</Action>}
         {can.canContract && (contract?.status === 'draft' || contract?.status === 'changes_requested') && <Action disabled={busy} onPress={() => mutate('agreement_submit', {}, 'detail', t => notices.contractSubmitted(t.contract?.status))}>Soumettre l’accord à l’équipe FLEMME</Action>}

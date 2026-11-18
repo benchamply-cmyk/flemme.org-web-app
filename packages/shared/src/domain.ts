@@ -27,7 +27,9 @@ export type Task = {
   /** Validation par l’équipe : seulement pour le déposant. Absent = publiée. */
   review?: Review; reviewNote?: string | null;
   // Rempli uniquement par le serveur : webhook Stripe (paiement en ligne) ou paiement simulé via Flemme (v2.0.0).
-  payment?: { method: 'stripe' | 'simulation'; status: StatutPaiement; total: number; commission: number; payout: number; at: string };
+  payment?: { method: 'stripe' | 'simulation'; status: StatutPaiement; total: number; commission: number; payout: number; at: string;
+    /** v2.0.0, Stripe : date du versement de la part du membre (après la fin de la mission). */
+    transferredAt?: string | null };
   /** v2.0.0 : mode de règlement réglé côté serveur (flemme_v2.settings.payment_mode). Absent = « direct » (ancien parcours). */
   paymentMode?: ModePaiement;
   /** Accord écrit (lot 3) : seulement pour le déposant et le membre retenu ; null tant qu’il n’est pas commencé. */
@@ -118,8 +120,8 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
   const chosen = t.offers.find(o => o.id === t.acceptedOfferId);
   const offer = t.offers.find(o => o.id === data.offerId);
   const event = (value: string) => t.history.push({ text: value, at });
-  // v2.0.0 : paiement via Flemme obligatoire quand le serveur l’a activé (mode « simulation » tant qu’aucun prestataire n’est branché).
-  const viaFlemme = t.paymentMode === 'simulation';
+  // v2.0.0 : paiement via Flemme obligatoire quand le serveur l’a activé (mode « simulation » ou « stripe »).
+  const viaFlemme = t.paymentMode === 'simulation' || t.paymentMode === 'stripe';
   if (command === 'edit') {
     if (!owner || t.status !== 'open' || t.review === 'rejected' || t.offers.some(o => o.status === 'pending')) throw new Error('Cette demande ne peut plus être modifiée.');
     Object.assign(t, taskData(data), { reviewNote: null }); event('Demande modifiée');
@@ -142,7 +144,10 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
     const c = t.contract;
     if (command === 'agreement_save') {
       if (c?.status === 'signed') throw new Error('Accord déjà signé par les deux parties.');
-      const terms = { scope: text(data.scope), quality: text(data.quality), deadline: text(data.deadline, 200), cancellation: text(data.cancellation), confidentiality: text(data.confidentiality) };
+      // Contrat v0.2 (mêmes rubriques que CONTRACT_FIELDS et flemme_v2.agreement_terms).
+      const terms = { template: '0.2' as const, scope: text(data.scope), deliverable: text(data.deliverable), quality: text(data.quality), deadline: text(data.deadline, 200),
+        acceptance: text(data.acceptance), cancellation: text(data.cancellation), confidentiality: text(data.confidentiality),
+        ...(optionalText(data.access) ? { access: optionalText(data.access)! } : {}), ...(optionalText(data.liability) ? { liability: optionalText(data.liability)! } : {}) };
       // v2.0.0 : le prix négocié peut changer dans l’accord. Il est recalculé avec le taux figé au choix de la proposition,
       // et toute nouvelle version efface les signatures (nouveau consentement des deux parties).
       const newAmount = data.amount == null ? null : amount(data.amount);
@@ -193,7 +198,7 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
     offer.status = 'declined'; event('Proposition déclinée · conservée dans l’historique');
   } else if (command === 'pay') {
     // v2.0.0, mode « simulation » : paiement via Flemme rejoué sans argent réel, ouvert après la double signature.
-    if (!owner || viaFlemme !== true) throw new Error('Paiement indisponible.');
+    if (!owner || t.paymentMode !== 'simulation') throw new Error(t.paymentMode === 'stripe' ? 'Cette mission se paie par carte via Stripe.' : 'Paiement indisponible.');
     if (t.status !== 'assigned' || t.contract?.status !== 'signed' || !t.agreement) throw new Error('Le paiement s’ouvre une fois l’accord signé par les deux parties.');
     if (t.payment?.status === 'paid') throw new Error('Cette mission est déjà payée.');
     const a = t.agreement;

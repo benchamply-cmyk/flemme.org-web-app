@@ -29,6 +29,7 @@ export const notices = {
   helpSent: 'Message envoyé à l’équipe FLEMME. La réponse s’affichera ici.',
   accepted: 'Proposition choisie. Rédigez maintenant l’accord ensemble : rien n’est dû avant sa signature.',
   paid: 'Paiement enregistré via Flemme (simulation : aucun argent réel). Tu pourras confirmer la fin de la mission une fois réalisée.',
+  payout: 'Part du membre versée sur son compte Stripe.',
   declined: 'Offre déclinée et conservée. Le membre peut proposer un nouveau forfait.',
   checkEmail: 'Vérifie ton e-mail, puis connecte-toi.',
   recoverSent: 'Si un compte existe pour cette adresse, un e-mail vient de partir. Ouvre le lien dans ce navigateur pour choisir ton mot de passe.',
@@ -44,8 +45,10 @@ export const commissionNote = () => COMMISSION.model === 'ajout'
 export const brigadierPitch = () => COMMISSION.model === 'ajout'
   ? fraisIntervenant(COMMISSION) : `Propose ton prix. FLEMME garde ${rateLabel()}, le reste est pour toi.`;
 /** Note sous l’accord : paiement via Flemme (v2.0.0, simulé), paiement en ligne (Stripe Connect) ou paiement direct déclaratif. */
-export function paymentNote(a: Agreement, online: boolean, money: (n: number) => string, viaFlemme = false) {
-  if (viaFlemme) return `Paiement via Flemme, obligatoire, une fois l’accord signé par les deux : ${money(a.total)} au total, dont ${money(a.commission)} de frais de plateforme. ${money(a.payout ?? a.amount)} reviennent à ${a.brigadier.name}. Version de test : le paiement est simulé, aucun argent réel ne circule.`;
+export function paymentNote(a: Agreement, online: boolean, money: (n: number) => string, viaFlemme = false, simulation = true) {
+  if (viaFlemme) return `Paiement via Flemme, obligatoire, une fois l’accord signé par les deux : ${money(a.total)} au total, dont ${money(a.commission)} de frais de plateforme. ${money(a.payout ?? a.amount)} reviennent à ${a.brigadier.name}` + (simulation
+    ? '. Version de test : le paiement est simulé, aucun argent réel ne circule.'
+    : ', versés à la fin de la mission. Paiement par carte avec Stripe : Flemme ne voit pas ton numéro de carte.');
   return online
     ? `Paiement en ligne une fois la tâche terminée : ${money(a.total)} par carte via Stripe. ${money(a.payout ?? a.amount)} sont versés au membre, ${money(a.commission)} reviennent à FLEMME.`
     : `Paiement direct : ${money(a.amount)} au membre. Commission FLEMME : ${money(a.commission)} à régler séparément, non encaissée dans cette version.`;
@@ -67,8 +70,11 @@ export const budgetLabel = (task: Task, money: (n: number) => string) =>
 export function paymentStatus(task: Task, money?: (n: number) => string) {
   if (task.payment && money) return task.payment.method === 'simulation'
     ? `${statutPaiementLabel[task.payment.status]} via Flemme (simulation) · ${money(task.payment.total)}, dont ${money(task.payment.commission)} de frais de plateforme`
+    : task.paymentMode === 'stripe'
+    ? `${statutPaiementLabel[task.payment.status]} via Flemme par carte · ${money(task.payment.total)}, dont ${money(task.payment.commission)} de frais de plateforme`
+      + (task.payment.transferredAt ? ' · part du membre versée' : task.payment.status === 'paid' ? ' · part du membre versée à la fin de la mission' : '')
     : 'Payé en ligne · ' + money(task.payment.total) + ' encaissés par Stripe, dont ' + money(task.payment.commission) + ' de commission FLEMME';
-  if (task.paymentMode === 'simulation') return task.contract?.status === 'signed' ? 'À payer via Flemme' : 'Paiement via Flemme après la signature de l’accord';
+  if (task.paymentMode === 'simulation' || task.paymentMode === 'stripe') return task.contract?.status === 'signed' ? 'À payer via Flemme' : 'Paiement via Flemme après la signature de l’accord';
   return task.paymentConfirmed ? 'Paiement confirmé par les deux personnes · déclaratif'
     : task.paymentDeclared ? 'Paiement déclaré · confirmation du membre attendue' : 'Paiement non déclaré';
 }

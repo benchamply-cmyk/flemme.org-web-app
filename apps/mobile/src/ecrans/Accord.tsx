@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View } from 'react-native';
-import { CONTRACT_FIELDS, contractInput, money, notices } from '../../../../packages/shared/src/index.ts';
+import { CONTRACT_COMMON_CLAUSES, CONTRACT_FIELDS, contractInput, money, notices } from '../../../../packages/shared/src/index.ts';
 import { Action } from '../ui/composants';
 import { styles } from '../ui/styles';
 import type { Ctx } from './contexte';
@@ -16,6 +16,7 @@ export function Accord({ state: { busy }, task, can, draft, field, mutate, valid
     {task.agreement && <Text style={styles.muted}>Prix convenu : {money(task.agreement.amount)} pour le membre, {money(task.agreement.total)} au total. Il ne change pas ici : c’est celui de la proposition acceptée.</Text>}
     <Text style={styles.note}>Écrivez ensemble ce que chacun attend. L’équipe FLEMME relit l’accord avant la signature.</Text>
     {CONTRACT_FIELDS.map(c => field(c.label, c.name, { multiline: c.max > 200, max: c.max, hint: c.hint }))}
+    <Text style={styles.note}>Clauses communes à tout accord Flemme :{'\n'}{CONTRACT_COMMON_CLAUSES.map(c => '• ' + c).join('\n')}</Text>
     {!!signed && <View accessibilityRole="alert" style={styles.error}><Text style={styles.body}>Une signature a déjà été donnée : enregistrer une modification l’annule, et les deux parties devront signer la nouvelle version.</Text></View>}
-    <Action disabled={busy} onPress={() => validated(() => { const data = contractInput(draft); void mutate('agreement_save', data, 'detail', notices.contractSaved); })}>Enregistrer l’accord</Action></>;
+    <Action disabled={busy} onPress={() => validated(() => { const { amount, ...terms } = contractInput(draft); const data = can.viaFlemme && amount != null ? { ...terms, amount } : terms; void mutate('agreement_save', data, 'detail', notices.contractSaved); })}>Enregistrer l’accord</Action></>;
 }
