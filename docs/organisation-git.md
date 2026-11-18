@@ -36,6 +36,7 @@ En bref : deux branches permanentes, un numéro de version à chaque mise en pro
 | promotion #86 : modèle hybride derrière le flag `modele.version`, feature flags, import de FlemmeV2.0 | `v1.5.0` | `07f84bc` (17/11/2026, candidate `v1.5.0-rc.1` sur `0e2a9cf`) |
 | promotion #89 : instructions des assistants, check `promotion` (le tag `v1.5.1`, posé trop tôt, pointe sur `07f84bc`) | `v1.5.2` | `d159131` (17/11/2026) |
 | mise en relation ouverte (#91, #92, #93, #94) | `v2.0.0` | à la promotion (candidate `v2.0.0-rc.1` en preprod, gel du 18/11/2026, pas de promotion prévue) |
+| confiance, refonte de Mon espace, textes de l'accueil, modèle ouvert hors prod (#96, #97, #98, #99) | `v2.1.0` | à la promotion (candidate `v2.1.0-rc.1` en preprod, gel du 18/11/2026, pas de promotion prévue) |
 
 Les anciens tags `v6.*` et `V5.9000-archive` sont conservés comme anciens noms ; les nouveaux tags sont posés sur les mêmes commits.
 
