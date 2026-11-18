@@ -159,6 +159,11 @@
   status = 200
 
 [[redirects]]
+  from = "/messages"
+  to = "/app.html"
+  status = 200
+
+[[redirects]]
   from = "/flemmes"
   to = "/app.html"
   status = 200

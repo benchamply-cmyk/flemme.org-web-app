@@ -5,6 +5,8 @@ import { BUDGET_FILTERS, CATEGORIES, DEADLINES, MODES, SORTS, brigadierPitch, bu
 import { session } from '../session.ts';
 import { Action } from '../ui.tsx';
 import type { Ctx } from './contexte.ts';
+import { useFlag } from '../flags/useFlag.tsx';
+import { Alertes, FiltresRapides, MesDemandes } from './Espace.tsx';
 
 export function TaskCard({ task: t, actorId, onOpen }: { task: Task; actorId: string; onOpen: () => void }) {
   const pending = t.owner.id === actorId && t.review && t.review !== 'published';
@@ -13,6 +15,8 @@ export function TaskCard({ task: t, actorId, onOpen }: { task: Task; actorId: st
 }
 export function Listes(ctx: Ctx) {
   const { state: { tasks, actorId, busy, more, drafts }, place, go } = ctx;
+  const refonte = useFlag('espace.refonte').actif;
+  if (refonte && place.tab === 'mine') return <MesDemandes {...ctx}/>;
   const { own, helping, available } = partition(tasks, actorId);
   const card = (t: Task) => <TaskCard key={t.id} task={t} actorId={actorId} onOpen={() => go('detail', { taskId: t.id })}/>;
   const reload = <>{more && <Action secondary disabled={busy} onClick={() => session.loadMore()}>Voir plus de demandes</Action>}<Action secondary disabled={busy} onClick={() => session.refresh()}>↻ Actualiser</Action></>;
@@ -69,7 +73,7 @@ function pendingFilter(): SearchFilter {
 
 // Recherche, filtres et tri : faits par le serveur (flemme_v2.search_tasks), pagination comprise.
 function Recherche({ state: { busy, found, filter }, card, fallback, skip }: Ctx & { card: (t: Task) => ReactNode; fallback: Task[]; skip: Task[] }) {
-  const [f, setF] = useState<SearchFilter>(filter), [open, setOpen] = useState(false);
+  const [f, setF] = useState<SearchFilter>(filter), [open, setOpen] = useState(false), refonte = useFlag('espace.refonte').actif;
   useEffect(() => {
     const pending = pendingFilter();
     if (Object.keys(pending).length) { run({ sort: filter.sort, ...pending }); if (FILTRE_KEYS.some(k => k !== 'q' && pending[k])) setOpen(true); } else if (!found) void session.search(filter);
@@ -86,6 +90,7 @@ function Recherche({ state: { busy, found, filter }, card, fallback, skip }: Ctx
       <div className="field"><label htmlFor="s-q">Rechercher une demande</label><input id="s-q" type="search" value={f.q || ''} onChange={set('q')} placeholder="Une tâche, une compétence… Ex. CV, étagère" maxLength={100}/></div>
       <div className="row"><button type="submit" className="btn small" disabled={busy}>Rechercher</button><button type="button" className="btn small secondary" aria-expanded={open} aria-controls="filtres" onClick={() => setOpen(!open)}>☷ Filtres{active ? ' (' + active + ')' : ''}</button></div>
     </form>
+    {refonte && <><FiltresRapides f={f} run={run}/><Alertes f={f} run={run}/></>}
     {open && <div id="filtres" className="card">
       {select('Catégorie', 'category', CATEGORIES, 'Toutes')}
       {select('Où', 'mode', MODES, 'Partout')}

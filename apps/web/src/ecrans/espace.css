@@ -1,0 +1,114 @@
+/* Refonte de Mon espace (v2.1.0, 18/11/2026) : styles propres au nouveau Mon espace (flag espace.refonte).
+   Couleurs des maquettes « Flemme – Refonte Mon espace » : verts Flemme, cartes blanches, bordures douces. */
+.app.refonte {
+  --e-fond: #f6faf8; --e-carte: #ffffff; --e-bord: #dce7e1; --e-texte: #10202a; --e-doux: #4a5a64;
+  --e-vert: #3a8f5e; --e-vert-fonce: #225337; --e-vert-clair: #e3f6ec; --e-nuit: #121212;
+  background: var(--e-fond); color: var(--e-texte); padding-bottom: 96px;
+}
+.app.refonte .app-nav { margin-bottom: 4px; }
+.app.refonte .app-nav .btn { min-height: 40px; padding: 8px 14px; font-size: 13px; border-width: 1px; border-color: var(--e-bord); }
+
+.espace-titre { font-size: clamp(24px, 6vw, 30px); font-weight: 800; line-height: 1.1; margin: 4px 0; letter-spacing: -.01em; }
+.espace-section { font-size: 17px; font-weight: 700; margin: 22px 0 10px; }
+.espace-entete { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; }
+.lien { background: none; border: 0; padding: 6px 0; min-height: 32px; font: 700 14px/1.2 inherit; color: var(--e-vert-fonce, #225337); cursor: pointer; text-align: left; }
+.lien:hover { text-decoration: underline; }
+.lien-discret { display: inline-block; margin-top: 18px; font-size: 14px; color: var(--e-doux); }
+
+/* Cartes */
+.carte-espace { display: grid; gap: 8px; width: 100%; text-align: left; background: var(--e-carte); border: 1px solid var(--e-bord); border-radius: 18px; padding: 14px 16px; margin-bottom: 10px; color: inherit; font: inherit; }
+button.carte-espace { cursor: pointer; transition: border-color .2s, box-shadow .2s; }
+button.carte-espace:hover { border-color: var(--e-vert); box-shadow: 0 6px 18px -10px rgba(34, 83, 55, .45); }
+.carte-titre { font-size: 16px; font-weight: 600; line-height: 1.3; }
+.carte-action { font-size: 14px; font-weight: 700; color: var(--e-vert-fonce); }
+.carte-espace.a-faire { border-left: 4px solid var(--e-vert); }
+.carte-espace.alerte { background: var(--e-vert-clair); border-color: #b9dcc8; }
+.progression { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+.progression span { height: 5px; border-radius: 3px; background: var(--e-bord); }
+.progression span.fait { background: var(--e-vert); }
+
+/* Tuiles Déléguer / Résoudre */
+.tuiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
+.tuile { display: grid; gap: 4px; text-align: left; min-height: 88px; padding: 16px; border-radius: 18px; border: 1px solid var(--e-bord); background: var(--e-carte); cursor: pointer; font: inherit; color: inherit; }
+.tuile-titre { font-size: 18px; font-weight: 800; letter-spacing: .03em; }
+.tuile.fonce { background: var(--e-nuit); color: #fff; border-color: var(--e-nuit); }
+.tuile.fonce .note { color: #d7e2dc; }
+
+/* Segments et puces */
+.segments { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); background: #e8efeb; border-radius: 999px; padding: 4px; margin: 12px 0; }
+.segments button { min-height: 40px; border: 0; border-radius: 999px; background: transparent; font: 600 14px inherit; color: var(--e-doux); cursor: pointer; }
+.segments button[aria-selected="true"] { background: var(--e-carte); color: var(--e-texte); box-shadow: 0 1px 4px rgba(16, 32, 42, .12); }
+.puces { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 12px; }
+.puce { min-height: 36px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--e-bord, #dce7e1); background: #fff; font: 500 13px inherit; color: inherit; cursor: pointer; }
+.puce[aria-pressed="true"] { background: var(--e-vert-fonce, #225337); border-color: var(--e-vert-fonce, #225337); color: #fff; font-weight: 600; }
+.puce.statique { cursor: default; font-size: 11px; font-weight: 700; min-height: 0; padding: 4px 10px; color: var(--e-vert-fonce); }
+
+/* Frise d’avancement */
+.frise { background: var(--e-carte); border: 1px solid var(--e-bord); border-radius: 18px; padding: 14px 16px; display: grid; gap: 10px; margin: 12px 0; }
+.frise-etapes { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.frise-etapes li { display: grid; gap: 6px; justify-items: center; }
+.frise-trait { width: 100%; height: 6px; border-radius: 3px; background: var(--e-bord); }
+.frise-etapes li.fait .frise-trait { background: var(--e-vert); }
+.frise-mot { font-size: 10px; color: var(--e-doux); text-align: center; }
+.frise-etapes li.fait .frise-mot { color: var(--e-vert-fonce); font-weight: 600; }
+.frise-etapes li[aria-current="step"] .frise-mot { font-weight: 800; }
+
+/* Comparaison des offres */
+.offres { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.offre { display: grid; gap: 6px; align-content: start; background: var(--e-carte); border: 1px solid var(--e-bord); border-radius: 18px; padding: 14px; cursor: pointer; font-size: 13px; }
+.offre[aria-checked="true"] { border: 2px solid var(--e-vert); padding: 13px; }
+.offre-qui { display: flex; align-items: center; gap: 8px; }
+.offre-prix { font-size: 22px; font-weight: 800; }
+.pastille-nom { width: 32px; height: 32px; flex: none; border-radius: 999px; background: #d6f5e6; color: var(--e-vert-fonce, #225337); font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+.pastille-nom.grand { width: 64px; height: 64px; font-size: 26px; background: var(--e-vert-fonce, #225337); color: #fff; }
+.action-collante { position: sticky; bottom: 84px; z-index: 5; margin-top: 12px; padding: 10px 0; background: linear-gradient(to top, var(--e-fond) 70%, transparent); }
+.action-collante .btn { width: 100%; background: var(--e-nuit); color: #fff; border-color: var(--e-nuit); }
+
+/* Messagerie */
+.fils { list-style: none; margin: 8px 0 14px; padding: 0; display: grid; gap: 8px; }
+.fil { display: flex; gap: 12px; align-items: flex-start; width: 100%; text-align: left; background: var(--e-carte); border: 1px solid var(--e-bord); border-radius: 16px; padding: 12px 14px; cursor: pointer; font: inherit; color: inherit; }
+.fil.non-lu { border-color: var(--e-vert); }
+.fil.non-lu .fil-apercu { font-weight: 700; color: var(--e-texte); }
+.fil-texte { display: grid; gap: 2px; flex: 1; min-width: 0; }
+.fil-apercu { font-size: 14px; color: var(--e-doux); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.resume-offre { position: sticky; top: 64px; z-index: 4; display: flex; justify-content: space-between; align-items: center; gap: 10px; background: #eef7f2; border-radius: 14px; padding: 10px 12px; margin: 8px 0 12px; }
+.resume-offre > div { display: grid; gap: 2px; }
+.app.refonte .bubble { max-width: 82%; border-radius: 18px 18px 18px 6px; background: var(--e-carte); border: 1px solid var(--e-bord); padding: 10px 14px; justify-self: start; }
+.app.refonte .bubble.moi { justify-self: end; border-radius: 18px 18px 6px 18px; background: var(--e-vert-fonce); border-color: var(--e-vert-fonce); color: #fff; }
+.app.refonte .bubble.moi .note { color: #cfe3d7; }
+.app.refonte.ecran-offer main, .app.refonte.ecran-offer { display: grid; gap: 10px; }
+
+/* Trouver : alertes */
+.bandeau-alerte { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; background: var(--e-vert-clair, #e3f6ec); border-radius: 16px; padding: 12px 14px; margin: 8px 0; font-size: 13px; }
+.mes-alertes { margin: 8px 0; font-size: 14px; }
+.mes-alertes summary { cursor: pointer; font-weight: 600; min-height: 32px; }
+.mes-alertes ul { list-style: none; padding: 0; margin: 6px 0; }
+
+/* Profil et réglages */
+.profil-entete { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.profil-entete > div { flex: 1; display: grid; }
+.jauge { display: block; height: 8px; border-radius: 4px; background: var(--e-bord); overflow: hidden; }
+.jauge span { display: block; height: 8px; background: var(--e-vert); }
+.chiffres { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 4px 0 12px; }
+.chiffres > div { background: var(--e-carte); border: 1px solid var(--e-bord); border-radius: 16px; padding: 12px; display: grid; gap: 2px; }
+.chiffre { font-size: 20px; font-weight: 700; }
+.reglages { list-style: none; margin: 0; padding: 0; background: var(--e-carte); border: 1px solid var(--e-bord); border-radius: 18px; overflow: hidden; }
+.reglages li + li { border-top: 1px solid #edf2ef; }
+.reglage { display: flex; justify-content: space-between; align-items: center; width: 100%; min-height: 52px; padding: 0 16px; background: none; border: 0; font: 15px inherit; color: inherit; text-decoration: none; cursor: pointer; text-align: left; }
+.reglage:hover { background: #f3f8f5; }
+
+/* Barre d’onglets : en bas sur téléphone, sous l’en-tête sur ordinateur */
+.onglets { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); background: #fff; border-top: 1px solid #dce7e1; padding: 6px 4px calc(10px + env(safe-area-inset-bottom)); }
+.onglet { display: flex; flex-direction: column; align-items: center; gap: 3px; min-height: 48px; border: 0; background: none; font: 500 11px inherit; color: #4a5a64; cursor: pointer; }
+.onglet[aria-current="page"] { color: #225337; font-weight: 700; }
+.onglet-ico { position: relative; display: inline-flex; }
+.onglet-badge { min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: #c2410c; color: #fff; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+.onglet-ico .onglet-badge { position: absolute; top: -6px; right: -10px; }
+@media (min-width: 900px) {
+  .app.refonte { padding-bottom: 32px; }
+  .onglets { position: sticky; top: 72px; bottom: auto; max-width: 720px; margin: 0 auto 12px; border: 1px solid #dce7e1; border-radius: 999px; padding: 4px; }
+  .onglet { flex-direction: row; justify-content: center; gap: 8px; font-size: 14px; min-height: 44px; border-radius: 999px; }
+  .onglet[aria-current="page"] { background: #e3f6ec; }
+  .action-collante { bottom: 0; }
+}
+@media (prefers-reduced-motion: reduce) { button.carte-espace { transition: none; } }

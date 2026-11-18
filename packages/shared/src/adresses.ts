@@ -8,6 +8,7 @@ import type { Screen, Tab } from './ecrans.ts';
 //   /mon-espace                      accueil « Que veux-tu faire ? » (connexion si déconnecté)
 //   /connexion, /connexion/mot-de-passe
 //   /mes-demandes                    mes demandes et propositions
+//   /messages                        discussions en cours (refonte de Mon espace, v2.1.0)
 //   /flemmes?categorie=…             flemmes à résoudre (liste réelle, filtres)
 //   /deleguer/nouvelle?formule=…     formulaire Déléguer (autre | devis)
 //   /flemme/:id                      fiche d’une demande (la proposition d’aide s’y fait)
@@ -25,7 +26,7 @@ export type Adresse = {
 };
 
 /** Débuts d’adresse servis par l’app (règles Netlify, serveur de développement). */
-export const PREFIXES_APP = ['/mon-espace', '/connexion', '/mes-demandes', '/flemmes', '/deleguer/nouvelle', '/flemme', '/compte', '/profil', '/aide', '/paiement'] as const;
+export const PREFIXES_APP = ['/mon-espace', '/connexion', '/mes-demandes', '/messages', '/flemmes', '/deleguer/nouvelle', '/flemme', '/compte', '/profil', '/aide', '/paiement'] as const;
 
 const id = (s: string | undefined) => s && /^[\w-]{1,80}$/.test(s) ? decodeURIComponent(s) : '';
 const formuleDe = (v: string | null): Formule | undefined => v === 'autre' || v === 'devis' ? v : undefined;
@@ -56,6 +57,7 @@ export function lireAdresse(chemin: string, requete = '', ancre = ''): Adresse |
     case 'mon-espace': return s.length === 1 ? { screen: 'home' } : null;
     case 'connexion': return s.length === 1 || (s.length === 2 && s[1] === 'mot-de-passe') ? { screen: 'home' } : null;
     case 'mes-demandes': return s.length === 1 ? { screen: 'list', tab: 'mine' } : null;
+    case 'messages': return s.length === 1 ? { screen: 'list', tab: 'messages' } : null;
     case 'flemmes': return s.length === 1 ? { screen: 'list', tab: 'find', categorie: categorieDe(q.get('categorie')) } : null;
     case 'deleguer': return s.length === 2 && s[1] === 'nouvelle' ? { screen: 'new', tab: 'mine', formule: formuleDe(q.get('formule')) } : null;
     case 'compte': return s.length === 1 ? { screen: 'account' } : null;
@@ -82,7 +84,7 @@ export function adresse(a: Adresse): string {
   const t = encodeURIComponent(a.taskId || ''), o = encodeURIComponent(a.offerId || '');
   switch (a.screen) {
     case 'home': return '/mon-espace';
-    case 'list': return a.tab === 'find' ? '/flemmes' + (a.categorie ? '?categorie=' + encodeURIComponent(a.categorie) : '') : '/mes-demandes';
+    case 'list': return a.tab === 'find' ? '/flemmes' + (a.categorie ? '?categorie=' + encodeURIComponent(a.categorie) : '') : a.tab === 'messages' ? '/messages' : '/mes-demandes';
     case 'new': return '/deleguer/nouvelle' + (a.formule ? '?formule=' + a.formule : '');
     case 'account': return '/compte';
     case 'help': return '/aide';

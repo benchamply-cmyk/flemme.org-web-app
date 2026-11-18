@@ -5,10 +5,12 @@ import { Action, Bill, Recap } from '../ui.tsx';
 import { Pieces } from './Pieces.tsx';
 import { useFlag } from '../flags/useFlag.tsx';
 import type { Ctx } from './contexte.ts';
+import { ComparerOffres, Frise } from './Espace.tsx';
 
 // Fiche d’une flemme : accord, paiement déclaratif, propositions, signalements et historique.
 export function Fiche({ state: { busy, actorId, files }, place, task, can, draft, field, go, mutate, validated, keepDraft }: Ctx) {
   const [showHistory, setShowHistory] = useState(false), [accept, setAccept] = useState(false), [rating, setRating] = useState('');
+  const refonte = useFlag('espace.refonte').actif;
   // Questions publiques et livraison (flag espace.confiance, migration 20261118140000).
   const confiance = useFlag('espace.confiance').actif;
   if (!task) return null;
@@ -17,6 +19,7 @@ export function Fiche({ state: { busy, actorId, files }, place, task, can, draft
   const preview = (() => { try { const n = parseMoney(draft.amount || ''); return n != null ? <Bill amount={n}/> : null; } catch { return null; } })();
   const review = can.isOwner && task.review && task.review !== 'published' ? task.review : null;
   return <><span className="tag">{taskStatus[task.status]}{task.status === 'open' ? ' · sans expiration' : ''}</span><h1 className="heading">{task.title}</h1><p className="muted">{[categoryLabel(task), task.place, modeLabel(task)].filter(Boolean).join(' · ')} · publiée par <button type="button" className="link" onClick={() => go('profile', { userId: task.owner.id })}>{task.owner.name}</button></p>
+    {refonte && <Frise task={task}/>}
     {review && <div className={review === 'changes_requested' || review === 'rejected' ? 'alert' : 'notice'} role="status"><span className="strong">{reviewLabel[review]}</span>{task.reviewNote && <><br/>{task.reviewNote}</>}{review === 'pending' && <><br/>Personne d’autre ne la voit pour l’instant.</>}</div>}
     <p>{task.details}</p>
     <p className="strong">Budget indicatif : {budgetText(task, money)}{task.budget != null || task.budgetRange ? ' hors frais' : ''} · Délai : {deadlineLabel(task)}</p>
@@ -71,7 +74,8 @@ export function Fiche({ state: { busy, actorId, files }, place, task, can, draft
           : <span className="muted">En attente de réponse</span>}</div>)}
       {can.canAsk && <>{field('Ta question', 'question', { multiline: true, max: 600 })}
         <Action secondary disabled={busy} onClick={() => validated(() => { void mutate('ask', { text: draft.question }, 'detail', 'Question publiée.'); })}>Poser ma question</Action></>}</>}
-    {task.offers.length > 0 && <><h2 className="section-title">{can.isOwner ? 'Les propositions' : 'Mes propositions'}</h2>
+    {refonte && can.isOwner && task.status === 'open' && <ComparerOffres task={task} go={go}/>}
+    {task.offers.length > 0 && !(refonte && can.isOwner && task.status === 'open') && <><h2 className="section-title">{can.isOwner ? 'Les propositions' : 'Mes propositions'}</h2>
       {task.offers.map(o => <button type="button" key={o.id} onClick={() => go('offer', { offerId: o.id })} className="card"><span className="row"><span className="strong">{o.brigadier.name}</span><span className="price">{money(o.amount)}</span></span><span>{o.scope}</span>{o.result && <span className="note">Résultat promis : {o.result}</span>}<span className="muted">{offerStatus[o.status]}{o.review && o.review !== 'approved' ? ' · ' + offerReviewLabel[o.review] : ''}</span><span className="link">Discussion et récapitulatif →</span></button>)}</>}
     {can.canOffer && <div className="card propose"><h2 className="section-title" style={{ marginTop: 0 }}>{place.draftId ? 'Reprendre ma proposition' : 'Tu peux t’en charger ?'}</h2><p className="muted">Indique ton prix et précise ce que tu proposes.</p>{field('Mon prix', 'amount', { numeric: true })}{preview}{field('Mes disponibilités', 'slot')}{field('Ce qui est inclus et non inclus', 'scope', { multiline: true })}
       {field('Résultat promis (facultatif)', 'result', { multiline: true, hint: 'Ce que la personne aura à la fin. Ex. : étagère fixée et de niveau.' })}

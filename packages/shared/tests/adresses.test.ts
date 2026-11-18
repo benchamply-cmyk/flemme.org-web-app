@@ -8,6 +8,7 @@ import type { Adresse } from '../src/adresses.ts';
 const TABLE: [string, Adresse][] = [
   ['/mon-espace', { screen: 'home' }],
   ['/mes-demandes', { screen: 'list', tab: 'mine' }],
+  ['/messages', { screen: 'list', tab: 'messages' }],
   ['/flemmes', { screen: 'list', tab: 'find', categorie: undefined }],
   ['/flemmes?categorie=administratif', { screen: 'list', tab: 'find', categorie: 'administratif' }],
   ['/deleguer/nouvelle', { screen: 'new', tab: 'mine', formule: undefined }],

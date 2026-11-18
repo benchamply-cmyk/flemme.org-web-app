@@ -23,6 +23,7 @@ import { Offre } from './ecrans/Offre.tsx';
 import { Profil } from './ecrans/Profil.tsx';
 import { Signalement } from './ecrans/Signalement.tsx';
 import { BientotDisponible, useFlag } from './flags/useFlag.tsx';
+import { AccueilEspace, Messages, Onglets, Reglages, useNonLus } from './ecrans/Espace.tsx';
 
 // Coque web de l’app : navigation, formulaire en cours et choix de l’écran.
 // Règles, état et textes partagés : packages/shared. Écrans : src/ecrans. Pendant mobile : apps/mobile/App.tsx.
@@ -120,6 +121,8 @@ export default function App() {
   function keepDraft(id: string) { const next = { ...place, draftId: id }; history.replaceState(next, '', adresseDe(next)); setPlace(next); }
   // Feature flags (src/flags) : Mon espace et le formulaire « Déléguer » peuvent être éteints depuis /admin.
   const monEspace = useFlag('espace.mon_espace'), deleguer = useFlag('formulaires.deleguer');
+  // Refonte de Mon espace (v2.1.0) : onglets, accueil « À faire maintenant », messagerie, profil et réglages (src/ecrans/Espace.tsx).
+  const refonte = useFlag('espace.refonte').actif, nonLus = useNonLus(tasks, actorId);
   const ctx: Ctx = {
     state, place, draft, task, offer, can: rights(task, actorId), field, choice, go, mutate, keepDraft,
     fill: values => setDraft(d => ({ ...d, ...values })),
@@ -133,12 +136,13 @@ export default function App() {
   else if (session.remote && (!gateway || !actorId)) content = <Connexion {...ctx}/>;
   else if (!gateway) content = <><h1 className="heading">Chargement interrompu</h1><Action onClick={() => session.initialize()}>Réessayer sans effacer mes données</Action></>;
   else if (recovering && session.remote) content = <MotDePasse {...ctx}/>;
-  else if (screen === 'account') content = <Compte {...ctx}/>;
+  else if (screen === 'account') content = refonte ? <Reglages {...ctx}><Compte {...ctx}/></Reglages> : <Compte {...ctx}/>;
   else if (screen === 'profile') content = <Profil key={visit} {...ctx}/>;
   else if (screen === 'help') content = <Aide key={visit} {...ctx}/>;
-  else if (screen === 'home') content = <Accueil {...ctx}/>;
+  else if (screen === 'home') content = refonte ? <AccueilEspace {...ctx}/> : <Accueil {...ctx}/>;
   else if (screen === 'new' && !deleguer.actif) content = <BientotDisponible titre="Déléguer une flemme"/>;
   else if (screen === 'new') content = <NouvelleFlemme key={visit} {...ctx}/>;
+  else if (screen === 'list' && refonte && place.tab === 'messages') content = <Messages {...ctx}/>;
   else if (screen === 'list') content = <Listes key={visit} {...ctx}/>;
   else if (!task) content = <><h1 className="heading">Demande indisponible</h1><Action secondary onClick={() => go('list')}>Revenir à la liste</Action></>;
   else if (screen === 'report') content = <Signalement {...ctx}/>;
@@ -158,14 +162,17 @@ export default function App() {
     });
   }, [connecte]);
   return <>
-    <main ref={main} tabIndex={-1} className={'app ecran-' + screen} aria-busy={busy}>
-      {connecte && <div className="app-nav">{screen !== 'home' && <Action secondary onClick={back}>{backLabel(screen)}</Action>}{screen !== 'account' && <button type="button" className="btn small secondary" onClick={() => go('account')}>Mon compte</button>}{screen !== 'help' && <button type="button" className="btn small secondary" data-beta-feature="aide" onClick={() => go('help')}>Aide en ligne</button>}</div>}
+    <main ref={main} tabIndex={-1} className={'app ecran-' + screen + (refonte && connecte ? ' refonte' : '')} aria-busy={busy}>
+      {connecte && refonte && <Onglets place={place} go={go} nonLus={nonLus}/>}
+      {connecte && refonte && ['detail', 'offer', 'review', 'edit', 'contract', 'report', 'profile', 'help', 'new'].includes(screen) && <div className="app-nav"><Action secondary onClick={back}>{backLabel(screen)}</Action></div>}
+      {connecte && !refonte && <div className="app-nav">{screen !== 'home' && <Action secondary onClick={back}>{backLabel(screen)}</Action>}{screen !== 'account' && <button type="button" className="btn small secondary" onClick={() => go('account')}>Mon compte</button>}{screen !== 'help' && <button type="button" className="btn small secondary" data-beta-feature="aide" onClick={() => go('help')}>Aide en ligne</button>}</div>}
       {!!error && <div role="alert" className="alert">{error}</div>}
       {!!notice && <p aria-live="polite" className="notice">{notice}</p>}
       {content}
       {busy && <p className="muted" role="status">En cours…</p>}
     </main>
     <p className="foot">{footer(session.remote, onlinePayment)}</p>
-    <div dangerouslySetInnerHTML={{ __html: pied }}/>
+    {/* Nouveau Mon espace : le grand pied de page de la vitrine laisse la place à la barre d’onglets. */}
+    {!(refonte && connecte) && <div dangerouslySetInnerHTML={{ __html: pied }}/>}
   </>;
 }
