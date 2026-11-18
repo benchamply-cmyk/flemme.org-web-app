@@ -37,3 +37,7 @@ Branche courte depuis `preprod`, code derrière un flag `off` par défaut en pro
 1. Appliquer la migration `20261116120000_flemme_v2_feature_flags.sql` sur `flemme-preprod`, puis sur la production avant la promotion qui contient cette PR (action de Ben). Sans la migration, le site applique les valeurs par défaut du registre.
 2. Sur `flemme-preprod`, régler l'environnement serveur sur `preprod` dans /admin, onglet « Fonctionnalités ».
 3. Vérifier dans /admin, onglet « Fonctionnalités », puis l'environnement serveur.
+
+## Flag `espace.refonte` (v2.1.0)
+
+Ajouté le 18/11/2026 pour la refonte de Mon espace (barre d’onglets, accueil « À faire maintenant », frise, comparaison des offres, messagerie, alertes, profil et réglages). Allumé en local, beta et preprod, éteint en prod : la promotion de la v2.1.0 n’affiche le nouveau Mon espace en production que si Ben l’allume dans /admin › Fonctionnalités. Éteint, l’ancien Mon espace reste en place. Code : `apps/web/src/ecrans/Espace.tsx`, logique partagée `packages/shared/src/espace.ts`.

@@ -40,6 +40,10 @@ export const FLAGS = {
     description: 'Hybride : catalogue à prix fixes, formules et Devenir Brigadier. Ouvert : ces blocs sont masqués (mise en relation ouverte).' },
   'espace.mon_espace': { domaine: 'Mon espace', libelle: 'Mon espace', type: 'coupe-circuit', defaut: partout('tous'), creeLe: '2026-11-16',
     description: 'Éteint : la connexion et Mon espace affichent « bientôt disponible ».' },
+  // Refonte de Mon espace (v2.1.0, 18/11/2026) : barre d’onglets, accueil « À faire maintenant », frise, comparaison des offres,
+  // messagerie en bulles, filtres rapides et alertes, profil et réglages. Allumée hors prod ; éteinte = ancien Mon espace.
+  'espace.refonte': { domaine: 'Mon espace', libelle: 'Nouveau Mon espace', type: 'lancement', defaut: { local: 'tous', beta: 'tous', preprod: 'tous', prod: 'off' }, creeLe: '2026-11-18',
+    description: 'Allumé : nouveau Mon espace (onglets, À faire, frise, offres comparées, messagerie, alertes). Éteint : ancien Mon espace.' },
   'espace.aide': { domaine: 'Mon espace', libelle: 'Aide dans l’app', type: 'lancement', defaut: partout('tous'), creeLe: '2026-11-16', retraitPrevu: '2026-12-31',
     description: 'Éteint : masque les accès à l’aide humaine dans l’app.' },
   // Abonnements (v2.0.0, 18/11/2026) : code de souscription prêt, éteint partout. La base exige en plus une ligne « tous » ou « testeurs »

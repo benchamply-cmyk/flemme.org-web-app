@@ -6,6 +6,7 @@ Chaque PR ajoute une ligne sous « À venir ». Au gel de preprod, « À venir �
 
 ## À venir
 
+- Refonte de Mon espace (v2.1.0, 18 nov. 2026, demande de Ben, d’après les maquettes « Flemme – Refonte Mon espace ») derrière le flag `espace.refonte` (allumé en local, beta et preprod, éteint en prod) : barre d’onglets Accueil, Demandes, Trouver, Messages, Profil ; accueil « À faire maintenant » avec l’avancement de chaque demande ; « Mes flemmes » en deux côtés (Je délègue / J’aide) avec filtres ; fiche avec frise en 7 étapes et offres comparées côte à côte, une seule action principale ; messagerie en bulles avec non-lus et résumé de l’offre (nouvelle adresse /messages) ; filtres rapides et alertes de demandes dans Trouver (gardées dans le navigateur) ; profil avec taux de remplissage, chiffres et réglages. Aucune migration.
 ## v2.0.0 (candidate) — gel de preprod le 18 nov. 2026
 
 Version majeure : mise en relation ouverte (marketplace). Tag `v2.0.0-rc.1` sur preprod ; aucune promotion vers prod prévue pour l'instant (décision de Ben du 18/11). PR incluses : #91 (parcours et vitrine), #93 (paiement à la signature, contrat v0.2, Stripe), #94 (abonnements fermés), #92 (pages légales), #90 (CHANGELOG v1.5.2), plus ce gel. Migrations : `20261118120000_flemme_v2_paiement_signature` puis `20261118130000_flemme_v2_abonnements`, à appliquer par Ben sur `flemme-preprod` uniquement. Paiement livré en mode `direct` ; le parcours v2 se teste en `simulation` ; Stripe non branché ; flag `modele.version` hybride par défaut en preprod.
