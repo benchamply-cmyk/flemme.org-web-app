@@ -5,19 +5,19 @@ import { CONTRACT_FIELDS } from '../../../../packages/shared/src/accord.ts';
 import { budgetText, categoryLabel, deadlineLabel, modeLabel } from '../../../../packages/shared/src/parcours.ts';
 import { RemoteGateway } from '../../../../packages/shared/src/gateway.ts';
 import { tokenStore } from '../storage.ts';
-import type { AdminAction, AdminSource, FlagsData, AlertRow, DisputeRow, HelpRow, Moderation, Overview, ReportRow, ReviewDecision, ReviewQueue, UserRow } from './model.ts';
+import type { AdminAction, AdminSource, FlagsData, PlanRow, PlansData, AlertRow, DisputeRow, HelpRow, Moderation, Overview, ReportRow, ReviewDecision, ReviewQueue, UserRow } from './model.ts';
 import { FLAGS, CLES, ETATS, ETAT_LIBELLE, type CleFlag, type DefinitionFlag, type EtatFlag, type Environnement } from '../../../../packages/shared/src/flags.ts';
 import { ENV } from '../flags/env.ts';
 import { DemoAdmin, alertLabel, disputeLabel, filterDisputes, filterUsers, logLabel, taskLabel, when } from './model.ts';
 
 // Page admin de flemme.org : signalements, litiges, utilisateurs et alertes.
 // Toutes les données passent par public.flemme_admin_api, qui revérifie le rôle admin en base.
-type Tab = 'overview' | 'moderation' | 'queue' | 'help' | 'reports' | 'disputes' | 'users' | 'alerts' | 'flags';
-type Data = { overview?: Overview; moderation?: Moderation; queue?: ReviewQueue; help?: HelpRow[]; reports?: ReportRow[]; disputes?: DisputeRow[]; users?: UserRow[]; alerts?: AlertRow[]; flags?: FlagsData };
+type Tab = 'overview' | 'moderation' | 'queue' | 'help' | 'reports' | 'disputes' | 'users' | 'alerts' | 'flags' | 'plans';
+type Data = { overview?: Overview; moderation?: Moderation; queue?: ReviewQueue; help?: HelpRow[]; reports?: ReportRow[]; disputes?: DisputeRow[]; users?: UserRow[]; alerts?: AlertRow[]; flags?: FlagsData; plans?: PlansData };
 const url = import.meta.env.VITE_SUPABASE_URL || '';
 const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
 const remoteMode = !!(url || key);
-const tabs: [Tab, string][] = [['overview', 'Vue d’ensemble'], ['moderation', 'À valider'], ['queue', 'Candidatures et accords'], ['help', 'Aide'], ['reports', 'Signalements'], ['disputes', 'Litiges'], ['users', 'Utilisateurs'], ['alerts', 'Alertes e-mail'], ['flags', 'Fonctionnalités']];
+const tabs: [Tab, string][] = [['overview', 'Vue d’ensemble'], ['moderation', 'À valider'], ['queue', 'Candidatures et accords'], ['help', 'Aide'], ['reports', 'Signalements'], ['disputes', 'Litiges'], ['users', 'Utilisateurs'], ['alerts', 'Alertes e-mail'], ['flags', 'Fonctionnalités'], ['plans', 'Abonnements']];
 // Environnements réglables depuis l'admin (« local » suit toujours le registre).
 const ENVS: Environnement[] = ['beta', 'preprod', 'prod'];
 
@@ -48,7 +48,7 @@ export default function AdminApp() {
   async function load(s: AdminSource, which: Tab) {
     const [field, action]: [keyof Data, AdminAction] = which === 'queue' ? ['queue', 'review_queue'] : which === 'help' ? ['help', 'help_queue'] : [which, which];
     const result = await s.call(action);
-    setData(d => ({ ...d, [field]: which === 'overview' || which === 'moderation' || which === 'queue' || which === 'flags' ? result : which === 'help' ? result.requests : result[which] }));
+    setData(d => ({ ...d, [field]: which === 'overview' || which === 'moderation' || which === 'queue' || which === 'flags' || which === 'plans' ? result : which === 'help' ? result.requests : result[which] }));
   }
   async function open(s: AdminSource) {
     // Le premier appel vérifie le rôle : un compte non admin reçoit « Accès réservé » et ne voit rien.
@@ -225,6 +225,32 @@ export default function AdminApp() {
             </div>; })}
         </div>; })}
       </section>)}
+    </>;
+  } else if (tab === 'plans') {
+    // Abonnements : formules modifiables sans code (flemme_v2.subscription_plans). Rien n'est proposé aux membres tant que
+    // le flag « abonnements.souscription » est éteint et que la formule n'est pas « ouverte » avec un prix Stripe.
+    const p = data.plans;
+    const champ = (pl: PlanRow, n: string, v: string) => draft[pl.id + '.' + n] ?? v;
+    const euros = (c: number | null) => c == null ? '' : (c / 100).toFixed(2).replace('.', ',').replace(/,00$/, '');
+    const cents = (v: string) => { const t = v.trim().replace(',', '.'); return t ? Math.round(Number(t) * 100) : null; };
+    const lignes = (v: string) => v.split('\n').map(x => x.trim()).filter(Boolean);
+    content = !p ? <p className="muted">Abonnements indisponibles : la migration abonnements n’est pas encore appliquée sur cette base.</p> : <>
+      <p className="muted">Souscription {p.open ? 'ouverte' : 'fermée'} par le flag « abonnements.souscription » (onglet Fonctionnalités). Une formule n’est proposée que si elle est « ouverte » avec un prix Stripe (price_…). Les textes de la page /premium viennent du code (packages/shared/src/abonnements.ts).</p>
+      {p.subscriptions && <p className="note">Abonnements : {Object.entries(p.subscriptions).map(([s, n]) => `${s} ${n}`).join(' · ')}</p>}
+      {p.plans.map(pl => <div className="card" key={pl.id}><div className="row"><span className="card-title">{pl.name}</span><code className="note">{pl.id}</code><span className="tag">{pl.status}</span></div>
+        {([['name', 'Nom', pl.name], ['monthly', 'Prix mensuel (€)', euros(pl.monthlyAmount)], ['yearly', 'Prix annuel (€)', euros(pl.yearlyAmount)], ['trial', 'Jours d’essai', String(pl.trialDays)],
+          ['priceM', 'Prix Stripe mensuel (price_…)', pl.stripePriceMonthly || ''], ['priceY', 'Prix Stripe annuel (price_…)', pl.stripePriceYearly || '']] as const).map(([n, l, v]) =>
+          <div className="field" key={n}><label htmlFor={`${pl.id}-${n}`}>{l}</label><input id={`${pl.id}-${n}`} value={champ(pl, n, v)} onChange={set(pl.id + '.' + n)} disabled={busy}/></div>)}
+        {([['perks', 'Avantages (un par ligne)', pl.perks], ['conditions', 'Conditions propres (une par ligne)', pl.conditions]] as const).map(([n, l, v]) =>
+          <div className="field" key={n}><label htmlFor={`${pl.id}-${n}`}>{l}</label><textarea id={`${pl.id}-${n}`} rows={4} value={champ(pl, n, v.join('\n'))} onChange={set(pl.id + '.' + n)} disabled={busy}/></div>)}
+        <div className="field"><label htmlFor={`${pl.id}-status`}>Statut</label><select id={`${pl.id}-status`} value={champ(pl, 'status', pl.status)} onChange={set(pl.id + '.status')} disabled={busy}>
+          <option value="draft">Brouillon (« Bientôt »)</option><option value="open">Ouverte</option><option value="closed">Fermée</option></select></div>
+        <Button disabled={busy} onClick={() => act('plan_save', { id: pl.id, name: champ(pl, 'name', pl.name), audience: pl.audience,
+          monthlyAmount: cents(champ(pl, 'monthly', euros(pl.monthlyAmount))), yearlyAmount: cents(champ(pl, 'yearly', euros(pl.yearlyAmount))),
+          trialDays: Number(champ(pl, 'trial', String(pl.trialDays))) || 0, perks: lignes(champ(pl, 'perks', pl.perks.join('\n'))),
+          conditions: lignes(champ(pl, 'conditions', pl.conditions.join('\n'))), status: champ(pl, 'status', pl.status),
+          stripePriceMonthly: champ(pl, 'priceM', pl.stripePriceMonthly || ''), stripePriceYearly: champ(pl, 'priceY', pl.stripePriceYearly || '') }, `Formule « ${pl.id} » enregistrée.`, ['plans'])}>Enregistrer la formule</Button>
+      </div>)}
     </>;
   } else if (tab === 'alerts') content = <>
     <p className="muted">Chaque nouvelle flemme, accord ou signalement est enregistré ici puis envoyé par e-mail. Une alerte en échec ne bloque jamais l’action du membre.</p>

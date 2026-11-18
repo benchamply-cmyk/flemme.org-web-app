@@ -169,6 +169,39 @@ export function payout(request: Request, deps: Deps) {
   });
 }
 
+// POST /functions/v1/stripe-subscribe { planId, period? } : session Stripe Checkout en mode abonnement.
+//        { action: 'portal' } : portail client Stripe (résilier, changer de carte, factures).
+// La base vérifie le flag abonnements.souscription, le statut de la formule et son prix Stripe : rien n'est ouvert sans Ben.
+export function subscribe(request: Request, deps: Deps) {
+  return run(request, deps, async s => {
+    const user = await currentUser(deps, s, request);
+    const body = await request.json().catch(() => ({}));
+    if (body?.action === 'portal') {
+      const { customerId } = await rpc(deps, s, 'subscription_customer', { userId: user.id });
+      const portal = await stripe(deps, s, 'billing_portal/sessions', { customer: customerId, return_url: s.siteUrl + '/mon-espace' },
+        'flemme-portal-' + user.id + '-' + Math.floor((deps.now?.() ?? Date.now()) / 60000));
+      return { url: portal.url };
+    }
+    const planId = typeof body?.planId === 'string' && /^[a-z][a-z0-9-]{1,39}$/.test(body.planId) ? body.planId : '';
+    if (!planId) throw new HttpError(400, 'Formule introuvable.');
+    const period = body?.period === 'year' ? 'year' : 'month';
+    const ctx = await rpc(deps, s, 'subscription_context', { userId: user.id, planId, period });
+    const now = deps.now?.() ?? Date.now();
+    const session = await stripe(deps, s, 'checkout/sessions', {
+      mode: 'subscription', locale: 'fr', client_reference_id: user.id,
+      'line_items[0][price]': ctx.priceId, 'line_items[0][quantity]': 1,
+      customer: ctx.customerId || undefined, customer_email: ctx.customerId ? undefined : (user.email || undefined),
+      'subscription_data[trial_period_days]': ctx.trialDays > 0 ? ctx.trialDays : undefined,
+      'subscription_data[metadata][flemme_user_id]': user.id, 'subscription_data[metadata][plan_id]': planId,
+      'metadata[user_id]': user.id, 'metadata[plan_id]': planId,
+      success_url: s.siteUrl + '/mon-espace?abonnement=ok', cancel_url: s.siteUrl + '/premium',
+      expires_at: Math.floor(now / 1000) + 23 * 3600,
+    }, `flemme-subscribe-${user.id}-${planId}-${period}-${new Date(now).toISOString().slice(0, 13)}`);
+    await rpc(deps, s, 'subscription_created', { userId: user.id, planId, period, sessionId: session.id });
+    return { url: session.url };
+  });
+}
+
 // Vérification de l'en-tête Stripe-Signature (HMAC-SHA256 de « t.corps », tolérance 5 min).
 export async function verifySignature(payload: string, header: string | null, secret: string, nowSeconds: number, tolerance = 300) {
   if (!header) return false;
@@ -194,8 +227,13 @@ export function webhook(request: Request, deps: Deps) {
     // Tout passe par une seule action en base, dans une transaction : l'identifiant evt_… y est enregistré,
     // un événement rejoué ne fait donc rien deux fois. Les types non suivis sont notés puis ignorés.
     const data: Record<string, unknown> = { eventId: event.id, type: event.type };
-    if (String(event.type).startsWith('checkout.session.'))
+    if (String(event.type).startsWith('checkout.session.') && o.mode === 'subscription')
+      Object.assign(data, { sessionId: o.id, mode: 'subscription', subscriptionId: o.subscription, customerId: o.customer });
+    else if (String(event.type).startsWith('checkout.session.'))
       Object.assign(data, { sessionId: o.id, paymentStatus: o.payment_status, amountTotal: o.amount_total, paymentIntentId: o.payment_intent });
+    else if (String(event.type).startsWith('customer.subscription.'))
+      Object.assign(data, { subscriptionId: o.id, customerId: o.customer, status: o.status, cancelAtPeriodEnd: !!o.cancel_at_period_end,
+        currentPeriodEnd: o.current_period_end ?? o.items?.data?.[0]?.current_period_end });
     else if (event.type === 'charge.refunded')
       Object.assign(data, { paymentIntentId: o.payment_intent, refunded: !!o.refunded, amountRefunded: o.amount_refunded });
     else if (event.type === 'charge.dispute.created' || event.type === 'charge.dispute.closed')

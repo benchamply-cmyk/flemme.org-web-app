@@ -5,6 +5,7 @@ import { searchTasks } from './parcours.ts';
 import type { Profile } from './accord.ts';
 import type { FileItem, HelpRequest, Upload } from './aide.ts';
 import { fileInput } from './aide.ts';
+import type { Abonnement, FormuleServeur } from './abonnements.ts';
 
 // Identifiants de ressources/idempotence uniquement : jamais utilisés comme secrets.
 export const newId = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -269,6 +270,17 @@ export class RemoteGateway implements Gateway {
     if (Date.now() > this.expires - 60000) await this.refresh();
     const { url } = await this.request('/functions/v1/stripe-' + kind, kind === 'checkout' ? { taskId, ...(stage ? { stage } : {}) } : {}, this.access);
     if (typeof url !== 'string' || !/^https:\/\/(checkout|connect)\.stripe\.com\//.test(url)) throw new Error('Lien de paiement invalide.');
+    return url;
+  }
+  /** Abonnements : formules ouvertes (vide tant que le flag et la formule ne sont pas ouverts) et abonnements du membre. */
+  async subscriptions(): Promise<{ open: boolean; plans: FormuleServeur[]; mine: Abonnement[] }> {
+    return this.rpc('subscriptions', null, {}, null);
+  }
+  /** Page Stripe de souscription (planId) ou portail client pour gérer ou résilier (portal). */
+  async subscriptionLink(target: { planId: string; period: 'month' | 'year' } | 'portal'): Promise<string> {
+    if (Date.now() > this.expires - 60000) await this.refresh();
+    const { url } = await this.request('/functions/v1/stripe-subscribe', target === 'portal' ? { action: 'portal' } : target, this.access);
+    if (typeof url !== 'string' || !/^https:\/\/(checkout|billing)\.stripe\.com\//.test(url)) throw new Error('Lien d’abonnement invalide.');
     return url;
   }
   /** v2.0.0, mode stripe : versement de la part du membre (fonction Edge stripe-payout), une seule fois par mission. */

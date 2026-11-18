@@ -33,7 +33,11 @@ export type ReviewDecision = 'publish' | 'changes' | 'reject';
 export type AlertRow = { id: number; kind: AlertKind; taskId: string; payload: Record<string, unknown>; createdAt: string; dispatchedAt: string | null; error: string | null };
 export type AdminAction = 'overview' | 'reports' | 'disputes' | 'users' | 'alerts' | 'alert_retry' | 'dispute_update' | 'user_suspend' | 'user_restore'
   | 'moderation' | 'task_review' | 'review_queue' | 'offer_review' | 'agreement_review' | 'help_queue' | 'help_answer'
-  | 'flags' | 'flag_set' | 'flag_reset' | 'flag_environment';
+  | 'flags' | 'flag_set' | 'flag_reset' | 'flag_environment' | 'plans' | 'plan_save';
+// Abonnements (20261118130000) : formules modifiables par l'équipe.
+export type PlanRow = { id: string; name: string; audience: 'membre' | 'deposant' | 'tous'; monthlyAmount: number | null; yearlyAmount: number | null; trialDays: number;
+  perks: string[]; conditions: string[]; status: 'draft' | 'open' | 'closed'; stripePriceMonthly: string | null; stripePriceYearly: string | null; updatedAt: string };
+export type PlansData = { open: boolean; plans: PlanRow[]; subscriptions: Record<string, number> | null };
 // Feature flags (supabase/migrations/20261116120000_flemme_v2_feature_flags.sql) : une ligne par flag réglé et par environnement.
 export type FlagRow = { key: string; environment: Environnement; state: EtatFlag; value: string | null; updatedAt: string; updatedBy: string | null };
 export type FlagsData = { serverEnvironment: Environnement; flags: FlagRow[] };
@@ -48,6 +52,7 @@ export const disputeLabel: Record<DisputeStatus, string> = { open: 'À traiter',
 export const taskLabel: Record<Task['status'], string> = { open: 'Ouverte', assigned: 'Attribuée', completed: 'Terminée' };
 export const alertLabel: Record<AlertKind, string> = { task_created: 'Nouvelle flemme', task_edited: 'Demande modifiée', report: 'Signalement', agreement: 'Accord conclu', offer_review: 'Candidature à valider', agreement_review: 'Accord écrit à contrôler', help: 'Demande d’aide' };
 export const logLabel: Record<string, string> = {
+  plan_save: 'Formule d’abonnement modifiée',
   task_publish: 'Demande publiée', task_changes: 'Correction demandée', task_reject: 'Demande refusée',
   offer_approve: 'Candidature validée', offer_changes: 'Correction de candidature demandée', offer_reject: 'Candidature refusée',
   agreement_approve: 'Accord contrôlé', agreement_changes: 'Correction d’accord demandée',
@@ -76,6 +81,9 @@ export class DemoAdmin implements AdminSource {
   private log: Overview['log'] = [];
   private flags: FlagRow[] = [];
   private flagEnv: Environnement = 'prod';
+  private plans: PlanRow[] = [{ id: 'membre-premium', name: 'Membre Premium', audience: 'membre', monthlyAmount: null, yearlyAmount: null, trialDays: 0,
+    perks: ['Alertes en priorité sur les nouvelles flemmes', 'Profil mis en avant et badge Premium', 'Suivi des prestations et des revenus dans l’app'], conditions: [],
+    status: 'draft', stripePriceMonthly: null, stripePriceYearly: null, updatedAt: '2026-11-18T09:00:00.000Z' }];
   private alerts: AlertRow[];
   private help: HelpRow[] = [{ id: 'demo-aide', topic: 'compte', text: 'Je ne reçois pas l’e-mail de confirmation.', status: 'open', answer: null, taskId: null,
     at: '2026-11-03T09:00:00.000Z', answeredAt: null, user: demoActors[1], email: 'lou@flemme.example', title: null }];
@@ -133,6 +141,14 @@ export class DemoAdmin implements AdminSource {
       if (data.status === 'closed') { h.status = 'closed'; this.journal('help_closed', h.id, {}); }
       else { h.answer = text(data.answer, 2000); h.status = 'answered'; h.answeredAt = new Date().toISOString(); this.journal('help_answered', h.id, { note: h.answer }); }
       return clone({ ok: true });
+    }
+    if (action === 'plans') return clone({ open: this.flags.some(f => f.key === 'abonnements.souscription' && f.environment === this.flagEnv && f.state !== 'off'), plans: this.plans, subscriptions: null });
+    if (action === 'plan_save') {
+      const p = { ...(data as unknown as PlanRow), updatedAt: new Date().toISOString() };
+      if (p.status === 'open' && p.monthlyAmount == null && p.yearlyAmount == null) throw new Error('Une formule ouverte doit avoir un prix');
+      this.plans = [...this.plans.filter(x => x.id !== p.id), p].sort((a, b) => a.id.localeCompare(b.id));
+      this.journal('plan_save', p.id, {});
+      return clone({ plan: p });
     }
     if (action === 'flags') return clone({ serverEnvironment: this.flagEnv, flags: this.flags });
     if (action === 'flag_set') {

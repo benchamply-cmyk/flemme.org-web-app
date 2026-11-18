@@ -42,6 +42,10 @@ export const FLAGS = {
     description: 'Éteint : la connexion et Mon espace affichent « bientôt disponible ».' },
   'espace.aide': { domaine: 'Mon espace', libelle: 'Aide dans l’app', type: 'lancement', defaut: partout('tous'), creeLe: '2026-11-16', retraitPrevu: '2026-12-31',
     description: 'Éteint : masque les accès à l’aide humaine dans l’app.' },
+  // Abonnements (v2.0.0, 18/11/2026) : code de souscription prêt, éteint partout. La base exige en plus une ligne « tous » ou « testeurs »
+  // et une formule « open » avec un prix Stripe (supabase/migrations/20261118130000_flemme_v2_abonnements.sql).
+  'abonnements.souscription': { domaine: 'Mon espace', libelle: 'Souscription aux abonnements', type: 'lancement', defaut: partout('off'), creeLe: '2026-11-18',
+    description: 'Allumé : Mon espace propose les formules ouvertes et la page Premium affiche « S’abonner ». Éteint : « Bientôt ».' },
   'espace.premium': { domaine: 'Mon espace', libelle: 'Liens Premium', type: 'lancement', defaut: partout('tous'), creeLe: '2026-11-16',
     description: 'Éteint : masque les liens vers la page Premium (gelée jusqu’à 10 clients payants).' },
   'design.theme': { domaine: 'Design et visuel', libelle: 'Thème du site', type: 'variante', defaut: partout('tous'), valeurs: ['clair', 'nuit', 'papier'], creeLe: '2026-11-16',
