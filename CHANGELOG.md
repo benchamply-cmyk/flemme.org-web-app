@@ -6,6 +6,7 @@ Chaque PR ajoute une ligne sous « À venir ». Au gel de preprod, « À venir �
 
 ## À venir
 
+- Textes et visuels de l’accueil d’après les commentaires de Ben sur l’aperçu v2.0.0 (v2.1.0, 18 nov. 2026) : étiquette « La Flemme a du bon. » ; titre « UNE FLEMME, / UNE ANNONCE, DES SOLUTIONS POSSIBLES. » ; accroche « Une tâche à déléguer ? Une mission à réaliser ? Fixez ensemble le prix et signez un contrat. » ; boutons DÉLÉGUER et RÉSOUDRE plus gros ; « Publier. Proposer. S’accorder. » en dégradé vert ; trois arguments réduits au titre et au sous-titre (Gratuit, Votre prix, Un Contrat). En-tête : Connexion devient un menu déroulant « S’inscrire » / « Se connecter ». Pied : « Flemme ne réalise pas les tâches » retiré. Mon espace : bloc « Version test » retiré (la pastille Test des testeurs reste). Aucune migration.
 - Modèle ouvert affiché par défaut en local, beta, preprod et dans les aperçus de PR (v2.1.0, 18 nov. 2026, choix de Ben ; la v2.0.0 gelée sous `v2.0.0-rc.1` n’est pas modifiée) : défaut du flag `modele.version` passé de `hybride` à `ouvert` hors prod ; l’hybride reste disponible dans /admin › Fonctionnalités, et un réglage déjà enregistré en base reste prioritaire. Aucune migration.
 ## v2.0.0 (candidate) — gel de preprod le 18 nov. 2026
 
