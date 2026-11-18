@@ -103,7 +103,8 @@ await as(owner);
 await api('accept', t.id, { offerId });
 
 // 3. Accord écrit : rédigé par l'une ou l'autre partie, contrôlé par l'équipe, signé par les deux.
-const terms = { scope: 'Montage de l\'étagère', quality: 'De niveau, fixée', deadline: 'Samedi 8 novembre', cancellation: '48 h avant, sans frais', confidentiality: 'Adresse non partagée' };
+const terms = { scope: 'Montage de l\'étagère', quality: 'De niveau, fixée', deadline: 'Samedi 8 novembre', cancellation: '48 h avant, sans frais', confidentiality: 'Adresse non partagée',
+  deliverable: 'Étagère montée', acceptance: 'Vérification sur place' }; // contrat v0.2 (20261118120000)
 await assert.rejects(api('agreement_submit', t.id), /Aucun brouillon/);
 await assert.rejects(api('agreement_save', t.id, { ...terms, quality: '' }), /./);
 seen = (await api('agreement_save', t.id, terms)).task;

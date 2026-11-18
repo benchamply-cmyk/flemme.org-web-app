@@ -1,6 +1,7 @@
 import type { BudgetRange, Category, Deadline, Review, WorkMode } from './parcours.ts';
 import { BUDGET_RANGES, CATEGORIES, DEADLINES, MODES } from './parcours.ts';
 import type { Contract, MyReview, OfferReview } from './accord.ts';
+import type { ModePaiement, StatutPaiement } from './monetisation.ts';
 
 export type Actor = { id: string; name: string };
 export type Offer = {
@@ -21,31 +22,35 @@ export type Task = {
   // Parcours complet (migration 20261104120000_flemme_v2_parcours) : absents des flemmes créées avant.
   category?: Category | null; deadline?: Deadline | null; deadlineNote?: string | null;
   budgetRange?: BudgetRange | null; mode?: WorkMode | null;
-  /** Adresse précise : seulement pour le déposant et le Brigadier retenu. */
+  /** Adresse précise : seulement pour le déposant et le membre retenu. */
   address?: string | null;
   /** Validation par l’équipe : seulement pour le déposant. Absent = publiée. */
   review?: Review; reviewNote?: string | null;
-  // Rempli uniquement par le serveur (webhook Stripe) quand le paiement en ligne est activé.
-  payment?: { method: 'stripe'; status: 'paid'; total: number; commission: number; payout: number; at: string };
-  /** Accord écrit (lot 3) : seulement pour le déposant et le Brigadier retenu ; null tant qu’il n’est pas commencé. */
+  // Rempli uniquement par le serveur : webhook Stripe (paiement en ligne) ou paiement simulé via Flemme (v2.0.0).
+  payment?: { method: 'stripe' | 'simulation'; status: StatutPaiement; total: number; commission: number; payout: number; at: string;
+    /** v2.0.0, Stripe : date du versement de la part du membre (après la fin de la mission). */
+    transferredAt?: string | null };
+  /** v2.0.0 : mode de règlement réglé côté serveur (flemme_v2.settings.payment_mode). Absent = « direct » (ancien parcours). */
+  paymentMode?: ModePaiement;
+  /** Accord écrit (lot 3) : seulement pour le déposant et le membre retenu ; null tant qu’il n’est pas commencé. */
   contract?: Contract | null;
   /** Avis que la personne connectée a laissé sur cette mission. */
   myReview?: MyReview | null;
   /** Démo locale uniquement : avis donnés sur la mission (le serveur les garde dans flemme_v2.reviews). */
   ratings?: { authorId: string; targetId: string; rating: number; text: string | null; at: string }[];
 };
-// amount : forfait proposé par le Brigadier. commission : part FLEMME. total : payé par le déposant.
-// payout : reversé au Brigadier. rateBps et model : règle appliquée, figée au moment de l'accord.
+// amount : forfait proposé par le membre. commission : part FLEMME. total : payé par le déposant.
+// payout : reversé au membre. rateBps et model : règle appliquée, figée au moment de l'accord.
 export type Agreement = Price & { slot: string; scope: string; brigadier: Actor };
 export type Command = 'edit' | 'offer' | 'message' | 'accept' | 'decline' | 'complete' | 'declare_payment' | 'confirm_payment' | 'report'
-  | 'apply' | 'apply_edit' | 'agreement_save' | 'agreement_submit' | 'agreement_sign' | 'review';
+  | 'apply' | 'apply_edit' | 'agreement_save' | 'agreement_submit' | 'agreement_sign' | 'review' | 'pay';
 export type Input = Record<string, unknown>;
 /*
  * Commission FLEMME, configurable. Le modèle économique n'est pas encore tranché (roadmap V2) :
  * - 'ajout' : la commission s'ajoute au forfait du Brigadier (modèle actuel, 10 %).
- *   Le déposant paie forfait + commission, le Brigadier reçoit tout son forfait.
+ *   Le déposant paie forfait + commission, le membre reçoit tout son forfait.
  * - 'prelevement' : la commission est prise sur le prix payé par le déposant.
- *   Exemple « 65 % reversés au Brigadier » : { model: 'prelevement', rateBps: 3500 }.
+ *   Exemple « 65 % reversés au membre » : { model: 'prelevement', rateBps: 3500 }.
  * rateBps est en points de base (1000 = 10 %). Le serveur garde sa propre copie de ce réglage
  * (table flemme_mobile_v1.settings) ; un test vérifie que les deux restent identiques.
  */
@@ -105,8 +110,8 @@ function taskData(data: Input) {
   return { title: text(data.title, 100), details: text(data.details), place: given || 'À distance', budget, budgetRange,
     category: code(CATEGORIES, data.category, 'Catégorie'), deadline, deadlineNote: deadline === 'autre' ? note : null, mode, address };
 }
-export function createTask(id: string, actor: Actor, data: Input, at: string): Task {
-  return { id, owner: actor, ...taskData(data), status: 'open', createdAt: at,
+export function createTask(id: string, actor: Actor, data: Input, at: string, paymentMode?: ModePaiement): Task {
+  return { id, owner: actor, ...taskData(data), status: 'open', createdAt: at, ...(paymentMode ? { paymentMode } : {}),
     offers: [], reports: [], history: [{ text: 'Flemme publiée · sans expiration', at }] };
 }
 export function applyCommand(task: Task, actor: Actor, command: Command, data: Input, at: string, config: CommissionConfig = COMMISSION): Task {
@@ -115,6 +120,8 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
   const chosen = t.offers.find(o => o.id === t.acceptedOfferId);
   const offer = t.offers.find(o => o.id === data.offerId);
   const event = (value: string) => t.history.push({ text: value, at });
+  // v2.0.0 : paiement via Flemme obligatoire quand le serveur l’a activé (mode « simulation » ou « stripe »).
+  const viaFlemme = t.paymentMode === 'simulation' || t.paymentMode === 'stripe';
   if (command === 'edit') {
     if (!owner || t.status !== 'open' || t.review === 'rejected' || t.offers.some(o => o.status === 'pending')) throw new Error('Cette demande ne peut plus être modifiée.');
     Object.assign(t, taskData(data), { reviewNote: null }); event('Demande modifiée');
@@ -133,13 +140,25 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
     event('Candidature modifiée');
   } else if (command === 'agreement_save' || command === 'agreement_submit' || command === 'agreement_sign') {
     if (!owner && chosen?.brigadier.id !== actor.id) throw new Error('Accord inaccessible.');
-    if (t.status !== 'assigned') throw new Error('L’accord se prépare une fois le Brigadier choisi, avant la fin de la tâche.');
+    if (t.status !== 'assigned') throw new Error('L’accord se prépare une fois le membre choisi, avant la fin de la tâche.');
     const c = t.contract;
     if (command === 'agreement_save') {
       if (c?.status === 'signed') throw new Error('Accord déjà signé par les deux parties.');
-      const terms = { scope: text(data.scope), quality: text(data.quality), deadline: text(data.deadline, 200), cancellation: text(data.cancellation), confidentiality: text(data.confidentiality) };
-      t.contract = { terms, status: 'draft', reviewNote: null, ownerSignedAt: null, ownerSignature: null, brigadierSignedAt: null, brigadierSignature: null, updatedAt: at, updatedBy: actor };
-      event('Accord écrit modifié par ' + actor.name);
+      // Contrat v0.2 (mêmes rubriques que CONTRACT_FIELDS et flemme_v2.agreement_terms).
+      const terms = { template: '0.2' as const, scope: text(data.scope), deliverable: text(data.deliverable), quality: text(data.quality), deadline: text(data.deadline, 200),
+        acceptance: text(data.acceptance), cancellation: text(data.cancellation), confidentiality: text(data.confidentiality),
+        ...(optionalText(data.access) ? { access: optionalText(data.access)! } : {}), ...(optionalText(data.liability) ? { liability: optionalText(data.liability)! } : {}) };
+      // v2.0.0 : le prix négocié peut changer dans l’accord. Il est recalculé avec le taux figé au choix de la proposition,
+      // et toute nouvelle version efface les signatures (nouveau consentement des deux parties).
+      const newAmount = data.amount == null ? null : amount(data.amount);
+      if (newAmount != null && t.agreement && newAmount !== t.agreement.amount) {
+        t.agreement = { ...t.agreement, ...price(newAmount, { model: t.agreement.model, rateBps: t.agreement.rateBps }) };
+        if (chosen) chosen.amount = newAmount;
+        event(`Prix convenu modifié dans l’accord : ${money(newAmount)}`);
+      }
+      t.contract = { terms, status: 'draft', reviewNote: null, ownerSignedAt: null, ownerSignature: null, brigadierSignedAt: null, brigadierSignature: null,
+        updatedAt: at, updatedBy: actor, version: (c?.version ?? 0) + 1, feeDueAt: null };
+      event(`Accord écrit modifié par ${actor.name} · version ${t.contract.version}`);
     } else if (command === 'agreement_submit') {
       if (!c || (c.status !== 'draft' && c.status !== 'changes_requested')) throw new Error('Aucun brouillon d’accord à soumettre.');
       c.status = 'approved'; c.updatedAt = at; c.updatedBy = actor; event('Accord prêt à signer');
@@ -149,8 +168,12 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
       const name = text(data.signature, 80);
       if (owner) { if (c.ownerSignedAt) throw new Error('Tu as déjà signé.'); c.ownerSignedAt = at; c.ownerSignature = name; }
       else { if (c.brigadierSignedAt) throw new Error('Tu as déjà signé.'); c.brigadierSignedAt = at; c.brigadierSignature = name; }
-      if (c.ownerSignedAt && c.brigadierSignedAt) c.status = 'signed';
       event(`Accord signé par ${actor.name} (« ${name} »)`);
+      if (c.ownerSignedAt && c.brigadierSignedAt) {
+        // Décision D1 (18/11/2026) : la signature, ici la seconde, déclenche les frais de plateforme uniques.
+        c.status = 'signed'; c.feeDueAt = at;
+        if (t.agreement) event(`Frais de plateforme dus : ${money(t.agreement.commission)} (${rateLabel(t.agreement)} du prix convenu), à la charge du déposant`);
+      }
     }
   } else if (command === 'review') {
     if (t.status !== 'completed' || !chosen || (!owner && chosen.brigadier.id !== actor.id)) throw new Error('Avis possible seulement après une mission terminée.');
@@ -169,20 +192,32 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
     t.status = 'assigned'; t.acceptedOfferId = offer.id;
     t.agreement = { ...price(offer.amount, config), slot: offer.slot, scope: offer.scope, brigadier: offer.brigadier };
     for (const o of t.offers) if (o.status === 'pending') o.status = o.id === offer.id ? 'accepted' : 'not_selected';
-    event(`Accord accepté · forfait et commission de ${rateLabel(config)} confirmés`);
+    event(`Proposition choisie · frais de plateforme de ${rateLabel(config)} dus seulement à la signature de l’accord`);
   } else if (command === 'decline') {
     if (!owner || t.status !== 'open' || !offer || offer.status !== 'pending') throw new Error('Proposition indisponible.');
     offer.status = 'declined'; event('Proposition déclinée · conservée dans l’historique');
+  } else if (command === 'pay') {
+    // v2.0.0, mode « simulation » : paiement via Flemme rejoué sans argent réel, ouvert après la double signature.
+    if (!owner || t.paymentMode !== 'simulation') throw new Error(t.paymentMode === 'stripe' ? 'Cette mission se paie par carte via Stripe.' : 'Paiement indisponible.');
+    if (t.status !== 'assigned' || t.contract?.status !== 'signed' || !t.agreement) throw new Error('Le paiement s’ouvre une fois l’accord signé par les deux parties.');
+    if (t.payment?.status === 'paid') throw new Error('Cette mission est déjà payée.');
+    const a = t.agreement;
+    t.payment = { method: 'simulation', status: 'paid', total: a.total, commission: a.commission, payout: a.payout, at };
+    event(`Paiement via Flemme enregistré · ${money(a.total)} dont ${money(a.commission)} de frais de plateforme · simulation, aucun argent réel`);
   } else if (command === 'complete') {
     if (!owner || t.status !== 'assigned') throw new Error('Seul le déposant peut confirmer la fin.');
     if (t.contract && t.contract.status !== 'signed') throw new Error('L’accord doit être signé par les deux parties avant la fin de la tâche.');
+    if (viaFlemme && t.contract?.status !== 'signed') throw new Error('L’accord doit être signé par les deux parties avant la fin de la tâche.');
+    if (viaFlemme && t.payment?.status !== 'paid') throw new Error('La mission doit être payée via Flemme avant d’être déclarée terminée.');
     t.status = 'completed'; event('Tâche déclarée terminée par le déposant');
   } else if (command === 'declare_payment') {
+    if (viaFlemme) throw new Error('Cette mission se paie via Flemme.');
     if (!owner || t.status !== 'completed' || t.paymentDeclared) throw new Error('Déclaration impossible.');
     t.paymentDeclared = true; event('Paiement direct déclaré par le déposant · non vérifié');
   } else if (command === 'confirm_payment') {
+    if (viaFlemme) throw new Error('Cette mission se paie via Flemme.');
     if (chosen?.brigadier.id !== actor.id || !t.paymentDeclared || t.paymentConfirmed) throw new Error('Confirmation impossible.');
-    t.paymentConfirmed = true; event('Réception du paiement confirmée par le Brigadier · non vérifiée par une banque');
+    t.paymentConfirmed = true; event('Réception du paiement confirmée par le membre · non vérifiée par une banque');
   } else if (command === 'report') {
     if (!owner && chosen?.brigadier.id !== actor.id) throw new Error('Signalement inaccessible.');
     t.reports.push({ actor, text: text(data.text), at }); event('Désaccord signalé · examen humain demandé');
@@ -197,7 +232,7 @@ export function visibleTask(task: Task, actor: Actor): Task {
   if (task.review && task.review !== 'published') throw new Error('Flemme inaccessible.');
   const participant = task.agreement?.brigadier.id === actor.id;
   return { ...task, offers: task.offers.filter(o => o.brigadier.id === actor.id),
-    agreement: participant ? task.agreement : undefined, address: participant ? task.address : undefined,
+    agreement: participant ? task.agreement : undefined, payment: participant ? task.payment : undefined, address: participant ? task.address : undefined,
     contract: participant ? task.contract : undefined, ratings: undefined, myReview: participant ? myReview : undefined,
     review: undefined, reviewNote: undefined,
     reports: task.reports.filter(r => participant || r.actor.id === actor.id) };

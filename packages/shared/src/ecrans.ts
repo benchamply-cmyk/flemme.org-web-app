@@ -1,4 +1,5 @@
 import type { Task } from './domain.ts';
+import { payeViaFlemme } from './monetisation.ts';
 
 // Navigation et droits d’affichage communs aux deux interfaces.
 // Le site garde l’historique du navigateur, le mobile le bouton Retour Android : seul le parcours est partagé.
@@ -29,15 +30,22 @@ export function partition(tasks: Task[], actorId: string) {
 export function rights(task: Task | undefined, actorId: string) {
   const isOwner = task?.owner.id === actorId;
   const isBrigadier = task?.agreement?.brigadier.id === actorId;
+  // v2.0.0 : paiement via Flemme obligatoire quand le serveur l’active ; sinon ancien parcours déclaratif.
+  const viaFlemme = payeViaFlemme(task), paid = task?.payment?.status === 'paid';
+  const signed = task?.contract?.status === 'signed';
   return {
-    isOwner, isBrigadier,
-    canComplete: isOwner && task?.status === 'assigned' && (!task.contract || task.contract.status === 'signed'),
+    isOwner, isBrigadier, viaFlemme,
+    canComplete: isOwner && task?.status === 'assigned' && (viaFlemme ? signed && paid : !task.contract || signed),
+    // « authorized » : paiement différé déjà lancé, on attend l’encaissement.
+    canPay: isOwner && viaFlemme && task?.status === 'assigned' && signed && !paid && task.payment?.status !== 'authorized' && task.payment?.status !== 'disputed',
+    /** Stripe : versement de la part du membre une fois la mission terminée (une seule fois). */
+    canPayout: (isOwner || isBrigadier) && task?.paymentMode === 'stripe' && task.status === 'completed' && paid && task.payment?.method === 'stripe' && !task.payment.transferredAt,
     // Accord écrit (lot 3) : préparé par l’une ou l’autre partie entre le choix du Brigadier et la fin.
     canContract: (isOwner || isBrigadier) && task?.status === 'assigned',
     canSign: (isOwner || isBrigadier) && task?.contract?.status === 'approved' && !(isOwner ? task.contract.ownerSignedAt : task.contract.brigadierSignedAt),
     canReview: (isOwner || isBrigadier) && task?.status === 'completed' && !task.myReview,
-    canDeclarePayment: isOwner && task?.status === 'completed' && !task.paymentDeclared,
-    canConfirmPayment: isBrigadier && !!task?.paymentDeclared && !task.paymentConfirmed,
+    canDeclarePayment: isOwner && !viaFlemme && task?.status === 'completed' && !task.paymentDeclared,
+    canConfirmPayment: isBrigadier && !viaFlemme && !!task?.paymentDeclared && !task.paymentConfirmed,
     canOffer: !isOwner && task?.status === 'open' && !task.offers.some(o => o.brigadier.id === actorId && o.status === 'pending'),
     canReport: isOwner || isBrigadier,
   };

@@ -52,6 +52,66 @@ FLEMME ne touche jamais la part du Brigadier : c'est Stripe, établissement de p
 6. Sur Netlify (contexte de branche `preprod` uniquement) : `VITE_PAIEMENT_EN_LIGNE=oui`, en plus des clés Supabase publiques.
 7. Tester avec les cartes de test Stripe (4242 4242 4242 4242) : un Brigadier active ses paiements, un déposant paie une tâche terminée, la flemme passe à « Payé en ligne ».
 
+## v2.0.0 : paiement à la signature (migration 20261118120000)
+
+Décision de Ben (18/11/2026) : la mission se paie **en entier via Flemme, à la signature de l'accord**. Les frais de plateforme (10 % pendant la bêta) sont dus à la seconde signature, à la charge du déposant.
+
+**Rien ne change tant que `flemme_v2.settings.payment_mode` vaut `direct`** (valeur livrée). Le mode est figé sur chaque flemme à sa création.
+
+| Mode | Effet |
+|---|---|
+| `direct` | Ancien parcours : paiement direct déclaratif, ou Stripe après la tâche si `VITE_PAIEMENT_EN_LIGNE=oui`. |
+| `simulation` | Parcours v2 complet sans argent réel : bouton « Payer via Flemme (simulation) » après la double signature. |
+| `stripe` | Parcours v2 avec Stripe Checkout à la signature. |
+
+Pour essayer en préprod, après avoir appliqué la migration :
+
+    update flemme_v2.settings set payment_mode = 'simulation';
+
+### Ce que fait la migration
+
+- **Prix dans l'accord.** Le déposant ou le membre choisi peut modifier le prix convenu dans l'accord. Il est recalculé avec le taux figé au choix de la proposition.
+- **Accord versionné.** Chaque enregistrement crée une version, gardée dans `flemme_v2.agreement_versions`, et efface les signatures. `fee_due_at` est daté à la seconde signature.
+- **Contrat v0.2.**
+  - Rubriques obligatoires : livrable, réception et validation.
+  - Rubriques facultatives : accès et informations fournis, responsabilités et assurance.
+  - Les clauses communes s'affichent avant la signature.
+  - Les accords v0.1 déjà enregistrés restent valables.
+- **Statuts de paiement** : `pending`, `authorized` (paiement différé lancé), `paid`, `failed`, `refunded`, `disputed`. S'y ajoutent `expired` et `doublon` de l'ancien parcours.
+- **Garde-fous en base** (trigger `payment_mode_guard`) :
+  - pas de fin de mission sans accord signé et paiement `paid` ;
+  - pas de déclaration de paiement direct ;
+  - mode de paiement figé une fois la proposition choisie.
+- **Webhooks idempotents.**
+  - Chaque événement Stripe est enregistré par son identifiant `evt_…` dans `flemme_v2.stripe_events`, dans la même transaction que son traitement.
+  - Un événement rejoué ne fait rien deux fois.
+  - Si le traitement échoue, rien n'est enregistré et Stripe renvoie l'événement.
+
+### Argent : charges séparées
+
+1. À la signature, le déposant paie le total par Stripe Checkout (`stripe-checkout` avec `stage: 'signature'`). Flemme encaisse, sans compte connecté ni `application_fee`.
+2. À la fin de la mission, le déposant ou le membre clique « Verser la part du membre ». La fonction `stripe-payout` crée un virement Stripe (`transfers`) vers le compte Express du membre, une seule fois (clé d'idempotence par flemme).
+3. Le membre doit avoir activé ses paiements (« Recevoir mes paiements avec Stripe ») ; sinon le versement attend.
+
+### Mise en route du mode `stripe` (à faire par Ben)
+
+1. Appliquer la migration en préprod (SQL collé dans l'éditeur, comme d'habitude).
+2. Déployer la nouvelle fonction en plus des trois existantes :
+
+        supabase functions deploy stripe-payout
+
+3. Ajouter ces événements au point de terminaison webhook de la plateforme :
+   - `charge.refunded`
+   - `charge.dispute.created`
+   - `charge.dispute.closed`
+4. Passer `payment_mode` à `stripe` et `VITE_PAIEMENT_EN_LIGNE=oui` (contexte preprod).
+
+### Limites connues
+
+- Le virement au membre n'utilise pas `source_transaction` : le solde Stripe de Flemme doit être disponible au moment du versement. Sinon Stripe refuse, et il suffit de réessayer plus tard.
+- Les remboursements se déclenchent dans le tableau de bord Stripe. Le webhook met ensuite le statut à jour.
+- L'app mobile renvoie vers flemme.org pour le paiement par carte.
+
 ## Points à décider avant la production
 
 - **Moment du paiement.** Ici, on paie après la tâche. Payer à l'acceptation et verser au Brigadier à la fin (séquestre) protège mieux le Brigadier, mais demande des virements différés et une politique de remboursement.

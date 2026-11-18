@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { CONTRACT_FIELDS, OFFER_FIELDS, budgetText, canEdit, categoryLabel, contractStatusLabel, date, deadlineLabel, modeLabel, money, notices, offerInput, offerReviewLabel, offerStatus, parseMoney, paymentNote, paymentStatus, reviewInput, reviewLabel, signatureInput, stars, taskStatus } from '../../../../packages/shared/src/index.ts';
-import { onlinePayment, openStripe, session } from '../session.ts';
-import { Action, Bill } from '../ui.tsx';
+import { CONTRACT_FIELDS, OFFER_FIELDS, PAIEMENT_OBLIGATOIRE, RAPPEL_CONTOURNEMENT, etapeArgent, etapeArgentLabel, budgetText, canEdit, categoryLabel, contractStatusLabel, date, deadlineLabel, modeLabel, money, notices, offerInput, offerReviewLabel, offerStatus, parseMoney, paymentNote, paymentStatus, reviewInput, reviewLabel, signatureInput, stars, taskStatus } from '../../../../packages/shared/src/index.ts';
+import { onlinePayment, openStripe, payoutStripe, session } from '../session.ts';
+import { Action, Bill, Recap } from '../ui.tsx';
 import { Pieces } from './Pieces.tsx';
 import type { Ctx } from './contexte.ts';
 
@@ -19,22 +19,29 @@ export function Fiche({ state: { busy, actorId, files }, place, task, can, draft
     {task.address && <p className="note"><span className="strong">Adresse précise (privée) : </span>{task.address}</p>}
     {canEdit(task, actorId) && <Action secondary disabled={busy} onClick={() => go('edit')}>{review === 'changes_requested' ? 'Corriger ma demande' : 'Modifier ma demande'}</Action>}
     {agreement && <><h2 className="section-title">{agreement.brigadier.name} prend le relais</h2><p>{agreement.scope}</p><p className="muted">{agreement.slot}</p><Bill amount={agreement.amount} agreed={agreement}/>
-      <p className="note">{paymentNote(agreement, onlinePayment, money)}</p>
+      <p className="note">{paymentNote(agreement, onlinePayment, money, can.viaFlemme, task.paymentMode !== 'stripe')}</p>
+      {can.viaFlemme && <p className="muted">{etapeArgentLabel[etapeArgent(task)]}</p>}
+      {can.canPay && <><p className="note">{PAIEMENT_OBLIGATOIRE}</p>{task.paymentMode === 'stripe'
+        ? <Action disabled={busy} onClick={() => openStripe('checkout', task.id, 'signature')}>Payer par carte via Flemme · {money(agreement.total)}</Action>
+        : <Action disabled={busy} onClick={() => mutate('pay', {}, 'detail', notices.paid)}>Payer via Flemme · {money(agreement.total)} (simulation)</Action>}</>}
+      {can.canPayout && <Action secondary disabled={busy} onClick={() => payoutStripe(task.id)}>Verser la part du membre · {money(agreement.payout ?? agreement.amount)}</Action>}
       {can.canComplete && <Action disabled={busy} onClick={() => mutate('complete', {})}>Confirmer la tâche terminée</Action>}
       {can.canDeclarePayment && onlinePayment && <Action disabled={busy} onClick={() => openStripe('checkout', task.id)}>Payer en ligne · {money(agreement.total)}</Action>}
-      {can.canDeclarePayment && <Action secondary={onlinePayment} disabled={busy} onClick={() => mutate('declare_payment', {})}>J’ai payé le Brigadier{onlinePayment ? ' en direct' : ''}</Action>}
+      {can.canDeclarePayment && <Action secondary={onlinePayment} disabled={busy} onClick={() => mutate('declare_payment', {})}>J’ai payé le membre{onlinePayment ? ' en direct' : ''}</Action>}
       {can.canConfirmPayment && <Action disabled={busy} onClick={() => mutate('confirm_payment', {})}>Confirmer avoir reçu le paiement</Action>}
-      <p className="muted">{task.payment ? paymentStatus(task, money) : <>{paymentStatus(task)}<br/>Commission : à régler · encaissement non connecté</>}</p>
+      <p className="muted">{task.payment || can.viaFlemme ? paymentStatus(task, money) : <>{paymentStatus(task)}<br/>Commission : à régler · encaissement non connecté</>}</p>
       {(task.contract || can.canContract) && <><h2 className="section-title">Accord écrit</h2>
         {!task.contract ? <p className="muted">Pas encore d’accord écrit. Rédigez-le ensemble : périmètre, résultat attendu, délai, annulation et confidentialité. Une fois commencé, il doit être signé par les deux avant la fin de la tâche.</p>
-          : <><span className="tag">{contractStatusLabel[task.contract.status]}</span>
+          : <><span className="tag">{contractStatusLabel[task.contract.status]}{task.contract.version ? ` · version ${task.contract.version}` : ''}</span>
             {task.contract.reviewNote && <div className={task.contract.status === 'changes_requested' ? 'alert' : 'notice'} role="status">{task.contract.reviewNote}</div>}
-            {CONTRACT_FIELDS.map(c => <p key={c.name}><span className="strong">{c.label} : </span>{task.contract!.terms[c.name]}</p>)}
+            {CONTRACT_FIELDS.filter(c => task.contract!.terms[c.name]).map(c => <p key={c.name}><span className="strong">{c.label} : </span>{task.contract!.terms[c.name]}</p>)}
             <p className="note">Déposant : {task.contract.ownerSignedAt ? `signé « ${task.contract.ownerSignature} » le ${date(task.contract.ownerSignedAt)}` : 'pas encore signé'}<br/>
-              Brigadier : {task.contract.brigadierSignedAt ? `signé « ${task.contract.brigadierSignature} » le ${date(task.contract.brigadierSignedAt)}` : 'pas encore signé'}</p></>}
+              Membre qui aide : {task.contract.brigadierSignedAt ? `signé « ${task.contract.brigadierSignature} » le ${date(task.contract.brigadierSignedAt)}` : 'pas encore signé'}</p></>}
         {can.canContract && task.contract?.status !== 'signed' && <Action secondary disabled={busy} onClick={() => go('contract')}>{task.contract ? 'Modifier l’accord' : 'Rédiger l’accord'}</Action>}
         {can.canContract && (task.contract?.status === 'draft' || task.contract?.status === 'changes_requested') && <Action disabled={busy} onClick={() => mutate('agreement_submit', {}, 'detail', t => notices.contractSubmitted(t.contract?.status))}>Soumettre l’accord à l’équipe FLEMME</Action>}
-        {can.canSign && <><p className="note">Signature électronique simple : ton nom et ton acceptation sont enregistrés et horodatés. Ce n’est pas une signature qualifiée.</p>
+        {can.canSign && <><Recap agreed={agreement} cancellation={task.contract?.terms.cancellation}/>
+          {can.viaFlemme && <p className="note">En signant, le déposant s’engage à payer ces frais de plateforme et la mission via Flemme. {RAPPEL_CONTOURNEMENT}</p>}
+          <p className="note">Signature électronique simple : ton nom et ton acceptation sont enregistrés et horodatés. Ce n’est pas une signature qualifiée.</p>
           {field('Ton nom complet', 'signature', { max: 80 })}
           <label className="check"><input type="checkbox" checked={accept} disabled={busy} onChange={e => setAccept(e.target.checked)}/> J’ai lu l’accord et je l’accepte.</label>
           <Action disabled={busy} onClick={() => validated(() => { void mutate('agreement_sign', signatureInput(draft.signature, accept), 'detail', notices.signed); })}>Signer l’accord</Action></>}
@@ -46,7 +53,7 @@ export function Fiche({ state: { busy, actorId, files }, place, task, can, draft
         <Action disabled={busy} onClick={() => validated(() => { void mutate('review', reviewInput(rating, draft.reviewText), 'detail', notices.reviewSent); })}>Publier mon avis</Action></>}</>}
     {task.offers.length > 0 && <><h2 className="section-title">{can.isOwner ? 'Les propositions' : 'Mes propositions'}</h2>
       {task.offers.map(o => <button type="button" key={o.id} onClick={() => go('offer', { offerId: o.id })} className="card"><span className="row"><span className="strong">{o.brigadier.name}</span><span className="price">{money(o.amount)}</span></span><span>{o.scope}</span>{o.result && <span className="note">Résultat promis : {o.result}</span>}<span className="muted">{offerStatus[o.status]}{o.review && o.review !== 'approved' ? ' · ' + offerReviewLabel[o.review] : ''}</span><span className="link">Discussion et récapitulatif →</span></button>)}</>}
-    {can.canOffer && <div className="card propose"><h2 className="section-title" style={{ marginTop: 0 }}>{place.draftId ? 'Reprendre ma proposition' : 'Tu peux t’en charger ?'}</h2><p className="muted">Indique ton prix et précise ce que tu proposes.</p>{field('Mon forfait Brigadier', 'amount', { numeric: true })}{preview}{field('Mes disponibilités', 'slot')}{field('Ce qui est inclus et non inclus', 'scope', { multiline: true })}
+    {can.canOffer && <div className="card propose"><h2 className="section-title" style={{ marginTop: 0 }}>{place.draftId ? 'Reprendre ma proposition' : 'Tu peux t’en charger ?'}</h2><p className="muted">Indique ton prix et précise ce que tu proposes.</p>{field('Mon prix', 'amount', { numeric: true })}{preview}{field('Mes disponibilités', 'slot')}{field('Ce qui est inclus et non inclus', 'scope', { multiline: true })}
       {field('Résultat promis (facultatif)', 'result', { multiline: true, hint: 'Ce que la personne aura à la fin. Ex. : étagère fixée et de niveau.' })}
       <p className="note">L’équipe FLEMME relit chaque proposition avant de la transmettre à la personne qui a publié la demande.</p>
       <Action disabled={busy} onClick={() => validated(() => { void mutate('apply', { ...offerInput(draft), draftId: place.draftId || null }, 'detail', t => notices.applied(t.offers.find(o => o.brigadier.id === actorId && o.status === 'pending'))); })}>Envoyer ma proposition</Action>

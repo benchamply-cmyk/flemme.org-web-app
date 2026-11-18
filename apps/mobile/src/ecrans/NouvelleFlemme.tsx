@@ -35,7 +35,7 @@ export function NouvelleFlemme({ state: { busy, actorId }, place, task, draft, f
     {mode !== 'distance' && <>
       {field('Ville ou secteur · public', 'place', { hint: 'Ex. Lyon · Croix-Rousse' })}
       {field('Adresse précise · privée', 'address', { max: 200, hint: 'Rue, numéro…' })}
-      <Text style={styles.note}>Visible seulement par toi, le Brigadier que tu retiens et l’équipe FLEMME. Jamais sur la fiche publique.</Text>
+      <Text style={styles.note}>Visible seulement par toi, le membre que tu retiens et l’équipe FLEMME. Jamais sur la fiche publique.</Text>
     </>}
     {choice('Délai approximatif', 'deadline', DEADLINES, 'À discuter')}
     {draft.deadline === 'autre' && field('Précise le délai', 'deadlineNote', { hint: 'Ex. avant la rentrée' })}
