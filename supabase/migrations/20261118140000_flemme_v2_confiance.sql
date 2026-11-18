@@ -1,5 +1,6 @@
 -- Confiance dans la marketplace ouverte (18/11/2026). S'applique après 20261118130000_flemme_v2_abonnements.sql. Additif.
--- Demande de Ben (commentaire sur le comparatif Airtasker / TaskRabbit) : intégrer à la v2.0 les recommandations 1 à 4.
+-- Demande de Ben (commentaire sur le comparatif Airtasker / TaskRabbit) : intégrer les recommandations 1 à 4,
+-- livrées dans la v2.1.0 (décision de Ben du 18/11/2026, après le gel v2.0.0-rc.1).
 --   1. Questions publiques sous une demande : posées par les membres, réponse du déposant, masquables par l'équipe.
 --   2. Téléphones, e-mails et liens masqués avant la signature de l'accord (questions publiques : toujours).
 --   3. Livraison déclarée par le membre retenu, confirmation du déposant (« je libère le paiement »), ou clôture par le membre

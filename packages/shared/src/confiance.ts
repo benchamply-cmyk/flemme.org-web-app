@@ -1,4 +1,4 @@
-// Confiance dans la marketplace ouverte (v2.0.0), d'après le comparatif Airtasker / TaskRabbit demandé par Ben le 18/11/2026
+// Confiance dans la marketplace ouverte (prévue pour la v2.1.0, décision de Ben du 18/11/2026), d'après le comparatif Airtasker / TaskRabbit demandé par Ben le 18/11/2026
 // (recommandations 1 à 4) : questions publiques sous une demande, coordonnées masquées avant la signature,
 // livraison puis libération du paiement, profil public enrichi. Les mêmes règles sont revérifiées par le serveur
 // (supabase/migrations/20261118140000_flemme_v2_confiance.sql).
