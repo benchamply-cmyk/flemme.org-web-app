@@ -15,7 +15,7 @@ export function Offre({ state: { busy, actorId }, place: { screen, offerId }, ta
     {mine && offer.review && offer.review !== 'approved' && <View accessibilityRole="alert" style={offer.review === 'pending' ? styles.notice : styles.error}><Text style={styles.strong}>{offerReviewLabel[offer.review]}</Text>{!!offer.reviewNote && <Text style={styles.body}>{offer.reviewNote}</Text>}</View>}
     <Text style={styles.sectionTitle}>Ce qui est convenu</Text><Text style={styles.body}>{offer.scope}</Text>{!!offer.result && <Text style={styles.body}><Text style={styles.strong}>Résultat promis : </Text>{offer.result}</Text>}<Text style={styles.muted}>{offer.slot}</Text><Bill amount={offer.amount}/>
     {editable && <><Text style={styles.sectionTitle}>{offer.review === 'changes_requested' ? 'Corriger ma proposition' : 'Modifier ma proposition'}</Text>
-      {field('Mon forfait Brigadier', 'amount', { numeric: true })}{field('Mes disponibilités', 'slot')}{field('Ce qui est inclus et non inclus', 'scope', { multiline: true })}{field('Résultat promis (facultatif)', 'result', { multiline: true })}
+      {field('Mon prix', 'amount', { numeric: true })}{field('Mes disponibilités', 'slot')}{field('Ce qui est inclus et non inclus', 'scope', { multiline: true })}{field('Résultat promis (facultatif)', 'result', { multiline: true })}
       <Action disabled={busy} onPress={() => validated(() => { void mutate('apply_edit', { offerId, ...offerInput(draft) }, 'offer', t => notices.applied(t.offers.find(o => o.id === offerId))); })}>Renvoyer ma proposition</Action></>}
     {screen === 'review'
       ? <><Text style={styles.note}>Tu confies cette demande à {offer.brigadier.name}. Les autres propositions restent dans l’historique. Forfait et frais sont confirmés ensemble.</Text>
@@ -26,5 +26,5 @@ export function Offre({ state: { busy, actorId }, place: { screen, offerId }, ta
         {field('Ton message', 'text', { multiline: true })}
         <Action secondary disabled={busy} onPress={() => mutate('message', { offerId, text: draft.text }, 'offer')}>Envoyer le message</Action>
         {can.isOwner && task.status === 'open' && offer.status === 'pending' && <><Action disabled={busy} onPress={() => go('review')}>Voir l’accord avant d’accepter</Action><Action secondary disabled={busy} onPress={() => mutate('decline', { offerId }, 'detail', notices.declined)}>Décliner cette proposition</Action></>}
-        <Text style={styles.note}>Pour changer le prix : décliner la proposition, puis demander un nouveau forfait au Brigadier. Chaque proposition reste conservée.</Text></>}</>;
+        <Text style={styles.note}>Pour changer le prix : décliner la proposition, puis demander un nouveau forfait au membre. Chaque proposition reste conservée.</Text></>}</>;
 }

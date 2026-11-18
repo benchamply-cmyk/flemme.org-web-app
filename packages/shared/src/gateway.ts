@@ -71,7 +71,8 @@ export class DemoGateway implements Gateway {
   async create(data: Input, request: string) {
     const prior = this.state.requests[this.actor.id + ':' + request];
     if (prior) return visibleTask(prior, this.actor);
-    const task = await this.commit(createTask(newId(), this.actor, data, new Date().toISOString()), request);
+    // Démo locale : parcours v2.0.0 (paiement via Flemme simulé) pour les nouvelles demandes.
+    const task = await this.commit(createTask(newId(), this.actor, data, new Date().toISOString(), 'simulation'), request);
     if (typeof data.draftId === 'string') await this.deleteDraft(data.draftId);
     return task;
   }
@@ -262,7 +263,7 @@ export class RemoteGateway implements Gateway {
     return response.ok && (await response.json()).allowed === true;
   }
   // Paiement en ligne (Stripe Connect) via les fonctions Edge : renvoie l'adresse Stripe à ouvrir.
-  // 'onboarding' : le Brigadier active ses paiements. 'checkout' : le déposant paie une tâche terminée.
+  // 'onboarding' : le membre active ses paiements. 'checkout' : le déposant paie une tâche terminée.
   async paymentLink(kind: 'onboarding' | 'checkout', taskId?: string): Promise<string> {
     if (Date.now() > this.expires - 60000) await this.refresh();
     const { url } = await this.request('/functions/v1/stripe-' + kind, kind === 'checkout' ? { taskId } : {}, this.access);

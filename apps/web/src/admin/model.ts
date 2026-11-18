@@ -82,7 +82,7 @@ export class DemoAdmin implements AdminSource {
   constructor(now = new Date().toISOString()) {
     const [ben, lou, camille] = demoActors;
     const base = seed();
-    const assigned = applyCommand(applyCommand(base[0], ben, 'accept', { offerId: 'demo-offer' }, now), ben, 'report', { text: 'Le Brigadier n’est pas passé au créneau prévu et ne répond plus.' }, now);
+    const assigned = applyCommand(applyCommand(base[0], ben, 'accept', { offerId: 'demo-offer' }, now), ben, 'report', { text: 'Le membre n’est pas passé au créneau prévu et ne répond plus.' }, now);
     this.tasks = [assigned, base[1], base[2]];
     const waiting = createTask('demo-attente', camille, { title: 'Trier mes papiers administratifs', details: 'Deux boîtes de courriers à classer, avec mon employeur Dupont SA en copie de certains.', category: 'administratif', deadline: '1_mois', mode: 'sur_place', place: 'Aix-en-Provence', address: '12 rue de la Paix', budgetRange: '50_200' }, now);
     this.queue = [{ ...waiting, review: 'pending', ownerEmail: 'camille@exemple.fr', updatedAt: now, history: [{ text: 'Demande envoyée · privée jusqu’à sa validation par l’équipe FLEMME', at: now }] }];

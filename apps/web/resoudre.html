@@ -28,7 +28,7 @@
 <main>
 <section class="bloc" style="padding-bottom:0">
     <form role="search" class="barre" id="rechercheForm">
-      <label style="flex:1;display:flex;min-width:0"><span class="sr">Rechercher une demande</span><input id="rechercheQ" type="search" placeholder="Une tâche, une compétence, une ville… Ex. CV, étagère, devis" maxlength="100" autocomplete="off" enterkeyhint="search"></label>
+      <label style="flex:1;display:flex;min-width:0"><span class="sr">Rechercher une demande</span><input id="rechercheQ" type="search" placeholder="Une tâche, une compétence, une ville… Ex. CV, étagère, annonce" maxlength="100" autocomplete="off" enterkeyhint="search"></label>
       <button type="submit">Voir les demandes</button>
     </form>
     <div class="filtres" id="filtres"><b>Filtres :</b></div>
@@ -60,14 +60,15 @@
     <div class="boutons"><a class="bouton vert" href="contact">Poser ma candidature</a></div>
   </section>
 
-  <section class="bloc">
+  <section class="bloc" id="aider" data-modele="ouvert">
     <p class="surtitre">Proposer ton aide</p>
-    <h2 class="titre">En trois étapes</h2>
-    <p class="doux">Les Brigadiers sont les personnes qui proposent leur aide sur Flemme. Avec ton compte, tu peux en faire partie dès ta première proposition.</p>
+    <h2 class="titre">Ouvert à tous les membres</h2>
+    <p class="doux">Pas de statut à obtenir pour commencer&#8239;: avec ton compte, tu peux proposer ton aide dès aujourd’hui. Tu restes libre d’accepter ou de refuser chaque mission, sans horaire, sans minimum et sans exclusivité. Certaines activités exigent un statut, une qualification ou une assurance&#8239;: c’est à toi de les respecter.</p>
     <div class="grille">
-      <div class="carte"><b>1 · Trouve une demande disponible</b><p class="doux">À distance ou près de chez toi. Ouvre la fiche pour voir ce qui est attendu.</p></div>
-      <div class="carte"><b>2 · Envoie ta proposition de prestation</b><p class="doux">Le résultat que tu peux livrer, ton délai et ton forfait.</p></div>
-      <div class="carte"><b>3 · Mettez-vous d’accord</b><p class="doux">Si ta proposition est retenue, vous signez l’accord écrit avant de commencer.</p></div>
+      <div class="carte"><b>1 · Trouve une demande</b><p class="doux">À distance ou près de chez toi. Les annonces restent en ligne tant que personne n’a été choisi.</p></div>
+      <div class="carte"><b>2 · Propose ton prix</b><p class="doux">Le résultat que tu peux livrer, tes disponibilités et ton forfait. Proposer est gratuit.</p></div>
+      <div class="carte"><b>3 · Négocie, puis signe</b><p class="doux">Vous discutez en privé et ajustez le prix si besoin. L’accord écrit est relu par l’équipe, puis signé par vous deux.</p></div>
+      <div class="carte"><b>4 · Réalise et sois payé via Flemme</b><p class="doux">Ton prix t’est versé en entier&#8239;: les frais de plateforme sont payés par le déposant. Les avis construisent ton profil.</p></div>
     </div>
     <div class="boutons"><a class="bouton vert" href="flemmes">Voir les demandes disponibles</a><a class="bouton clair" href="concept#aider">Comment ça marche</a></div>
   </section>
