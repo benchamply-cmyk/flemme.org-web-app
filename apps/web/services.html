@@ -23,13 +23,28 @@
      Chaque service ouvre /deleguer avec son nom déjà écrit dans la description (?service=…, ajouté par src/site/pages/services.ts). -->
 <section class="flemme-chrome-home bandeau">
 <!--#entete-->
-  <div class="titre-page">
+  <div class="titre-page" data-modele="ouvert">
+    <h1>Pas de catalogue, des membres</h1>
+    <p>Depuis la v2.0.0, Flemme n’affiche plus de services à prix fixe&#8239;: tu décris ta flemme, des membres te proposent leur aide et vous fixez ensemble le prix et le délai.</p>
+  </div>
+  <div class="titre-page" data-modele="hybride">
     <h1>Nos services</h1>
     <p class="intro-s">Six familles de flemmes à prix fixe. Le prix affiché est le prix payé&#8239;: une correction incluse, tout se fait à distance, et rien n’est envoyé sans ton accord.</p>
   </div>
 </section>
 <main>
-  <section class="bloc" id="catalogue">
+  <section class="bloc" id="ouvert" data-modele="ouvert">
+    <p class="surtitre">Ce que les membres délèguent</p>
+    <h2 class="titre">Démarches, numérique, maison, organisation</h2>
+    <div class="grille">
+      <a class="carte" href="flemmes" data-filtre-categorie="administratif"><b>Démarches</b><p class="doux">Comprendre un courrier, préparer un dossier, suivre une réclamation.</p></a>
+      <a class="carte" href="flemmes" data-filtre-categorie="numerique"><b>Numérique</b><p class="doux">Une annonce à rédiger, un CV à remettre au propre, un comparatif.</p></a>
+      <a class="carte" href="flemmes" data-filtre-categorie="maison"><b>Maison et quotidien</b><p class="doux">Un meuble à monter, des cartons, des colis à déposer.</p></a>
+      <a class="carte" href="flemmes" data-filtre-categorie="organisation"><b>Organisation</b><p class="doux">Un anniversaire, un voyage, des rendez-vous à caler.</p></a>
+    </div>
+    <div class="boutons"><a class="bouton" href="deleguer">Déléguer ma flemme</a><a class="bouton clair" href="resoudre">Voir les demandes</a></div>
+  </section>
+  <section class="bloc" id="catalogue" data-modele="hybride">
     <p class="surtitre">Le catalogue</p>
     <h2 class="titre">Choisis un service, on s’occupe du reste</h2>
     <p class="doux">Touche un service pour commencer ta demande&#8239;: son nom est déjà écrit, tu n’as plus qu’à préciser. Sans compte jusqu’à l’envoi.</p>
@@ -39,7 +54,7 @@
     <p class="delai-s"><b>Délai</b>&#8239;: indiqué pour chaque service, 2 à 3 jours ouvrés le plus souvent.</p>
   </section>
 
-  <section class="bloc" id="horscatalogue">
+  <section class="bloc" id="horscatalogue" data-modele="hybride">
     <p class="surtitre">Hors catalogue</p>
     <h2 class="titre">Ton besoin n’est pas dans la liste&#8239;?</h2>
     <div class="grille">
@@ -49,7 +64,7 @@
     <p class="doux">Si une demande n’est pas pour nous, on te le dit franchement.</p>
   </section>
 
-  <section class="bloc" id="conditions">
+  <section class="bloc" id="conditions" data-modele="hybride">
     <p class="surtitre">Inclus dans chaque service</p>
     <h2 class="titre">Ce sur quoi tu peux compter</h2>
     <div class="grille etroite">

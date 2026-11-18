@@ -5,6 +5,7 @@ import { searchTasks } from './parcours.ts';
 import type { Profile } from './accord.ts';
 import type { FileItem, HelpRequest, Upload } from './aide.ts';
 import { fileInput } from './aide.ts';
+import type { Abonnement, FormuleServeur } from './abonnements.ts';
 
 // Identifiants de ressources/idempotence uniquement : jamais utilisés comme secrets.
 export const newId = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -71,7 +72,8 @@ export class DemoGateway implements Gateway {
   async create(data: Input, request: string) {
     const prior = this.state.requests[this.actor.id + ':' + request];
     if (prior) return visibleTask(prior, this.actor);
-    const task = await this.commit(createTask(newId(), this.actor, data, new Date().toISOString()), request);
+    // Démo locale : parcours v2.0.0 (paiement via Flemme simulé) pour les nouvelles demandes.
+    const task = await this.commit(createTask(newId(), this.actor, data, new Date().toISOString(), 'simulation'), request);
     if (typeof data.draftId === 'string') await this.deleteDraft(data.draftId);
     return task;
   }
@@ -262,12 +264,29 @@ export class RemoteGateway implements Gateway {
     return response.ok && (await response.json()).allowed === true;
   }
   // Paiement en ligne (Stripe Connect) via les fonctions Edge : renvoie l'adresse Stripe à ouvrir.
-  // 'onboarding' : le Brigadier active ses paiements. 'checkout' : le déposant paie une tâche terminée.
-  async paymentLink(kind: 'onboarding' | 'checkout', taskId?: string): Promise<string> {
+  // 'onboarding' : le membre active ses paiements. 'checkout' : le déposant paie une tâche terminée.
+  // stage « signature » (v2.0.0) : le déposant paie la mission dès la double signature de l'accord.
+  async paymentLink(kind: 'onboarding' | 'checkout', taskId?: string, stage?: 'signature'): Promise<string> {
     if (Date.now() > this.expires - 60000) await this.refresh();
-    const { url } = await this.request('/functions/v1/stripe-' + kind, kind === 'checkout' ? { taskId } : {}, this.access);
+    const { url } = await this.request('/functions/v1/stripe-' + kind, kind === 'checkout' ? { taskId, ...(stage ? { stage } : {}) } : {}, this.access);
     if (typeof url !== 'string' || !/^https:\/\/(checkout|connect)\.stripe\.com\//.test(url)) throw new Error('Lien de paiement invalide.');
     return url;
+  }
+  /** Abonnements : formules ouvertes (vide tant que le flag et la formule ne sont pas ouverts) et abonnements du membre. */
+  async subscriptions(): Promise<{ open: boolean; plans: FormuleServeur[]; mine: Abonnement[] }> {
+    return this.rpc('subscriptions', null, {}, null);
+  }
+  /** Page Stripe de souscription (planId) ou portail client pour gérer ou résilier (portal). */
+  async subscriptionLink(target: { planId: string; period: 'month' | 'year' } | 'portal'): Promise<string> {
+    if (Date.now() > this.expires - 60000) await this.refresh();
+    const { url } = await this.request('/functions/v1/stripe-subscribe', target === 'portal' ? { action: 'portal' } : target, this.access);
+    if (typeof url !== 'string' || !/^https:\/\/(checkout|billing)\.stripe\.com\//.test(url)) throw new Error('Lien d’abonnement invalide.');
+    return url;
+  }
+  /** v2.0.0, mode stripe : versement de la part du membre (fonction Edge stripe-payout), une seule fois par mission. */
+  async payout(taskId: string): Promise<void> {
+    if (Date.now() > this.expires - 60000) await this.refresh();
+    await this.request('/functions/v1/stripe-payout', { taskId }, this.access);
   }
   async search(filter: SearchFilter, cursor: string | null = null): Promise<SearchPage> {
     const clean = Object.fromEntries(Object.entries(filter).filter(([, v]) => v));

@@ -9,3 +9,5 @@ export * from './parcours.ts';
 export * from './accord.ts';
 export * from './aide.ts';
 export * from './adresses.ts';
+export * from './monetisation.ts';
+export * from './abonnements.ts';

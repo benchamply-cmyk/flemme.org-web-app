@@ -20,6 +20,7 @@ function nextStep(t: Task, actorId: string) {
   if (can.canSign) return 'Relire et signer l’accord';
   if (can.canContract && !t.contract) return 'Rédiger l’accord';
   if (can.canContract && (t.contract?.status === 'draft' || t.contract?.status === 'changes_requested')) return 'Relire l’accord';
+  if (can.canPay) return 'Payer via Flemme';
   if (can.canDeclarePayment) return 'Régler et déclarer le paiement';
   if (can.canConfirmPayment) return 'Confirmer le paiement reçu';
   if (can.canReview) return 'Donner ton avis';
@@ -49,7 +50,7 @@ export function Listes(ctx: Ctx) {
       {helping.length ? helping.map(card) : !offerDrafts.length && <Text style={styles.muted}>Aucune proposition envoyée. Trouve une demande dans « Flemmes à résoudre ».</Text>}
       <Action secondary onPress={() => go('list', { tab: 'find' })}>Voir les demandes à résoudre</Action>{moreButton}</>;
   }
-  return <><Text style={styles.eyebrow}>À toi de jouer, Brigadier.</Text><Text style={styles.heading}>Flemmes à résoudre</Text><Text style={styles.muted}>Trouve une tâche près de chez toi ou à distance. {brigadierPitch()}</Text>
+  return <><Text style={styles.eyebrow}>À toi de jouer.</Text><Text style={styles.heading}>Flemmes à résoudre</Text><Text style={styles.muted}>Trouve une tâche près de chez toi ou à distance. {brigadierPitch()}</Text>
     {(helping.length > 0 || offerDrafts.length > 0) && <Text style={styles.note}>Tes propositions et tes brouillons sont dans <Text style={styles.inlineLink} onPress={() => go('list', { tab: 'mine' })}>Mon espace</Text>.</Text>}
     <Recherche ctx={ctx} card={card} fallback={available} skip={helping}/></>;
 }

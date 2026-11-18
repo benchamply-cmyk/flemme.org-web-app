@@ -11,7 +11,7 @@ export function Accueil({ go, state: { gateway } }: Ctx) {
     <div className="home-liens">
     <button type="button" className="btn secondary" onClick={() => go('list', { tab: 'mine' })}>Mon espace · mes demandes et mes propositions</button>
     {/* Brigadier Premium : seul lien depuis l’espace, repris de l’ancienne page espace-connecte.html. */}
-    <a className="btn secondary" href="premium">Brigadier Premium · pour celles et ceux qui aident souvent</a>
+    <a className="btn secondary" href="premium">Flemme Premium · pour les membres qui aident souvent</a>
     </div>
     <AccountAccess gateway={gateway} visibleEntry/></div>;
 }

@@ -5,19 +5,19 @@ import { CONTRACT_FIELDS } from '../../../../packages/shared/src/accord.ts';
 import { budgetText, categoryLabel, deadlineLabel, modeLabel } from '../../../../packages/shared/src/parcours.ts';
 import { RemoteGateway } from '../../../../packages/shared/src/gateway.ts';
 import { tokenStore } from '../storage.ts';
-import type { AdminAction, AdminSource, FlagsData, AlertRow, DisputeRow, HelpRow, Moderation, Overview, ReportRow, ReviewDecision, ReviewQueue, UserRow } from './model.ts';
+import type { AdminAction, AdminSource, FlagsData, PlanRow, PlansData, AlertRow, DisputeRow, HelpRow, Moderation, Overview, ReportRow, ReviewDecision, ReviewQueue, UserRow } from './model.ts';
 import { FLAGS, CLES, ETATS, ETAT_LIBELLE, type CleFlag, type DefinitionFlag, type EtatFlag, type Environnement } from '../../../../packages/shared/src/flags.ts';
 import { ENV } from '../flags/env.ts';
 import { DemoAdmin, alertLabel, disputeLabel, filterDisputes, filterUsers, logLabel, taskLabel, when } from './model.ts';
 
 // Page admin de flemme.org : signalements, litiges, utilisateurs et alertes.
 // Toutes les données passent par public.flemme_admin_api, qui revérifie le rôle admin en base.
-type Tab = 'overview' | 'moderation' | 'queue' | 'help' | 'reports' | 'disputes' | 'users' | 'alerts' | 'flags';
-type Data = { overview?: Overview; moderation?: Moderation; queue?: ReviewQueue; help?: HelpRow[]; reports?: ReportRow[]; disputes?: DisputeRow[]; users?: UserRow[]; alerts?: AlertRow[]; flags?: FlagsData };
+type Tab = 'overview' | 'moderation' | 'queue' | 'help' | 'reports' | 'disputes' | 'users' | 'alerts' | 'flags' | 'plans';
+type Data = { overview?: Overview; moderation?: Moderation; queue?: ReviewQueue; help?: HelpRow[]; reports?: ReportRow[]; disputes?: DisputeRow[]; users?: UserRow[]; alerts?: AlertRow[]; flags?: FlagsData; plans?: PlansData };
 const url = import.meta.env.VITE_SUPABASE_URL || '';
 const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
 const remoteMode = !!(url || key);
-const tabs: [Tab, string][] = [['overview', 'Vue d’ensemble'], ['moderation', 'À valider'], ['queue', 'Candidatures et accords'], ['help', 'Aide'], ['reports', 'Signalements'], ['disputes', 'Litiges'], ['users', 'Utilisateurs'], ['alerts', 'Alertes e-mail'], ['flags', 'Fonctionnalités']];
+const tabs: [Tab, string][] = [['overview', 'Vue d’ensemble'], ['moderation', 'À valider'], ['queue', 'Candidatures et accords'], ['help', 'Aide'], ['reports', 'Signalements'], ['disputes', 'Litiges'], ['users', 'Utilisateurs'], ['alerts', 'Alertes e-mail'], ['flags', 'Fonctionnalités'], ['plans', 'Abonnements']];
 // Environnements réglables depuis l'admin (« local » suit toujours le registre).
 const ENVS: Environnement[] = ['beta', 'preprod', 'prod'];
 
@@ -48,7 +48,7 @@ export default function AdminApp() {
   async function load(s: AdminSource, which: Tab) {
     const [field, action]: [keyof Data, AdminAction] = which === 'queue' ? ['queue', 'review_queue'] : which === 'help' ? ['help', 'help_queue'] : [which, which];
     const result = await s.call(action);
-    setData(d => ({ ...d, [field]: which === 'overview' || which === 'moderation' || which === 'queue' || which === 'flags' ? result : which === 'help' ? result.requests : result[which] }));
+    setData(d => ({ ...d, [field]: which === 'overview' || which === 'moderation' || which === 'queue' || which === 'flags' || which === 'plans' ? result : which === 'help' ? result.requests : result[which] }));
   }
   async function open(s: AdminSource) {
     // Le premier appel vérifie le rôle : un compte non admin reçoit « Accès réservé » et ne voit rien.
@@ -126,16 +126,16 @@ export default function AdminApp() {
         <div className="row"><span className="strong">{o.brigadier.name}</span><span className="price">{money(o.amount)}</span></div>
         <p className="note">Pour « {o.task.title} » de {o.task.owner.name} · {when(o.createdAt)}</p>
         <p>{o.scope}</p><p className="muted">{o.slot}</p>{o.result && <p><span className="strong">Résultat promis : </span>{o.result}</p>}
-        <div className="field"><label htmlFor={'q-' + o.id}>Message au Brigadier (obligatoire pour une correction ou un refus)</label><textarea id={'q-' + o.id} maxLength={900} value={note(o.id)} onChange={set('q-' + o.id)} disabled={busy}/></div>
+        <div className="field"><label htmlFor={'q-' + o.id}>Message au membre (obligatoire pour une correction ou un refus)</label><textarea id={'q-' + o.id} maxLength={900} value={note(o.id)} onChange={set('q-' + o.id)} disabled={busy}/></div>
         <div className="chips">
           <Button disabled={busy} onClick={() => act('offer_review', { offerId: o.id, decision: 'approve' }, 'Candidature validée et transmise au déposant.', ['queue'])}>Valider et transmettre</Button>
-          <Button secondary disabled={busy} onClick={() => act('offer_review', { offerId: o.id, decision: 'changes', note: note(o.id) }, 'Correction demandée au Brigadier.', ['queue'])}>Demander une correction</Button>
+          <Button secondary disabled={busy} onClick={() => act('offer_review', { offerId: o.id, decision: 'changes', note: note(o.id) }, 'Correction demandée au membre.', ['queue'])}>Demander une correction</Button>
           <Button secondary disabled={busy} onClick={() => act('offer_review', { offerId: o.id, decision: 'reject', note: note(o.id) }, 'Candidature refusée.', ['queue'])}>Refuser</Button>
         </div></div>) : <p className="muted">Aucune candidature à valider.</p>}
       <h2 className="section-title">Accords écrits ({q?.agreements.length ?? 0})</h2>
       {q?.agreements.length ? q.agreements.map(a => <div className="card" key={a.taskId}>
         <p className="card-title">{a.title}</p><p className="note">{a.owner.name} et {a.brigadier.name} · forfait {money(a.amount)} · soumis le {when(a.updatedAt)}</p>
-        {CONTRACT_FIELDS.map(c => <p key={c.name}><span className="strong">{c.label} : </span>{a.terms[c.name]}</p>)}
+        {CONTRACT_FIELDS.filter(c => a.terms[c.name]).map(c => <p key={c.name}><span className="strong">{c.label} : </span>{a.terms[c.name]}</p>)}
         <div className="field"><label htmlFor={'q-' + a.taskId}>Message aux deux parties (obligatoire pour une correction)</label><textarea id={'q-' + a.taskId} maxLength={900} value={note(a.taskId)} onChange={set('q-' + a.taskId)} disabled={busy}/></div>
         <div className="chips">
           <Button disabled={busy} onClick={() => act('agreement_review', { taskId: a.taskId, decision: 'approve', note: note(a.taskId) || null }, 'Accord contrôlé : les deux parties peuvent signer.', ['queue'])}>Valider · prêt à signer</Button>
@@ -172,14 +172,14 @@ export default function AdminApp() {
       {rows.length ? rows.map(d => { const t = d.task, a = t.agreement; return <div className={'card' + (focus === d.taskId ? ' focus' : '')} key={d.taskId}>
         <div className="row"><span className="tag">{disputeLabel[d.status]}</span><span className="note">Ouvert le {when(d.openedAt)}{d.updatedBy ? ' · dernière action : ' + d.updatedBy : ''}</span></div>
         <p className="card-title">{t.title}</p>
-        <p className="muted">{t.place} · {taskLabel[t.status]} · déposée par {t.owner.name}{a ? ' · Brigadier : ' + a.brigadier.name + ' · forfait ' + money(a.amount) + ' + commission ' + money(a.commission) : ''}</p>
-        {a && <p className="note">{t.paymentConfirmed ? 'Paiement confirmé par les deux personnes (déclaratif)' : t.paymentDeclared ? 'Paiement déclaré par le déposant, non confirmé par le Brigadier' : 'Paiement non déclaré'}</p>}
+        <p className="muted">{t.place} · {taskLabel[t.status]} · déposée par {t.owner.name}{a ? ' · Membre retenu : ' + a.brigadier.name + ' · forfait ' + money(a.amount) + ' + commission ' + money(a.commission) : ''}</p>
+        {a && <p className="note">{t.paymentConfirmed ? 'Paiement confirmé par les deux personnes (déclaratif)' : t.paymentDeclared ? 'Paiement déclaré par le déposant, non confirmé par le membre' : 'Paiement non déclaré'}</p>}
         {t.reports.map((r, i) => <div className="bubble" key={i}><span className="strong">Signalement de {r.actor.name}</span><span>{r.text}</span><span className="note">{when(r.at)}</span></div>)}
         {d.resolution && <p><span className="strong">Résolution : </span>{d.resolution}</p>}
         <details><summary>Historique de la flemme ({t.history.length})</summary>{t.history.map((h, i) => <div key={i} className="history"><p>{h.text}</p><span className="note">{when(h.at)}</span></div>)}</details>
         {d.status !== 'resolved' && <>
           {d.status === 'open' && <Button secondary disabled={busy} onClick={() => act('dispute_update', { taskId: d.taskId, status: 'in_review' }, 'Litige pris en charge. Les deux participants le voient dans l’historique.', ['disputes', 'reports'])}>Prendre en charge</Button>}
-          <div className="field"><label htmlFor={'n-' + d.taskId}>Décision (visible du déposant et du Brigadier)</label><textarea id={'n-' + d.taskId} maxLength={1000} value={draft['n-' + d.taskId] || ''} onChange={set('n-' + d.taskId)} disabled={busy}/></div>
+          <div className="field"><label htmlFor={'n-' + d.taskId}>Décision (visible du déposant et du membre retenu)</label><textarea id={'n-' + d.taskId} maxLength={1000} value={draft['n-' + d.taskId] || ''} onChange={set('n-' + d.taskId)} disabled={busy}/></div>
           <Button disabled={busy} onClick={() => act('dispute_update', { taskId: d.taskId, status: 'resolved', note: draft['n-' + d.taskId] || '' }, 'Litige clos. La décision est ajoutée à l’historique de la flemme.', ['disputes', 'reports'])}>Clore le litige</Button>
         </>}
       </div>; }) : <p className="muted">{disputeView === 'todo' ? 'Aucun litige à traiter.' : 'Aucun litige.'}</p>}
@@ -225,6 +225,32 @@ export default function AdminApp() {
             </div>; })}
         </div>; })}
       </section>)}
+    </>;
+  } else if (tab === 'plans') {
+    // Abonnements : formules modifiables sans code (flemme_v2.subscription_plans). Rien n'est proposé aux membres tant que
+    // le flag « abonnements.souscription » est éteint et que la formule n'est pas « ouverte » avec un prix Stripe.
+    const p = data.plans;
+    const champ = (pl: PlanRow, n: string, v: string) => draft[pl.id + '.' + n] ?? v;
+    const euros = (c: number | null) => c == null ? '' : (c / 100).toFixed(2).replace('.', ',').replace(/,00$/, '');
+    const cents = (v: string) => { const t = v.trim().replace(',', '.'); return t ? Math.round(Number(t) * 100) : null; };
+    const lignes = (v: string) => v.split('\n').map(x => x.trim()).filter(Boolean);
+    content = !p ? <p className="muted">Abonnements indisponibles : la migration abonnements n’est pas encore appliquée sur cette base.</p> : <>
+      <p className="muted">Souscription {p.open ? 'ouverte' : 'fermée'} par le flag « abonnements.souscription » (onglet Fonctionnalités). Une formule n’est proposée que si elle est « ouverte » avec un prix Stripe (price_…). Les textes de la page /premium viennent du code (packages/shared/src/abonnements.ts).</p>
+      {p.subscriptions && <p className="note">Abonnements : {Object.entries(p.subscriptions).map(([s, n]) => `${s} ${n}`).join(' · ')}</p>}
+      {p.plans.map(pl => <div className="card" key={pl.id}><div className="row"><span className="card-title">{pl.name}</span><code className="note">{pl.id}</code><span className="tag">{pl.status}</span></div>
+        {([['name', 'Nom', pl.name], ['monthly', 'Prix mensuel (€)', euros(pl.monthlyAmount)], ['yearly', 'Prix annuel (€)', euros(pl.yearlyAmount)], ['trial', 'Jours d’essai', String(pl.trialDays)],
+          ['priceM', 'Prix Stripe mensuel (price_…)', pl.stripePriceMonthly || ''], ['priceY', 'Prix Stripe annuel (price_…)', pl.stripePriceYearly || '']] as const).map(([n, l, v]) =>
+          <div className="field" key={n}><label htmlFor={`${pl.id}-${n}`}>{l}</label><input id={`${pl.id}-${n}`} value={champ(pl, n, v)} onChange={set(pl.id + '.' + n)} disabled={busy}/></div>)}
+        {([['perks', 'Avantages (un par ligne)', pl.perks], ['conditions', 'Conditions propres (une par ligne)', pl.conditions]] as const).map(([n, l, v]) =>
+          <div className="field" key={n}><label htmlFor={`${pl.id}-${n}`}>{l}</label><textarea id={`${pl.id}-${n}`} rows={4} value={champ(pl, n, v.join('\n'))} onChange={set(pl.id + '.' + n)} disabled={busy}/></div>)}
+        <div className="field"><label htmlFor={`${pl.id}-status`}>Statut</label><select id={`${pl.id}-status`} value={champ(pl, 'status', pl.status)} onChange={set(pl.id + '.status')} disabled={busy}>
+          <option value="draft">Brouillon (« Bientôt »)</option><option value="open">Ouverte</option><option value="closed">Fermée</option></select></div>
+        <Button disabled={busy} onClick={() => act('plan_save', { id: pl.id, name: champ(pl, 'name', pl.name), audience: pl.audience,
+          monthlyAmount: cents(champ(pl, 'monthly', euros(pl.monthlyAmount))), yearlyAmount: cents(champ(pl, 'yearly', euros(pl.yearlyAmount))),
+          trialDays: Number(champ(pl, 'trial', String(pl.trialDays))) || 0, perks: lignes(champ(pl, 'perks', pl.perks.join('\n'))),
+          conditions: lignes(champ(pl, 'conditions', pl.conditions.join('\n'))), status: champ(pl, 'status', pl.status),
+          stripePriceMonthly: champ(pl, 'priceM', pl.stripePriceMonthly || ''), stripePriceYearly: champ(pl, 'priceY', pl.stripePriceYearly || '') }, `Formule « ${pl.id} » enregistrée.`, ['plans'])}>Enregistrer la formule</Button>
+      </div>)}
     </>;
   } else if (tab === 'alerts') content = <>
     <p className="muted">Chaque nouvelle flemme, accord ou signalement est enregistré ici puis envoyé par e-mail. Une alerte en échec ne bloque jamais l’action du membre.</p>

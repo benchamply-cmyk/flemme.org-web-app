@@ -4,14 +4,16 @@ import { readFileSync } from 'node:fs';
 import { applyCommand, createTask, visibleTask } from '../src/domain.ts';
 import { rights } from '../src/ecrans.ts';
 import { FlemmeSession } from '../src/session.ts';
-import { CONTRACT_FIELDS, contractInput, offerInput, profileInput, reviewInput, signatureInput } from '../src/accord.ts';
+import { CONTRACT_FIELDS, CONTRACT_TEMPLATE, contractInput, offerInput, profileInput, reviewInput, signatureInput } from '../src/accord.ts';
 
-const sql = readFileSync(new URL('../../../supabase/migrations/20261104140000_flemme_v2_accord.sql', import.meta.url), 'utf8');
+const sql2 = readFileSync(new URL('../../../supabase/migrations/20261118120000_flemme_v2_paiement_signature.sql', import.meta.url), 'utf8');
 const owner = { id: 'o', name: 'Ondine' }, brig = { id: 'b', name: 'Basile' }, other = { id: 'x', name: 'Xavier' }, at = '2026-11-04T10:00:00.000Z';
-const terms = { scope: 'Montage', quality: 'De niveau', deadline: 'Samedi', cancellation: '48 h avant', confidentiality: 'Adresse privée' };
+const terms = { template: '0.2', scope: 'Montage', deliverable: 'Étagère montée', quality: 'De niveau', deadline: 'Samedi', acceptance: 'Vérifiée sur place', cancellation: '48 h avant', confidentiality: 'Adresse privée' };
 
 test('accord : mêmes rubriques et limites que flemme_v2.agreement_terms', () => {
-  for (const f of CONTRACT_FIELDS) assert.match(sql, new RegExp(`'${f.name}', flemme_v2\\.required_text\\(p_data->'${f.name}', ${f.max}\\)`), f.name);
+  // Contrat v0.2 : rubriques définies par 20261118120000 (obligatoires en required_text, facultatives en optional_text).
+  for (const f of CONTRACT_FIELDS) assert.match(sql2, new RegExp(`'${f.name}', flemme_v2\\.${f.required ? 'required' : 'optional'}_text\\(p_data->'${f.name}', ${f.max}\\)`), f.name);
+  assert.match(sql2, new RegExp(`'template', '${CONTRACT_TEMPLATE}'`));
 });
 
 test('accord : contrôles des formulaires', () => {
@@ -33,7 +35,7 @@ test('accord : parcours complet en local (candidature, accord, deux signatures, 
   assert.equal(t.offers[0].result, 'Fixée'); assert.equal(t.offers[0].review, 'approved');
   t = applyCommand(t, brig, 'apply_edit', { offerId: 'p', amount: 4200, slot: 'Samedi', scope: 'Montage' }, at);
   assert.equal(t.offers[0].amount, 4200);
-  assert.throws(() => applyCommand(t, owner, 'agreement_save', terms, at), /Brigadier choisi/);
+  assert.throws(() => applyCommand(t, owner, 'agreement_save', terms, at), /membre choisi/);
   t = applyCommand(t, owner, 'accept', { offerId: 'p' }, at);
   assert.throws(() => applyCommand(t, other, 'agreement_save', terms, at), /inaccessible/);
   t = applyCommand(t, brig, 'agreement_save', terms, at);

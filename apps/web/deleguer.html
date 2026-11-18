@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
 <title>Déléguer une flemme — Flemme.org</title>
-<meta name="description" content="Confie une démarche ou une corvée numérique à Flemme : catalogue à prix fixe, autre service sur mesure ou demande de devis. Rien n’est envoyé sans ton accord.">
+<meta name="description" content="Publie gratuitement ce que tu repousses. Des membres te proposent de s’en charger, vous négociez le prix et le délai, puis signez un accord relu par Flemme.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:site_name" content="FLEMME">
 <meta property="og:title" content="Déléguer une flemme — Flemme.org">
-<meta property="og:description" content="Confie une démarche ou une corvée numérique à Flemme : catalogue à prix fixe, autre service sur mesure ou demande de devis. Rien n’est envoyé sans ton accord.">
+<meta property="og:description" content="Publie gratuitement ce que tu repousses. Des membres te proposent de s’en charger, vous négociez le prix et le délai, puis signez un accord relu par Flemme.">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/flemme-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,7 +25,7 @@
 <!--#entete-->
   <div class="titre-page">
     <h1>Déléguer une flemme</h1>
-    <p>Un courrier, une réclamation, une annonce, un dossier à monter&#8239;? Décris ce que tu repousses&#8239;: on s’en charge, et rien n’est envoyé sans ton accord.</p>
+    <p>Un courrier, une annonce, un meuble à monter, un dossier à monter&#8239;? Décris ce que tu repousses. Des membres te proposent de s’en charger, et vous fixez ensemble le prix et le délai.</p>
   </div>
 </section>
 <main>
@@ -33,9 +33,9 @@
     <form class="decrire" id="deleguerForm" novalidate>
       <label for="deleguerDetails" class="decrire-titre">Décris ta flemme avec tes mots</label>
       <textarea id="deleguerDetails" name="details" rows="5" maxlength="1000" placeholder="Ex. « J’aimerais mettre mon CV à jour avant vendredi. » Le résultat attendu, ce qui te bloque, ce que tu as déjà…" aria-describedby="deleguerAide"></textarea>
-      <p class="doux" id="deleguerAide" aria-live="polite">Pas besoin d’un brief parfait. Précise ensuite avec les filtres&#8239;: tu relis tout avant l’envoi.</p>
+      <p class="doux" id="deleguerAide" aria-live="polite">Pas besoin d’un brief parfait. Précise ensuite avec les filtres&#8239;: l’équipe relit ta demande avant de la publier.</p>
       <div class="filtres" id="filtresDeleguer"><b>Préciser :</b></div>
-      <div class="decrire-bas"><button type="submit">Continuer ma demande</button><span class="doux">Gratuit et sans engagement. Un compte est demandé pour publier ta demande&#8239;: ton texte est gardé.</span></div>
+      <div class="decrire-bas"><button type="submit">Continuer ma demande</button><span class="doux">Publier et recevoir des propositions est gratuit. Un compte est demandé pour publier&#8239;: ton texte est gardé.</span></div>
     </form>
   </section>
 
@@ -52,13 +52,23 @@
 
   <section class="bloc" id="etapes">
     <p class="surtitre">Comment ça se passe</p>
-    <h2 class="titre">En trois étapes</h2>
+    <h2 class="titre">De ta demande à l’accord signé</h2>
     <div class="grille">
-      <div class="carte"><b>1 · Décris ce dont tu as besoin</b><p class="doux">Le résultat que tu attends, un délai si tu en as un. Le budget est facultatif.</p></div>
-      <div class="carte"><b>2 · Valide le prix</b><p class="doux">Tu vois le prix total avant de payer, et tu poses tes questions avant de choisir.</p></div>
-      <div class="carte"><b>3 · Relis avant tout envoi</b><p class="doux">Tu suis l’avancement dans «&#8239;Mes demandes&#8239;» et rien ne part sans ton accord.</p></div>
+      <div class="carte"><b>1 · Publie ta demande</b><p class="doux">Le résultat que tu attends, à distance ou sur place. Budget et délai sont facultatifs&#8239;: «&#8239;à discuter&#8239;» convient. Ta demande reste en ligne jusqu’à ce que tu choisisses quelqu’un.</p></div>
+      <div class="carte"><b>2 · Compare et négocie</b><p class="doux">Les membres intéressés t’envoient une proposition&#8239;: leur prix, leurs disponibilités, ce qui est inclus. Tu discutes en privé et tu choisis, ou personne.</p></div>
+      <div class="carte"><b>3 · Signez l’accord, payez via Flemme</b><p class="doux">Un accord écrit, relu par l’équipe, signé par vous deux. Les frais de plateforme ne sont dus qu’à la signature, et le paiement passe par Flemme.</p></div>
     </div>
-    <div class="boutons"><a class="bouton clair" href="concept#prix">Prix et paiement</a><a class="bouton clair" href="concept#confiance">Ce qui te protège</a></div>
+    <div class="boutons"><a class="bouton clair" href="concept#prix">Prix et frais</a><a class="bouton clair" href="concept#confiance">Ce qui te protège</a></div>
+  </section>
+
+  <section class="bloc" id="gratuit" data-modele="ouvert">
+    <p class="surtitre">Ce que tu paies</p>
+    <h2 class="titre">Gratuit jusqu’à la signature</h2>
+    <div class="grille">
+      <div class="carte"><b>Publier, recevoir, discuter</b><p class="doux">Gratuit. Tu peux comparer autant de propositions que tu veux et n’en retenir aucune.</p></div>
+      <div class="carte"><b>Le prix de la mission</b><p class="doux">Celui que vous avez négocié. Flemme ne fixe aucun tarif et n’impose aucun délai.</p></div>
+      <div class="carte"><b>Une seule ligne de frais</b><p class="doux">Un pourcentage du prix convenu, affiché avant de signer, à ta charge. Le contrat standard est compris&#8239;: rien d’autre ne s’ajoute.</p></div>
+    </div>
   </section>
 </main>
 <!--#pied-->

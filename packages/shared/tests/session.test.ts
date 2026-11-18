@@ -60,7 +60,7 @@ test('changement de personnage puis proposition et droits calculés', async () =
 test('parcours et paiement : écran parent et libellés', () => {
   assert.equal(parentScreen('review'), 'offer'); assert.equal(parentScreen('report'), 'detail'); assert.equal(parentScreen('account'), 'home'); assert.equal(parentScreen('detail'), 'list');
   const t = { paymentDeclared: true } as Parameters<typeof paymentStatus>[0];
-  assert.equal(paymentStatus(t), 'Paiement déclaré · confirmation Brigadier attendue');
+  assert.equal(paymentStatus(t), 'Paiement déclaré · confirmation du membre attendue');
 });
 test('déconnexion : la session locale est effacée même si le serveur ne répond pas', async () => {
   let calls = 0;

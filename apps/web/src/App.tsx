@@ -53,11 +53,11 @@ function initialDraft(next: Place): Draft {
   // /deleguer/nouvelle?formule=autre|devis : formulaire ouvert sur la formule « Autres services » ou « Demande de devis ».
   if (next.screen === 'new' && !next.draftId && next.formule) return next.formule === 'autre' ? { formule: next.formule, category: 'autre' } : { formule: next.formule };
   if ((next.screen === 'new' || next.screen === 'detail') && next.draftId) return { ...drafts.find(d => d.id === next.draftId)?.fields };
-  // Candidature à corriger : le Brigadier repart de sa proposition.
+  // Candidature à corriger : le membre repart de sa proposition.
   const o = next.screen === 'offer' ? t?.offers.find(v => v.id === next.offerId && v.brigadier.id === actorId) : undefined;
   if (o) return { amount: (o.amount / 100).toFixed(2).replace('.', ','), slot: o.slot, scope: o.scope, result: o.result || '' };
   // Accord écrit : version enregistrée, sinon reprise de la candidature retenue.
-  if (next.screen === 'contract' && t) return t.contract ? contractFields(t.contract) : { scope: t.agreement?.scope || '', deadline: t.agreement?.slot || '' };
+  if (next.screen === 'contract' && t) return t.contract ? contractFields(t.contract, t.agreement?.amount) : { ...contractFields(null, t.agreement?.amount), scope: t.agreement?.scope || '', deadline: t.agreement?.slot || '' };
   return {};
 }
 

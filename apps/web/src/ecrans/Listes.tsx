@@ -35,7 +35,7 @@ export function Listes(ctx: Ctx) {
         <span className="row"><button type="button" className="btn small" disabled={busy} onClick={() => go('detail', { taskId: d.taskId || '', draftId: d.id })}>Reprendre</button><button type="button" className="btn small secondary" disabled={busy} onClick={() => session.deleteDraft(d.id)}>Supprimer</button></span></div>)}</>}
     {helping.length ? helping.map(card) : !offerDrafts.length && <p className="muted">Aucune proposition envoyée. Trouve une demande dans « Flemmes à résoudre ».</p>}
     <Action secondary onClick={() => { location.href = 'resoudre'; }}>Voir les demandes à résoudre</Action>{reload}</>;
-  return <><p className="eyebrow">À toi de jouer, Brigadier.</p><h1 className="heading">Flemmes à résoudre</h1><p className="muted">Trouve une tâche près de chez toi ou à distance. {brigadierPitch()}</p>
+  return <><p className="eyebrow">À toi de jouer.</p><h1 className="heading">Flemmes à résoudre</h1><p className="muted">Trouve une tâche près de chez toi ou à distance. {brigadierPitch()}</p>
     {(helping.length > 0 || offerDrafts.length > 0) && <p className="note">Tes propositions et tes brouillons sont dans <button type="button" className="link" onClick={() => go('list', { tab: 'mine' })}>Mon espace</button>.</p>}
     <Recherche {...ctx} card={card} fallback={available} skip={helping}/></>;
 }
@@ -48,6 +48,7 @@ function nextStep(t: Task, actorId: string) {
   if (can.canSign) return 'Relire et signer l’accord';
   if (can.canContract && !t.contract) return 'Rédiger l’accord';
   if (can.canContract && (t.contract?.status === 'draft' || t.contract?.status === 'changes_requested')) return 'Relire l’accord';
+  if (can.canPay) return 'Payer via Flemme';
   if (can.canDeclarePayment) return 'Régler et déclarer le paiement';
   if (can.canConfirmPayment) return 'Confirmer le paiement reçu';
   if (can.canReview) return 'Donner ton avis';
