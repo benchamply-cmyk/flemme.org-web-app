@@ -1,4 +1,4 @@
-import { CONTRACT_FIELDS, contractInput, money, notices, parseMoney } from '../../../../packages/shared/src/index.ts';
+import { CONTRACT_COMMON_CLAUSES, CONTRACT_FIELDS, contractInput, money, notices, parseMoney } from '../../../../packages/shared/src/index.ts';
 import { Action, Bill } from '../ui.tsx';
 import type { Ctx } from './contexte.ts';
 
@@ -15,6 +15,7 @@ export function Accord({ state: { busy }, task, can, draft, field, mutate, valid
       {(() => { try { const n = parseMoney(draft.amount || '', true); return n != null ? <Bill amount={n} agreed={{ ...task.agreement, ...priceFor(n, task.agreement) }}/> : null; } catch { return null; } })()}</>}
     <p className="note">Écrivez ensemble ce que chacun attend. L’équipe FLEMME relit l’accord avant la signature.</p>
     {CONTRACT_FIELDS.map(c => field(c.label, c.name, { multiline: c.max > 200, max: c.max, hint: c.hint }))}
+    <div className="note"><span className="strong">Clauses communes à tout accord Flemme</span><ul>{CONTRACT_COMMON_CLAUSES.map(c => <li key={c}>{c}</li>)}</ul></div>
     {signed && <p className="alert" role="status">Une signature a déjà été donnée : enregistrer une modification l’annule, et les deux parties devront signer la nouvelle version.</p>}
     <Action disabled={busy} onClick={() => validated(() => { const { amount, ...terms } = contractInput(draft); const data = can.viaFlemme && amount != null ? { ...terms, amount } : terms; void mutate('agreement_save', data, 'detail', notices.contractSaved); })}>Enregistrer l’accord</Action></>;
 }

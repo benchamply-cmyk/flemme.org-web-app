@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { CONTRACT_FIELDS, OFFER_FIELDS, PAIEMENT_OBLIGATOIRE, RAPPEL_CONTOURNEMENT, etapeArgent, etapeArgentLabel, budgetText, canEdit, categoryLabel, contractStatusLabel, date, deadlineLabel, modeLabel, money, notices, offerInput, offerReviewLabel, offerStatus, parseMoney, paymentNote, paymentStatus, reviewInput, reviewLabel, signatureInput, stars, taskStatus } from '../../../../packages/shared/src/index.ts';
-import { onlinePayment, openStripe, session } from '../session.ts';
+import { onlinePayment, openStripe, payoutStripe, session } from '../session.ts';
 import { Action, Bill, Recap } from '../ui.tsx';
 import { Pieces } from './Pieces.tsx';
 import type { Ctx } from './contexte.ts';
@@ -19,9 +19,12 @@ export function Fiche({ state: { busy, actorId, files }, place, task, can, draft
     {task.address && <p className="note"><span className="strong">Adresse précise (privée) : </span>{task.address}</p>}
     {canEdit(task, actorId) && <Action secondary disabled={busy} onClick={() => go('edit')}>{review === 'changes_requested' ? 'Corriger ma demande' : 'Modifier ma demande'}</Action>}
     {agreement && <><h2 className="section-title">{agreement.brigadier.name} prend le relais</h2><p>{agreement.scope}</p><p className="muted">{agreement.slot}</p><Bill amount={agreement.amount} agreed={agreement}/>
-      <p className="note">{paymentNote(agreement, onlinePayment, money, can.viaFlemme)}</p>
+      <p className="note">{paymentNote(agreement, onlinePayment, money, can.viaFlemme, task.paymentMode !== 'stripe')}</p>
       {can.viaFlemme && <p className="muted">{etapeArgentLabel[etapeArgent(task)]}</p>}
-      {can.canPay && <><p className="note">{PAIEMENT_OBLIGATOIRE}</p><Action disabled={busy} onClick={() => mutate('pay', {}, 'detail', notices.paid)}>Payer via Flemme · {money(agreement.total)} (simulation)</Action></>}
+      {can.canPay && <><p className="note">{PAIEMENT_OBLIGATOIRE}</p>{task.paymentMode === 'stripe'
+        ? <Action disabled={busy} onClick={() => openStripe('checkout', task.id, 'signature')}>Payer par carte via Flemme · {money(agreement.total)}</Action>
+        : <Action disabled={busy} onClick={() => mutate('pay', {}, 'detail', notices.paid)}>Payer via Flemme · {money(agreement.total)} (simulation)</Action>}</>}
+      {can.canPayout && <Action secondary disabled={busy} onClick={() => payoutStripe(task.id)}>Verser la part du membre · {money(agreement.payout ?? agreement.amount)}</Action>}
       {can.canComplete && <Action disabled={busy} onClick={() => mutate('complete', {})}>Confirmer la tâche terminée</Action>}
       {can.canDeclarePayment && onlinePayment && <Action disabled={busy} onClick={() => openStripe('checkout', task.id)}>Payer en ligne · {money(agreement.total)}</Action>}
       {can.canDeclarePayment && <Action secondary={onlinePayment} disabled={busy} onClick={() => mutate('declare_payment', {})}>J’ai payé le membre{onlinePayment ? ' en direct' : ''}</Action>}
@@ -31,7 +34,7 @@ export function Fiche({ state: { busy, actorId, files }, place, task, can, draft
         {!task.contract ? <p className="muted">Pas encore d’accord écrit. Rédigez-le ensemble : périmètre, résultat attendu, délai, annulation et confidentialité. Une fois commencé, il doit être signé par les deux avant la fin de la tâche.</p>
           : <><span className="tag">{contractStatusLabel[task.contract.status]}{task.contract.version ? ` · version ${task.contract.version}` : ''}</span>
             {task.contract.reviewNote && <div className={task.contract.status === 'changes_requested' ? 'alert' : 'notice'} role="status">{task.contract.reviewNote}</div>}
-            {CONTRACT_FIELDS.map(c => <p key={c.name}><span className="strong">{c.label} : </span>{task.contract!.terms[c.name]}</p>)}
+            {CONTRACT_FIELDS.filter(c => task.contract!.terms[c.name]).map(c => <p key={c.name}><span className="strong">{c.label} : </span>{task.contract!.terms[c.name]}</p>)}
             <p className="note">Déposant : {task.contract.ownerSignedAt ? `signé « ${task.contract.ownerSignature} » le ${date(task.contract.ownerSignedAt)}` : 'pas encore signé'}<br/>
               Membre qui aide : {task.contract.brigadierSignedAt ? `signé « ${task.contract.brigadierSignature} » le ${date(task.contract.brigadierSignedAt)}` : 'pas encore signé'}</p></>}
         {can.canContract && task.contract?.status !== 'signed' && <Action secondary disabled={busy} onClick={() => go('contract')}>{task.contract ? 'Modifier l’accord' : 'Rédiger l’accord'}</Action>}

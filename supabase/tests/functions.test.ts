@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
-import { checkout, form, onboarding, settings, verifySignature, webhook } from '../functions/_shared/paiement.ts';
+import { checkout, form, onboarding, payout, settings, verifySignature, webhook } from '../functions/_shared/paiement.ts';
 
 const TASK = '11111111-2222-4333-8444-555555555555';
 const baseEnv: Record<string, string> = {
@@ -116,23 +116,64 @@ test('signature Stripe : valide, falsifiée, périmée', async () => {
   assert.equal(await verifySignature(body, null, 'whsec_factice', t), false);
 });
 
-test('webhook : paiement, expiration, compte connecté ; refus sans signature valide', async () => {
+test('webhook : une seule action idempotente en base, avec l’identifiant evt_ ; refus sans signature valide', async () => {
   const now = Date.UTC(2026, 10, 3, 20), t = Math.floor(now / 1000);
   const { fn, calls } = fakeFetch({ '/rest/v1/rpc/flemme_paiement_api': () => ({ ok: true }) });
   const send = (event: unknown, secret = 'whsec_factice') => {
     const body = JSON.stringify(event);
     return webhook(post(body, { 'Stripe-Signature': sign(body, secret, t) }), { env: env({ STRIPE_WEBHOOK_SECRET: 'whsec_autre,whsec_factice' }), fetch: fn, now: () => now });
   };
-  assert.equal((await send({ type: 'checkout.session.completed', data: { object: { id: 'cs_1', payment_status: 'paid', amount_total: 4400, payment_intent: 'pi_1' } } })).status, 200);
-  await send({ type: 'checkout.session.completed', data: { object: { id: 'cs_2', payment_status: 'unpaid' } } });
-  await send({ type: 'checkout.session.expired', data: { object: { id: 'cs_3' } } });
-  await send({ type: 'account.updated', data: { object: { id: 'acct_B', charges_enabled: true, payouts_enabled: false } } });
-  await send({ type: 'payout.paid', data: { object: {} } });
+  assert.equal((await send({ id: 'evt_1', type: 'checkout.session.completed', data: { object: { id: 'cs_1', payment_status: 'paid', amount_total: 4400, payment_intent: 'pi_1' } } })).status, 200);
+  await send({ id: 'evt_2', type: 'checkout.session.expired', data: { object: { id: 'cs_3' } } });
+  await send({ id: 'evt_3', type: 'charge.refunded', data: { object: { payment_intent: 'pi_1', refunded: true, amount_refunded: 4400 } } });
+  await send({ id: 'evt_4', type: 'charge.dispute.closed', data: { object: { payment_intent: 'pi_1', status: 'won' } } });
+  await send({ id: 'evt_5', type: 'account.updated', data: { object: { id: 'acct_B', charges_enabled: true, payouts_enabled: false } } });
+  await send({ id: 'evt_6', type: 'payout.paid', data: { object: {} } });
   assert.deepEqual(calls.map(c => JSON.parse(c.body)), [
-    { p_action: 'checkout_paid', p_data: { sessionId: 'cs_1', amountTotal: 4400, paymentIntentId: 'pi_1' } },
-    { p_action: 'checkout_expired', p_data: { sessionId: 'cs_3' } },
-    { p_action: 'account_update', p_data: { accountId: 'acct_B', chargesEnabled: true, payoutsEnabled: false } }]);
-  const forged = await send({ type: 'checkout.session.completed', data: { object: { id: 'cs_9', payment_status: 'paid' } } }, 'whsec_pirate');
-  assert.equal(forged.status, 400); assert.equal(calls.length, 3);
+    { p_action: 'webhook', p_data: { eventId: 'evt_1', type: 'checkout.session.completed', sessionId: 'cs_1', paymentStatus: 'paid', amountTotal: 4400, paymentIntentId: 'pi_1' } },
+    { p_action: 'webhook', p_data: { eventId: 'evt_2', type: 'checkout.session.expired', sessionId: 'cs_3' } },
+    { p_action: 'webhook', p_data: { eventId: 'evt_3', type: 'charge.refunded', paymentIntentId: 'pi_1', refunded: true, amountRefunded: 4400 } },
+    { p_action: 'webhook', p_data: { eventId: 'evt_4', type: 'charge.dispute.closed', paymentIntentId: 'pi_1', disputeStatus: 'won' } },
+    { p_action: 'webhook', p_data: { eventId: 'evt_5', type: 'account.updated', accountId: 'acct_B', chargesEnabled: true, payoutsEnabled: false } },
+    { p_action: 'webhook', p_data: { eventId: 'evt_6', type: 'payout.paid' } }]);
+  const forged = await send({ id: 'evt_9', type: 'checkout.session.completed', data: { object: { id: 'cs_9', payment_status: 'paid' } } }, 'whsec_pirate');
+  assert.equal(forged.status, 400); assert.equal(calls.length, 6);
   assert.equal(forged.headers.get('Access-Control-Allow-Origin'), null);
+  assert.equal((await send({ type: 'checkout.session.completed', data: { object: {} } })).status, 400, 'sans identifiant evt_');
+});
+
+test('checkout à la signature : total encaissé par Flemme, sans destination ni application_fee, groupe de virement', async () => {
+  const { fn, calls } = fakeFetch({ ...user,
+    '/rest/v1/rpc/flemme_paiement_api': body => rpcAction(body) === 'signature_context'
+      ? { title: 'Monter mon meuble', total: 5005, commission: 455, payout: 4550, openUrl: null } : { ok: true },
+    '/v1/checkout/sessions': () => ({ id: 'cs_test_S', url: 'https://checkout.stripe.com/c/pay/cs_test_S' }) });
+  const res = await checkout(post({ taskId: TASK, stage: 'signature' }), { env: env(), fetch: fn, now: () => Date.UTC(2026, 10, 18, 9) });
+  assert.deepEqual(await res.json(), { url: 'https://checkout.stripe.com/c/pay/cs_test_S' });
+  const stripe = calls.find(c => c.url.includes('api.stripe.com'))!;
+  const p = new URLSearchParams(stripe.body);
+  assert.equal(p.get('line_items[0][price_data][unit_amount]'), '5005');
+  assert.equal(p.get('payment_intent_data[application_fee_amount]'), null);
+  assert.equal(p.get('payment_intent_data[transfer_data][destination]'), null);
+  assert.equal(p.get('payment_intent_data[transfer_group]'), 'flemme-' + TASK);
+  assert.equal(p.get('line_items[0][price_data][product_data][description]'), 'Prix convenu 45,50 € + frais de plateforme 4,55 €');
+  assert.equal(stripe.headers['Idempotency-Key'], `flemme-signature-${TASK}-5005-2026-11-18T09`);
+  const saved = JSON.parse(calls.find(c => c.body.includes('signature_created'))!.body).p_data;
+  assert.deepEqual([saved.sessionId, saved.total, saved.commission, saved.payout], ['cs_test_S', 5005, 455, 4550]);
+});
+
+test('versement : virement Stripe unique vers le compte du membre, rien si déjà fait', async () => {
+  const { fn, calls } = fakeFetch({ ...user,
+    '/rest/v1/rpc/flemme_paiement_api': body => rpcAction(body) === 'payout_context'
+      ? { accountId: 'acct_M', amount: 4550, sessionId: 'cs_test_S', paymentIntentId: 'pi_S' } : { ok: true },
+    '/v1/transfers': () => ({ id: 'tr_1' }) });
+  assert.deepEqual(await (await payout(post({ taskId: TASK }), { env: env(), fetch: fn })).json(), { done: true });
+  const tr = calls.find(c => c.url.endsWith('/v1/transfers'))!;
+  const p = new URLSearchParams(tr.body);
+  assert.deepEqual([p.get('amount'), p.get('currency'), p.get('destination'), p.get('transfer_group')], ['4550', 'eur', 'acct_M', 'flemme-' + TASK]);
+  assert.equal(tr.headers['Idempotency-Key'], 'flemme-transfer-' + TASK);
+  assert.deepEqual(JSON.parse(calls.find(c => c.body.includes('payout_done'))!.body).p_data, { userId: 'u-owner', sessionId: 'cs_test_S', transferId: 'tr_1' });
+  const done = fakeFetch({ ...user, '/rest/v1/rpc/flemme_paiement_api': () => ({ done: true }) });
+  assert.deepEqual(await (await payout(post({ taskId: TASK }), { env: env(), fetch: done.fn })).json(), { done: true });
+  assert.ok(!done.calls.some(c => c.url.includes('stripe.com')));
+  assert.equal((await payout(post({ taskId: 'x' }), { env: env(), fetch: fn })).status, 400);
 });

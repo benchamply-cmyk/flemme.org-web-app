@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { applyCommand, createTask, money, visibleTask } from '../src/domain.ts';
-import { contractFields, contractInput } from '../src/accord.ts';
+import { CONTRACT_COMMON_CLAUSES, contractFields, contractInput } from '../src/accord.ts';
 import { rights } from '../src/ecrans.ts';
 import { demoActors } from '../src/gateway.ts';
 import { etapeArgent, modePaiement, recapitulatif } from '../src/monetisation.ts';
@@ -10,9 +10,9 @@ import { paymentStatus } from '../src/textes.ts';
 // Parcours v2.0.0 (marketplace ouverte) : frais à la signature, prix renégociable dans l'accord, paiement via Flemme simulé.
 const [owner, brigadier, stranger] = demoActors;
 const at = '2026-11-18T10:00:00.000Z';
-const terms = { scope: 'Montage', quality: 'Meuble stable', deadline: 'Samedi', cancellation: 'Jusqu’à vendredi', confidentiality: 'Adresse privée' };
+const terms = { scope: 'Montage', deliverable: 'Meuble monté', quality: 'Meuble stable', deadline: 'Samedi', acceptance: 'Vérifié le jour même', cancellation: 'Jusqu’à vendredi', confidentiality: 'Adresse privée' };
 const run = (t: ReturnType<typeof createTask>, who: typeof owner, cmd: Parameters<typeof applyCommand>[2], data = {}) => applyCommand(t, who, cmd, data, at);
-function choisie(mode: 'simulation' | null = 'simulation') {
+function choisie(mode: 'simulation' | 'stripe' | null = 'simulation') {
   const t = createTask('t', owner, { title: 'Meuble', details: 'Montage', place: 'Aix', budget: null }, at, mode ?? undefined);
   return run(run(t, brigadier, 'offer', { id: 'o', amount: 4000, slot: 'Samedi', scope: 'Montage' }), owner, 'accept', { offerId: 'o' });
 }
@@ -41,8 +41,8 @@ test('v2 : le prix convenu change dans l’accord, avec le taux figé, et crée 
   assert.equal(v2.contract!.version, 2);
   assert.deepEqual([v2.agreement!.amount, v2.agreement!.commission, v2.agreement!.total, v2.agreement!.payout], [5000, 500, 5500, 5000]);
   assert.equal(v2.offers.find(o => o.id === 'o')!.amount, 5000);
-  assert.deepEqual(contractInput({ ...terms, amount: '50' }), { ...terms, amount: 5000 });
-  assert.deepEqual(contractInput(terms), terms);
+  assert.deepEqual(contractInput({ ...terms, amount: '50' }), { template: '0.2', ...terms, amount: 5000 });
+  assert.deepEqual(contractInput(terms), { template: '0.2', ...terms });
   assert.equal(contractFields(v2.contract, v2.agreement!.amount).amount, '50');
 });
 
@@ -80,4 +80,34 @@ test('v2 : récapitulatif avant signature, une seule ligne de frais', () => {
   assert.equal(lignes.length, 4);
   assert.equal(lignes.filter(l => /Frais/.test(l.label)).length, 1);
   assert.ok(lignes[2].strong);
+});
+
+test('v2 : mode stripe, paiement par carte (pas de simulation locale), versement une fois la mission terminée', () => {
+  assert.equal(modePaiement('stripe'), 'stripe');
+  let t = signee(choisie('stripe'));
+  assert.throws(() => run(t, owner, 'pay'), /par carte via Stripe/);
+  assert.equal(rights(t, owner.id).canPay, true);
+  assert.throws(() => run(t, owner, 'complete'), /payée via Flemme/);
+  t = { ...t, payment: { method: 'stripe', status: 'authorized', total: 5500, commission: 500, payout: 5000, at } };
+  assert.equal(rights(t, owner.id).canPay, false, 'paiement différé en cours');
+  t = { ...t, payment: { ...t.payment!, status: 'paid' } };
+  assert.match(paymentStatus(t, money), /^Payé via Flemme par carte .* part du membre versée à la fin de la mission$/);
+  t = run(t, owner, 'complete');
+  assert.equal(rights(t, owner.id).canPayout, true);
+  assert.equal(rights(t, brigadier.id).canPayout, true);
+  assert.equal(rights(t, stranger.id).canPayout, false);
+  t = { ...t, payment: { ...t.payment!, transferredAt: at } };
+  assert.equal(rights(t, owner.id).canPayout, false);
+  assert.match(paymentStatus(t, money), /part du membre versée$/);
+});
+
+test('contrat v0.2 : rubriques facultatives, textes proposés, clauses communes', () => {
+  assert.deepEqual(contractInput({ ...terms, access: ' Clés chez la gardienne ', liability: '' }), { template: '0.2', ...terms, access: 'Clés chez la gardienne' });
+  assert.throws(() => contractInput({ ...terms, deliverable: '' }), /Livrable/);
+  assert.throws(() => contractInput({ ...terms, acceptance: '' }), /Réception/);
+  assert.throws(() => contractInput({ ...terms, access: 'x'.repeat(1001) }), /1000 caractères/);
+  const defaults = contractFields(null);
+  assert.ok(defaults.acceptance && defaults.cancellation && defaults.confidentiality);
+  assert.equal(contractFields({ terms } as never).acceptance, terms.acceptance, 'un accord existant garde ses textes');
+  assert.ok(CONTRACT_COMMON_CLAUSES.some(c => /n’est pas partie/.test(c)));
 });

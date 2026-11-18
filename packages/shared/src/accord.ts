@@ -11,7 +11,11 @@ export const offerReviewLabel: Record<OfferReview, string> = {
 };
 
 export type ContractStatus = 'draft' | 'pending' | 'changes_requested' | 'approved' | 'signed';
-export type ContractTerms = { scope: string; quality: string; deadline: string; cancellation: string; confidentiality: string };
+/** Rubriques de l’accord. v0.1 : les cinq premières ; v0.2 (18/11/2026) : livrable et réception obligatoires, accès et responsabilités facultatifs.
+ *  Un accord v0.1 déjà enregistré reste valable et s’affiche tel quel. */
+export type ContractTerms = { scope: string; quality: string; deadline: string; cancellation: string; confidentiality: string;
+  template?: '0.2'; deliverable?: string; acceptance?: string; access?: string; liability?: string };
+export const CONTRACT_TEMPLATE = '0.2';
 /** Accord écrit d’une mission (champ `contract` d’une flemme ; `agreement` reste le récapitulatif du prix). */
 export type Contract = {
   terms: ContractTerms; status: ContractStatus; reviewNote: string | null;
@@ -29,12 +33,33 @@ export const contractStatusLabel: Record<ContractStatus, string> = {
 };
 /** Rubriques de l’accord : libellé, aide et longueur maximale (mêmes limites que flemme_v2.agreement_terms). */
 export const CONTRACT_FIELDS = [
-  { name: 'scope', label: 'Périmètre de la mission', hint: 'Ce qui est inclus, et ce qui ne l’est pas.', max: 1000 },
-  { name: 'quality', label: 'Résultat attendu', hint: 'À quoi chacun reconnaîtra que c’est bien fait.', max: 1000 },
-  { name: 'deadline', label: 'Date ou délai', hint: 'Ex. : samedi 8 novembre au matin.', max: 200 },
-  { name: 'cancellation', label: 'Annulation', hint: 'Jusqu’à quand et à quelles conditions chacun peut annuler.', max: 1000 },
-  { name: 'confidentiality', label: 'Confidentialité', hint: 'Informations à ne pas partager (adresse, documents…).', max: 1000 },
-] as const satisfies readonly { name: keyof ContractTerms; label: string; hint: string; max: number }[];
+  { name: 'scope', label: 'Périmètre de la mission', hint: 'Ce qui est inclus, et ce qui ne l’est pas.', max: 1000, required: true },
+  { name: 'deliverable', label: 'Livrable', hint: 'Ce qui sera remis ou fait concrètement (document, objet monté, rendez-vous pris…).', max: 1000, required: true },
+  { name: 'quality', label: 'Résultat attendu', hint: 'À quoi chacun reconnaîtra que c’est bien fait.', max: 1000, required: true },
+  { name: 'deadline', label: 'Date ou délai', hint: 'Ex. : samedi 8 novembre au matin.', max: 200, required: true },
+  { name: 'acceptance', label: 'Réception et validation', hint: 'Comment le déposant vérifie le résultat, et sous quel délai il valide ou signale un problème.', max: 1000, required: true },
+  { name: 'cancellation', label: 'Annulation', hint: 'Jusqu’à quand et à quelles conditions chacun peut annuler.', max: 1000, required: true },
+  { name: 'confidentiality', label: 'Confidentialité', hint: 'Informations à ne pas partager (adresse, documents…).', max: 1000, required: true },
+  { name: 'access', label: 'Accès et informations fournis (facultatif)', hint: 'Ce que le déposant fournit : documents, accès, clés, matériel. Jamais de mot de passe.', max: 1000, required: false },
+  { name: 'liability', label: 'Responsabilités et assurance (facultatif)', hint: 'Ex. : dégâts éventuels, assurance de la personne qui intervient.', max: 1000, required: false },
+] as const satisfies readonly { name: keyof ContractTerms; label: string; hint: string; max: number; required: boolean }[];
+
+/** Textes proposés à la première rédaction (modifiables). */
+export const CONTRACT_DEFAULTS: Partial<Record<keyof ContractTerms, string>> = {
+  acceptance: 'Le déposant vérifie le résultat dans les 7 jours suivant la livraison, puis confirme la fin de la mission ou signale un problème dans l’app.',
+  cancellation: 'Annulation gratuite d’un commun accord avant le début de la mission. Ensuite, la part déjà réalisée reste due.',
+  confidentiality: 'Les informations personnelles et documents échangés ne servent qu’à cette mission et ne sont pas partagés.',
+};
+
+/** Clauses communes à tout accord signé sur Flemme (non modifiables), affichées avant la signature. Reprennent les CGU et CGV. */
+export const CONTRACT_COMMON_CLAUSES = [
+  'L’accord engage les deux membres. Flemme fournit l’outil, le contrat type et son contrôle, mais n’est pas partie à l’accord.',
+  'Le paiement de la mission passe par Flemme, en une fois, après la double signature. La part du membre lui est versée à la fin de la mission.',
+  'Les frais de plateforme, affichés avant la signature, sont à la charge du déposant et deviennent dus à la seconde signature.',
+  'Toute modification crée une nouvelle version de l’accord et efface les signatures : chacun relit et signe à nouveau.',
+  'En cas de désaccord, les membres cherchent d’abord une solution ensemble, puis peuvent signaler le problème à Flemme.',
+  'Aucun mot de passe n’est demandé ni transmis. Rien n’est envoyé, publié ou acheté au nom du déposant sans son accord.',
+] as const;
 
 const need = (value: string | undefined, max: number, what: string) => {
   const v = (value || '').trim();
@@ -50,14 +75,17 @@ const optional = (value: string | undefined, max: number, what: string) => {
 
 /** Formulaire de l’accord → données envoyées (agreement_save). v2.0.0 : prix convenu facultatif, en euros, envoyé en centimes. */
 export function contractInput(f: Record<string, string | undefined>): ContractTerms & { amount?: number } {
-  const terms = Object.fromEntries(CONTRACT_FIELDS.map(c => [c.name, need(f[c.name], c.max, c.label)])) as ContractTerms;
+  const terms = { template: CONTRACT_TEMPLATE, ...Object.fromEntries(CONTRACT_FIELDS.flatMap(c => {
+    const v = c.required ? need(f[c.name], c.max, c.label) : optional(f[c.name], c.max, c.label);
+    return v == null ? [] : [[c.name, v]];
+  })) } as ContractTerms;
   const amount = parseMoney(f.amount || '', true);
   return amount == null ? terms : { ...terms, amount };
 }
 /** Champs du formulaire de l’accord, avec le prix convenu actuel en euros. */
 export const contractFields = (c: Contract | null | undefined, amount?: number | null): Record<string, string> => {
   const prix: Record<string, string> = amount != null ? { amount: (amount / 100).toFixed(2).replace('.', ',').replace(/,00$/, '') } : {};
-  return c ? { ...c.terms, ...prix } : prix;
+  return c ? { ...c.terms, ...prix } : { ...CONTRACT_DEFAULTS, ...prix } as Record<string, string>;
 };
 
 /** Formulaire de candidature → données envoyées (apply, apply_edit). Forfait saisi en euros, envoyé en centimes. */

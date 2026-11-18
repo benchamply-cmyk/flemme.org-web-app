@@ -8,19 +8,23 @@
 // - Paiement de la mission via Flemme OBLIGATOIRE (D6) : la déclaration « j'ai payé en direct » n'est plus le parcours normal.
 // NON VALIDÉ, donc réglable et jamais écrit en dur : le taux (flemme_v2.settings.commission_bps, 10 % provisoire
 // repris de la décision du 03/11), un minimum ou plafond (aucun), la TVA et les frais du prestataire de paiement (D3).
-// Tant qu'aucun prestataire de paiement n'est branché, le mode « simulation » rejoue le parcours sans argent réel.
+// Le mode « simulation » rejoue le parcours sans argent réel ; le mode « stripe » encaisse par Stripe Checkout à la signature
+// (migration 20261118120000, fonctions Edge stripe-checkout, stripe-payout et stripe-webhook).
 import type { Price } from './domain.ts';
 import { rateLabel } from './domain.ts';
 
 /** Mode de règlement des missions, réglé côté serveur (flemme_v2.settings.payment_mode) et renvoyé avec chaque flemme. */
-export type ModePaiement = 'direct' | 'simulation';
-export const MODES_PAIEMENT: readonly ModePaiement[] = ['direct', 'simulation'];
+export type ModePaiement = 'direct' | 'simulation' | 'stripe';
+export const MODES_PAIEMENT: readonly ModePaiement[] = ['direct', 'simulation', 'stripe'];
 export const modePaiementLabel: Record<ModePaiement, string> = {
   direct: 'Paiement direct déclaratif (ancien parcours)',
   simulation: 'Paiement via Flemme · simulation, aucun argent réel',
+  stripe: 'Paiement via Flemme · carte bancaire avec Stripe, à la signature',
 };
 /** Un mode inconnu ou absent (flemme créée avant la v2.0.0, serveur pas encore migré) vaut « direct ». */
-export const modePaiement = (value: unknown): ModePaiement => value === 'simulation' ? 'simulation' : 'direct';
+export const modePaiement = (value: unknown): ModePaiement => value === 'simulation' || value === 'stripe' ? value : 'direct';
+/** Vrai quand la mission se paie via Flemme (simulation ou Stripe) : paiement à la signature, déclaration directe fermée. */
+export const payeViaFlemme = (t: { paymentMode?: ModePaiement } | undefined) => !!t && modePaiement(t.paymentMode) !== 'direct';
 
 /** États d'un paiement de mission (étude v0.2, § 8). « paid » = encaissement confirmé. */
 export type StatutPaiement = 'pending' | 'authorized' | 'paid' | 'failed' | 'refunded' | 'disputed';

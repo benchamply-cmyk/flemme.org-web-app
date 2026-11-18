@@ -135,7 +135,7 @@ export default function AdminApp() {
       <h2 className="section-title">Accords écrits ({q?.agreements.length ?? 0})</h2>
       {q?.agreements.length ? q.agreements.map(a => <div className="card" key={a.taskId}>
         <p className="card-title">{a.title}</p><p className="note">{a.owner.name} et {a.brigadier.name} · forfait {money(a.amount)} · soumis le {when(a.updatedAt)}</p>
-        {CONTRACT_FIELDS.map(c => <p key={c.name}><span className="strong">{c.label} : </span>{a.terms[c.name]}</p>)}
+        {CONTRACT_FIELDS.filter(c => a.terms[c.name]).map(c => <p key={c.name}><span className="strong">{c.label} : </span>{a.terms[c.name]}</p>)}
         <div className="field"><label htmlFor={'q-' + a.taskId}>Message aux deux parties (obligatoire pour une correction)</label><textarea id={'q-' + a.taskId} maxLength={900} value={note(a.taskId)} onChange={set('q-' + a.taskId)} disabled={busy}/></div>
         <div className="chips">
           <Button disabled={busy} onClick={() => act('agreement_review', { taskId: a.taskId, decision: 'approve', note: note(a.taskId) || null }, 'Accord contrôlé : les deux parties peuvent signer.', ['queue'])}>Valider · prêt à signer</Button>

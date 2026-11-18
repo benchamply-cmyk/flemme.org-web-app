@@ -27,9 +27,17 @@ export const session = new FlemmeSession({
 // (migration de paiement et fonctions Edge déployées, clés de test Stripe en place). Sinon : paiement direct déclaratif.
 export const onlinePayment = !!(url || key) && import.meta.env.VITE_PAIEMENT_EN_LIGNE === 'oui';
 /** Ouvre la page Stripe (paiement d’une flemme terminée ou activation des paiements du Brigadier). */
-export const openStripe = (kind: 'onboarding' | 'checkout', taskId?: string) => session.execute(async () => {
+// stage « signature » (v2.0.0, mode stripe) : paiement de la mission dès la double signature de l’accord.
+export const openStripe = (kind: 'onboarding' | 'checkout', taskId?: string, stage?: 'signature') => session.execute(async () => {
   const g = session.getState().gateway;
   if (!(g instanceof RemoteGateway)) throw new Error('Paiement en ligne indisponible en démonstration.');
-  location.assign(await g.paymentLink(kind, taskId));
+  location.assign(await g.paymentLink(kind, taskId, stage));
+});
+/** v2.0.0, mode stripe : verse la part du membre une fois la mission terminée, puis recharge la liste. */
+export const payoutStripe = (taskId: string) => session.execute(async () => {
+  const g = session.getState().gateway;
+  if (!(g instanceof RemoteGateway)) throw new Error('Paiement en ligne indisponible en démonstration.');
+  await g.payout(taskId);
+  location.reload();
 });
 export const useSession = () => useSyncExternalStore(session.subscribe, session.getState);
