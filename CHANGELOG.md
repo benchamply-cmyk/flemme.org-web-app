@@ -6,6 +6,8 @@ Chaque PR ajoute une ligne sous « À venir ». Au gel de preprod, « À venir �
 
 ## À venir
 
+- Confiance dans la marketplace ouverte (18 nov. 2026, demande de Ben sur le comparatif Airtasker / TaskRabbit, recommandations 1 à 4) : questions publiques sous une demande (réponse du déposant, 3 questions sans réponse au plus par membre, masquables par l'équipe via `question_hide`) ; téléphones, e-mails et liens masqués dans les questions, candidatures et discussions tant que l'accord n'est pas signé ; le membre retenu déclare la mission livrée, le déposant confirme (« Mission terminée, je libère le paiement ») ou le membre clôture lui-même 7 jours après la livraison si aucun désaccord n'a été signalé depuis ; profil public avec repères (note et nombre d'avis, missions réalisées et en cours, demandes menées à terme, ancienneté). Questions et livraison derrière le nouveau flag `espace.confiance` (allumé en local, éteint ailleurs). Migration `20261118140000_flemme_v2_confiance`, **à appliquer par Ben** sur `flemme-preprod` après `20261118130000`.
+
 ## v2.0.0 (candidate) — gel de preprod le 18 nov. 2026
 
 Version majeure : mise en relation ouverte (marketplace). Tag `v2.0.0-rc.1` sur preprod ; aucune promotion vers prod prévue pour l'instant (décision de Ben du 18/11). PR incluses : #91 (parcours et vitrine), #93 (paiement à la signature, contrat v0.2, Stripe), #94 (abonnements fermés), #92 (pages légales), #90 (CHANGELOG v1.5.2), plus ce gel. Migrations : `20261118120000_flemme_v2_paiement_signature` puis `20261118130000_flemme_v2_abonnements`, à appliquer par Ben sur `flemme-preprod` uniquement. Paiement livré en mode `direct` ; le parcours v2 se teste en `simulation` ; Stripe non branché ; flag `modele.version` hybride par défaut en preprod.

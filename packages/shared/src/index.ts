@@ -11,3 +11,4 @@ export * from './aide.ts';
 export * from './adresses.ts';
 export * from './monetisation.ts';
 export * from './abonnements.ts';
+export * from './confiance.ts';

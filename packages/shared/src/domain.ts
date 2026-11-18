@@ -2,6 +2,8 @@ import type { BudgetRange, Category, Deadline, Review, WorkMode } from './parcou
 import { BUDGET_RANGES, CATEGORIES, DEADLINES, MODES } from './parcours.ts';
 import type { Contract, MyReview, OfferReview } from './accord.ts';
 import type { ModePaiement, StatutPaiement } from './monetisation.ts';
+import type { Question } from './confiance.ts';
+import { liberationAutomatique, masquerCoordonnees } from './confiance.ts';
 
 export type Actor = { id: string; name: string };
 export type Offer = {
@@ -38,12 +40,17 @@ export type Task = {
   myReview?: MyReview | null;
   /** Démo locale uniquement : avis donnés sur la mission (le serveur les garde dans flemme_v2.reviews). */
   ratings?: { authorId: string; targetId: string; rating: number; text: string | null; at: string }[];
+  /** Questions publiques sous la demande (migration 20261118140000) : absentes = aucune ou base pas encore migrée. */
+  questions?: Question[];
+  /** Livraison déclarée par le membre retenu : le déposant confirme, sinon libération automatique après le délai. */
+  deliveredAt?: string | null;
 };
 // amount : forfait proposé par le membre. commission : part FLEMME. total : payé par le déposant.
 // payout : reversé au membre. rateBps et model : règle appliquée, figée au moment de l'accord.
 export type Agreement = Price & { slot: string; scope: string; brigadier: Actor };
 export type Command = 'edit' | 'offer' | 'message' | 'accept' | 'decline' | 'complete' | 'declare_payment' | 'confirm_payment' | 'report'
-  | 'apply' | 'apply_edit' | 'agreement_save' | 'agreement_submit' | 'agreement_sign' | 'review' | 'pay';
+  | 'apply' | 'apply_edit' | 'agreement_save' | 'agreement_submit' | 'agreement_sign' | 'review' | 'pay'
+  | 'ask' | 'answer' | 'deliver';
 export type Input = Record<string, unknown>;
 /*
  * Commission FLEMME, configurable. Le modèle économique n'est pas encore tranché (roadmap V2) :
@@ -122,6 +129,10 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
   const event = (value: string) => t.history.push({ text: value, at });
   // v2.0.0 : paiement via Flemme obligatoire quand le serveur l’a activé (mode « simulation » ou « stripe »).
   const viaFlemme = t.paymentMode === 'simulation' || t.paymentMode === 'stripe';
+  // Coordonnées masquées tant que l'accord n'est pas signé (questions publiques : toujours).
+  const signed = t.contract?.status === 'signed';
+  const masque = (value: string) => signed ? value : masquerCoordonnees(value);
+  const optionalMasked = (value: unknown) => { const v = optionalText(value); return v == null ? null : masquerCoordonnees(v); };
   if (command === 'edit') {
     if (!owner || t.status !== 'open' || t.review === 'rejected' || t.offers.some(o => o.status === 'pending')) throw new Error('Cette demande ne peut plus être modifiée.');
     Object.assign(t, taskData(data), { reviewNote: null }); event('Demande modifiée');
@@ -130,13 +141,13 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
     if (t.review && t.review !== 'published' && !owner) throw new Error('Flemme introuvable.');
     if (owner || t.status !== 'open') throw new Error('Cette flemme ne peut pas recevoir cette proposition.');
     if (t.offers.some(o => o.brigadier.id === actor.id && o.status === 'pending')) throw new Error('Tu as déjà une proposition en attente.');
-    t.offers.push({ id: text(data.id, 100), brigadier: actor, amount: amount(data.amount), slot: text(data.slot, 100), scope: text(data.scope), status: 'pending', messages: [],
-      ...(command === 'apply' ? { result: optionalText(data.result), review: 'approved' as const, reviewNote: null } : {}) });
+    t.offers.push({ id: text(data.id, 100), brigadier: actor, amount: amount(data.amount), slot: masquerCoordonnees(text(data.slot, 100)), scope: masquerCoordonnees(text(data.scope)), status: 'pending', messages: [],
+      ...(command === 'apply' ? { result: optionalMasked(data.result), review: 'approved' as const, reviewNote: null } : {}) });
     event('Proposition reçue');
   } else if (command === 'apply_edit') {
     if (!offer || offer.brigadier.id !== actor.id) throw new Error('Proposition introuvable.');
     if (offer.status !== 'pending' || t.status !== 'open' || offer.review === 'rejected') throw new Error('Cette candidature ne peut plus être modifiée.');
-    Object.assign(offer, { amount: amount(data.amount), slot: text(data.slot, 100), scope: text(data.scope), result: optionalText(data.result), review: 'approved', reviewNote: null });
+    Object.assign(offer, { amount: amount(data.amount), slot: masquerCoordonnees(text(data.slot, 100)), scope: masquerCoordonnees(text(data.scope)), result: optionalMasked(data.result), review: 'approved', reviewNote: null });
     event('Candidature modifiée');
   } else if (command === 'agreement_save' || command === 'agreement_submit' || command === 'agreement_sign') {
     if (!owner && chosen?.brigadier.id !== actor.id) throw new Error('Accord inaccessible.');
@@ -186,7 +197,7 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
     event('Avis publié par ' + actor.name);
   } else if (command === 'message') {
     if (!offer || (!owner && offer.brigadier.id !== actor.id)) throw new Error('Discussion inaccessible.');
-    offer.messages.push({ actor, text: text(data.text), at }); event('Message ajouté à une discussion');
+    offer.messages.push({ actor, text: masque(text(data.text)), at }); event('Message ajouté à une discussion');
   } else if (command === 'accept') {
     if (!owner || t.status !== 'open' || !offer || offer.status !== 'pending') throw new Error('Cette offre ne peut plus être acceptée.');
     t.status = 'assigned'; t.acceptedOfferId = offer.id;
@@ -204,12 +215,35 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
     const a = t.agreement;
     t.payment = { method: 'simulation', status: 'paid', total: a.total, commission: a.commission, payout: a.payout, at };
     event(`Paiement via Flemme enregistré · ${money(a.total)} dont ${money(a.commission)} de frais de plateforme · simulation, aucun argent réel`);
+  } else if (command === 'ask') {
+    // Question publique : tout membre qui voit la demande ouverte, sauf le déposant. Jamais de coordonnées.
+    if (owner || t.status !== 'open' || (t.review && t.review !== 'published')) throw new Error('Questions fermées pour cette demande.');
+    t.questions ||= [];
+    if (t.questions.filter(q => q.author.id === actor.id && !q.answer).length >= 3) throw new Error('Tu as déjà 3 questions sans réponse sur cette demande.');
+    t.questions.push({ id: text(data.id, 100), author: actor, text: masquerCoordonnees(text(data.text, 600)), at, answer: null, answeredAt: null });
+    event('Question publique posée');
+  } else if (command === 'answer') {
+    const q = t.questions?.find(v => v.id === data.questionId);
+    if (!owner || !q) throw new Error('Question introuvable.');
+    if (q.answer) throw new Error('Tu as déjà répondu à cette question.');
+    q.answer = masquerCoordonnees(text(data.text)); q.answeredAt = at; event('Réponse publique du déposant');
+  } else if (command === 'deliver') {
+    // Le membre retenu déclare la mission livrée : le déposant confirme, ou le paiement se libère après le délai.
+    if (chosen?.brigadier.id !== actor.id || t.status !== 'assigned') throw new Error('Seul le membre retenu peut déclarer la mission livrée.');
+    if ((t.contract || viaFlemme) && !signed) throw new Error('L’accord doit être signé par les deux parties avant la livraison.');
+    if (viaFlemme && t.payment?.status !== 'paid') throw new Error('La mission doit être payée via Flemme avant la livraison.');
+    if (t.deliveredAt) throw new Error('Mission déjà déclarée livrée.');
+    t.deliveredAt = at; event(`Mission déclarée livrée par ${actor.name} · le déposant a 7 jours pour confirmer ou signaler un désaccord`);
   } else if (command === 'complete') {
-    if (!owner || t.status !== 'assigned') throw new Error('Seul le déposant peut confirmer la fin.');
+    const auto = !owner && chosen?.brigadier.id === actor.id && t.status === 'assigned' && liberationAutomatique(t, at);
+    if ((!owner && !auto) || t.status !== 'assigned') throw new Error(chosen?.brigadier.id === actor.id
+      ? 'Tu pourras clôturer toi-même 7 jours après avoir déclaré la mission livrée, sauf désaccord signalé.' : 'Seul le déposant peut confirmer la fin.');
     if (t.contract && t.contract.status !== 'signed') throw new Error('L’accord doit être signé par les deux parties avant la fin de la tâche.');
     if (viaFlemme && t.contract?.status !== 'signed') throw new Error('L’accord doit être signé par les deux parties avant la fin de la tâche.');
     if (viaFlemme && t.payment?.status !== 'paid') throw new Error('La mission doit être payée via Flemme avant d’être déclarée terminée.');
-    t.status = 'completed'; event('Tâche déclarée terminée par le déposant');
+    t.status = 'completed';
+    event(auto ? 'Paiement libéré automatiquement · 7 jours sans réponse du déposant après la livraison'
+      : viaFlemme ? 'Mission confirmée terminée par le déposant · paiement libéré pour le membre' : 'Tâche déclarée terminée par le déposant');
   } else if (command === 'declare_payment') {
     if (viaFlemme) throw new Error('Cette mission se paie via Flemme.');
     if (!owner || t.status !== 'completed' || t.paymentDeclared) throw new Error('Déclaration impossible.');
@@ -234,6 +268,7 @@ export function visibleTask(task: Task, actor: Actor): Task {
   return { ...task, offers: task.offers.filter(o => o.brigadier.id === actor.id),
     agreement: participant ? task.agreement : undefined, payment: participant ? task.payment : undefined, address: participant ? task.address : undefined,
     contract: participant ? task.contract : undefined, ratings: undefined, myReview: participant ? myReview : undefined,
+    deliveredAt: participant ? task.deliveredAt : undefined,
     review: undefined, reviewNote: undefined,
     reports: task.reports.filter(r => participant || r.actor.id === actor.id) };
 }
