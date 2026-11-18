@@ -6,6 +6,7 @@ Chaque PR ajoute une ligne sous « À venir ». Au gel de preprod, « À venir �
 
 ## À venir
 
+- Modèle ouvert affiché par défaut en local, beta, preprod et dans les aperçus de PR (v2.1.0, 18 nov. 2026, choix de Ben ; la v2.0.0 gelée sous `v2.0.0-rc.1` n’est pas modifiée) : défaut du flag `modele.version` passé de `hybride` à `ouvert` hors prod ; l’hybride reste disponible dans /admin › Fonctionnalités, et un réglage déjà enregistré en base reste prioritaire. Aucune migration.
 ## v2.0.0 (candidate) — gel de preprod le 18 nov. 2026
 
 Version majeure : mise en relation ouverte (marketplace). Tag `v2.0.0-rc.1` sur preprod ; aucune promotion vers prod prévue pour l'instant (décision de Ben du 18/11). PR incluses : #91 (parcours et vitrine), #93 (paiement à la signature, contrat v0.2, Stripe), #94 (abonnements fermés), #92 (pages légales), #90 (CHANGELOG v1.5.2), plus ce gel. Migrations : `20261118120000_flemme_v2_paiement_signature` puis `20261118130000_flemme_v2_abonnements`, à appliquer par Ben sur `flemme-preprod` uniquement. Paiement livré en mode `direct` ; le parcours v2 se teste en `simulation` ; Stripe non branché ; flag `modele.version` hybride par défaut en preprod.
