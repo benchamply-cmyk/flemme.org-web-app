@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Flemmomètre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="lp.css">
+<link rel="stylesheet" href="vc.css">
+<script>document.documentElement.classList.add('js');</script>
+<style>
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; }
+[hidden] { display: none !important; }
+.vc-ancre { position: relative; top: -90px; display: block; }
+/* Page Flemmomètre : composants des mini-jeux (le reste vient de lp.css et vc.css). */
+.vc-fm-hero { padding-top: 130px; }
+.vc-fm-hero .lp-titre { max-width: 18ch; font-size: clamp(36px, 5.4vw, 72px); }
+.vc-sommaire { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
+.vc-sommaire a { padding: 10px 15px; border-radius: 999px; background: #fff; border: 1px solid rgba(58,143,94,.2); color: var(--vc-encre); text-decoration: none; font-weight: 600; font-size: 14px; transition: background .2s, transform .25s var(--pp-ease); }
+.vc-sommaire a:hover, .vc-sommaire a:focus-visible { background: var(--vc-menthe); transform: translateY(-2px); }
+.vc-jeu-cadre { position: relative; margin-top: 28px; border-radius: 26px; overflow: hidden; background: #fff; border: 1px solid rgba(58,143,94,.16); box-shadow: var(--vc-ombre); }
+.vc-canvas { display: block; width: 100%; touch-action: manipulation; }
+.vc-carre { max-width: 420px; margin-top: 0; }
+.vc-carre .vc-canvas { aspect-ratio: 1; height: auto; touch-action: none; }
+.vc-hud { display: flex; flex-wrap: wrap; gap: 8px 22px; padding: 12px 18px; border-top: 1px solid rgba(58,143,94,.12); background: var(--vc-clair); font: 500 12px/1.4 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--vc-doux); }
+.vc-hud b { color: var(--vc-profond); font-size: 15px; font-variant-numeric: tabular-nums; }
+.vc-hud-col { flex-direction: column; border: 1px solid rgba(58,143,94,.14); border-radius: 18px; }
+.vc-voile { position: absolute; inset: 0; display: grid; place-items: center; padding: 16px; background: rgba(242,251,246,.72); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); z-index: 2; }
+.vc-voile[hidden] { display: none !important; }
+.vc-voile-boite { max-width: 420px; padding: 22px; border-radius: 22px; background: #fff; box-shadow: var(--vc-ombre); border: 1px solid rgba(58,143,94,.16); text-align: center; animation: vc-entre .4s var(--pp-ease) both; }
+.vc-voile-boite b { display: block; font-size: 21px; font-weight: 600; line-height: 1.25; }
+.vc-voile-boite p { margin: 8px 0 16px; color: var(--vc-doux); }
+.vc-voile-boite .vc-choix { display: grid; gap: 8px; }
+.vc-voile-boite .vc-choix button { padding: 12px 14px; border-radius: 14px; border: 1px solid rgba(16,30,42,.14); background: #fff; font: 500 15px/1.3 var(--pp-police); color: var(--vc-encre); cursor: pointer; transition: background .2s, border-color .2s; }
+.vc-voile-boite .vc-choix button:hover, .vc-voile-boite .vc-choix button:focus-visible { background: var(--vc-menthe); border-color: var(--vc-moyen); }
+.vc-pluie { position: relative; height: 380px; overflow: hidden; background: linear-gradient(180deg, #fff, var(--vc-clair)); }
+.vc-pluie::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: var(--pile, 0px); background: repeating-linear-gradient(-45deg, #a3e8c0 0 10px, #d7f5e4 10px 20px); transition: height .3s var(--pp-ease); }
+.vc-goutte { position: absolute; top: 0; padding: 9px 13px; border-radius: 999px; border: 1px solid rgba(16,30,42,.14); background: #fff; color: var(--vc-encre); font: 600 14px/1 var(--pp-police); cursor: pointer; white-space: nowrap; box-shadow: 0 8px 16px -8px rgba(34,83,55,.35); z-index: 1; }
+.vc-goutte:hover { border-color: var(--vc-moyen); }
+.vc-goutte.ok { background: var(--vc-vert); color: var(--vc-profond); pointer-events: none; transition: transform .4s var(--pp-ease), opacity .4s; transform: scale(1.25) translateY(-10px); opacity: 0; }
+.vc-excuse { margin-top: 26px; padding: clamp(20px, 3vw, 34px); border-radius: 26px; background: #fff; border: 1px solid rgba(58,143,94,.16); box-shadow: var(--vc-ombre); }
+.vc-excuse-texte { margin: 0 0 22px; font-family: 'Instrument Serif', Georgia, serif; font-size: clamp(26px, 3.4vw, 42px); line-height: 1.15; color: var(--vc-encre); min-height: 2.4em; }
+.vc-excuse-texte.change { animation: vc-entre .45s var(--pp-ease) both; }
+.vc-duo { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 24px; align-items: start; margin-top: 28px; }
+@media (max-width: 760px) { .vc-duo { grid-template-columns: minmax(0, 1fr); } }
+.vc-croix { display: grid; grid-template-columns: repeat(3, 56px); grid-template-rows: repeat(3, 56px); gap: 6px; margin-top: 16px; }
+.vc-croix button { border: 1px solid rgba(16,30,42,.14); border-radius: 14px; background: #fff; font-size: 22px; cursor: pointer; color: var(--vc-encre); touch-action: manipulation; }
+.vc-croix button:active { background: var(--vc-menthe); }
+.vc-croix [data-dir="0,-1"] { grid-column: 2; grid-row: 1; } .vc-croix [data-dir="-1,0"] { grid-column: 1; grid-row: 2; }
+.vc-croix [data-dir="1,0"] { grid-column: 3; grid-row: 2; } .vc-croix [data-dir="0,1"] { grid-column: 2; grid-row: 3; }
+.vc-mines { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; width: 100%; max-width: 420px; padding: 10px; box-sizing: border-box; border-radius: 22px; background: #fff; border: 1px solid rgba(58,143,94,.16); box-shadow: var(--vc-ombre); user-select: none; -webkit-user-select: none; }
+.vc-mines button { aspect-ratio: 1; min-width: 0; padding: 0; border: 0; border-radius: 8px; background: linear-gradient(160deg, #d7f5e4, #a3e8c0); font: 700 15px/1 var(--pp-police); color: var(--vc-profond); cursor: pointer; transition: transform .15s; -webkit-touch-callout: none; }
+.vc-mines button:hover { transform: scale(1.06); }
+.vc-mines button.ouverte { background: var(--vc-clair); cursor: default; transform: none; }
+.vc-mines button.n1 { color: #3a8f5e; } .vc-mines button.n2 { color: #225337; } .vc-mines button.n3 { color: #8b5a00; } .vc-mines button.n4 { color: #b3261e; }
+.vc-mines button.drapeau::after { content: "zZ"; font-size: 11px; color: var(--vc-profond); }
+.vc-mines button.boum { background: var(--vc-nuit); color: #fff; font-size: 9px; letter-spacing: -.02em; }
+</style>
+</head>
+<body class="lp lp-accueil" data-menu="6" data-variante="c">
+<!-- Page Flemmomètre (aperçu, 20/11/2026) : tous les mini-jeux, accessibles par le bouton « Flemmomètre » du menu. -->
+<nav class="vc-nav" aria-label="Navigation">
+  <span class="vc-logo-bloc"><a class="vc-logo" href="./" aria-label="FLEMME, accueil">FLEMME.</a><span class="vc-badge"><i></i>À bientôt…</span></span>
+  <div class="vc-nav-liens"><a href="./#demo">Démo</a><a href="./#faq">Questions</a></div>
+  <a class="vc-nav-jeu" href="#haut" aria-current="page"><span>Patienter</span></a>
+  <a class="vc-nav-cta" href="/connexion">S’inscrire</a>
+</nav>
+
+<header class="lp-section vc-fm-hero" id="haut">
+  <p class="lp-etiquette">Le flemmomètre</p>
+  <h1 class="lp-titre titre-p">Sept façons de mesurer ta flemme, <em>sans te fatiguer.</em></h1>
+  <p class="lp-intro">Pendant qu’on termine le chantier, voici de quoi s’occuper un peu. Ou beaucoup, on ne juge pas.</p>
+  <nav class="vc-sommaire" aria-label="Les jeux">
+    <a href="#test">Le test express</a><a href="#canape">Le défi du canapé</a><a href="#marche">La grande marche</a><a href="#corvees">Attrape les corvées</a><a href="#excuses">L’excuse parfaite</a><a href="#serpent">Le serpent paresseux</a><a href="#demineur">Le démineur de corvées</a><a href="#reserve">En réserve</a>
+  </nav>
+</header>
+
+<main>
+  <!-- Test express et défi du canapé (déplacés de l’accueil), avec le cadran commun. -->
+  <section class="lp-section" id="test"><span id="canape" class="vc-ancre"></span>
+    <p class="lp-etiquette">Questionnaire et immobilité</p>
+    <h2 class="lp-titre titre-p">Quel flemmard <em>es&#8209;tu vraiment&#8239;?</em></h2>
+    <p class="lp-intro">Un test très scientifique (non) en cinq questions, et le défi du canapé, où le gagnant est celui qui en fait le moins.</p>
+    <div class="vc-metre">
+      <div class="vc-cadran-col"><div class="vc-cadran" aria-hidden="true">
+        <svg viewBox="0 0 300 172">
+          <defs><linearGradient id="arcG" x1="0" x2="1"><stop stop-color="#d7f5e4"/><stop offset=".55" stop-color="#57d68d"/><stop offset="1" stop-color="#225337"/></linearGradient></defs>
+          <path d="M30 150a120 120 0 0 1 240 0" fill="none" stroke="url(#arcG)" stroke-width="22" stroke-linecap="round"/>
+          <g fill="#4c6157" font-size="10" font-family="ui-monospace,monospace" text-anchor="middle"><text x="30" y="170">0</text><text x="150" y="22">50</text><text x="270" y="170">100</text></g>
+          <g class="vc-aiguille" id="aiguille" style="transform:rotate(-90deg)"><path d="M150 150L150 48" stroke="#101e2a" stroke-width="5" stroke-linecap="round"/></g>
+          <circle cx="150" cy="150" r="12" fill="#121212"/><circle cx="150" cy="150" r="4" fill="#57d68d"/>
+        </svg>
+      </div><p class="vc-cadran-legende" id="cadranLegende">Réponds au test, l’aiguille fait le reste.</p></div>
+      <div class="vc-fm">
+        <div class="vc-fm-onglets" role="tablist" aria-label="Flemmomètre">
+          <button type="button" class="vc-onglet" role="tab" id="fmOngletQuiz" aria-controls="fmQuiz" aria-selected="true">Le test express</button>
+          <button type="button" class="vc-onglet" role="tab" id="fmOngletDefi" aria-controls="fmDefi" aria-selected="false">Le défi du canapé</button>
+        </div>
+
+        <div id="fmQuiz" role="tabpanel" aria-labelledby="fmOngletQuiz">
+          <div id="quizQuestion">
+            <div class="vc-quiz-tete"><span id="quizNum">Question 1 sur 5</span><span class="vc-quiz-points" id="quizPoints" aria-hidden="true"></span></div>
+            <p class="vc-quiz-q" id="quizTexte"></p>
+            <div class="vc-quiz-rep" id="quizReponses"></div>
+          </div>
+          <div class="vc-quiz-res" id="quizResultat" hidden>
+            <span class="vc-meta">Ton profil · <span id="resScore">0</span>&#8239;/&#8239;100</span>
+            <h3 id="resNom"></h3>
+            <p id="resTexte"></p>
+            <div class="vc-actions">
+              <a class="lp-bouton noir" href="/connexion" id="resCta">Me prévenir à l’ouverture</a>
+              <button type="button" class="lp-bouton contour" id="quizRejouer">Refaire le test</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="fmDefi" role="tabpanel" aria-labelledby="fmOngletDefi" hidden>
+          <p class="vc-defi-regle">Appuie sur <b>Démarrer</b>, puis ne touche plus à rien&#8239;: ni souris, ni clavier, ni écran. Au premier mouvement, le chrono s’arrête. Enfin un sport fait pour toi.</p>
+          <div class="vc-defi-chrono" aria-live="off"><b id="defiTemps">0,0</b><span>secondes d’immobilité</span></div>
+          <p class="vc-verdict" id="defiVerdict" aria-live="polite">Record à battre&#8239;: <span id="defiRecord">aucun</span>.</p>
+          <button type="button" class="lp-bouton noir" id="defiGo">Démarrer le défi</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- La grande marche : course façon « dinosaure hors ligne », avec des questions de flemme qui ralentissent ou accélèrent. -->
+  <section class="lp-section lp-teinte" id="marche">
+    <p class="lp-etiquette">Course · sans fin</p>
+    <h2 class="lp-titre titre-p">La grande <em>marche.</em></h2>
+    <p class="lp-intro">Ton avatar part plein d’entrain, puis la flemme le rattrape. À chaque panneau, une question&#8239;: la réponse motivée l’accélère, la réponse tentante le ralentit. Quand il s’allonge, c’est fini. Saut&#8239;: espace, flèche du haut ou toucher l’écran, pour enjamber les chaussettes qui traînent.</p>
+    <div class="vc-jeu-cadre">
+      <canvas id="marcheCanvas" class="vc-canvas" height="260" aria-label="Jeu de la grande marche"></canvas>
+      <div class="vc-hud"><span>Vitesse <b id="marcheVitesse">0</b>&#8239;km/h</span><span>Distance <b id="marcheDistance">0</b>&#8239;m</span><span>Record <b id="marcheRecord">0</b>&#8239;m</span></div>
+      <div class="vc-voile" id="marcheVoile">
+        <div class="vc-voile-boite" id="marcheBoite">
+          <b>Prêt à marcher&#8239;?</b>
+          <p>Ou au moins à essayer.</p>
+          <button type="button" class="lp-bouton noir" id="marcheGo">C’est parti</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Attrape les corvées : les corvées tombent, on clique pour les déléguer. -->
+  <section class="lp-section" id="corvees">
+    <p class="lp-etiquette">Réflexes · 30 secondes</p>
+    <h2 class="lp-titre titre-p">Attrape <em>les corvées.</em></h2>
+    <p class="lp-intro">Elles tombent du ciel. Clique dessus pour les déléguer avant qu’elles s’empilent sur ton canapé.</p>
+    <div class="vc-jeu-cadre">
+      <div class="vc-pluie" id="pluie" aria-live="off"></div>
+      <div class="vc-hud"><span>Déléguées <b id="corveesOk">0</b></span><span>Sur le canapé <b id="corveesPile">0</b></span><span>Temps <b id="corveesTemps">30</b>&#8239;s</span></div>
+      <div class="vc-voile" id="corveesVoile">
+        <div class="vc-voile-boite" id="corveesBoite">
+          <b>30 secondes de courage.</b>
+          <p>Après, tu pourras te reposer.</p>
+          <button type="button" class="lp-bouton noir" id="corveesGo">Lancer la pluie</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Générateur d’excuses. -->
+  <section class="lp-section lp-teinte" id="excuses">
+    <p class="lp-etiquette">Générateur</p>
+    <h2 class="lp-titre titre-p">L’excuse <em>parfaite.</em></h2>
+    <p class="lp-intro">Pour ne pas faire ce que tu devais faire, avec un minimum d’élégance.</p>
+    <div class="vc-excuse revele">
+      <p class="vc-excuse-texte" id="excuseTexte" aria-live="polite">Désolé, mon chat a besoin de moi pour une sieste stratégique.</p>
+      <div class="vc-actions">
+        <button type="button" class="lp-bouton noir" id="excuseGo">Une autre excuse</button>
+        <button type="button" class="lp-bouton contour" id="excuseCopier">Copier</button>
+        <a class="lp-lien vc-lien" href="/connexion">Ou alors, délègue-la →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Classiques revisités : serpent et démineur. -->
+  <section class="lp-section" id="serpent">
+    <p class="lp-etiquette">Classiques revisités</p>
+    <h2 class="lp-titre titre-p">Le serpent <em>paresseux.</em></h2>
+    <p class="lp-intro">Il avance lentement, très lentement, et grandit à chaque corvée déléguée. Flèches, ZQSD, boutons ou glissement du doigt.</p>
+    <div class="vc-duo">
+      <div class="vc-jeu-cadre vc-carre">
+        <canvas id="serpentCanvas" class="vc-canvas" width="320" height="320" aria-label="Jeu du serpent paresseux"></canvas>
+        <div class="vc-voile" id="serpentVoile"><div class="vc-voile-boite" id="serpentBoite"><b>Le serpent dort.</b><p>Réveille-le doucement.</p><button type="button" class="lp-bouton noir" id="serpentGo">Réveiller</button></div></div>
+      </div>
+      <div>
+        <div class="vc-hud vc-hud-col"><span>Corvées déléguées <b id="serpentScore">0</b></span><span>Record <b id="serpentRecord">0</b></span></div>
+        <div class="vc-croix" aria-label="Diriger le serpent">
+          <button type="button" data-dir="0,-1" aria-label="Haut">↑</button><button type="button" data-dir="-1,0" aria-label="Gauche">←</button><button type="button" data-dir="1,0" aria-label="Droite">→</button><button type="button" data-dir="0,1" aria-label="Bas">↓</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-section lp-teinte" id="demineur">
+    <p class="lp-etiquette">Classiques revisités</p>
+    <h2 class="lp-titre titre-p">Le démineur <em>de corvées.</em></h2>
+    <p class="lp-intro">Dix corvées se cachent dans la grille. Découvre toutes les cases tranquilles sans tomber dessus. Les chiffres disent combien de corvées touchent la case. Clic droit, appui long ou mode « Plus tard » pour marquer une corvée.</p>
+    <div class="vc-duo">
+      <div class="vc-mines" id="mines" role="grid" aria-label="Grille du démineur"></div>
+      <div>
+        <div class="vc-hud vc-hud-col"><span>Corvées cachées <b id="minesReste">10</b></span><span id="minesEtat">Clique sur une case pour commencer.</span></div>
+        <div class="vc-actions" style="margin-top:14px">
+          <button type="button" class="vc-puce" id="minesDrapeau" aria-pressed="false">Mode « Plus tard »</button>
+          <button type="button" class="lp-bouton contour" id="minesRejouer">Nouvelle grille</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Idées en réserve. -->
+  <section class="lp-section" id="reserve">
+    <p class="lp-etiquette">En réserve</p>
+    <h2 class="lp-titre titre-p">D’autres jeux <em>dans les cartons.</em></h2>
+    <p class="lp-intro">Simples à fabriquer, à garder pour plus tard.</p>
+    <div class="vc-jeux-grille">
+      <div class="vc-jeu-carte"><span class="vc-meta">Façon Tetris</span><b>Les cartons du déménagement</b><small>Empiler les cartons sans rien casser. Une ligne complète part chez un membre.</small></div>
+      <div class="vc-jeu-carte"><span class="vc-meta">Façon 2048</span><b>La pile de linge</b><small>Deux chaussettes font une paire, deux paires font une machine… jusqu’à la machine de 2048 chaussettes.</small></div>
+      <div class="vc-jeu-carte"><span class="vc-meta">Façon Memory</span><b>Les papiers en vrac</b><small>Retrouver les paires&#8239;: facture et relance, CAF et réponse, bail et quittance.</small></div>
+      <div class="vc-jeu-carte"><span class="vc-meta">Façon Flappy</span><b>La mouche de la sieste</b><small>Une mouche à faire voler entre les réveils, sans te réveiller.</small></div>
+      <div class="vc-jeu-carte"><span class="vc-meta">Façon Simon</span><b>La liste de courses</b><small>Retenir une liste qui s’allonge. Ou la déléguer au troisième article.</small></div>
+      <div class="vc-jeu-carte"><span class="vc-meta">Façon Whac-A-Mole</span><b>Les notifications</b><small>Taper sur les notifications qui surgissent avant qu’elles ne te réveillent.</small></div>
+    </div>
+  </section>
+
+  <section class="lp-fin fond-flemme" data-fond="clair">
+    <div class="ff-decor" aria-hidden="true"></div>
+    <div class="lp-collines" aria-hidden="true"><i></i><i></i><i></i></div>
+    <p class="lp-etiquette">Fin de la récré</p>
+    <h2 class="lp-titre titre-p">Assez joué, <em>on te prévient à l’ouverture&#8239;?</em></h2>
+    <a class="lp-bouton noir" href="/connexion">Garder ma place<span class="lp-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="18" height="11"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+  </section>
+
+</main>
+
+<footer class="vc-pied"><div class="vc-pied-in"><nav aria-label="Informations"><a href="./">Accueil</a><a href="./#faq">FAQ</a><a href="./#contact">Contact</a></nav><span>© FLEMME 2026 · Plateforme indépendante. Service de mises en relation entre particuliers.</span></div></footer>
+<div class="vc-toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+  const racine = document.documentElement;
+  const reduit = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = id => document.getElementById(id);
+  requestAnimationFrame(() => setTimeout(() => racine.classList.add('pret'), 80));
+  const aReveler = [...document.querySelectorAll('.revele, .titre-p')];
+  if (reduit || !('IntersectionObserver' in window)) aReveler.forEach(el => el.classList.add('vu'));
+  else { const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vu'); io.unobserve(e.target); } }), { threshold: .15 }); aReveler.forEach(el => io.observe(el)); }
+  const fin = document.querySelector('.lp-fin');
+  if (fin && !reduit) addEventListener('scroll', () => { const r = fin.getBoundingClientRect(); const p = Math.min(Math.max((innerHeight - r.top) / (innerHeight + r.height * .4), 0), 1); fin.style.setProperty('--lp-monte', `${(1 - p) * 40}%`); }, { passive: true });
+  let tm = 0;
+  const toast = txt => { const t = $('toast'); t.textContent = txt; t.classList.add('vu'); clearTimeout(tm); tm = setTimeout(() => t.classList.remove('vu'), 2400); };
+
+  /* ---- Flemmomètre : test express et défi du canapé ---- */
+  const aiguille = v => { $('aiguille').style.transform = `rotate(${(Math.max(0, Math.min(100, v)) - 50) * 1.8}deg)`; };
+  const fmOnglets = [$('fmOngletQuiz'), $('fmOngletDefi')], fmVolets = [$('fmQuiz'), $('fmDefi')];
+  fmOnglets.forEach((o, k) => o.addEventListener('click', () => fmOnglets.forEach((x, j) => { x.setAttribute('aria-selected', String(j === k)); fmVolets[j].hidden = j !== k; })));
+
+  const questions = [
+    ['Ton réveil sonne. Tu…', [['Te lèves au premier bip.', 0], ['Repousses trois fois, par principe.', 10], ['Négocies avec lui comme avec un syndic de copropriété.', 18], ['Quel réveil\u202f? Tu te lèves quand le soleil insiste.', 25]]],
+    ['Le panier de linge déborde. Ta stratégie\u202f:', [['Lessive, séchage, pliage. Dans la foulée.', 0], ['Acheter des chaussettes neuves.', 14], ['L’appeler « installation artistique ».', 20], ['Attendre qu’il se plie tout seul. La science avance.', 25]]],
+    ['Un courrier administratif arrive.', [['Ouvert, lu, classé.', 0], ['Ouvert. Reposé. Fixé du regard pendant une semaine.', 12], ['Rangé dans la pile « plus tard », qui a désormais son propre code postal.', 20], ['Tu fais semblant de ne pas l’avoir vu. Lui aussi.', 25]]],
+    ['La télécommande est à deux mètres.', [['Tu te lèves.', 0], ['Tu tentes avec le pied.', 12], ['Finalement, ce qui passe à la télé, c’est très bien.', 20], ['Tu demandes au chat.', 25]]],
+    ['Ton dimanche idéal\u202f?', [['Footing, marché, vide-grenier.', 0], ['Une balade, puis une sieste méritée.', 8], ['Une sieste, puis une sieste de récupération.', 18], ['Le canapé et toi, en position horizontale prolongée.', 25]]]
+  ];
+  const profils = [
+    [20, 'L’abeille suractivée', 'Tu n’as pas la flemme, tu as un agenda. Sur Flemme, tu seras parfait pour résoudre les flemmes des autres, au prix que vous fixerez ensemble.', 'Résoudre des flemmes à l’ouverture'],
+    [45, 'Le flemmard du dimanche', 'Une flemme saine et occasionnelle. Délègue les deux ou trois corvées qui te pèsent vraiment, et garde ton énergie pour le reste.', 'Me prévenir à l’ouverture'],
+    [70, 'Le procrastinateur stratégique', 'Tu ne remets pas à plus tard&#8239;: tu planifies dans le futur. Ta pile « à faire » mérite quelqu’un de motivé, et il existe.', 'Garder ma place'],
+    [90, 'Le koala certifié', 'Vingt heures de repos par jour, et le reste en économie d’énergie. Publie tes flemmes, des membres te proposeront de s’en charger.', 'Garder ma place, sans me lever'],
+    [101, 'Le fossile du canapé', 'Ton canapé a pris ta forme et les archéologues s’intéressent à toi. Flemme a été pensé pour toi. Littéralement.', 'Me prévenir (on sait que tu ne bougeras pas)']
+  ];
+  let qi = 0, total = 0;
+  const points = $('quizPoints');
+  points.innerHTML = questions.map(() => '<i></i>').join('');
+  const montrerQuestion = () => {
+    const [txt, reps] = questions[qi];
+    $('quizNum').textContent = `Question ${qi + 1} sur ${questions.length}`;
+    [...points.children].forEach((d, k) => d.classList.toggle('ok', k < qi));
+    const q = $('quizTexte'), zone = $('quizReponses');
+    q.textContent = txt; zone.innerHTML = '';
+    reps.forEach(([r, pt]) => {
+      const b = document.createElement('button'); b.type = 'button'; b.textContent = r;
+      b.addEventListener('click', () => {
+        if (zone.dataset.verrou) return; zone.dataset.verrou = '1'; b.classList.add('choisi');
+        total += pt; aiguille(total / ((qi + 1) * 25) * 100);
+        $('cadranLegende').innerHTML = `Flemme mesurée&#8239;: <b>${Math.round(total / ((qi + 1) * 25) * 100)}&#8239;%</b>`;
+        setTimeout(() => { qi++; delete zone.dataset.verrou; qi < questions.length ? montrerQuestion() : resultat(); }, reduit ? 0 : 420);
+      });
+      zone.append(b);
+    });
+    if (!reduit) [q, zone].forEach(el => { el.classList.remove('entre'); void el.offsetWidth; el.classList.add('entre'); });
+  };
+  const resultat = () => {
+    const score = Math.round(total / (questions.length * 25) * 100);
+    const [, nom, texte, cta] = profils.find(p => score < p[0]);
+    $('quizQuestion').hidden = true; $('quizResultat').hidden = false;
+    $('resScore').textContent = score; $('resNom').textContent = nom; $('resTexte').innerHTML = texte; $('resCta').textContent = cta;
+    $('cadranLegende').innerHTML = `Verdict&#8239;: <b>${nom}</b>`;
+  };
+  $('quizRejouer').addEventListener('click', () => { qi = 0; total = 0; aiguille(0); $('cadranLegende').textContent = 'Réponds au test, l’aiguille fait le reste.'; $('quizResultat').hidden = true; $('quizQuestion').hidden = false; montrerQuestion(); });
+  montrerQuestion();
+
+  // Défi du canapé : le chrono tourne tant que personne ne touche à rien.
+  let record = 0; try { record = +localStorage.getItem('vc-record') || 0; } catch (e) {}
+  const fmt = t => t.toFixed(1).replace('.', ',');
+  const majRecord = () => { $('defiRecord').textContent = record ? `${fmt(record)} s` : 'aucun'; };
+  majRecord();
+  const verdicts = [[3, 'Tu as bougé. Déjà. On en reparle.'], [10, 'Honnête, pour un débutant.'], [30, 'Belle immobilité. Le canapé est fier de toi.'], [60, 'Niveau statue de jardin.'], [1e9, 'Légende. Personne n’ose te déranger.']];
+  let enCours = false, debut = 0, img = 0, x0 = null, y0 = null;
+  const evts = ['pointerdown', 'keydown', 'wheel', 'touchstart', 'scroll'];
+  const stop = () => {
+    if (!enCours) return; enCours = false; cancelAnimationFrame(img);
+    evts.forEach(e => removeEventListener(e, stop, true)); removeEventListener('pointermove', bouge, true);
+    document.querySelector('.vc-fm').classList.remove('en-defi');
+    const t = (performance.now() - debut) / 1000;
+    $('defiTemps').textContent = fmt(t);
+    let txt = verdicts.find(v => t < v[0])[1];
+    if (t > record) { record = t; try { localStorage.setItem('vc-record', String(t)); } catch (e) {} txt += ' Nouveau record.'; }
+    $('defiVerdict').innerHTML = `${txt} Record&#8239;: <span id="defiRecord"></span>.`; majRecord();
+    $('defiGo').textContent = 'Retenter (sans bouger)'; $('defiGo').disabled = false;
+  };
+  const bouge = e => { if (x0 === null) { x0 = e.clientX; y0 = e.clientY; return; } if (Math.abs(e.clientX - x0) + Math.abs(e.clientY - y0) > 4) stop(); };
+  const tourne = () => { const t = (performance.now() - debut) / 1000; $('defiTemps').textContent = fmt(t); aiguille(Math.min(100, t * 1.6)); img = requestAnimationFrame(tourne); };
+  $('defiGo').addEventListener('click', () => {
+    $('defiGo').disabled = true; $('defiGo').textContent = 'Chut… ne bouge plus';
+    $('defiVerdict').textContent = 'C’est parti. Respire doucement.';
+    document.querySelector('.vc-fm').classList.add('en-defi');
+    setTimeout(() => {
+      enCours = true; debut = performance.now(); x0 = y0 = null;
+      evts.forEach(e => addEventListener(e, stop, { capture: true, passive: true })); addEventListener('pointermove', bouge, { capture: true, passive: true });
+      tourne();
+    }, 500);
+  });
+
+
+  // Le lien « Le défi du canapé » ouvre directement l’onglet du défi.
+  const ouvrirDefi = () => { if (location.hash === '#canape') $('fmOngletDefi').click(); };
+  addEventListener('hashchange', ouvrirDefi); ouvrirDefi();
+  document.querySelectorAll('a[href="#canape"]').forEach(a => a.addEventListener('click', () => setTimeout(() => $('fmOngletDefi').click(), 0)));
+
+  const lire = (k, d) => { try { const v = localStorage.getItem(k); return v === null ? d : +v; } catch (e) { return d; } };
+  const ecrire = (k, v) => { try { localStorage.setItem(k, String(v)); } catch (e) {} };
+  const hasard = a => a[Math.floor(Math.random() * a.length)];
+  const COUL = { encre: '#101e2a', doux: '#4c6157', vert: '#57d68d', moyen: '#3a8f5e', profond: '#225337', menthe: '#d7f5e4', clair: '#f2fbf6', contour: '#a3e8c0' };
+  // Ajuste un canvas à sa largeur affichée (net sur écran haute densité).
+  const ajuster = (cv, hauteur) => {
+    const r = window.devicePixelRatio || 1, w = cv.clientWidth || 600, h = hauteur || cv.clientHeight || w;
+    cv.width = Math.round(w * r); cv.height = Math.round(h * r);
+    const c = cv.getContext('2d'); c.setTransform(r, 0, 0, r, 0, 0); return { c, w, h };
+  };
+  const visible = el => { const r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; };
+
+  /* ======================= La grande marche ======================= */
+  (() => {
+    const cv = $('marcheCanvas'), voile = $('marcheVoile'), boite = $('marcheBoite');
+    let dim = ajuster(cv, 260);
+    addEventListener('resize', () => { dim = ajuster(cv, 260); if (!enJeu) dessiner(); });
+    const questions = [
+      ['Un ami te propose un footing à 7 h.', ['Avec plaisir, j’apporte les croissants.', 1.6], ['Je suis allergique au matin.', -1.6]],
+      ['La vaisselle t’attend depuis hier.', ['Je la fais maintenant.', 1.4], ['Elle trempe. Elle aime ça.', -1.5]],
+      ['Il reste trois étages à pied, l’ascenseur est en panne.', ['Escaliers, c’est du sport gratuit.', 1.5], ['Je m’installe sur le palier.', -1.8]],
+      ['Ton réveil sonne pour la troisième fois.', ['Debout, je suis un guerrier.', 1.5], ['Encore cinq minutes, ou cinq heures.', -1.4]],
+      ['Un formulaire de 12 pages à remplir.', ['Je m’y mets tout de suite.', 1.3], ['Je le délègue sur Flemme.', -.6]],
+      ['Il pleut des cordes dehors.', ['Je marche entre les gouttes.', 1.2], ['Je regarde la pluie. Longtemps.', -1.5]],
+      ['Une odeur de crêpes sort d’une boulangerie.', ['Je garde le rythme.', 1.1], ['Je m’arrête, c’est un signe.', -1.7]],
+      ['Le canapé d’un inconnu est posé sur le trottoir.', ['Je l’ignore, je suis fort.', 1.4], ['Je teste, pour la science.', -2]],
+      ['Tes lacets sont défaits.', ['Je les refais en double nœud.', 1], ['Je marche en glissant.', -1.2]],
+      ['Une côte se dresse devant toi.', ['Je la monte en chantant.', 1.6], ['Je la contourne. Par l’autre ville.', -1.3]]
+    ];
+    let enJeu = false, pause = false, v = 0, dist = 0, x = 0, prochain = 0, chaussettes = [], panneaux = [], y = 0, vy = 0, phase = 0, t = 0, nuages = [], record = lire('vc-marche', 0), qFaites = [];
+    $('marcheRecord').textContent = record;
+    const sol = () => dim.h - 46;
+    const reinit = () => { v = 7.2; dist = 0; x = 0; prochain = 520; chaussettes = []; panneaux = []; y = 0; vy = 0; phase = 0; qFaites = []; nuages = Array.from({ length: 5 }, (_, k) => ({ x: k * 180 + Math.random() * 80, y: 20 + Math.random() * 60, s: .6 + Math.random() * .6 })); };
+    reinit();
+    const sauter = () => { if (enJeu && !pause && y === 0) vy = 9.5; };
+    addEventListener('keydown', e => { if ((e.code === 'Space' || e.key === 'ArrowUp') && enJeu && visible(cv)) { e.preventDefault(); sauter(); } });
+    cv.addEventListener('pointerdown', sauter);
+    const avatar = (c, ax, ay, couche) => {
+      c.save(); c.translate(ax, ay); c.lineCap = 'round'; c.strokeStyle = COUL.encre; c.lineWidth = 4;
+      if (couche) { c.beginPath(); c.moveTo(-22, -4); c.lineTo(18, -4); c.stroke(); c.fillStyle = COUL.encre; c.beginPath(); c.arc(-30, -8, 8, 0, 7); c.fill();
+        c.fillStyle = COUL.moyen; c.font = '600 14px Space Grotesk, sans-serif'; c.fillText('z', -20, -26); c.fillText('Z', -10, -38); c.restore(); return; }
+      const a = Math.sin(phase) * .7, b = Math.sin(phase + Math.PI) * .7;
+      const jambe = ang => { c.beginPath(); c.moveTo(0, -26); c.lineTo(Math.sin(ang) * 16, -26 + Math.cos(ang) * 16 + 10); c.stroke(); };
+      jambe(a); jambe(b);
+      c.beginPath(); c.moveTo(0, -26); c.lineTo(2, -52); c.stroke();
+      c.beginPath(); c.moveTo(1, -46); c.lineTo(1 + Math.sin(b) * 13, -34); c.moveTo(1, -46); c.lineTo(1 + Math.sin(a) * 13, -34); c.stroke();
+      c.fillStyle = COUL.encre; c.beginPath(); c.arc(3, -62, 9, 0, 7); c.fill();
+      c.fillStyle = COUL.vert; c.fillRect(-6, -54, 16, 4); // écharpe menthe
+      c.restore();
+    };
+    const dessiner = (fin) => {
+      const { c, w, h } = dim, s = sol();
+      const g = c.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#ffffff'); g.addColorStop(1, COUL.clair); c.fillStyle = g; c.fillRect(0, 0, w, h);
+      c.fillStyle = COUL.menthe; nuages.forEach(n => { const nx = ((n.x - x * .15 * n.s) % (w + 120) + w + 120) % (w + 120) - 60; c.beginPath(); c.ellipse(nx, n.y, 34 * n.s, 12 * n.s, 0, 0, 7); c.fill(); });
+      c.strokeStyle = COUL.contour; c.lineWidth = 2; c.beginPath(); c.moveTo(0, s + 2); c.lineTo(w, s + 2); c.stroke();
+      c.strokeStyle = 'rgba(58,143,94,.35)'; c.setLineDash([6, 14]); c.lineDashOffset = x % 20; c.beginPath(); c.moveTo(0, s + 14); c.lineTo(w, s + 14); c.stroke(); c.setLineDash([]);
+      panneaux.forEach(p => { const px = p.x - x; c.strokeStyle = COUL.profond; c.lineWidth = 4; c.beginPath(); c.moveTo(px, s); c.lineTo(px, s - 58); c.stroke(); c.fillStyle = COUL.vert; c.beginPath(); c.roundRect ? c.roundRect(px - 18, s - 84, 36, 30, 7) : c.rect(px - 18, s - 84, 36, 30); c.fill(); c.fillStyle = COUL.profond; c.font = '700 20px Space Grotesk, sans-serif'; c.textAlign = 'center'; c.fillText('?', px, s - 62); c.textAlign = 'left'; });
+      chaussettes.forEach(k => { const kx = k - x; c.fillStyle = COUL.encre; c.beginPath(); c.moveTo(kx - 8, s - 22); c.lineTo(kx + 2, s - 22); c.lineTo(kx + 2, s - 8); c.lineTo(kx + 12, s - 8); c.lineTo(kx + 12, s); c.lineTo(kx - 8, s); c.closePath(); c.fill(); c.fillStyle = COUL.vert; c.fillRect(kx - 8, s - 22, 10, 4); });
+      avatar(c, 90, s - y, fin);
+    };
+    const poser = () => {
+      const libres = questions.map((_, k) => k).filter(k => !qFaites.includes(k));
+      const k = hasard(libres.length ? libres : questions.map((_, j) => j)); qFaites.push(k);
+      const [q, r1, r2] = questions[k], reps = Math.random() < .5 ? [r1, r2] : [r2, r1];
+      pause = true; voile.hidden = false;
+      boite.innerHTML = '<b></b><p>Réponds vite, tu ralentis déjà.</p><div class="vc-choix"></div>';
+      boite.querySelector('b').textContent = q;
+      reps.forEach(([txt, effet]) => { const bt = document.createElement('button'); bt.type = 'button'; bt.textContent = txt; bt.addEventListener('click', () => { v = Math.max(.2, Math.min(14, v + effet)); voile.hidden = true; pause = false; toast(effet > 0 ? `Plus rapide : ${Math.round(v * 3)} km/h` : `Plus lent : ${Math.round(v * 3)} km/h`); }); boite.querySelector('.vc-choix').append(bt); });
+      boite.querySelector('button').focus();
+    };
+    const finir = () => {
+      enJeu = false; dessiner(true);
+      const m = Math.round(dist / 40);
+      let txt = m < 60 ? 'Une sieste bien méritée après un tel effort.' : m < 200 ? 'Belle balade. Le canapé t’attendait.' : 'Marathonien de la flemme. Respect.';
+      if (m > record) { record = m; ecrire('vc-marche', m); $('marcheRecord').textContent = m; txt += ' Nouveau record.'; }
+      voile.hidden = false;
+      boite.innerHTML = `<b>Allongé après ${m} m.</b><p></p><button type="button" class="lp-bouton noir">Se relever (péniblement)</button>`;
+      boite.querySelector('p').textContent = txt; boite.querySelector('button').addEventListener('click', lancer);
+    };
+    let avant = 0;
+    const boucle = now => {
+      if (!enJeu) return;
+      const dt = Math.min((now - avant) / 16.7, 3); avant = now;
+      if (!pause && visible(cv)) {
+        t += dt; v -= .0045 * dt * (1 + dist / 9000); // la flemme gagne avec le temps
+        x += v * dt; dist += v * dt; phase += v * .05 * dt;
+        if (y > 0 || vy > 0) { y += vy * dt; vy -= .55 * dt; if (y <= 0) { y = 0; vy = 0; } }
+        if (dist > prochain) { if (Math.random() < .55) panneaux.push({ x: x + dim.w + 40 }); else chaussettes.push(x + dim.w + 30); prochain = dist + 300 + Math.random() * 380; }
+        const p = panneaux[0]; if (p && p.x - x < 104) { panneaux.shift(); poser(); }
+        chaussettes = chaussettes.filter(k => k - x > -30);
+        const k = chaussettes.find(kx => Math.abs(kx - x - 90) < 14 && y < 20); if (k !== undefined) { chaussettes = chaussettes.filter(z => z !== k); v = Math.max(.2, v - 1.2); toast('Une chaussette ! Tu ralentis.'); }
+        $('marcheVitesse').textContent = Math.round(v * 3); $('marcheDistance').textContent = Math.round(dist / 40);
+        if (v <= .35) { finir(); return; }
+      }
+      dessiner(); requestAnimationFrame(boucle);
+    };
+    const lancer = () => { reinit(); voile.hidden = true; enJeu = true; pause = false; avant = performance.now(); requestAnimationFrame(boucle); cv.focus && cv.focus(); };
+    $('marcheGo').addEventListener('click', lancer);
+    dessiner();
+  })();
+
+  /* ======================= Attrape les corvées ======================= */
+  (() => {
+    const zone = $('pluie'), voile = $('corveesVoile'), boite = $('corveesBoite');
+    const noms = ['Vaisselle', 'Courrier CAF', 'Repassage', 'Déclaration d’impôts', 'Monter l’armoire', 'Tri des cartons', 'Relancer le syndic', 'Résilier la box', 'Laver les vitres', 'Prendre RDV', 'Trier les mails', 'Changer l’ampoule', 'Recoudre le bouton', 'Faire le CV'];
+    let ok = 0, pile = 0, fin = 0, gouttes = [], prochaine = 0, enJeu = false, avant = 0;
+    const lancer = () => {
+      zone.querySelectorAll('.vc-goutte').forEach(g => g.remove()); gouttes = []; ok = 0; pile = 0; zone.style.setProperty('--pile', '0px');
+      $('corveesOk').textContent = 0; $('corveesPile').textContent = 0; voile.hidden = true; enJeu = true; fin = performance.now() + 30000; prochaine = 0; avant = performance.now(); requestAnimationFrame(boucle);
+    };
+    const boucle = now => {
+      if (!enJeu) return;
+      const dt = Math.min(now - avant, 50); avant = now;
+      const reste = Math.max(0, Math.ceil((fin - now) / 1000)); $('corveesTemps').textContent = reste;
+      const H = zone.clientHeight, W = zone.clientWidth;
+      if (now > prochaine) {
+        const g = document.createElement('button'); g.type = 'button'; g.className = 'vc-goutte'; g.textContent = hasard(noms);
+        zone.append(g); const lg = g.offsetWidth;
+        const o = { el: g, x: Math.random() * Math.max(10, W - lg - 10) + 5, y: -40, v: .06 + Math.random() * .05 + (30 - reste) * .004 };
+        g.style.left = o.x + 'px';
+        g.addEventListener('pointerdown', () => { if (g.classList.contains('ok')) return; g.classList.add('ok'); g.textContent = 'Délégué ✓'; ok++; $('corveesOk').textContent = ok; gouttes = gouttes.filter(z => z !== o); setTimeout(() => g.remove(), 420); });
+        gouttes.push(o); prochaine = now + Math.max(320, 900 - (30 - reste) * 22);
+      }
+      const pileH = Math.min(pile * 8, H * .5);
+      gouttes.forEach(o => { o.y += o.v * dt; o.el.style.transform = `translateY(${o.y}px)`; });
+      gouttes = gouttes.filter(o => { if (o.y > H - pileH - 34) { o.el.remove(); pile++; $('corveesPile').textContent = pile; zone.style.setProperty('--pile', Math.min(pile * 8, H * .5) + 'px'); return false; } return true; });
+      if (now >= fin) {
+        enJeu = false; gouttes.forEach(o => o.el.remove()); gouttes = [];
+        const total = ok + pile, ratio = total ? Math.round(ok / total * 100) : 0;
+        voile.hidden = false;
+        boite.innerHTML = `<b>${ok} corvée${ok > 1 ? 's' : ''} déléguée${ok > 1 ? 's' : ''}, ${pile} sur le canapé.</b><p>${ratio >= 80 ? 'Délégateur de compétition.' : ratio >= 50 ? 'Pas mal. Le canapé respire encore.' : 'Le canapé croule. Il est temps de déléguer pour de vrai.'}</p><button type="button" class="lp-bouton noir">Rejouer</button>`;
+        boite.querySelector('button').addEventListener('click', lancer); return;
+      }
+      requestAnimationFrame(boucle);
+    };
+    $('corveesGo').addEventListener('click', lancer);
+  })();
+
+  /* ======================= Générateur d’excuses ======================= */
+  (() => {
+    const debuts = ['Désolé, ', 'Impossible aujourd’hui : ', 'J’aurais adoré, mais ', 'Je ne peux vraiment pas, ', 'Promis, demain. Là, ', 'Mauvais timing : '];
+    const sujets = ['mon chat', 'mon horoscope', 'ma plante verte', 'le Wi-Fi', 'mon canapé', 'Mercure rétrograde', 'mon voisin du dessous', 'ma machine à café', 'mon coach de sieste', 'la météo de Brest'];
+    const fins = ['a besoin de moi pour une sieste stratégique.', 'm’a formellement déconseillé tout effort.', 'fait une mise à jour, et moi aussi.', 'a pris mes chaussures en otage.', 'est en télétravail sur mes genoux.', 'traverse une période compliquée.', 'a prévu une réunion avec moi-même.', 'm’a vu bâiller et s’inquiète.'];
+    let derniere = '';
+    const nouvelle = () => {
+      let e; do { e = hasard(debuts) + hasard(sujets) + ' ' + hasard(fins); } while (e === derniere); derniere = e;
+      const el = $('excuseTexte'); el.textContent = e[0].toUpperCase() + e.slice(1); el.classList.remove('change'); void el.offsetWidth; el.classList.add('change');
+    };
+    $('excuseGo').addEventListener('click', nouvelle);
+    $('excuseCopier').addEventListener('click', () => {
+      Promise.resolve().then(() => navigator.clipboard.writeText($('excuseTexte').textContent)).then(() => toast('Excuse copiée. Utilise-la avec modération.')).catch(() => { getSelection().selectAllChildren($('excuseTexte')); toast('Excuse sélectionnée : copie-la avec Ctrl+C ou ⌘C.'); });
+    });
+  })();
+
+  /* ======================= Le serpent paresseux ======================= */
+  (() => {
+    const cv = $('serpentCanvas'), voile = $('serpentVoile'), boite = $('serpentBoite'), N = 16;
+    let dim = ajuster(cv), corps, dir, prochaineDir, miam, score, enJeu = false, minuteur = 0, record = lire('vc-serpent', 0);
+    $('serpentRecord').textContent = record;
+    addEventListener('resize', () => { dim = ajuster(cv); dessiner(); });
+    const placer = () => { do { miam = { x: Math.floor(Math.random() * N), y: Math.floor(Math.random() * N) }; } while (corps.some(p => p.x === miam.x && p.y === miam.y)); };
+    const reinit = () => { corps = [{ x: 6, y: 8 }, { x: 5, y: 8 }, { x: 4, y: 8 }]; dir = { x: 1, y: 0 }; prochaineDir = dir; score = 0; $('serpentScore').textContent = 0; placer(); };
+    const dessiner = () => {
+      const { c, w } = dim, k = w / N; c.fillStyle = COUL.clair; c.fillRect(0, 0, w, w);
+      c.fillStyle = 'rgba(163,232,192,.25)'; for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) if ((i + j) % 2) c.fillRect(i * k, j * k, k, k);
+      if (!corps) return;
+      c.fillStyle = COUL.encre; c.beginPath(); c.arc(miam.x * k + k / 2, miam.y * k + k / 2, k * .32, 0, 7); c.fill();
+      c.fillStyle = COUL.vert; c.font = `700 ${k * .42}px Space Grotesk, sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('!', miam.x * k + k / 2, miam.y * k + k / 2 + 1);
+      corps.forEach((p, i) => { c.fillStyle = i ? (i % 2 ? COUL.vert : COUL.moyen) : COUL.profond; const m = i ? k * .12 : k * .04; c.beginPath(); c.roundRect ? c.roundRect(p.x * k + m, p.y * k + m, k - 2 * m, k - 2 * m, k * .3) : c.rect(p.x * k + m, p.y * k + m, k - 2 * m, k - 2 * m); c.fill(); });
+      const t = corps[0]; c.fillStyle = '#fff'; c.beginPath(); c.arc(t.x * k + k * .35, t.y * k + k * .4, k * .09, 0, 7); c.arc(t.x * k + k * .65, t.y * k + k * .4, k * .09, 0, 7); c.fill();
+      c.textAlign = 'left'; c.textBaseline = 'alphabetic';
+    };
+    const pas = () => {
+      dir = prochaineDir; const t = { x: corps[0].x + dir.x, y: corps[0].y + dir.y };
+      if (t.x < 0 || t.y < 0 || t.x >= N || t.y >= N || corps.some(p => p.x === t.x && p.y === t.y)) return perdre();
+      corps.unshift(t);
+      if (t.x === miam.x && t.y === miam.y) { score++; $('serpentScore').textContent = score; placer(); } else corps.pop();
+      dessiner(); minuteur = setTimeout(pas, Math.max(110, 230 - score * 6));
+    };
+    const perdre = () => {
+      enJeu = false; clearTimeout(minuteur);
+      if (score > record) { record = score; ecrire('vc-serpent', score); $('serpentRecord').textContent = score; }
+      voile.hidden = false; boite.innerHTML = `<b>Le serpent s’est endormi.</b><p>${score} corvée${score > 1 ? 's' : ''} déléguée${score > 1 ? 's' : ''} avant la sieste.</p><button type="button" class="lp-bouton noir">Le réveiller encore</button>`;
+      boite.querySelector('button').addEventListener('click', lancer);
+    };
+    const lancer = () => { reinit(); voile.hidden = true; enJeu = true; dessiner(); clearTimeout(minuteur); minuteur = setTimeout(pas, 300); };
+    const tourner = (x, y) => { if (!enJeu) return; if (x === -dir.x && y === -dir.y) return; prochaineDir = { x, y }; };
+    addEventListener('keydown', e => {
+      if (!enJeu || !visible(cv)) return;
+      const m = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0], z: [0, -1], s: [0, 1], q: [-1, 0], d: [1, 0], w: [0, -1], a: [-1, 0] }[e.key];
+      if (m) { e.preventDefault(); tourner(...m); }
+    });
+    document.querySelectorAll('.vc-croix button').forEach(b => b.addEventListener('click', () => tourner(...b.dataset.dir.split(',').map(Number))));
+    let x0 = 0, y0 = 0;
+    cv.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    cv.addEventListener('touchend', e => { const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; if (Math.max(Math.abs(dx), Math.abs(dy)) < 20) return; Math.abs(dx) > Math.abs(dy) ? tourner(Math.sign(dx), 0) : tourner(0, Math.sign(dy)); });
+    $('serpentGo').addEventListener('click', lancer);
+    reinit(); dessiner(); corps = corps;
+  })();
+
+  /* ======================= Le démineur de corvées ======================= */
+  (() => {
+    const grille = $('mines'), L = 8, NB = 10;
+    const corvees = ['Repassage', 'Impôts', 'Vaisselle', 'Syndic', 'Cartons', 'Vitres', 'Dentiste', 'Ménage', 'CAF', 'Courses'];
+    let cases, finie, premiere, drapeauMode = false, appuiLong = 0;
+    const voisins = i => { const x = i % L, y = Math.floor(i / L), r = []; for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { if (!dx && !dy) continue; const nx = x + dx, ny = y + dy; if (nx >= 0 && ny >= 0 && nx < L && ny < L) r.push(ny * L + nx); } return r; };
+    const nouvelle = () => {
+      grille.innerHTML = ''; finie = false; premiere = true;
+      cases = Array.from({ length: L * L }, () => ({ mine: false, ouverte: false, drapeau: false, n: 0, nom: '' }));
+      $('minesEtat').textContent = 'Clique sur une case pour commencer.'; $('minesReste').textContent = NB;
+      cases.forEach((c, i) => {
+        const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', `Case ${i % L + 1}, ${Math.floor(i / L) + 1}`); c.el = b;
+        b.addEventListener('click', () => { if (appuiLong) { appuiLong = 0; return; } drapeauMode ? marquer(i) : ouvrir(i); });
+        b.addEventListener('contextmenu', e => { e.preventDefault(); marquer(i); });
+        let tm = 0; b.addEventListener('touchstart', () => { tm = setTimeout(() => { appuiLong = 1; marquer(i); }, 450); }, { passive: true });
+        b.addEventListener('touchend', () => clearTimeout(tm)); b.addEventListener('touchmove', () => clearTimeout(tm), { passive: true });
+        grille.append(b);
+      });
+    };
+    const placer = sauf => {
+      const interdits = new Set([sauf, ...voisins(sauf)]); let k = 0;
+      while (k < NB) { const i = Math.floor(Math.random() * L * L); if (!cases[i].mine && !interdits.has(i)) { cases[i].mine = true; cases[i].nom = corvees[k]; k++; } }
+      cases.forEach((c, i) => { c.n = voisins(i).filter(j => cases[j].mine).length; });
+    };
+    const marquer = i => { const c = cases[i]; if (finie || c.ouverte) return; c.drapeau = !c.drapeau; c.el.classList.toggle('drapeau', c.drapeau); $('minesReste').textContent = NB - cases.filter(z => z.drapeau).length; };
+    const ouvrir = i => {
+      if (finie) return; if (premiere) { placer(i); premiere = false; }
+      const c = cases[i]; if (c.ouverte || c.drapeau) return;
+      if (c.mine) {
+        finie = true; cases.forEach(z => { if (z.mine) { z.el.classList.add('boum'); z.el.textContent = z.nom; } });
+        $('minesEtat').textContent = `Aïe, tu es tombé sur : ${c.nom}. Bon courage.`; toast(`Corvée trouvée : ${c.nom}`); return;
+      }
+      const pile = [i];
+      while (pile.length) { const j = pile.pop(), z = cases[j]; if (z.ouverte || z.drapeau) continue; z.ouverte = true; z.el.classList.add('ouverte'); if (z.n) { z.el.textContent = z.n; z.el.classList.add('n' + Math.min(z.n, 4)); } else voisins(j).forEach(v => { if (!cases[v].ouverte && !cases[v].mine) pile.push(v); }); }
+      if (cases.filter(z => !z.mine && !z.ouverte).length === 0) { finie = true; $('minesEtat').textContent = 'Journée sans corvée. Bravo, tu peux te recoucher.'; toast('Gagné : zéro corvée aujourd’hui.'); }
+      else $('minesEtat').textContent = 'Continue, tranquillement.';
+    };
+    $('minesDrapeau').addEventListener('click', e => { drapeauMode = !drapeauMode; e.currentTarget.setAttribute('aria-pressed', String(drapeauMode)); });
+    $('minesRejouer').addEventListener('click', nouvelle);
+    nouvelle();
+  })();
+
+})();
+</script>
+</body>
+</html>
