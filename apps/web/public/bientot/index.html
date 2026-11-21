@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Flemme.org arrive bientôt : publie ce que tu repousses, des membres proposent de s’en charger, et vous fixez le prix à deux.">
+<link rel="icon" type="image/svg+xml" href="/bientot/marque/flemme-ruban.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/bientot/marque/favicon-32.png">
+<link rel="apple-touch-icon" href="/bientot/marque/favicon-180.png">
+<title>Flemme.org en construction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="lp.css">
+<script>document.documentElement.classList.add('js');</script>
+<link rel="stylesheet" href="vc.css">
+
+</head>
+<body class="lp lp-accueil">
+<svg class="lp-sprite" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="frMenthe" x1="0" y1=".82" x2="1" y2=".24"><stop stop-color="#225337"/><stop offset=".30" stop-color="#57d68d"/><stop offset=".53" stop-color="#d7f5e4"/><stop offset=".81" stop-color="#57d68d"/><stop offset="1" stop-color="#3a8f5e"/>
+      <animateTransform attributeName="gradientTransform" type="translate" values="-.18 0; .18 0; -.18 0" dur="7s" repeatCount="indefinite"/></linearGradient>
+    <linearGradient id="frNoir" x1="0" y1=".82" x2="1" y2=".24"><stop/><stop offset=".30"/><stop offset=".53" stop-color="#535353"/><stop offset=".81"/><stop offset="1"/></linearGradient>
+    <linearGradient id="frOmbre" x1="0" y1=".82" x2="1" y2=".24"><stop/><stop offset=".30"/><stop offset=".53" stop-color="#3a3a3a"/><stop offset=".81"/><stop offset="1"/></linearGradient>
+  </defs>
+  <symbol id="flemmeRuban" viewBox="28 14 234 230"><path d="M44 133C48 107 71 88 105 79C120 102 166 110 192 127C217 143 199 154 169 162L117 183C94 207 87 232 45 237C31 239 31 231 34 214L63 174C47 163 41 149 44 133Z" fill="url(#frNoir)" stroke="#737373" stroke-opacity=".5"/><path d="M47 140C48 118 71 101 101 94C115 111 159 118 191 133C201 139 196 145 179 149C143 153 112 162 75 175C54 166 45 153 47 140Z" fill="url(#frOmbre)" stroke="#737373" stroke-opacity=".5"/><path d="M44 147C40 106 55 71 81 55C110 36 153 37 195 33C218 31 240 27 257 18C237 65 211 84 169 89C125 94 62 93 44 147Z" fill="url(#frMenthe)" stroke="#a3e8c0" stroke-opacity=".5"/><path d="M35 235C30 214 42 184 61 171C91 148 134 145 170 142C190 140 204 136 194 127C215 138 202 150 198 172C194 192 165 195 133 202C90 210 58 213 35 235Z" fill="url(#frMenthe)" stroke="#a3e8c0" stroke-opacity=".5"/></symbol>
+</svg>
+
+  <!-- Logo « en chargement » (retours de Ben, 20/11 ; remplace le sablier) : le logo se construit en code façon « matrix ».
+       Le bas est terminé (environ 75 %, comme le chantier) ; le haut reste en lignes de code qui défilent, avec une ligne
+       d’impression qui hésite, avance, recule. Le contour du logo final est esquissé. Fixe à l’écran en haut de page, il s’efface quand on descend. -->
+  <div class="vc-sablier" id="sablierBloc" aria-hidden="true">
+    <svg viewBox="20 6 250 262" focusable="false" id="sablier">
+      <defs><clipPath id="clipConstruit"><rect id="coupeLogo" x="0" y="246" width="300" height="40"/></clipPath></defs>
+      <g class="vc-plan" opacity=".1"><use href="#flemmeRuban" x="28" y="14" width="234" height="230"/></g>
+      <g clip-path="url(#clipConstruit)"><use href="#flemmeRuban" x="28" y="14" width="234" height="230"/></g>
+    </svg>
+    <canvas class="vc-matrix" id="sablierMatrix" aria-hidden="true"></canvas>
+    <!-- Jauge du chantier réunie au logo (retours de Ben, 20/11) : « Construction », sans pourcentage. -->
+    <div class="vc-sab-info" data-cible="75">
+      <b>Construction</b>
+      <span class="vc-jauge vc-sab-jauge"><i id="sabJauge"></i></span>
+      <p>(Parfois on a aussi la Flemme, mais il nous reste du boulot…)</p>
+    </div>
+  </div>
+<a class="vc-defile" id="vcDefile" href="#titreHero"><span>Découvre la suite</span><svg viewBox="0 0 20 12" width="20" height="12" aria-hidden="true"><path d="M2 2l8 8 8-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+<nav class="vc-nav" aria-label="Navigation">
+  <span class="vc-logo-bloc"><a class="vc-logo" href="#haut" aria-label="FLEMME, accueil">FLEMME.</a><span class="vc-badge"><i></i>À bientôt…</span></span>
+  <div class="vc-nav-liens"><a href="#essai">Démo</a></div>
+  <a class="vc-nav-jeu" href="flemmometre.html" aria-label="Patienter : les mini-jeux du Flemmomètre"><span>Patienter</span></a>
+  <div class="vc-nav-liens vc-nav-liens-fin"><a href="#faq">Questions</a></div>
+  <a class="vc-nav-cta" href="/connexion">S’inscrire</a>
+  <button type="button" class="vc-menu-btn" id="vcMenuBtn" aria-expanded="false" aria-controls="vcMenu" aria-label="Menu"><span class="vc-carres" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button>
+  <div class="vc-menu-liste" id="vcMenu" hidden><a href="#essai">Démo</a><a href="flemmometre.html">Patienter</a><a href="#faq">Questions</a><a class="vc-menu-cta" href="/connexion">S’inscrire</a></div>
+  <span class="vc-progres-page" aria-hidden="true"><i id="progresPage"></i></span>
+</nav>
+
+<!-- 1. Hero : fond chromé menthe et logo en relief de l’accueil preprod ; titre tournant ; jauge du chantier (suggestion). -->
+<header class="lp-hero fond-flemme flemme-chrome-home" data-fond="lumiere" id="haut">
+  <div class="lp-hero-contenu">
+    <h1 class="lp-hero-titre" id="titreHero">
+      <span class="lp-rotation" data-rotation="UNE FLEMME,|UNE ANNONCE,|UNE MISSION,"><span class="lp-mot">UNE FLEMME,</span></span>
+      <em>DES SOLUTIONS, (BIENTÔT…)</em>
+    </h1>
+    <div class="lp-hero-bas">
+      <div>
+        <p class="lp-hero-accroche">Flemme ajuste ses derniers réglages pour te mettre en relation. Publie ce que tu repousses, propose ton aide, <span class="lp-souligne">fixe le prix avec l’autre membre</span>&#8239;: tout ça arrive bientôt.</p>
+        <div class="lp-hero-actions">
+          <a class="lp-bouton noir" href="#inscription">SUIVRE L’AVANCEMENT<span class="lp-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="18" height="11"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="lp-bouton contour" href="#essai">ESSAYER LA DÉMO<span class="lp-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="18" height="11"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Ruban de chantier (nouveau) : bande noire et menthe qui défile, inclinée. -->
+<div class="vc-ruban-cadre"><div class="vc-ruban" aria-hidden="true"><div class="vc-ruban-piste">
+  <span>Finalisation en cours</span><span>On se dépêche</span><span>Plateforme indépendante</span><span>Mise en relation de particuliers</span><span>Prix négocié entre membres</span><span>Accord relu et soutien de l’équipe</span><span>Accompagnement de nos équipes</span><span>Transparence et qualité</span>
+  <span>Finalisation en cours</span><span>On se dépêche</span><span>Plateforme indépendante</span><span>Mise en relation de particuliers</span><span>Prix négocié entre membres</span><span>Accord relu et soutien de l’équipe</span><span>Accompagnement de nos équipes</span><span>Transparence et qualité</span>
+</div></div></div>
+
+<main>
+  <!-- 2-3. Le principe en introduction, puis la démo interactive (données fictives, rien n’est envoyé). -->
+  <section class="lp-section lp-teinte vc-modele" id="demo">
+    <div class="vc-demo-tete">
+      <div>
+        <p class="lp-etiquette">Le principe · la démo</p>
+        <h2 class="lp-titre titre-p">Publier, proposer, <em>s’accorder.</em></h2>
+      </div>
+    </div>
+    <div class="lp-args vc-args">
+      <article class="lp-arg revele"><span class="vc-arg-num">01 · Publier</span><span class="lp-arg-chiffre">Plateforme</span><b>Annonces libres et sans limites</b><p>Recherches et choix de missions en autonomie.</p></article>
+      <article class="lp-arg revele"><span class="vc-arg-num">02 · Proposer</span><span class="lp-arg-chiffre">Prix flexibles</span><b>Négociations et conversations privées</b><p>Pour un accord sur le prix de la mission.</p></article>
+      <article class="lp-arg revele"><span class="vc-arg-num">03 · S’accorder</span><span class="lp-arg-chiffre">Contrats signés</span><b>Finalisation des conditions et détails de la mission</b><p>Qualité de service et protection des utilisateurs.</p></article>
+    </div>
+
+    <div class="vc-demo-intro" id="essai">
+      <h3 class="vc-sous-titre">Essaie et <em>prends de l’avance.</em><sup class="vc-asterisque" aria-hidden="true">*</sup></h3>
+      <p class="vc-note-demo">* Démo avec des annonces d’exemple. <a href="/connexion">Inscris-toi</a> pour garder les tiennes, <a href="#contact">écris-nous</a> tes idées.</p>
+    </div>
+
+    <div class="vc-demo revele">
+      <div class="vc-onglets" role="tablist" aria-label="Démo">
+        <button type="button" class="lp-bouton vc-onglet-btn" role="tab" id="ongletDepot" aria-controls="voletDepot" aria-selected="true">DÉLÉGUER<span class="lp-fleche vc-ico-onglet" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3"/><path d="M2 13a2 2 0 0 1 4 0v2h12v-2a2 2 0 0 1 4 0v5H2z"/><path d="M5 18v2M19 18v2"/></svg></span></button>
+        <button type="button" class="lp-bouton vc-onglet-btn" role="tab" id="ongletRecherche" aria-controls="voletRecherche" aria-selected="false">RÉSOUDRE<span class="lp-fleche vc-ico-onglet" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button>
+        <span class="vc-demo-note">Démo · rien n’est publié</span>
+      </div>
+
+      <div class="vc-volet" id="voletDepot" role="tabpanel" aria-labelledby="ongletDepot">
+        <div class="vc-grille-depot">
+          <form id="formDepot" novalidate>
+            <div class="vc-depot-tete">
+              <div class="vc-depot-progres" aria-hidden="true"><i id="depotBarre"></i></div>
+              <span id="depotEtape">Étape 1 sur 5</span>
+              <button type="button" class="vc-lien-exemple" id="btnExemple">Remplir avec un exemple</button>
+            </div>
+            <div class="vc-etape ouverte" data-etape="1">
+              <button type="button" class="vc-etape-teaser" tabindex="-1"><b>1</b><span>Ta flemme en une phrase</span><small>ce que tu repousses depuis trop longtemps</small></button>
+              <div class="vc-etape-corps"><div>
+                <div class="vc-champ">
+                  <label for="dTitre">Ta flemme en une phrase</label>
+                  <input class="vc-input" id="dTitre" maxlength="70" autocomplete="off">
+                </div>
+                <p class="vc-aide">Un verbe d’action et l’objet, c’est tout. Le titre est ce que les membres voient en premier.</p>
+              </div></div>
+            </div>
+            <div class="vc-etape" data-etape="2">
+              <button type="button" class="vc-etape-teaser" tabindex="-1"><b>2</b><span>Le résultat attendu</span><small>à quoi ressemble « c’est fait »</small></button>
+              <div class="vc-etape-corps"><div>
+                <div class="vc-champ">
+                  <label for="dDesc">Le résultat attendu <small>(quelques lignes suffisent)</small></label>
+                  <textarea class="vc-textarea" id="dDesc" maxlength="220"></textarea>
+                </div>
+                <p class="vc-aide">Dis ce que tu veux obtenir à la fin, pas comment le faire. Dates, quantités, contraintes : ce qui aide à proposer un prix juste.</p>
+              </div></div>
+            </div>
+            <div class="vc-etape" data-etape="3">
+              <button type="button" class="vc-etape-teaser" tabindex="-1"><b>3</b><span>La catégorie</span><small>pour que les bonnes personnes la trouvent</small></button>
+              <div class="vc-etape-corps"><div>
+                <div class="vc-champ">
+                  <span class="vc-leg" id="legCat">Catégorie</span>
+                  <div class="vc-puces" role="group" aria-labelledby="legCat" data-groupe="cat">
+                    <button type="button" class="vc-puce" aria-pressed="false" data-val="Maison">Maison</button>
+                    <button type="button" class="vc-puce" aria-pressed="false" data-val="Numérique">Numérique</button>
+                    <button type="button" class="vc-puce" aria-pressed="false" data-val="Démarches">Démarches</button>
+                    <button type="button" class="vc-puce" aria-pressed="false" data-val="Organisation">Organisation</button>
+                  </div>
+                </div>
+                <p class="vc-aide">Un seul choix. Tu pourras la changer tant que l’annonce n’est pas relue.</p>
+              </div></div>
+            </div>
+            <div class="vc-etape" data-etape="4">
+              <button type="button" class="vc-etape-teaser" tabindex="-1"><b>4</b><span>Où ça se passe</span><small>chez toi ou à distance</small></button>
+              <div class="vc-etape-corps"><div>
+                <div class="vc-ligne2">
+                  <div class="vc-champ">
+                    <span class="vc-leg" id="legLieu">Où&#8239;?</span>
+                    <div class="vc-puces" role="group" aria-labelledby="legLieu" data-groupe="lieu">
+                      <button type="button" class="vc-puce" aria-pressed="false" data-val="Sur place">Sur place</button>
+                      <button type="button" class="vc-puce" aria-pressed="false" data-val="À distance">À distance</button>
+                    </div>
+                  </div>
+                  <div class="vc-champ" id="champVille">
+                    <label for="dVille">Ville <small>(l’adresse reste privée)</small></label>
+                    <input class="vc-input" id="dVille" maxlength="30" autocomplete="off">
+                  </div>
+                </div>
+                <p class="vc-aide">Seule la ville est publique. L’adresse exacte n’est partagée qu’avec la personne que tu choisis.</p>
+              </div></div>
+            </div>
+            <div class="vc-etape" data-etape="5">
+              <button type="button" class="vc-etape-teaser" tabindex="-1"><b>5</b><span>Ton budget et c’est parti</span><small>facultatif : le prix se fixe ensemble</small></button>
+              <div class="vc-etape-corps"><div>
+                <div class="vc-champ">
+                  <label for="dBudget">Budget indicatif <small>(facultatif)</small> : <b id="budgetTxt">à discuter</b></label>
+                  <input class="vc-curseur" type="range" id="dBudget" min="0" max="200" step="5" value="0">
+                </div>
+                <p class="vc-aide">Un repère, pas un engagement : les membres te font une proposition et tu fixes le prix avec celui ou celle que tu choisis.</p>
+                <div class="vc-actions">
+              <button type="submit" class="lp-bouton noir" id="btnPublier">Publier (démo)<span class="lp-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="18" height="11"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+              <button type="button" class="lp-bouton contour" id="btnRecommencer" hidden>Recommencer</button>
+            </div>
+              </div></div>
+            </div>
+          </form>
+
+          <div>
+            <div class="vc-apercu-tete"><span>Aperçu de ton annonce</span><span id="etatAnnonce">Brouillon</span></div>
+            <article class="vc-annonce" id="annonce" aria-live="polite">
+              <span class="vc-tampon" id="tampon">Relue ✓</span>
+              <span class="vc-meta" id="aMeta">Catégorie · lieu</span>
+              <h3 id="aTitre"></h3>
+              <p id="aDesc"></p>
+              <div class="vc-annonce-pied"><span class="vc-pastille" id="aBudget">Budget à discuter</span><span class="vc-pastille">Sans délai imposé</span></div>
+              <ol class="vc-etapes-publi" id="etapesPubli"><li>Envoyée</li><li>Relue par l’équipe</li><li>En ligne</li></ol>
+            </article>
+            <div class="vc-offres" id="offres" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="vc-volet" id="voletRecherche" role="tabpanel" aria-labelledby="ongletRecherche" hidden>
+        <div class="vc-recherche">
+          <label class="lp-sprite" for="rTexte">Rechercher une flemme</label>
+          <input class="vc-input" id="rTexte" type="search" placeholder="Ex. : meuble, CV, courrier, déménagement…" autocomplete="off">
+        </div>
+        <div class="vc-puces" role="group" aria-label="Filtrer" style="margin-top:12px" data-groupe="filtre">
+          <button type="button" class="vc-puce" aria-pressed="true" data-val="">Toutes</button>
+          <button type="button" class="vc-puce" aria-pressed="false" data-val="Maison">Maison</button>
+          <button type="button" class="vc-puce" aria-pressed="false" data-val="Numérique">Numérique</button>
+          <button type="button" class="vc-puce" aria-pressed="false" data-val="Démarches">Démarches</button>
+          <button type="button" class="vc-puce" aria-pressed="false" data-val="Organisation">Organisation</button>
+          <button type="button" class="vc-puce" aria-pressed="false" data-val="distance" id="filtreDistance">À distance seulement</button>
+        </div>
+        <p class="vc-compte" aria-live="polite"><b id="rCompte">9</b> <span id="rCompteTxt">flemmes attendent quelqu’un</span> · exemples fictifs</p>
+        <div class="vc-resultats" id="resultats"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Flemmomètre (suggestion) : aperçu des mini-jeux, la page complète est flemmometre.html (bouton dans le menu). -->
+  <section class="lp-section" id="flemmometre">
+    <div class="vc-entete-section"><p class="lp-etiquette">Pour patienter</p></div>
+    <h2 class="lp-titre titre-p">Flemme de <em>patienter</em>&#8239;?</h2>
+    <p class="lp-intro">Sept mini-jeux pour mesurer ta flemme sans te fatiguer. Le gagnant est souvent celui qui en fait le moins.</p>
+    <div class="vc-jeux-grille">
+      <a class="vc-jeu-carte revele" href="flemmometre.html#test"><svg class="vc-jeu-ico" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true" focusable="false"><defs><linearGradient id="jxtest" x1="0" y1="0" x2="1" y2="1"><stop offset="0.00" stop-color="#57d68d"/><stop offset="1.00" stop-color="#225337"/></linearGradient><linearGradient id="jxtestb" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff" stop-opacity=".45"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#jxtest)"/><rect x="17" y="13" width="30" height="39" rx="5" fill="#fff"/><rect x="25" y="9" width="14" height="8" rx="3" fill="#121212"/><path d="M22 27l4 4 7-8" fill="none" stroke="#3a8f5e" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><rect x="22" y="38" width="20" height="3.4" rx="1.7" fill="#a3e8c0"/><rect x="22" y="44" width="13" height="3.4" rx="1.7" fill="#d7f5e4"/><circle cx="46" cy="46" r="10" fill="#121212"/><text x="46" y="51" text-anchor="middle" font-family="Space Grotesk, system-ui, sans-serif" font-weight="700" font-size="14" fill="#57d68d">?</text><rect width="64" height="64" rx="16" fill="url(#jxtestb)"/></svg><span class="vc-meta">Questionnaire · 1 min</span><b>Le test express</b><small>Quel flemmard es-tu vraiment&#8239;?</small></a>
+      <a class="vc-jeu-carte revele" href="flemmometre.html#marche"><svg class="vc-jeu-ico" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true" focusable="false"><defs><linearGradient id="jxmarche" x1="0" y1="0" x2="1" y2="1"><stop offset="0.00" stop-color="#17251d"/><stop offset="1.00" stop-color="#121212"/></linearGradient><linearGradient id="jxmarcheb" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff" stop-opacity=".45"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#jxmarche)"/><path d="M26 64L30 26h4l4 38z" fill="#225337"/><path d="M32 30v5M32 41v6M32 53v8" stroke="#d7f5e4" stroke-width="1.6" stroke-linecap="round"/><circle cx="47" cy="17" r="5" fill="#57d68d" opacity=".9"/><path d="M12 44c0-4 3-7 6-7 2 0 3 2 5 3l7 3c3 1 5 2 5 5v2H12z" fill="#fff"/><path d="M12 49h23v3H12z" fill="#57d68d"/><path d="M19 41l2 3M23 42l1.6 2.6" stroke="#121212" stroke-width="1.4" stroke-linecap="round"/><rect width="64" height="64" rx="16" fill="url(#jxmarcheb)"/></svg><span class="vc-meta">Course · sans fin</span><b>La grande marche</b><small>Chaque question te ralentit… ou pas.</small></a>
+      <a class="vc-jeu-carte revele" href="flemmometre.html#canape"><svg class="vc-jeu-ico" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true" focusable="false"><defs><linearGradient id="jxcanape" x1="0" y1="0" x2="1" y2="1"><stop offset="0.00" stop-color="#d7f5e4"/><stop offset="1.00" stop-color="#57d68d"/></linearGradient><linearGradient id="jxcanapeb" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff" stop-opacity=".45"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#jxcanape)"/><rect x="13" y="24" width="38" height="16" rx="6" fill="#3a8f5e"/><rect x="8" y="31" width="10" height="16" rx="4" fill="#225337"/><rect x="46" y="31" width="10" height="16" rx="4" fill="#225337"/><rect x="16" y="36" width="32" height="10" rx="3" fill="#57d68d"/><path d="M14 47v5M50 47v5" stroke="#121212" stroke-width="3" stroke-linecap="round"/><text x="46" y="20" font-family="Space Grotesk, system-ui, sans-serif" font-weight="700" font-size="12" fill="#121212">z</text><text x="51" y="13" font-family="Space Grotesk, system-ui, sans-serif" font-weight="700" font-size="9" fill="#225337">z</text><rect width="64" height="64" rx="16" fill="url(#jxcanapeb)"/></svg><span class="vc-meta">Immobilité · record</span><b>Le défi du canapé</b><small>Ne touche plus à rien.</small></a>
+      <a class="vc-jeu-carte revele" href="flemmometre.html#corvees"><svg class="vc-jeu-ico" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true" focusable="false"><defs><linearGradient id="jxcorvees" x1="0" y1="0" x2="1" y2="1"><stop offset="0.00" stop-color="#ffffff"/><stop offset="1.00" stop-color="#a3e8c0"/></linearGradient><linearGradient id="jxcorveesb" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff" stop-opacity=".45"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#jxcorvees)"/><path d="M18 9h7v10l4 4c2 2 0 6-3 5l-7-3c-2-1-2-3-1-4z" fill="#3a8f5e" transform="rotate(-14 22 18)"/><rect x="37" y="13" width="14" height="9" rx="2.5" fill="#57d68d" transform="rotate(12 44 17)"/><rect x="37" y="18" width="14" height="4" rx="1.5" fill="#225337" transform="rotate(12 44 17)"/><path d="M30 30v4M34 28v6" stroke="#225337" stroke-width="1.6" stroke-linecap="round" opacity=".6"/><path d="M12 38h40l-5 16H17z" fill="#121212"/><path d="M12 38h40" stroke="#57d68d" stroke-width="3" stroke-linecap="round"/><path d="M22 43l2 7M32 43v7M42 43l-2 7" stroke="#3a8f5e" stroke-width="1.8" stroke-linecap="round"/><rect width="64" height="64" rx="16" fill="url(#jxcorveesb)"/></svg><span class="vc-meta">Réflexes · 30 s</span><b>Attrape les corvées</b><small>Délègue-les avant qu’elles tombent.</small></a>
+      <a class="vc-jeu-carte revele" href="flemmometre.html#excuses"><svg class="vc-jeu-ico" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true" focusable="false"><defs><linearGradient id="jxexcuses" x1="0" y1="0" x2="1" y2="1"><stop offset="0.00" stop-color="#57d68d"/><stop offset="1.00" stop-color="#225337"/></linearGradient><linearGradient id="jxexcusesb" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff" stop-opacity=".45"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#jxexcuses)"/><path d="M12 18a7 7 0 0 1 7-7h26a7 7 0 0 1 7 7v16a7 7 0 0 1-7 7H28l-9 8v-8a7 7 0 0 1-7-7z" fill="#fff"/><circle cx="23" cy="26" r="3" fill="#225337"/><circle cx="32" cy="26" r="3" fill="#3a8f5e"/><circle cx="41" cy="26" r="3" fill="#57d68d"/><path d="M50 40l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#121212"/><rect width="64" height="64" rx="16" fill="url(#jxexcusesb)"/></svg><span class="vc-meta">Générateur</span><b>L’excuse parfaite</b><small>Pour ne pas le faire, avec style.</small></a>
+      <a class="vc-jeu-carte revele" href="flemmometre.html#serpent"><svg class="vc-jeu-ico" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true" focusable="false"><defs><linearGradient id="jxserpent" x1="0" y1="0" x2="1" y2="1"><stop offset="0.00" stop-color="#17251d"/><stop offset="1.00" stop-color="#121212"/></linearGradient><linearGradient id="jxserpentb" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff" stop-opacity=".45"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#jxserpent)"/><path d="M8 21h48M8 32h48M8 43h48M21 8v48M32 8v48M43 8v48" stroke="#225337" stroke-width=".8" opacity=".7"/><path d="M14 48h12a6 6 0 0 0 0-12H38a6 6 0 0 0 0-12H44" fill="none" stroke="#57d68d" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="46" cy="24" r="5.5" fill="#57d68d"/><path d="M44 23.5h2.5M47.5 23.5h1.6" stroke="#121212" stroke-width="1.3" stroke-linecap="round"/><rect x="13" y="13" width="7" height="7" rx="2" fill="#d7f5e4"/><text x="50" y="14" font-family="Space Grotesk, system-ui, sans-serif" font-weight="700" font-size="9" fill="#a3e8c0">z</text><rect width="64" height="64" rx="16" fill="url(#jxserpentb)"/></svg><span class="vc-meta">Classique revisité</span><b>Le serpent paresseux</b><small>Il avance lentement, très lentement.</small></a>
+      <a class="vc-jeu-carte revele" href="flemmometre.html#demineur"><svg class="vc-jeu-ico" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true" focusable="false"><defs><linearGradient id="jxdemineur" x1="0" y1="0" x2="1" y2="1"><stop offset="0.00" stop-color="#d7f5e4"/><stop offset="1.00" stop-color="#57d68d"/></linearGradient><linearGradient id="jxdemineurb" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff" stop-opacity=".45"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#jxdemineur)"/><rect x="11" y="11" width="42" height="42" rx="7" fill="#fff"/><path d="M25 11v42M39 11v42M11 25h42M11 39h42" stroke="#d7f5e4" stroke-width="1.6"/><rect x="12" y="12" width="12" height="12" rx="3" fill="#a3e8c0"/><rect x="40" y="40" width="12" height="12" rx="3" fill="#a3e8c0"/><rect x="26" y="40" width="12" height="12" rx="3" fill="#a3e8c0"/><text x="32" y="36.5" text-anchor="middle" font-family="Space Grotesk, system-ui, sans-serif" font-weight="700" font-size="11" fill="#3a8f5e">2</text><text x="18" y="50.5" text-anchor="middle" font-family="Space Grotesk, system-ui, sans-serif" font-weight="700" font-size="11" fill="#225337">1</text><circle cx="46" cy="18" r="6" fill="#121212"/><path d="M46 9.5v3M46 23.5v3M37.5 18h3M51.5 18h3M40 12l2 2M50 22l2 2M52 12l-2 2M42 22l-2 2" stroke="#121212" stroke-width="1.8" stroke-linecap="round"/><circle cx="44" cy="16" r="1.6" fill="#57d68d"/><rect width="64" height="64" rx="16" fill="url(#jxdemineurb)"/></svg><span class="vc-meta">Classique revisité</span><b>Le démineur de corvées</b><small>Évite les corvées cachées.</small></a>
+    </div>
+    <a class="lp-bouton noir" href="flemmometre.html" style="margin-top:26px">Ouvrir le flemmomètre<span class="lp-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="18" height="11"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+  </section>
+
+  <!-- 8. Encart d’inscription : création de compte dès maintenant = entrée dans la bêta (démo, rien n’est enregistré). -->
+  <section class="lp-section" id="inscription">
+    <div class="vc-inscription">
+      <div>
+        <p class="lp-etiquette">Bêta ouverte aux inscrits</p>
+        <h2 class="lp-titre titre-p">Crée ton compte, <em>tu es dans la bêta.</em></h2>
+        <p class="lp-intro">Pas besoin d’attendre&#8239;: crée ton compte dès maintenant, enregistre tes annonces et tes recherches, elles t’attendront à l’ouverture. En t’inscrivant, tu fais partie de la bêta et ton avis nous aide à finir le chantier.</p>
+        <ul class="vc-preuves">
+          <li>Ton compte garde tes annonces et tes recherches pour plus tard.</li>
+          <li>Créer un compte, publier et proposer sont gratuits.</li>
+          <li>Un e-mail à l’ouverture, pas de newsletter cachée. Tu peux supprimer ton compte quand tu veux.</li>
+        </ul>
+      </div>
+      <div class="vc-boite revele" id="boite">
+        <div class="vc-compte-reel">
+          <svg viewBox="0 0 234 230" aria-hidden="true" width="56" height="56"><use href="#flemmeRuban"/></svg>
+          <h3>Ton compte Flemme, c’est par ici.</h3>
+          <p>L’inscription se fait sur le vrai espace Flemme&#8239;: une adresse e-mail, un mot de passe, et un lien de confirmation par e-mail. Un seul compte pour déléguer et pour résoudre.</p>
+          <a class="lp-bouton noir" href="/connexion" style="width:100%">Créer mon compte<span class="lp-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="18" height="11"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <p class="vc-compte-deja">Déjà inscrit&#8239;? <a class="lp-lien vc-lien" href="/connexion">Se connecter</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- 10. FAQ (suggestion) : réponses alignées sur la v2.0.0 (mise en relation ouverte). -->
+  <section class="lp-section" id="faq">
+    <div class="vc-entete-section"><p class="lp-etiquette">Questions fréquentes</p></div>
+    <h2 class="lp-titre titre-p">Les questions <em>qu’on se pose déjà.</em></h2>
+    <div class="vc-faq">
+      <details open><summary>Flemme, c’est quoi exactement&#8239;?</summary><p>Une plateforme de mise en relation. Tu publies une tâche que tu repousses, des membres te proposent de s’en charger, tu fixes le prix et le délai avec ton ou ta Brigadier, puis vous signez tous les deux un accord relu par l’équipe Flemme.</p></details>
+      <details><summary>Quand est-ce que ça ouvre&#8239;?</summary><p>L’ouverture est visée pour janvier 2027. D’ici là, tu peux déjà créer ton compte&#8239;: tu fais partie de la bêta, tu enregistres tes annonces et tes recherches, et on te prévient le jour J.</p></details>
+      <details><summary>Combien ça coûte&#8239;?</summary><p>Publier une flemme et proposer ton aide sont gratuits. Tu négocies le prix de la mission directement avec l’autre membre. Des frais de plateforme s’ajoutent seulement à la signature, et ils sont affichés avant de signer.</p></details>
+      <details><summary>Est-ce que Flemme garantit le résultat&#8239;?</summary><p>Non. La mission est réalisée par un membre, pas par Flemme. Flemme relit les annonces et l’accord, garde les échanges et le paiement au même endroit, et examine le dossier en cas de désaccord.</p></details>
+      <details><summary>Qui pourra résoudre les flemmes&#8239;?</summary><p>Tout membre inscrit peut proposer son aide sur une demande publiée, à distance ou sur place. Chaque proposition est relue avant d’être visible.</p></details>
+    </div>
+  </section>
+
+  <!-- 11-12. Appel final et contact réunis (retour de Ben, 20/11) : texte « Une flemme en tête ? », collines menthe qui montent, formulaire. -->
+  <section class="lp-fin fond-flemme vc-fin-contact vc-contact-uni" data-fond="clair" id="contact">
+    <div class="ff-decor" aria-hidden="true"></div>
+    <div class="lp-collines" aria-hidden="true"><i></i><i></i><i></i></div>
+    <p class="lp-etiquette">Une flemme en tête&#8239;?</p>
+    <h2 class="lp-titre titre-p">Note-la quelque part, <em>on arrive bientôt.</em></h2>
+    <p class="lp-intro">D’ici là, écris-nous&#8239;: on la garde sur notre liste et on te prévient dès que tu peux la publier. Une question ou une idée&#8239;? Même formulaire.</p>
+    <form class="lp-contact-boite revele vc-contact-form" id="formContact" novalidate>
+      <div class="vc-contact-tete">
+        <p class="vc-contact-mail-ligne"><b class="lp-contact-mail" id="contactMail">bonjour@flemme.org</b> <button type="button" class="vc-lien-copier" id="copier">Copier l’adresse</button><span class="vc-copie-note" id="copieNote" aria-live="polite"></span></p>
+      </div>
+      <div class="vc-ligne2">
+        <div class="vc-champ"><label for="kNom">Prénom</label><input class="vc-input" id="kNom" autocomplete="given-name" maxlength="40"></div>
+        <div class="vc-champ"><label for="kMail">Ton e-mail</label><input class="vc-input" id="kMail" type="email" autocomplete="email" placeholder="prenom@exemple.fr"></div>
+      </div>
+      <div class="vc-champ"><label for="kMsg">Ton message</label><textarea class="vc-textarea" id="kMsg" rows="3" maxlength="1500" placeholder="Une question, une idée, un truc qui te fait lever un sourcil…"></textarea></div>
+      <p class="vc-erreur" id="kErreur" aria-live="polite"></p>
+      <div class="vc-contact-envoi">
+        <button type="submit" class="lp-bouton noir">Envoyer<span class="lp-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="18" height="11"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+        <p class="vc-contact-note">L’envoi ouvre ta messagerie avec le message prêt, adressé à bonjour@flemme.org.</p>
+      </div>
+    </form>
+  </section>
+
+
+  <p class="vc-sr">Ouverture en janvier 2027.</p>
+  <div class="lp-marque vc-marque" aria-hidden="true"><svg viewBox="0 0 234 230"><use href="#flemmeRuban"/></svg><span class="vc-marque-bloc"><span class="vc-marque-date"><span class="vc-marque-date-txt">Ouverture en janvier</span> <span class="vc-annee"><span class="vc-annee-fixe">202</span><span class="vc-annee-roule"><span>6</span><span>7</span></span></span></span><span class="vc-marque-mot"><i style="--k:0">F</i><i style="--k:1">L</i><i style="--k:2">E</i><i style="--k:3">M</i><i style="--k:4">M</i><i style="--k:5">E</i><b style="--k:6">.</b></span></span></div>
+</main>
+
+<footer class="vc-pied">
+  <div class="vc-pied-in">
+    <nav aria-label="Informations"><a href="#contact">Contact</a><a href="#faq">FAQ</a><a href="/mentions">Mentions légales</a><a href="/confidentialite">Confidentialité</a><a href="/cgu">CGU</a></nav>
+    <span>© FLEMME 2026 · Plateforme indépendante. Service de mises en relation entre particuliers.</span>
+  </div>
+</footer>
+
+<div class="vc-toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+  const racine = document.documentElement;
+  const reduit = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const observe = 'IntersectionObserver' in window;
+  const $ = id => document.getElementById(id);
+
+  /* ---- Repris de landing-page.ts : hero, titre tournant, mots géants, apparitions, collines ---- */
+  requestAnimationFrame(() => setTimeout(() => racine.classList.add('pret'), 80));
+  const rotation = document.querySelector('[data-rotation]');
+  const mot = rotation && rotation.querySelector('.lp-mot');
+  if (mot && !reduit) {
+    // Machine à écrire (commentaire de Ben, 21/11/2026) : le mot s'efface lettre par lettre puis le suivant se tape.
+    const mots = rotation.dataset.rotation.split('|'); let i = 0;
+    mot.classList.add('vc-tape');
+    const pause = ms => new Promise(r => setTimeout(r, ms));
+    (async () => {
+      for (;;) {
+        await pause(2200);
+        while (document.hidden) await pause(500);
+        let t = mot.textContent;
+        while (t.length) { t = t.slice(0, -1); mot.textContent = t; await pause(45); }
+        await pause(250);
+        i = (i + 1) % mots.length;
+        for (const c of mots[i]) { t += c; mot.textContent = t; await pause(85 + Math.random() * 60); }
+      }
+    })();
+  }
+  document.querySelectorAll('[data-mots]').forEach(el => {
+    const texte = el.textContent.trim(); el.setAttribute('aria-label', texte); el.innerHTML = '';
+    texte.split(' ').forEach((m, k) => { if (k) el.append(' '); const s = document.createElement('span'); s.className = 'm'; s.setAttribute('aria-hidden', 'true'); s.textContent = m; el.append(s); });
+    el.classList.add('revele');
+  });
+  const aReveler = [...document.querySelectorAll('.revele, .titre-p')];
+  if (reduit || !observe) aReveler.forEach(el => el.classList.add('vu'));
+  else {
+    const io = new IntersectionObserver(entrees => {
+      const vis = entrees.filter(e => e.isIntersecting).map(e => e.target);
+      vis.sort((a, b) => { const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect(); return (ra.top - rb.top) || (ra.left - rb.left); });
+      vis.forEach((el, k) => { el.style.setProperty('--cd', `${Math.min(k * .09, .9)}s`); el.classList.add('vu'); io.unobserve(el); });
+    }, { threshold: .15, rootMargin: '0px 0px -8% 0px' });
+    aReveler.forEach(el => io.observe(el));
+  }
+  const fin = document.querySelector('.lp-fin');
+  let attente = 0;
+  const majScroll = () => {
+    attente = 0;
+    const h = document.documentElement.scrollHeight - innerHeight;
+    $('progresPage').style.width = `${h > 0 ? (scrollY / h) * 100 : 0}%`;
+    if (fin && !reduit) { const r = fin.getBoundingClientRect(); const p = Math.min(Math.max((innerHeight - r.top) / (innerHeight + r.height * .4), 0), 1); fin.style.setProperty('--lp-monte', `${(1 - p) * 40}%`); }
+  };
+  addEventListener('scroll', () => { if (!attente) attente = requestAnimationFrame(majScroll); }, { passive: true });
+  majScroll();
+  if (!reduit && matchMedia('(pointer: fine)').matches) document.querySelectorAll('.fond-flemme').forEach(fond => {
+    let c = { x: 0, y: 0 }, a = { x: 0, y: 0 }, img = 0;
+    const pas = () => { a.x += (c.x - a.x) * .06; a.y += (c.y - a.y) * .06; fond.style.setProperty('--ff-x', a.x.toFixed(3)); fond.style.setProperty('--ff-y', a.y.toFixed(3)); img = Math.abs(c.x - a.x) + Math.abs(c.y - a.y) > .002 ? requestAnimationFrame(pas) : 0; };
+    fond.addEventListener('pointermove', e => { const r = fond.getBoundingClientRect(); c = { x: ((e.clientX - r.left) / r.width) * 2 - 1, y: ((e.clientY - r.top) / r.height) * 2 - 1 }; if (!img) img = requestAnimationFrame(pas); });
+    fond.addEventListener('pointerleave', () => { c = { x: 0, y: 0 }; if (!img) img = requestAnimationFrame(pas); });
+  });
+  if (reduit) document.querySelectorAll('svg.lp-sprite').forEach(s => s.pauseAnimations && s.pauseAnimations());
+
+  /* ---- Logo « en chargement » : construction en code matrix (retours de Ben, 20/11) ---- */
+  (() => {
+    const bloc = $('sablierBloc'), cv = $('sablierMatrix'), svg = $('sablier'), coupe = $('coupeLogo');
+    // Rangé (effacé) dès qu’on quitte le haut de page.
+    const majPlace = () => bloc.classList.toggle('compact', scrollY > innerHeight * .35);
+    addEventListener('scroll', majPlace, { passive: true }); majPlace();
+    const formes = [...document.querySelectorAll('#flemmeRuban path')].map((el, i) => ({ p: new Path2D(el.getAttribute('d')), corps: i < 2 }));
+    document.body.classList.add('logo-sablier');
+    const HAUT = 18, BAS = 240, CIBLE = (+document.querySelector('.vc-sab-info')?.dataset.cible || 75) / 100;
+    const ligneCible = BAS - (BAS - HAUT) * CIBLE;          // tout ce qui est sous cette ligne est « construit »
+    if (reduit) { coupe.setAttribute('y', ligneCible); coupe.setAttribute('height', 300); return; }
+    const VB = [20, 6, 250, 262], PX = 7, PY = 8.5, SIGNES = 'FLEMME01{}<>/=;:+*#%zZ01'.split('');
+    const hasard = () => SIGNES[Math.random() * SIGNES.length | 0];
+    let ctx, k, cols = [], t0 = 0, anim = 0, actif = false;
+    const preparer = () => {
+      const r = svg.getBoundingClientRect(); if (!r.width) return false;
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr);
+      ctx = cv.getContext('2d'); k = cv.width / VB[2]; const ky = cv.height / VB[3];
+      ctx.setTransform(k, 0, 0, ky, -VB[0] * k, -VB[1] * ky);
+      cols = [];
+      for (let x = VB[0] + PX / 2; x < VB[0] + VB[2]; x += PX) {
+        const cases = [];
+        for (let y = VB[1] + PY; y < VB[1] + VB[3]; y += PY) {
+          const px = (x - VB[0]) * k, py = (y - VB[1] - PY / 3) * ky;
+          let zone = 0; formes.forEach(f => { if (ctx.isPointInPath(f.p, px, py)) zone = f.corps ? 2 : 1; });
+          cases.push({ y, zone, c: hasard() });
+        }
+        if (cases.some(c => c.zone)) cols.push({ x, cases, retard: Math.random() * 650, vitesse: .55 + Math.random() * .5, decal: Math.random() * 40 });
+      }
+      ctx.font = '600 8px ui-monospace, Menlo, monospace'; ctx.textAlign = 'center';
+      return true;
+    };
+    // Ligne d’impression en boucle (commentaire de Ben, 21/11/2026 : ne pas rester figé à 75 %) :
+    // le code monte et construit le logo jusqu’à un niveau qui change à chaque passage (68 à 94 %), hésite,
+    // puis une partie se « déconstruit » et le chantier reprend. La jauge de la carte suit le niveau.
+    const jauge = $('sabJauge'), CYCLE = 6200, MONTE = 1700, TIENT = 2700, BAS_REPRISE = .3;
+    const cibleDu = n => n === 0 ? CIBLE : .68 + .26 * (((Math.sin(n * 12.9898) * 43758.5453) % 1 + 1) % 1);
+    const doux = x => 1 - Math.pow(1 - x, 3);
+    const fraction = t => {
+      const u = t - 1400; if (u < 0) return -.03;
+      const n = Math.floor(u / CYCLE), v = u - n * CYCLE, haut = cibleDu(n), depart = n === 0 ? -.03 : BAS_REPRISE;
+      if (v < MONTE) return depart + (haut - depart) * doux(v / MONTE);
+      if (v < MONTE + TIENT) return haut + (Math.sin(t / 1300) * 4 + Math.sin(t / 470) * 1.5) / (BAS - HAUT);
+      const w = (v - MONTE - TIENT) / (CYCLE - MONTE - TIENT);
+      return haut - (haut - BAS_REPRISE) * (w * w * (3 - 2 * w));
+    };
+    const niveau = t => {
+      const f = fraction(t);
+      if (jauge) jauge.style.width = (Math.max(0, Math.min(1, f)) * 100).toFixed(1) + '%';
+      return BAS - (BAS - HAUT) * f;
+    };
+    const image = now => {
+      if (!actif) return;
+      const t = now - t0, ligne = niveau(t);
+      coupe.setAttribute('y', ligne.toFixed(1)); coupe.setAttribute('height', 300);
+      ctx.clearRect(VB[0], VB[1], VB[2], VB[3]);
+      cols.forEach(col => {
+        // Pluie : une tête qui descend en boucle dans chaque colonne (au départ, toutes tombent ensemble).
+        const n = col.cases.length + 8, tete = t < 2400 ? (t - col.retard) / 1100 * n : ((t * col.vitesse / 1100 * n / 2.2) + col.decal) % (n + 10);
+        col.cases.forEach((c, j) => {
+          if (c.y > ligne + 2) return;                                   // partie déjà construite : le vrai logo prend le relais
+          const d = tete - j;
+          if (Math.random() < .03) c.c = hasard();
+          const pres = Math.abs(c.y - ligne) < PY * 1.2;                  // rangée en cours d’impression
+          if (c.zone) {
+            const intro = t < 2400 ? Math.min(1, Math.max(0, d) * .3) : 1;
+            if (t < 2400 && d < 0) return;
+            ctx.fillStyle = pres ? '#ffffff' : (d >= 0 && d < 1.2) ? '#d7f5e4' : c.zone === 2 ? '#121212' : '#3a8f5e';
+            ctx.globalAlpha = (pres ? .95 : .55 + .35 * Math.sin((t / 300) + j + col.x)) * intro;
+            if (pres) { ctx.shadowColor = '#57d68d'; ctx.shadowBlur = 6; } else ctx.shadowBlur = 0;
+          } else {
+            if (d < 0 || d > 6) return;
+            ctx.shadowBlur = 0; ctx.fillStyle = d < 1.2 ? '#d7f5e4' : '#57d68d'; ctx.globalAlpha = (1 - d / 6) * (t < 2400 ? .55 : .22);
+          }
+          ctx.fillText(c.c, col.x, c.y);
+        });
+      });
+      ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+      anim = requestAnimationFrame(image);
+    };
+    const lancer = () => {
+      cancelAnimationFrame(anim); actif = false;
+      if (bloc.hidden || bloc.classList.contains('compact') || document.hidden || !preparer()) return;
+      actif = true; t0 = performance.now(); bloc.classList.add('construit'); anim = requestAnimationFrame(image);
+    };
+    const arreter = () => { actif = false; cancelAnimationFrame(anim); };
+    document.addEventListener('vc:sablier', () => requestAnimationFrame(lancer));
+    if (!bloc.hidden) requestAnimationFrame(lancer);
+    let etaitCompact = bloc.classList.contains('compact');
+    addEventListener('scroll', () => { const c = bloc.classList.contains('compact'); if (c && !etaitCompact) arreter(); if (etaitCompact && !c) setTimeout(lancer, 350); etaitCompact = c; }, { passive: true });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) arreter(); else lancer(); });
+    addEventListener('resize', () => { if (actif) lancer(); });
+  })();
+
+  /* ---- Toast ---- */
+  let tm = 0;
+  const toast = txt => { const t = $('toast'); t.textContent = txt; t.classList.add('vu'); clearTimeout(tm); tm = setTimeout(() => t.classList.remove('vu'), 2600); };
+
+
+
+  /* ---- Menu (version 57 validée) : section active, repli au défilement ---- */
+  (() => {
+    const nav = document.querySelector('.vc-nav'); document.body.dataset.menu = '6'; document.body.dataset.variante = 'c'; // bulles flottantes (choix de Ben, 20/11)
+    const liens = [...document.querySelectorAll('.vc-nav-liens a')];
+    const zone = a => { const c = document.querySelector(a.getAttribute('href')); return c && (c.closest('section') || c); }; // le lien Démo vise #essai, dans la section #demo
+    const cibles = liens.map(zone).filter(Boolean);
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(es => es.forEach(e => {
+        const a = liens.find(l => zone(l) === e.target);
+        if (a) a.classList.toggle('actif', e.isIntersecting);
+      }), { rootMargin: '-40% 0px -50% 0px' });
+      cibles.forEach(c => io.observe(c));
+    }
+    let avant = scrollY;
+    addEventListener('scroll', () => {
+      const y = scrollY; nav.classList.toggle('replie', y > 240 && y > avant); if (y < avant - 4 || y < 240) nav.classList.remove('replie'); avant = y;
+    }, { passive: true });
+  })();
+
+  /* ---- Liens et actions texte : noir, gras, soulignés vert ; au survol le trait se redessine (choix de Ben, 20/11) ---- */
+  (() => {
+    document.querySelectorAll('main p a, main h3 a, main li a, .vc-lien-copier, .vc-lien-exemple').forEach(a => a.classList.add('vc-lien'));
+    // Au clic : petite pression.
+    document.addEventListener('pointerdown', e => { const a = e.target.closest('.vc-lien'); if (!a) return; a.classList.remove('presse'); void a.offsetWidth; a.classList.add('presse'); });
+  })();
+
+
+
+
+  /* ---- Grand logo « FLEMME. » : les lettres se lèvent une à une, puis s’étirent de temps en temps ---- */
+  (() => {
+    const m = document.querySelector('.vc-marque'); if (!m) return;
+    if (reduit || !('IntersectionObserver' in window)) { m.classList.add('vu'); return; }
+    // Les lettres qui se lèvent (puis qui s’étirent) tapent par en dessous la pastille « Ouverture en janvier 2027 » :
+    // les caractères juste au-dessus sautent, la pastille se soulève un peu.
+    const txt = m.querySelector('.vc-marque-date-txt'), pastille = m.querySelector('.vc-marque-date');
+    if (txt && pastille) {
+      txt.innerHTML = [...txt.textContent].map(c => c === ' ' ? ' ' : `<span class="vc-tc">${c}</span>`).join('');
+      const cibles = [...txt.querySelectorAll('.vc-tc'), m.querySelector('.vc-annee')].filter(Boolean);
+      const relancer = (el, cls) => { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
+      const taper = lettre => {
+        const r = lettre.getBoundingClientRect(), cx = r.left + r.width / 2, demi = r.width / 2;
+        let touche = false;
+        cibles.forEach(c => {
+          const q = c.getBoundingClientRect(), d = Math.abs(q.left + q.width / 2 - cx) / (demi + q.width / 2);
+          if (d < 1.25) { c.style.setProperty('--force', (1.25 - Math.min(d, 1)) .toFixed(2)); relancer(c, 'tape'); touche = true; }
+        });
+        if (touche) { pastille.style.setProperty('--tx', ((cx - pastille.getBoundingClientRect().left) / pastille.offsetWidth).toFixed(2)); relancer(pastille, 'tape'); }
+      };
+      const lettres = [...m.querySelectorAll('.vc-marque-mot i, .vc-marque-mot b')];
+      // Lever : chaque lettre part à 1 s + k × 110 ms ; elle passe sa position de repos (le « coup ») environ 380 ms plus tard.
+      m.addEventListener('vc:vu', () => lettres.forEach((l, k) => setTimeout(() => taper(l), 1000 + k * 110 + 380)), { once: true });
+      // Étirement : sommet à 87 % de chaque cycle de 7 s.
+      lettres.forEach(l => {
+        const plusTard = e => { if (e.animationName === 'vc-etire') setTimeout(() => taper(l), 6090); };
+        l.addEventListener('animationstart', plusTard); l.addEventListener('animationiteration', plusTard);
+      });
+    }
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { m.classList.add('vu'); m.dispatchEvent(new Event('vc:vu')); io.disconnect(); } }), { threshold: .35 });
+    io.observe(m);
+  })();
+
+  /* ---- Jauge sous le logo : se remplit jusqu’à la valeur du chantier ---- */
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) setTimeout(() => { $('sabJauge').style.width = (+document.querySelector('.vc-sab-info').dataset.cible || 75) + '%'; }, 700);
+
+  /* ---- Puces (groupes à choix unique) ---- */
+  const valeur = g => (document.querySelector(`[data-groupe="${g}"] [aria-pressed="true"]`) || {}).dataset?.val || '';
+  document.querySelectorAll('[data-groupe]').forEach(gr => gr.addEventListener('click', e => {
+    const b = e.target.closest('.vc-puce'); if (!b) return;
+    if (gr.dataset.groupe === 'filtre' && b.id === 'filtreDistance') { b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true')); }
+    else { gr.querySelectorAll('.vc-puce').forEach(x => { if (x.id !== 'filtreDistance') x.setAttribute('aria-pressed', String(x === b)); }); }
+    gr.dispatchEvent(new Event('change', { bubbles: true }));
+  }));
+
+  /* ---- Onglets de la démo ---- */
+  const onglets = [$('ongletDepot'), $('ongletRecherche')], volets = [$('voletDepot'), $('voletRecherche')];
+  const ouvrir = k => { onglets.forEach((o, j) => { o.setAttribute('aria-selected', String(j === k)); o.tabIndex = j === k ? 0 : -1; volets[j].hidden = j !== k; }); };
+  onglets.forEach((o, k) => { o.addEventListener('click', () => ouvrir(k)); o.addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { const n = (k + 1) % 2; ouvrir(n); onglets[n].focus(); } }); });
+
+  /* ---- Démo : dépose ---- */
+  const dT = $('dTitre'), dD = $('dDesc'), dV = $('dVille'), dB = $('dBudget');
+  /* Exemples qui s’écrivent tout seuls, en texte presque transparent, tant que le champ est vide. */
+  const exemples = [
+    ['Organiser mon voyage au Portugal, clé en main', 'Une semaine à deux en mai, de Lisbonne à Porto : vols, logements, train et quelques bonnes adresses. Je veux juste faire ma valise.', 'Organisation', 'À distance', ''],
+    ['Monter deux meubles Ikea ce week-end', 'Une armoire Pax et une commode. Tout est livré, il me manque le courage et une visseuse.', 'Maison', 'Sur place', 'Lyon'],
+    ['Comprendre un courrier des impôts', 'Savoir ce qu’on me demande, quoi répondre et avant quelle date. Le courrier fait deux pages.', 'Démarches', 'À distance', ''],
+    ['Trier vingt cartons avant mon déménagement', 'Garder, donner, jeter : on décide ensemble sur place, un samedi matin.', 'Organisation', 'Sur place', 'Nantes'],
+    ['Refaire mon CV en une page', 'Un CV clair et moderne pour postuler dans la logistique. J’ai déjà toutes les infos.', 'Numérique', 'À distance', '']
+  ];
+  let ex = 0, frappe = 0;
+  const villesEx = ['Lyon', 'Nantes', 'Lille', 'Bordeaux'];
+  const taper = () => {
+    clearTimeout(frappe);
+    const [t, d] = exemples[ex]; let i = 0, j = 0;
+    const pas = () => {
+      if (i <= t.length) { dT.placeholder = 'Ex. : ' + t.slice(0, i); $('aTitre').dataset.ex = t.slice(0, i); i += 1; }
+      else if (j <= d.length) { dD.placeholder = 'Ex. : ' + d.slice(0, j); $('aDesc').dataset.ex = d.slice(0, j); j += 3; }
+      else { frappe = setTimeout(() => { ex = (ex + 1) % exemples.length; dV.placeholder = 'Ex. : ' + villesEx[ex % villesEx.length]; taper(); }, 2600); return; }
+      majAnnonce(); frappe = setTimeout(pas, reduit ? 0 : (i <= t.length ? 45 : 18));
+    };
+    if (reduit) { dT.placeholder = 'Ex. : ' + t; dD.placeholder = 'Ex. : ' + d; $('aTitre').dataset.ex = t; $('aDesc').dataset.ex = d; majAnnonce(); return; }
+    pas();
+  };
+  dV.placeholder = 'Ex. : Lyon';
+
+  /* Le formulaire se déplie au fil du remplissage, ou au survol de l’étape suivante. */
+  const etapesD = [...document.querySelectorAll('#formDepot .vc-etape')];
+  const ouvrirEtape = n => { const e = etapesD[n - 1]; if (e && !e.classList.contains('ouverte')) e.classList.add('ouverte'); majEtapes(); };
+  const majEtapes = () => {
+    const ouvertes = etapesD.filter(e => e.classList.contains('ouverte')).length;
+    etapesD.forEach((e, k) => { if (k === ouvertes && !e.classList.contains('prochaine')) e.dataset.depuis = Date.now(); e.classList.toggle('prochaine', k === ouvertes); });
+    $('depotEtape').textContent = `Étape ${Math.min(ouvertes, 5)} sur 5`;
+    $('depotBarre').style.width = `${ouvertes / 5 * 100}%`;
+  };
+  etapesD.forEach((e, k) => {
+    const t = e.querySelector('.vc-etape-teaser');
+    // Au survol, l’étape suivante s’ouvre ; un court délai évite d’ouvrir toutes les étapes d’un seul passage de souris.
+    t.addEventListener('mouseenter', () => { if (e.classList.contains('prochaine') && Date.now() - (+e.dataset.depuis || 0) > 600) ouvrirEtape(k + 1); });
+    t.addEventListener('click', () => ouvrirEtape(k + 1));
+  });
+  const progression = () => {
+    if (dT.value.trim().length >= 3) ouvrirEtape(2);
+    if (dD.value.trim().length >= 10) ouvrirEtape(3);
+    if (valeur('cat')) ouvrirEtape(4);
+    if (valeur('lieu')) ouvrirEtape(5);
+  };
+  const majAnnonce = () => {
+    const lieu = valeur('lieu'), cat = valeur('cat');
+    $('champVille').style.opacity = lieu === 'À distance' ? .4 : 1; dV.disabled = lieu === 'À distance';
+    const meta = `${cat || 'Catégorie'} · ${lieu === 'À distance' ? 'à distance' : (dV.value.trim() || (lieu ? 'ville à préciser' : 'lieu'))}`;
+    $('aMeta').textContent = meta; $('aMeta').classList.toggle('vc-ex', !cat && !lieu);
+    const tv = dT.value.trim(), dv = dD.value.trim();
+    $('aTitre').textContent = tv || $('aTitre').dataset.ex || 'Ta flemme en une phrase'; $('aTitre').classList.toggle('vc-ex', !tv);
+    $('aDesc').textContent = dv || $('aDesc').dataset.ex || 'Décris le résultat attendu.'; $('aDesc').classList.toggle('vc-ex', !dv);
+    const b = +dB.value; $('budgetTxt').textContent = b ? `autour de ${b} €` : 'à discuter';
+    $('aBudget').textContent = b ? `Budget indicatif ${b} €` : 'Budget à discuter';
+  };
+  ['input', 'change'].forEach(ev => $('formDepot').addEventListener(ev, () => { majAnnonce(); progression(); }));
+  $('btnExemple').addEventListener('click', () => {
+    const [t, d, c, l, v] = exemples[ex];
+    dT.value = t; dD.value = d; dV.value = v;
+    document.querySelectorAll('[data-groupe="cat"] .vc-puce').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.val === c)));
+    document.querySelectorAll('[data-groupe="lieu"] .vc-puce').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.val === l)));
+    etapesD.forEach(e => e.classList.add('ouverte')); majEtapes(); majAnnonce();
+  });
+  majEtapes(); majAnnonce(); taper();
+  let publie = false, minuteurs = [];
+  const etapes = [...$('etapesPubli').children];
+  const reinit = () => {
+    minuteurs.forEach(clearTimeout); minuteurs = []; publie = false;
+    etapes.forEach(e => e.classList.remove('ok')); $('tampon').classList.remove('pose'); $('annonce').classList.remove('vole');
+    $('offres').innerHTML = ''; $('etatAnnonce').textContent = 'Brouillon'; $('btnRecommencer').hidden = true; $('btnPublier').disabled = false;
+  };
+  $('formDepot').addEventListener('submit', e => {
+    e.preventDefault();
+    if (!dT.value.trim()) { dT.focus(); toast('Donne au moins un titre à ta flemme.'); return; }
+    if (publie) return; publie = true; $('btnPublier').disabled = true;
+    const v = reduit ? 0 : 1, lance = (f, t) => minuteurs.push(setTimeout(f, t * v));
+    $('annonce').classList.add('vole');
+    lance(() => { etapes[0].classList.add('ok'); $('etatAnnonce').textContent = 'Envoyée'; }, 150);
+    lance(() => { etapes[1].classList.add('ok'); $('etatAnnonce').textContent = 'En relecture'; $('tampon').classList.add('pose'); }, 1000);
+    lance(() => { etapes[2].classList.add('ok'); $('etatAnnonce').textContent = 'En ligne'; $('annonce').classList.remove('vole'); document.dispatchEvent(new CustomEvent('vc:publie')); }, 1800);
+    const b = +dB.value || 60;
+    const offres = [
+      ['S', 'Sami propose ' + Math.round(b * .9) + ' €', 'Exemple · « J’ai vécu à Lisbonne : itinéraire et réservations en 48 h. »'],
+      ['L', 'Léa propose ' + Math.round(b * 1.1) + ' €', 'Exemple · « Je te propose 3 options de logement et un carnet de route. »']
+    ];
+    offres.forEach((o, k) => lance(() => {
+      const d = document.createElement('div'); d.className = 'vc-offre';
+      d.innerHTML = `<span class="vc-avatar">${o[0]}</span><div><b></b><small></small></div>`;
+      d.querySelector('b').textContent = o[1]; d.querySelector('small').textContent = o[2];
+      $('offres').append(d); requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('vu')));
+    }, 2600 + k * 700));
+    lance(() => { $('btnRecommencer').hidden = false; toast('Démo : tu choisis une offre, ou aucune. Rien n’a été publié.'); }, 4100);
+  });
+  $('btnRecommencer').addEventListener('click', reinit);
+
+  /* ---- Démo : recherche ---- */
+  const annonces = [
+    ['Maison', 'Lyon', 'Monter deux meubles Ikea', 'Outils sur place, dans la semaine.', 'À discuter', 'meuble montage ikea bricolage'],
+    ['Numérique', '', 'Mettre en ligne mon annonce de vélo', 'Photos prêtes, il faut le texte et le prix conseillé.', '15 € environ', 'annonce vente vélo leboncoin'],
+    ['Démarches', '', 'Comprendre un courrier de la CAF', 'Savoir quoi répondre et préparer la réponse.', 'À discuter', 'courrier caf administratif lettre'],
+    ['Organisation', 'Bordeaux', 'Trier vingt cartons avant un déménagement', 'Garder, donner, jeter : on décide sur place.', '80 € environ', 'déménagement cartons tri rangement'],
+    ['Numérique', '', 'Refaire mon CV en une page', 'Un CV clair pour postuler en logistique.', '30 € environ', 'cv emploi candidature mise en page'],
+    ['Maison', 'Lille', 'Fixer trois étagères et une tringle', 'Mur en placo, chevilles à prévoir.', 'À discuter', 'étagère bricolage perceuse fixer'],
+    ['Démarches', '', 'Résilier un abonnement de salle de sport', 'Trouver la bonne adresse et rédiger la lettre.', '10 € environ', 'résiliation abonnement lettre sport'],
+    ['Organisation', '', 'Planifier un week-end à Lisbonne', 'Trois options transport et logement comparées.', '25 € environ', 'voyage week-end lisbonne organisation'],
+    ['Maison', 'Marseille', 'Arroser mes plantes pendant dix jours', 'Un passage tous les deux jours, quartier Castellane.', 'À discuter', 'plantes arrosage vacances']
+  ];
+  const sansAccent = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const rendre = () => {
+    const q = sansAccent($('rTexte').value.trim()), cat = valeur('filtre'), dist = $('filtreDistance').getAttribute('aria-pressed') === 'true';
+    const liste = annonces.filter(a => (!cat || a[0] === cat) && (!dist || !a[1]) && (!q || sansAccent(a.join(' ')).includes(q)));
+    const zone = $('resultats'); zone.innerHTML = '';
+    liste.forEach((a, k) => {
+      const el = document.createElement('article'); el.className = 'vc-annonce'; el.style.animationDelay = `${k * 45}ms`;
+      el.innerHTML = `<span class="vc-meta"></span><h3></h3><p></p><div class="vc-annonce-pied"><span class="vc-pastille"></span></div><button type="button" class="vc-btn-mini">Proposer mon aide</button>`;
+      el.querySelector('.vc-meta').textContent = `${a[0]} · ${a[1] || 'à distance'}`;
+      el.querySelector('h3').textContent = a[2]; el.querySelector('p').textContent = a[3]; el.querySelector('.vc-pastille').textContent = a[4];
+      el.querySelector('button').addEventListener('click', () => toast('Bientôt ! Tu proposeras ton prix et ce que tu inclus.'));
+      zone.append(el);
+    });
+    if (!liste.length) { const v = document.createElement('p'); v.className = 'vc-vide'; v.textContent = 'Aucune flemme ne correspond. Même les flemmes ont parfois la flemme d’exister.'; zone.append(v); }
+    $('rCompte').textContent = liste.length;
+    $('rCompteTxt').textContent = liste.length > 1 ? 'flemmes attendent quelqu’un' : liste.length ? 'flemme attend quelqu’un' : 'flemme trouvée';
+  };
+  $('rTexte').addEventListener('input', rendre);
+  document.querySelector('[data-groupe="filtre"]').addEventListener('change', rendre);
+  rendre();
+
+
+
+  /* Compte à rebours retiré (commentaire de Ben) : la date « Ouverture en janvier 2027 » est intégrée au logo FLEMME de fin de page. */
+
+  /* ---- Formulaire de contact : ouvre la messagerie avec le message prêt (aucun envoi par la page) ---- */
+  $('formContact').addEventListener('submit', e => {
+    e.preventDefault();
+    const err = $('kErreur'), nom = $('kNom').value.trim(), mail = $('kMail').value.trim(), msg = $('kMsg').value.trim();
+    err.textContent = '';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail)) { err.textContent = 'Il manque une adresse e-mail valide pour te répondre.'; $('kMail').focus(); return; }
+    if (msg.length < 5) { err.textContent = 'Ton message est un peu court, même pour un flemmard.'; $('kMsg').focus(); return; }
+    const sujet = 'Question depuis flemme.org' + (nom ? ' — ' + nom : '');
+    location.href = 'mailto:bonjour@flemme.org?subject=' + encodeURIComponent(sujet) + '&body=' + encodeURIComponent(msg + '\n\n' + (nom || '') + ' <' + mail + '>');
+    toast('Ta messagerie s’ouvre avec ton message. Il ne reste qu’à l’envoyer.');
+  });
+
+  /* ---- Copier l’adresse ---- */
+  $('copier').addEventListener('click', () => {
+    const note = $('copieNote');
+    Promise.resolve().then(() => navigator.clipboard.writeText($('contactMail').textContent))
+      .then(() => note.textContent = 'Adresse copiée.')
+      .catch(() => { getSelection().selectAllChildren($('contactMail')); note.textContent = 'Adresse sélectionnée : copie-la avec Ctrl+C ou ⌘C.'; });
+  });
+
+})();
+</script>
+<script>
+/* Menu déroulant sur mobile (commentaire de Ben, 21/11/2026) : les 4 boutons de la version ordinateur. */
+(() => {
+  const btn = document.getElementById('vcMenuBtn'), liste = document.getElementById('vcMenu');
+  if (!btn || !liste) return;
+  const fermer = () => { liste.hidden = true; btn.setAttribute('aria-expanded', 'false'); };
+  btn.addEventListener('click', e => { e.stopPropagation(); btn.classList.remove('bouge'); void btn.offsetWidth; btn.classList.add('bouge'); const ouvert = liste.hidden; liste.hidden = !ouvert; btn.setAttribute('aria-expanded', String(ouvert)); });
+  liste.addEventListener('click', e => { if (e.target.closest('a')) fermer(); });
+  document.addEventListener('click', e => { if (!liste.hidden && !liste.contains(e.target)) fermer(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !liste.hidden) { fermer(); btn.focus(); } });
+})();
+</script>
+<script>
+/* Mobile : le logo en construction occupe le premier écran ; l'indication « Découvre la suite » s'efface dès qu'on défile. */
+(() => { const d = document.getElementById('vcDefile'); if (!d) return; const maj = () => d.classList.toggle('cache', scrollY > 40); addEventListener('scroll', maj, { passive: true }); maj(); })();
+</script>
+</body>
+</html>
