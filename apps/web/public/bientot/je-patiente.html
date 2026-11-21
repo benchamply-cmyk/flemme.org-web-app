@@ -6,7 +6,7 @@
 <link rel="icon" type="image/svg+xml" href="/bientot/marque/flemme-ruban.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="/bientot/marque/favicon-32.png">
 <link rel="apple-touch-icon" href="/bientot/marque/favicon-180.png">
-<title>Flemmomètre</title>
+<title>Je patiente</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap">
@@ -18,7 +18,7 @@
 body { margin: 0; }
 [hidden] { display: none !important; }
 .vc-ancre { position: relative; top: -90px; display: block; }
-/* Page Flemmomètre : composants des mini-jeux (le reste vient de lp.css et vc.css). */
+/* Page « Je patiente » : composants des mini-jeux (le reste vient de lp.css et vc.css). */
 .vc-fm-hero { padding-top: 130px; }
 /* Même fond que l’accueil (rubans soyeux de .flemme-chrome-home), retour de Ben 21/11. */
 .vc-fm-hero.flemme-chrome-home{--flemme-ribbon-tone:saturate(1.05);--flemme-ribbon-opacity:.9;background:#fff}
@@ -71,7 +71,7 @@ body { margin: 0; }
 </style>
 </head>
 <body class="lp lp-accueil" data-menu="6" data-variante="c">
-<!-- Page Flemmomètre (aperçu, 20/11/2026) : tous les mini-jeux, accessibles par le bouton « Flemmomètre » du menu. -->
+<!-- Page « Je patiente » (aperçu, 20/11/2026) : tous les mini-jeux, accessibles par le bouton « Je patiente » du menu. -->
 <nav class="vc-nav" aria-label="Navigation">
   <span class="vc-logo-bloc"><a class="vc-logo" href="./" aria-label="FLEMME, accueil">FLEMME.</a><span class="vc-badge"><i></i>À bientôt…</span></span>
   <div class="vc-nav-liens"><a href="./#essai">Démo</a></div>
@@ -83,7 +83,7 @@ body { margin: 0; }
 </nav>
 
 <header class="lp-section vc-fm-hero fond-flemme flemme-chrome-home" data-fond="lumiere" id="haut">
-  <p class="lp-etiquette">Le flemmomètre</p>
+  <p class="lp-etiquette">Je patiente</p>
   <h1 class="lp-titre titre-p">Six façons de mesurer ta flemme, <em>sans te fatiguer.</em></h1>
   <p class="lp-intro">Pendant qu’on termine le chantier, voici de quoi s’occuper un peu. Ou beaucoup, on ne juge pas.</p>
   <nav class="vc-sommaire" aria-label="Les jeux">
@@ -108,7 +108,7 @@ body { margin: 0; }
         </svg>
       </div><p class="vc-cadran-legende" id="cadranLegende">Reste immobile, l’aiguille fait le reste.</p></div>
       <div class="vc-fm">
-        <div class="vc-fm-onglets" role="tablist" aria-label="Flemmomètre" hidden>
+        <div class="vc-fm-onglets" role="tablist" aria-label="Je patiente" hidden>
           <button type="button" class="vc-onglet" role="tab" id="fmOngletQuiz" aria-controls="fmQuiz" aria-selected="false" hidden>Le test express</button>
           <button type="button" class="vc-onglet" role="tab" id="fmOngletDefi" aria-controls="fmDefi" aria-selected="true">Le défi du canapé</button>
         </div>
@@ -255,7 +255,7 @@ body { margin: 0; }
   let tm = 0;
   const toast = txt => { const t = $('toast'); t.textContent = txt; t.classList.add('vu'); clearTimeout(tm); tm = setTimeout(() => t.classList.remove('vu'), 2400); };
 
-  /* ---- Flemmomètre : test express et défi du canapé ---- */
+  /* ---- « Je patiente » : test express et défi du canapé ---- */
   const aiguille = v => { $('aiguille').style.transform = `rotate(${(Math.max(0, Math.min(100, v)) - 50) * 1.8}deg)`; };
   const fmOnglets = [$('fmOngletQuiz'), $('fmOngletDefi')], fmVolets = [$('fmQuiz'), $('fmDefi')];
   fmOnglets.forEach((o, k) => o.addEventListener('click', () => fmOnglets.forEach((x, j) => { x.setAttribute('aria-selected', String(j === k)); fmVolets[j].hidden = j !== k; })));
