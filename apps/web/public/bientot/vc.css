@@ -162,7 +162,7 @@ body.sans-sugg [data-suggestion] { display: none !important; }
 .vc-centre { text-align: center; }
 .vc-centre .lp-titre, .vc-centre .lp-intro { margin-left: auto; margin-right: auto; }
 
-/* ---------- Flemmomètre ---------- */
+/* ---------- « Je patiente » ---------- */
 .vc-metre { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(20px, 4vw, 56px); align-items: center; margin-top: 30px; }
 @media (max-width: 820px) { .vc-metre { grid-template-columns: minmax(0,1fr); } }
 .vc-cadran { position: relative; max-width: 360px; width: 100%; margin: 0 auto; aspect-ratio: 2 / 1.15; }
@@ -254,7 +254,7 @@ body.sans-sugg [data-suggestion] { display: none !important; }
 .vc-pied a:hover { color: var(--vc-profond); }
 .vc-entete-section { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 
-/* ---------- Bouton Flemmomètre (nav) et cartes de jeux ---------- */
+/* ---------- Bouton « Je patiente » (nav) et cartes de jeux ---------- */
 .vc-nav-jeu { display: inline-flex; align-items: center; gap: 7px; height: 38px; padding: 0 13px; border-radius: 999px; background: var(--vc-menthe); color: var(--vc-profond); font: 600 14px/1 var(--pp-police); text-decoration: none; white-space: nowrap; transition: background .2s, transform .25s var(--pp-ease); }
 .vc-nav-jeu:hover, .vc-nav-jeu:focus-visible { background: var(--vc-contour); transform: translateY(-1px); }
 .vc-nav-jeu[aria-current="page"] { background: var(--vc-nuit); color: #fff; }
@@ -706,7 +706,7 @@ main .lp-fin .lp-bouton { margin-top: 20px; }
 main section.lp-section { padding-top: clamp(36px, 5vw, 60px); padding-bottom: clamp(36px, 5vw, 60px); }
 main .lp-section h2.lp-titre.titre-p { max-width: 20ch; }
 #faq .vc-faq { margin: 24px 0 0; max-width: 900px; }
-#flemmometre .lp-bouton { margin-top: 20px !important; }
+#je-patiente .lp-bouton { margin-top: 20px !important; }
 
 /* v62 · bloc d’intro du principe retiré : en-tête sur une colonne */
 #demo > .vc-demo-tete { grid-template-columns: minmax(0, 1fr); }
@@ -906,9 +906,9 @@ body[data-variante="c"][data-menu="6"] .vc-nav-cta:hover, body[data-variante="c"
   .vc-fin-contact .lp-collines i:nth-child(3) { height: 34%; }
 }
 
-/* Mobile (21/11/2026, commentaires de Ben) : boutons « Ouvrir le Flemmomètre » et « Envoyer » centrés, pied de page centré et resserré. */
+/* Mobile (21/11/2026, commentaires de Ben) : boutons « Je patiente » et « Envoyer » centrés, pied de page centré et resserré. */
 @media (max-width: 760px) {
-  #flemmometre > a.lp-bouton { display: flex; width: fit-content; margin-left: auto !important; margin-right: auto !important; }
+  #je-patiente > a.lp-bouton { display: flex; width: fit-content; margin-left: auto !important; margin-right: auto !important; }
   .vc-contact-envoi { flex-direction: column; justify-content: center; text-align: center; }
   .vc-contact-envoi .vc-contact-note { flex: none; }
   .vc-pied { padding-top: 20px; padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)); }
@@ -938,15 +938,15 @@ body[data-variante="c"][data-menu="6"] .vc-nav-cta:hover, body[data-variante="c"
 @media (max-width: 760px) { .vc-jeu-carte:has(.vc-jeu-ico) { grid-template-columns: 64px 1fr; column-gap: 14px; row-gap: 4px; align-items: center; } .vc-jeu-carte .vc-jeu-ico { grid-row: 1 / span 3; margin-bottom: 0; } .vc-jeu-carte:has(.vc-jeu-ico) > :not(.vc-jeu-ico) { grid-column: 2; } }
 
 /* Six jeux : 2 lignes de 3 (3 lignes de 2 sur mobile), image plein bloc, texte en surimpression au survol, focus ou toucher (retour de Ben, 21/11/2026). */
-#flemmometre .vc-jeux-grille { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-#flemmometre .vc-jeu-carte { position: relative; display: block; aspect-ratio: 1; padding: 0; overflow: hidden; border-radius: 22px; border: 0; isolation: isolate; }
-#flemmometre .vc-jeu-carte .vc-jeu-ico { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; border-radius: 0; box-shadow: none; transition: transform .5s var(--pp-ease); }
-#flemmometre .vc-jeu-carte:hover .vc-jeu-ico, #flemmometre .vc-jeu-carte:focus-visible .vc-jeu-ico, #flemmometre .vc-jeu-carte.ouvert .vc-jeu-ico { transform: scale(1.05); }
-#flemmometre .vc-jeu-carte:hover, #flemmometre .vc-jeu-carte:focus-visible { transform: translateY(-4px); }
-#flemmometre .vc-jeu-carte:focus-visible { outline: 3px solid var(--vc-moyen); outline-offset: 3px; }
+#je-patiente .vc-jeux-grille { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+#je-patiente .vc-jeu-carte { position: relative; display: block; aspect-ratio: 1; padding: 0; overflow: hidden; border-radius: 22px; border: 0; isolation: isolate; }
+#je-patiente .vc-jeu-carte .vc-jeu-ico { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; border-radius: 0; box-shadow: none; transition: transform .5s var(--pp-ease); }
+#je-patiente .vc-jeu-carte:hover .vc-jeu-ico, #je-patiente .vc-jeu-carte:focus-visible .vc-jeu-ico, #je-patiente .vc-jeu-carte.ouvert .vc-jeu-ico { transform: scale(1.05); }
+#je-patiente .vc-jeu-carte:hover, #je-patiente .vc-jeu-carte:focus-visible { transform: translateY(-4px); }
+#je-patiente .vc-jeu-carte:focus-visible { outline: 3px solid var(--vc-moyen); outline-offset: 3px; }
 .vc-jeu-texte { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 4px; padding: 20px; background: linear-gradient(180deg, rgba(18,18,18,.1) 20%, rgba(18,18,18,.9) 72%); color: #fff; opacity: 0; transform: translateY(8px); transition: opacity .3s, transform .35s var(--pp-ease); }
-#flemmometre .vc-jeu-carte:hover .vc-jeu-texte, #flemmometre .vc-jeu-carte:focus-visible .vc-jeu-texte, #flemmometre .vc-jeu-carte.ouvert .vc-jeu-texte { opacity: 1; transform: none; }
+#je-patiente .vc-jeu-carte:hover .vc-jeu-texte, #je-patiente .vc-jeu-carte:focus-visible .vc-jeu-texte, #je-patiente .vc-jeu-carte.ouvert .vc-jeu-texte { opacity: 1; transform: none; }
 .vc-jeu-texte .vc-meta { color: #a3e8c0; }
 .vc-jeu-texte b { color: #fff; font-size: 20px; line-height: 1.15; }
 .vc-jeu-texte small { color: rgba(255,255,255,.82); }
-@media (max-width: 760px) { #flemmometre .vc-jeux-grille { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } #flemmometre .vc-jeu-carte { border-radius: 18px; } .vc-jeu-texte { padding: 12px; gap: 2px; } .vc-jeu-texte .vc-meta { font-size: 10px; } .vc-jeu-texte b { font-size: 15px; } .vc-jeu-texte small { font-size: 12px; line-height: 1.3; } }
+@media (max-width: 760px) { #je-patiente .vc-jeux-grille { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } #je-patiente .vc-jeu-carte { border-radius: 18px; } .vc-jeu-texte { padding: 12px; gap: 2px; } .vc-jeu-texte .vc-meta { font-size: 10px; } .vc-jeu-texte b { font-size: 15px; } .vc-jeu-texte small { font-size: 12px; line-height: 1.3; } }
