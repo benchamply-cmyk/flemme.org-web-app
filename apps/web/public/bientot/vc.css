@@ -905,3 +905,14 @@ body[data-variante="c"][data-menu="6"] .vc-nav-cta:hover, body[data-variante="c"
   .vc-fin-contact .lp-collines { height: 24%; bottom: -2%; }
   .vc-fin-contact .lp-collines i:nth-child(3) { height: 34%; }
 }
+
+/* Mobile (21/11/2026, commentaires de Ben) : boutons « Ouvrir le Flemmomètre » et « Envoyer » centrés, pied de page centré et resserré. */
+@media (max-width: 760px) {
+  #flemmometre > a.lp-bouton { display: flex; width: fit-content; margin-left: auto !important; margin-right: auto !important; }
+  .vc-contact-envoi { flex-direction: column; justify-content: center; text-align: center; }
+  .vc-contact-envoi .vc-contact-note { flex: none; }
+  .vc-pied { padding-top: 20px; padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)); }
+  .vc-pied-in { flex-direction: column; align-items: center; text-align: center; gap: 8px; font-size: 13px; }
+  .vc-pied nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 16px; }
+  .vc-pied a { margin-right: 0; }
+}
