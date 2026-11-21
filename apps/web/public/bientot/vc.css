@@ -950,3 +950,12 @@ body[data-variante="c"][data-menu="6"] .vc-nav-cta:hover, body[data-variante="c"
 .vc-jeu-texte b { color: #fff; font-size: 20px; line-height: 1.15; }
 .vc-jeu-texte small { color: rgba(255,255,255,.82); }
 @media (max-width: 760px) { #je-patiente .vc-jeux-grille { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } #je-patiente .vc-jeu-carte { border-radius: 18px; } .vc-jeu-texte { padding: 12px; gap: 2px; } .vc-jeu-texte .vc-meta { font-size: 10px; } .vc-jeu-texte b { font-size: 15px; } .vc-jeu-texte small { font-size: 12px; line-height: 1.3; } }
+
+/* Cartes de jeux plus petites, à l'échelle du reste de la page (retour de Ben, 21/11/2026). */
+#je-patiente .vc-jeux-grille { max-width: 540px; gap: 12px; }
+#je-patiente .vc-jeu-carte { border-radius: 18px; }
+#je-patiente .vc-jeu-texte { padding: 12px; gap: 2px; }
+#je-patiente .vc-jeu-texte .vc-meta { font-size: 10px; }
+#je-patiente .vc-jeu-texte b { font-size: 15px; }
+#je-patiente .vc-jeu-texte small { font-size: 12px; line-height: 1.3; }
+@media (max-width: 760px) { #je-patiente .vc-jeux-grille { max-width: 340px; gap: 10px; } }
