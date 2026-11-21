@@ -13,6 +13,16 @@
   # (Environment variables, par contexte de déploiement), pas ici. Sans elles : démo locale.
   # Voir docs/supabase-mise-en-service.md.
 
+# Production seulement (demande de Ben du 21/11/2026) : la vitrine renvoie vers la page
+# « site en construction » /bientot/ (apps/web/scripts/mode-bientot.mjs). Mettre "0" pour rouvrir le site.
+[context.production.environment]
+  FLEMME_MODE_BIENTOT = "1"
+
+# Aperçus des PR aussi (demande de Ben du 21/11/2026), pour vérifier le renvoi avant la mise en prod.
+# La branche preprod (contexte branch-deploy) garde la vitrine.
+[context.deploy-preview.environment]
+  FLEMME_MODE_BIENTOT = "1"
+
 [[headers]]
   for = "/*"
   [headers.values]
