@@ -936,3 +936,17 @@ body[data-variante="c"][data-menu="6"] .vc-nav-cta:hover, body[data-variante="c"
 .vc-jeu-carte:hover .vc-jeu-ico, .vc-jeu-carte:focus-visible .vc-jeu-ico { transform: rotate(-6deg) scale(1.06); }
 /* Sur mobile : icône à gauche, comme une liste d’applis. */
 @media (max-width: 760px) { .vc-jeu-carte:has(.vc-jeu-ico) { grid-template-columns: 64px 1fr; column-gap: 14px; row-gap: 4px; align-items: center; } .vc-jeu-carte .vc-jeu-ico { grid-row: 1 / span 3; margin-bottom: 0; } .vc-jeu-carte:has(.vc-jeu-ico) > :not(.vc-jeu-ico) { grid-column: 2; } }
+
+/* Six jeux : 2 lignes de 3 (3 lignes de 2 sur mobile), image plein bloc, texte en surimpression au survol, focus ou toucher (retour de Ben, 21/11/2026). */
+#flemmometre .vc-jeux-grille { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+#flemmometre .vc-jeu-carte { position: relative; display: block; aspect-ratio: 1; padding: 0; overflow: hidden; border-radius: 22px; border: 0; isolation: isolate; }
+#flemmometre .vc-jeu-carte .vc-jeu-ico { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; border-radius: 0; box-shadow: none; transition: transform .5s var(--pp-ease); }
+#flemmometre .vc-jeu-carte:hover .vc-jeu-ico, #flemmometre .vc-jeu-carte:focus-visible .vc-jeu-ico, #flemmometre .vc-jeu-carte.ouvert .vc-jeu-ico { transform: scale(1.05); }
+#flemmometre .vc-jeu-carte:hover, #flemmometre .vc-jeu-carte:focus-visible { transform: translateY(-4px); }
+#flemmometre .vc-jeu-carte:focus-visible { outline: 3px solid var(--vc-moyen); outline-offset: 3px; }
+.vc-jeu-texte { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 4px; padding: 20px; background: linear-gradient(180deg, rgba(18,18,18,.1) 20%, rgba(18,18,18,.9) 72%); color: #fff; opacity: 0; transform: translateY(8px); transition: opacity .3s, transform .35s var(--pp-ease); }
+#flemmometre .vc-jeu-carte:hover .vc-jeu-texte, #flemmometre .vc-jeu-carte:focus-visible .vc-jeu-texte, #flemmometre .vc-jeu-carte.ouvert .vc-jeu-texte { opacity: 1; transform: none; }
+.vc-jeu-texte .vc-meta { color: #a3e8c0; }
+.vc-jeu-texte b { color: #fff; font-size: 20px; line-height: 1.15; }
+.vc-jeu-texte small { color: rgba(255,255,255,.82); }
+@media (max-width: 760px) { #flemmometre .vc-jeux-grille { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } #flemmometre .vc-jeu-carte { border-radius: 18px; } .vc-jeu-texte { padding: 12px; gap: 2px; } .vc-jeu-texte .vc-meta { font-size: 10px; } .vc-jeu-texte b { font-size: 15px; } .vc-jeu-texte small { font-size: 12px; line-height: 1.3; } }
