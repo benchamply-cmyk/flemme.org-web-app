@@ -56,6 +56,7 @@ body { margin: 0; }
 .vc-duo { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 24px; align-items: start; margin-top: 28px; }
 @media (max-width: 760px) { .vc-duo { grid-template-columns: minmax(0, 1fr); } }
 .vc-croix { display: grid; grid-template-columns: repeat(3, 56px); grid-template-rows: repeat(3, 56px); gap: 6px; margin-top: 16px; }
+@media (max-width: 760px) { .vc-croix { margin: 16px auto 0; width: fit-content; } }
 .vc-croix button { border: 1px solid rgba(16,30,42,.14); border-radius: 14px; background: #fff; font-size: 22px; cursor: pointer; color: var(--vc-encre); touch-action: manipulation; }
 .vc-croix button:active { background: var(--vc-menthe); }
 .vc-croix [data-dir="0,-1"] { grid-column: 2; grid-row: 1; } .vc-croix [data-dir="-1,0"] { grid-column: 1; grid-row: 2; }
