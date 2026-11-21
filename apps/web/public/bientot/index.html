@@ -44,6 +44,7 @@
       <p>(Parfois on a aussi la Flemme, mais il nous reste du boulot…)</p>
     </div>
   </div>
+<a class="vc-defile" id="vcDefile" href="#titreHero"><span>Découvre la suite</span><svg viewBox="0 0 20 12" width="20" height="12" aria-hidden="true"><path d="M2 2l8 8 8-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
 <nav class="vc-nav" aria-label="Navigation">
   <span class="vc-logo-bloc"><a class="vc-logo" href="#haut" aria-label="FLEMME, accueil">FLEMME.</a><span class="vc-badge"><i></i>À bientôt…</span></span>
   <div class="vc-nav-liens"><a href="#demo">Démo</a></div>
@@ -58,7 +59,7 @@
 <!-- 1. Hero : fond chromé menthe et logo en relief de l’accueil preprod ; titre tournant ; jauge du chantier (suggestion). -->
 <header class="lp-hero fond-flemme flemme-chrome-home" data-fond="lumiere" id="haut">
   <div class="lp-hero-contenu">
-    <h1 class="lp-hero-titre">
+    <h1 class="lp-hero-titre" id="titreHero">
       <span class="lp-rotation" data-rotation="UNE FLEMME,|UNE ANNONCE,|UNE MISSION,"><span class="lp-mot">UNE FLEMME,</span></span>
       <em>DES SOLUTIONS, (BIENTÔT…)</em>
     </h1>
@@ -707,6 +708,10 @@
   document.addEventListener('click', e => { if (!liste.hidden && !liste.contains(e.target)) fermer(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !liste.hidden) { fermer(); btn.focus(); } });
 })();
+</script>
+<script>
+/* Mobile : le logo en construction occupe le premier écran ; l'indication « Découvre la suite » s'efface dès qu'on défile. */
+(() => { const d = document.getElementById('vcDefile'); if (!d) return; const maj = () => d.classList.toggle('cache', scrollY > 40); addEventListener('scroll', maj, { passive: true }); maj(); })();
 </script>
 </body>
 </html>

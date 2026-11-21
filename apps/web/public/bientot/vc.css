@@ -883,3 +883,19 @@ body[data-variante="c"][data-menu="6"] .vc-nav-cta:hover, body[data-variante="c"
 }
 @keyframes vc-carres-saut { 0% { transform: scale(1); } 35% { transform: scale(.86); } 70% { transform: scale(1.08); } 100% { transform: scale(1); } }
 @media (prefers-reduced-motion: reduce) { .vc-carres, .vc-carres i { transition: none; } .vc-menu-btn.bouge { animation: none; } }
+
+/* Mobile (21/11/2026, commentaire de Ben) : premier écran = logo en construction animé, plein écran ; titre, sous-titre et boutons arrivent au défilement. */
+.vc-defile { display: none; }
+@media (max-width: 760px) {
+  #haut.lp-hero { padding-top: calc(100svh + 24px); }
+  #sablierBloc, #sablierBloc.compact { top: calc(50svh - 170px); width: 190px; }
+  #sablierBloc .vc-sab-info, #sablierBloc.compact .vc-sab-info { width: 230px; margin-left: -20px; margin-top: 10px; }
+  .vc-sablier .vc-sab-info b { font-size: 12px; }
+  .vc-sablier .vc-sab-info p { font-size: 11px; }
+  .vc-defile { display: flex; flex-direction: column; align-items: center; gap: 6px; position: absolute; z-index: 3; top: calc(100svh - 96px); left: 50%; translate: -50% 0; color: #225337; font: 600 13px/1 var(--pp-police, inherit); letter-spacing: .04em; text-decoration: none; transition: opacity .35s ease; }
+  .vc-defile svg { animation: vc-defile-saut 1.6s ease-in-out infinite; }
+  .vc-defile.cache { opacity: 0; pointer-events: none; }
+  #titreHero { scroll-margin-top: 96px; }
+}
+@keyframes vc-defile-saut { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+@media (prefers-reduced-motion: reduce) { .vc-defile svg { animation: none; } }
