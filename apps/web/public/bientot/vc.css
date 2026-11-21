@@ -916,3 +916,12 @@ body[data-variante="c"][data-menu="6"] .vc-nav-cta:hover, body[data-variante="c"
   .vc-pied nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 16px; }
   .vc-pied a { margin-right: 0; }
 }
+
+
+/* Mobile (21/11/2026, retour de Ben « pourquoi cet espace vide ? ») : logo, carte et indication forment un bloc centré dans le premier écran, sans vide. */
+@media (max-width: 760px) {
+  #haut.lp-hero { padding-top: calc(100svh + 8px); }
+  #sablierBloc, #sablierBloc.compact { top: calc(80px + (100svh - 80px - 420px) / 2); width: 250px; }
+  #sablierBloc .vc-sab-info, #sablierBloc.compact .vc-sab-info { margin-left: 10px; }
+  .vc-defile { top: calc(80px + (100svh - 80px - 420px) / 2 + 368px); }
+}
