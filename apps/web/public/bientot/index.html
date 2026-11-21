@@ -48,6 +48,8 @@
   <a class="vc-nav-jeu" href="flemmometre.html" aria-label="Patienter : les mini-jeux du Flemmomètre"><span>Patienter</span></a>
   <div class="vc-nav-liens vc-nav-liens-fin"><a href="#faq">Questions</a></div>
   <a class="vc-nav-cta" href="/connexion">S’inscrire</a>
+  <button type="button" class="vc-menu-btn" id="vcMenuBtn" aria-expanded="false" aria-controls="vcMenu">Menu<svg viewBox="0 0 12 12" width="11" height="11" aria-hidden="true"><path d="M2 4.5l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <div class="vc-menu-liste" id="vcMenu" hidden><a href="#demo">Démo</a><a href="flemmometre.html">Patienter</a><a href="#faq">Questions</a><a class="vc-menu-cta" href="/connexion">S’inscrire</a></div>
   <span class="vc-progres-page" aria-hidden="true"><i id="progresPage"></i></span>
 </nav>
 
@@ -690,6 +692,18 @@
       .catch(() => { getSelection().selectAllChildren($('contactMail')); note.textContent = 'Adresse sélectionnée : copie-la avec Ctrl+C ou ⌘C.'; });
   });
 
+})();
+</script>
+<script>
+/* Menu déroulant sur mobile (commentaire de Ben, 21/11/2026) : les 4 boutons de la version ordinateur. */
+(() => {
+  const btn = document.getElementById('vcMenuBtn'), liste = document.getElementById('vcMenu');
+  if (!btn || !liste) return;
+  const fermer = () => { liste.hidden = true; btn.setAttribute('aria-expanded', 'false'); };
+  btn.addEventListener('click', e => { e.stopPropagation(); const ouvert = liste.hidden; liste.hidden = !ouvert; btn.setAttribute('aria-expanded', String(ouvert)); });
+  liste.addEventListener('click', e => { if (e.target.closest('a')) fermer(); });
+  document.addEventListener('click', e => { if (!liste.hidden && !liste.contains(e.target)) fermer(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !liste.hidden) { fermer(); btn.focus(); } });
 })();
 </script>
 </body>

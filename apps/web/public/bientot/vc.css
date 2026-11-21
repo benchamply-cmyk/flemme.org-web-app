@@ -847,3 +847,18 @@ body[data-variante="c"][data-menu="6"] .vc-nav-cta:hover, body[data-variante="c"
 .lp-mot.vc-tape::after { content: ""; display: inline-block; width: .07em; height: .82em; margin-left: .06em; vertical-align: -.04em; background: currentColor; animation: vc-curseur 1s steps(1) infinite; }
 @keyframes vc-curseur { 50% { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .lp-mot.vc-tape::after { animation: none; } }
+
+/* Menu déroulant mobile (21/11/2026, commentaire de Ben) : Démo, Patienter, Questions, S'inscrire. */
+.vc-menu-btn, .vc-menu-liste { display: none; }
+@media (max-width: 760px) {
+  .vc-nav .vc-nav-jeu, .vc-nav .vc-nav-cta { display: none !important; }
+  .vc-menu-btn { display: inline-flex; align-items: center; gap: 7px; height: 38px; padding: 0 16px; border: 0; border-radius: 999px; background: #121212; color: #fff; font: 600 14px/1 var(--pp-police, inherit); cursor: pointer; box-shadow: inset 0 0 0 1px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.25); }
+  .vc-menu-btn svg { transition: transform .25s ease; }
+  .vc-menu-btn[aria-expanded="true"] svg { transform: rotate(180deg); }
+  .vc-menu-liste:not([hidden]) { display: flex; flex-direction: column; gap: 6px; position: absolute; top: calc(100% + 10px); right: 0; min-width: 210px; padding: 8px; border-radius: 22px; background: rgba(255,255,255,.82); -webkit-backdrop-filter: blur(20px) saturate(1.5); backdrop-filter: blur(20px) saturate(1.5); border: 1px solid rgba(255,255,255,.8); box-shadow: 0 18px 40px rgba(34,83,55,.18); animation: vc-menu-ouvre .25s ease both; }
+  .vc-menu-liste a { display: flex; align-items: center; height: 44px; padding: 0 16px; border-radius: 999px; background: #fff; color: var(--vc-encre, #101e2a); font: 500 15px/1 var(--pp-police, inherit); text-decoration: none; box-shadow: inset 0 0 0 1px rgba(18,18,18,.08); }
+  .vc-menu-liste a:focus-visible, .vc-menu-liste a:hover { box-shadow: inset 0 0 0 1.5px #3a8f5e; }
+  .vc-menu-liste a.vc-menu-cta { background: #121212; color: #fff; font-weight: 600; justify-content: center; }
+}
+@keyframes vc-menu-ouvre { from { opacity: 0; transform: translateY(-6px) scale(.97); } }
+@media (prefers-reduced-motion: reduce) { .vc-menu-liste:not([hidden]) { animation: none; } }
