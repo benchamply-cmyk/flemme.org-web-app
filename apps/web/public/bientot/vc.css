@@ -952,3 +952,6 @@ body[data-variante="c"][data-menu="6"] .vc-nav-cta:hover, body[data-variante="c"
 .vc-jeu-texte small { color: rgba(255,255,255,.82); font-size: 12px; line-height: 1.3; }
 .vc-fm-hero .vc-jeux-6 { margin-top: 28px; }
 @media (max-width: 760px) { .vc-jeux-grille.vc-jeux-6 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; max-width: 340px; } }
+
+/* Bouton « Je patiente » centré sous la grille, aussi sur ordinateur (retour de Ben, 21/11/2026). */
+#je-patiente > a.lp-bouton { display: flex; width: fit-content; margin-left: auto !important; margin-right: auto !important; }
