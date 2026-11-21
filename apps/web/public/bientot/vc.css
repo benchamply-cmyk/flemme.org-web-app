@@ -925,3 +925,6 @@ body[data-variante="c"][data-menu="6"] .vc-nav-cta:hover, body[data-variante="c"
   #sablierBloc .vc-sab-info, #sablierBloc.compact .vc-sab-info { margin-left: 10px; }
   .vc-defile { top: max(444px, calc(80px + (100svh - 80px - 420px) / 2 + 368px)); }
 }
+
+/* Le bouton Démo descend directement à l’essai (onglets et formulaire), retour de Ben 21/11. */
+#essai { scroll-margin-top: 92px; }

@@ -47,12 +47,12 @@
 <a class="vc-defile" id="vcDefile" href="#titreHero"><span>Découvre la suite</span><svg viewBox="0 0 20 12" width="20" height="12" aria-hidden="true"><path d="M2 2l8 8 8-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
 <nav class="vc-nav" aria-label="Navigation">
   <span class="vc-logo-bloc"><a class="vc-logo" href="#haut" aria-label="FLEMME, accueil">FLEMME.</a><span class="vc-badge"><i></i>À bientôt…</span></span>
-  <div class="vc-nav-liens"><a href="#demo">Démo</a></div>
+  <div class="vc-nav-liens"><a href="#essai">Démo</a></div>
   <a class="vc-nav-jeu" href="flemmometre.html" aria-label="Patienter : les mini-jeux du Flemmomètre"><span>Patienter</span></a>
   <div class="vc-nav-liens vc-nav-liens-fin"><a href="#faq">Questions</a></div>
   <a class="vc-nav-cta" href="/connexion">S’inscrire</a>
   <button type="button" class="vc-menu-btn" id="vcMenuBtn" aria-expanded="false" aria-controls="vcMenu" aria-label="Menu"><span class="vc-carres" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button>
-  <div class="vc-menu-liste" id="vcMenu" hidden><a href="#demo">Démo</a><a href="flemmometre.html">Patienter</a><a href="#faq">Questions</a><a class="vc-menu-cta" href="/connexion">S’inscrire</a></div>
+  <div class="vc-menu-liste" id="vcMenu" hidden><a href="#essai">Démo</a><a href="flemmometre.html">Patienter</a><a href="#faq">Questions</a><a class="vc-menu-cta" href="/connexion">S’inscrire</a></div>
   <span class="vc-progres-page" aria-hidden="true"><i id="progresPage"></i></span>
 </nav>
 
@@ -68,7 +68,7 @@
         <p class="lp-hero-accroche">Flemme ajuste ses derniers réglages pour te mettre en relation. Publie ce que tu repousses, propose ton aide, <span class="lp-souligne">fixe le prix avec l’autre membre</span>&#8239;: tout ça arrive bientôt.</p>
         <div class="lp-hero-actions">
           <a class="lp-bouton noir" href="#inscription">SUIVRE L’AVANCEMENT<span class="lp-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="18" height="11"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="lp-bouton contour" href="#demo">ESSAYER LA DÉMO<span class="lp-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="18" height="11"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="lp-bouton contour" href="#essai">ESSAYER LA DÉMO<span class="lp-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="18" height="11"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
         </div>
       </div>
     </div>
@@ -96,7 +96,7 @@
       <article class="lp-arg revele"><span class="vc-arg-num">03 · S’accorder</span><span class="lp-arg-chiffre">Contrats signés</span><b>Finalisation des conditions et détails de la mission</b><p>Qualité de service et protection des utilisateurs.</p></article>
     </div>
 
-    <div class="vc-demo-intro">
+    <div class="vc-demo-intro" id="essai">
       <h3 class="vc-sous-titre">Essaie et <em>prends de l’avance.</em><sup class="vc-asterisque" aria-hidden="true">*</sup></h3>
       <p class="vc-note-demo">* Démo avec des annonces d’exemple. <a href="/connexion">Inscris-toi</a> pour garder les tiennes, <a href="#contact">écris-nous</a> tes idées.</p>
     </div>
@@ -479,10 +479,11 @@
   (() => {
     const nav = document.querySelector('.vc-nav'); document.body.dataset.menu = '6'; document.body.dataset.variante = 'c'; // bulles flottantes (choix de Ben, 20/11)
     const liens = [...document.querySelectorAll('.vc-nav-liens a')];
-    const cibles = liens.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+    const zone = a => { const c = document.querySelector(a.getAttribute('href')); return c && (c.closest('section') || c); }; // le lien Démo vise #essai, dans la section #demo
+    const cibles = liens.map(zone).filter(Boolean);
     if ('IntersectionObserver' in window) {
       const io = new IntersectionObserver(es => es.forEach(e => {
-        const a = liens.find(l => l.getAttribute('href') === '#' + e.target.id);
+        const a = liens.find(l => zone(l) === e.target);
         if (a) a.classList.toggle('actif', e.isIntersecting);
       }), { rootMargin: '-40% 0px -50% 0px' });
       cibles.forEach(c => io.observe(c));
