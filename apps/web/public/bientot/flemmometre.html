@@ -84,19 +84,19 @@ body { margin: 0; }
 
 <header class="lp-section vc-fm-hero fond-flemme flemme-chrome-home" data-fond="lumiere" id="haut">
   <p class="lp-etiquette">Le flemmomètre</p>
-  <h1 class="lp-titre titre-p">Sept façons de mesurer ta flemme, <em>sans te fatiguer.</em></h1>
+  <h1 class="lp-titre titre-p">Six façons de mesurer ta flemme, <em>sans te fatiguer.</em></h1>
   <p class="lp-intro">Pendant qu’on termine le chantier, voici de quoi s’occuper un peu. Ou beaucoup, on ne juge pas.</p>
   <nav class="vc-sommaire" aria-label="Les jeux">
-    <a href="#test">Le test express</a><a href="#canape">Le défi du canapé</a><a href="#marche">La grande marche</a><a href="#corvees">Attrape les corvées</a><a href="#excuses">L’excuse parfaite</a><a href="#serpent">Le serpent paresseux</a><a href="#demineur">Le démineur de corvées</a>
+    <a href="#canape">Le défi du canapé</a><a href="#marche">La grande marche</a><a href="#corvees">Attrape les corvées</a><a href="#excuses">L’excuse parfaite</a><a href="#serpent">Le serpent paresseux</a><a href="#demineur">Le démineur de corvées</a>
   </nav>
 </header>
 
 <main>
   <!-- Test express et défi du canapé (déplacés de l’accueil), avec le cadran commun. -->
   <section class="lp-section" id="test"><span id="canape" class="vc-ancre"></span>
-    <p class="lp-etiquette">Questionnaire et immobilité</p>
-    <h2 class="lp-titre titre-p">Quel flemmard <em>es&#8209;tu vraiment&#8239;?</em></h2>
-    <p class="lp-intro">Un test très scientifique (non) en cinq questions, et le défi du canapé, où le gagnant est celui qui en fait le moins.</p>
+    <p class="lp-etiquette">Immobilité</p>
+    <h2 class="lp-titre titre-p">Le défi <em>du canapé.</em></h2>
+    <p class="lp-intro">Le gagnant est celui qui en fait le moins. Démarre, puis ne bouge plus.</p>
     <div class="vc-metre">
       <div class="vc-cadran-col"><div class="vc-cadran" aria-hidden="true">
         <svg viewBox="0 0 300 172">
@@ -106,14 +106,14 @@ body { margin: 0; }
           <g class="vc-aiguille" id="aiguille" style="transform:rotate(-90deg)"><path d="M150 150L150 48" stroke="#101e2a" stroke-width="5" stroke-linecap="round"/></g>
           <circle cx="150" cy="150" r="12" fill="#121212"/><circle cx="150" cy="150" r="4" fill="#57d68d"/>
         </svg>
-      </div><p class="vc-cadran-legende" id="cadranLegende">Réponds au test, l’aiguille fait le reste.</p></div>
+      </div><p class="vc-cadran-legende" id="cadranLegende">Reste immobile, l’aiguille fait le reste.</p></div>
       <div class="vc-fm">
-        <div class="vc-fm-onglets" role="tablist" aria-label="Flemmomètre">
-          <button type="button" class="vc-onglet" role="tab" id="fmOngletQuiz" aria-controls="fmQuiz" aria-selected="true">Le test express</button>
-          <button type="button" class="vc-onglet" role="tab" id="fmOngletDefi" aria-controls="fmDefi" aria-selected="false">Le défi du canapé</button>
+        <div class="vc-fm-onglets" role="tablist" aria-label="Flemmomètre" hidden>
+          <button type="button" class="vc-onglet" role="tab" id="fmOngletQuiz" aria-controls="fmQuiz" aria-selected="false" hidden>Le test express</button>
+          <button type="button" class="vc-onglet" role="tab" id="fmOngletDefi" aria-controls="fmDefi" aria-selected="true">Le défi du canapé</button>
         </div>
 
-        <div id="fmQuiz" role="tabpanel" aria-labelledby="fmOngletQuiz">
+        <div id="fmQuiz" role="tabpanel" aria-labelledby="fmOngletQuiz" hidden>
           <div id="quizQuestion">
             <div class="vc-quiz-tete"><span id="quizNum">Question 1 sur 5</span><span class="vc-quiz-points" id="quizPoints" aria-hidden="true"></span></div>
             <p class="vc-quiz-q" id="quizTexte"></p>
@@ -130,7 +130,7 @@ body { margin: 0; }
           </div>
         </div>
 
-        <div id="fmDefi" role="tabpanel" aria-labelledby="fmOngletDefi" hidden>
+        <div id="fmDefi" role="tabpanel" aria-labelledby="fmOngletDefi">
           <p class="vc-defi-regle">Appuie sur <b>Démarrer</b>, puis ne touche plus à rien&#8239;: ni souris, ni clavier, ni écran. Au premier mouvement, le chrono s’arrête. Enfin un sport fait pour toi.</p>
           <div class="vc-defi-chrono" aria-live="off"><b id="defiTemps">0,0</b><span>secondes d’immobilité</span></div>
           <p class="vc-verdict" id="defiVerdict" aria-live="polite">Record à battre&#8239;: <span id="defiRecord">aucun</span>.</p>
