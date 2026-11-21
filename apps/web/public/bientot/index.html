@@ -407,11 +407,24 @@
       ctx.font = '600 8px ui-monospace, Menlo, monospace'; ctx.textAlign = 'center';
       return true;
     };
-    // Ligne d’impression : monte depuis le bas jusqu’à ~75 %, puis hésite (avance, recule) sans jamais finir.
+    // Ligne d’impression en boucle (commentaire de Ben, 21/11/2026 : ne pas rester figé à 75 %) :
+    // le code monte et construit le logo jusqu’à un niveau qui change à chaque passage (68 à 94 %), hésite,
+    // puis une partie se « déconstruit » et le chantier reprend. La jauge de la carte suit le niveau.
+    const jauge = $('sabJauge'), CYCLE = 6200, MONTE = 1700, TIENT = 2700, BAS_REPRISE = .3;
+    const cibleDu = n => n === 0 ? CIBLE : .68 + .26 * (((Math.sin(n * 12.9898) * 43758.5453) % 1 + 1) % 1);
+    const doux = x => 1 - Math.pow(1 - x, 3);
+    const fraction = t => {
+      const u = t - 1400; if (u < 0) return -.03;
+      const n = Math.floor(u / CYCLE), v = u - n * CYCLE, haut = cibleDu(n), depart = n === 0 ? -.03 : BAS_REPRISE;
+      if (v < MONTE) return depart + (haut - depart) * doux(v / MONTE);
+      if (v < MONTE + TIENT) return haut + (Math.sin(t / 1300) * 4 + Math.sin(t / 470) * 1.5) / (BAS - HAUT);
+      const w = (v - MONTE - TIENT) / (CYCLE - MONTE - TIENT);
+      return haut - (haut - BAS_REPRISE) * (w * w * (3 - 2 * w));
+    };
     const niveau = t => {
-      const intro = Math.min(Math.max((t - 1400) / 1600, 0), 1), e = 1 - Math.pow(1 - intro, 3);
-      const hesite = intro < 1 ? 0 : Math.sin(t / 1300) * 4 + Math.sin(t / 470) * 1.5;
-      return BAS + 6 - (BAS + 6 - ligneCible) * e + hesite;
+      const f = fraction(t);
+      if (jauge) jauge.style.width = (Math.max(0, Math.min(1, f)) * 100).toFixed(1) + '%';
+      return BAS - (BAS - HAUT) * f;
     };
     const image = now => {
       if (!actif) return;
@@ -524,7 +537,7 @@
   })();
 
   /* ---- Jauge sous le logo : se remplit jusqu’à la valeur du chantier ---- */
-  setTimeout(() => { $('sabJauge').style.width = (+document.querySelector('.vc-sab-info').dataset.cible || 75) + '%'; }, 700);
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) setTimeout(() => { $('sabJauge').style.width = (+document.querySelector('.vc-sab-info').dataset.cible || 75) + '%'; }, 700);
 
   /* ---- Puces (groupes à choix unique) ---- */
   const valeur = g => (document.querySelector(`[data-groupe="${g}"] [aria-pressed="true"]`) || {}).dataset?.val || '';
