@@ -899,3 +899,9 @@ body[data-variante="c"][data-menu="6"] .vc-nav-cta:hover, body[data-variante="c"
 }
 @keyframes vc-defile-saut { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
 @media (prefers-reduced-motion: reduce) { .vc-defile svg { animation: none; } }
+
+/* Mobile (21/11/2026, commentaire de Ben) : collines du bloc contact abaissées, la colline blanche passe sous la carte et dégage le bas de page. */
+@media (max-width: 760px) {
+  .vc-fin-contact .lp-collines { height: 24%; bottom: -2%; }
+  .vc-fin-contact .lp-collines i:nth-child(3) { height: 34%; }
+}
