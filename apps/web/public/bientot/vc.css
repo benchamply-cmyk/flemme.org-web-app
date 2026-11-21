@@ -862,3 +862,24 @@ body[data-variante="c"][data-menu="6"] .vc-nav-cta:hover, body[data-variante="c"
 }
 @keyframes vc-menu-ouvre { from { opacity: 0; transform: translateY(-6px) scale(.97); } }
 @media (prefers-reduced-motion: reduce) { .vc-menu-liste:not([hidden]) { animation: none; } }
+
+/* Bouton menu mobile (21/11/2026, retour de Ben) : même épaisseur et même verre que le bloc du logo, icône 4 carrés animés. */
+@media (max-width: 760px) {
+  .vc-menu-btn { width: 50px; height: 50px; padding: 0; justify-content: center; gap: 0; background: rgba(255,255,255,.4); -webkit-backdrop-filter: blur(14px) saturate(1.5); backdrop-filter: blur(14px) saturate(1.5); box-shadow: inset 0 0 0 1px rgba(255,255,255,.8), 6px 8px 18px -8px rgba(58,143,94,.55); color: #121212; }
+  body[data-menu="6"] .vc-nav.replie:not(:hover) > .vc-menu-btn { opacity: 1 !important; max-width: none !important; overflow: visible !important; padding: 0 !important; pointer-events: auto !important; }
+  .vc-carres { display: grid; grid-template-columns: repeat(2, 7px); gap: 4px; transition: transform .5s cubic-bezier(.5,1.6,.4,1); }
+  .vc-carres i { width: 7px; height: 7px; border-radius: 2px; background: #121212; transition: transform .5s cubic-bezier(.5,1.6,.4,1), border-radius .4s ease, background .3s ease; }
+  .vc-carres i:nth-child(2), .vc-carres i:nth-child(3) { background: #3a8f5e; }
+  .vc-menu-btn:hover .vc-carres i:nth-child(1), .vc-menu-btn:focus-visible .vc-carres i:nth-child(1) { transform: translate(-1px, -1px); }
+  .vc-menu-btn:hover .vc-carres i:nth-child(4), .vc-menu-btn:focus-visible .vc-carres i:nth-child(4) { transform: translate(1px, 1px); }
+  .vc-menu-btn[aria-expanded="true"] .vc-carres { transform: rotate(45deg); }
+  .vc-menu-btn[aria-expanded="true"] .vc-carres i { border-radius: 50%; }
+  .vc-menu-btn[aria-expanded="true"] .vc-carres i:nth-child(1) { transform: translate(-2px, -2px); }
+  .vc-menu-btn[aria-expanded="true"] .vc-carres i:nth-child(2) { transform: translate(2px, -2px); background: #57d68d; }
+  .vc-menu-btn[aria-expanded="true"] .vc-carres i:nth-child(3) { transform: translate(-2px, 2px); background: #57d68d; }
+  .vc-menu-btn[aria-expanded="true"] .vc-carres i:nth-child(4) { transform: translate(2px, 2px); }
+  .vc-menu-btn.bouge { animation: vc-carres-saut .45s cubic-bezier(.5,1.6,.4,1); }
+  .vc-menu-liste:not([hidden]) { top: calc(100% + 8px); }
+}
+@keyframes vc-carres-saut { 0% { transform: scale(1); } 35% { transform: scale(.86); } 70% { transform: scale(1.08); } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .vc-carres, .vc-carres i { transition: none; } .vc-menu-btn.bouge { animation: none; } }
