@@ -928,3 +928,11 @@ body[data-variante="c"][data-menu="6"] .vc-nav-cta:hover, body[data-variante="c"
 
 /* Le bouton Démo descend directement à l’essai (onglets et formulaire), retour de Ben 21/11. */
 #essai { scroll-margin-top: 92px; }
+
+/* Icônes de jeu façon appli mobile, en « photo de profil » des cartes (retour de Ben, 21/11/2026). */
+.vc-jeu-carte:has(.vc-jeu-ico) { align-content: start; }
+.vc-jeu-carte .vc-jeu-ico { margin-bottom: 6px; }
+.vc-jeu-carte .vc-jeu-ico { width: 64px; height: 64px; border-radius: 16px; box-shadow: 0 10px 18px -10px rgba(34,83,55,.55), inset 0 0 0 1px rgba(16,30,42,.06); transition: transform .35s var(--pp-ease); }
+.vc-jeu-carte:hover .vc-jeu-ico, .vc-jeu-carte:focus-visible .vc-jeu-ico { transform: rotate(-6deg) scale(1.06); }
+/* Sur mobile : icône à gauche, comme une liste d’applis. */
+@media (max-width: 760px) { .vc-jeu-carte:has(.vc-jeu-ico) { grid-template-columns: 64px 1fr; column-gap: 14px; row-gap: 4px; align-items: center; } .vc-jeu-carte .vc-jeu-ico { grid-row: 1 / span 3; margin-bottom: 0; } .vc-jeu-carte:has(.vc-jeu-ico) > :not(.vc-jeu-ico) { grid-column: 2; } }
