@@ -56,11 +56,11 @@
   <div class="lp-hero-contenu">
     <h1 class="lp-hero-titre">
       <span class="lp-rotation" data-rotation="UNE FLEMME,|UNE ANNONCE,|UNE MISSION,"><span class="lp-mot">UNE FLEMME,</span></span>
-      <em>DES SOLUTIONS, BIENTÔT.</em>
+      <em>DES SOLUTIONS, (BIENTÔT…)</em>
     </h1>
     <div class="lp-hero-bas">
       <div>
-        <p class="lp-hero-accroche">Une tâche à déléguer&#8239;? Une mission à réaliser&#8239;? Bientôt, vous <span class="lp-souligne">fixerez le prix ensemble</span> et signerez un accord relu par l’équipe.</p>
+        <p class="lp-hero-accroche">Flemme ajuste ses derniers réglages pour vous mettre en relation. Publie ce que tu repousses, propose ton aide, <span class="lp-souligne">fixez le prix ensemble</span>&#8239;: tout ça arrive bientôt.</p>
         <div class="lp-hero-actions">
           <a class="lp-bouton noir" href="#inscription">SUIVRE L’AVANCEMENT<span class="lp-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="18" height="11"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="lp-bouton contour" href="#demo">ESSAYER LA DÉMO<span class="lp-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="18" height="11"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
@@ -320,12 +320,21 @@
   const rotation = document.querySelector('[data-rotation]');
   const mot = rotation && rotation.querySelector('.lp-mot');
   if (mot && !reduit) {
+    // Machine à écrire (commentaire de Ben, 21/11/2026) : le mot s'efface lettre par lettre puis le suivant se tape.
     const mots = rotation.dataset.rotation.split('|'); let i = 0;
-    setInterval(() => {
-      if (document.hidden) return;
-      mot.classList.remove('entre'); mot.classList.add('sort');
-      setTimeout(() => { i = (i + 1) % mots.length; mot.textContent = mots[i]; mot.classList.remove('sort'); void mot.offsetWidth; mot.classList.add('entre'); }, 430);
-    }, 2600);
+    mot.classList.add('vc-tape');
+    const pause = ms => new Promise(r => setTimeout(r, ms));
+    (async () => {
+      for (;;) {
+        await pause(2200);
+        while (document.hidden) await pause(500);
+        let t = mot.textContent;
+        while (t.length) { t = t.slice(0, -1); mot.textContent = t; await pause(45); }
+        await pause(250);
+        i = (i + 1) % mots.length;
+        for (const c of mots[i]) { t += c; mot.textContent = t; await pause(85 + Math.random() * 60); }
+      }
+    })();
   }
   document.querySelectorAll('[data-mots]').forEach(el => {
     const texte = el.textContent.trim(); el.setAttribute('aria-label', texte); el.innerHTML = '';

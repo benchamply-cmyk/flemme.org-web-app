@@ -841,3 +841,9 @@ body[data-variante="c"][data-menu="6"] .vc-nav-cta:hover, body[data-variante="c"
 .vc-compte-reel h3{margin:0;font-size:1.35rem;line-height:1.2}
 .vc-compte-reel p{margin:0}
 .vc-compte-reel .vc-compte-deja{font-size:.95rem;align-self:center}
+
+/* Titre en machine à écrire (21/11/2026, commentaire de Ben) : curseur clignotant après le mot qui change. */
+.lp-mot.vc-tape { animation: none !important; opacity: 1 !important; transform: none !important; }
+.lp-mot.vc-tape::after { content: ""; display: inline-block; width: .07em; height: .82em; margin-left: .06em; vertical-align: -.04em; background: currentColor; animation: vc-curseur 1s steps(1) infinite; }
+@keyframes vc-curseur { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .lp-mot.vc-tape::after { animation: none; } }
