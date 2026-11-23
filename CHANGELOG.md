@@ -6,6 +6,7 @@ Chaque PR ajoute une ligne sous « À venir ». Au gel de preprod, « À venir �
 
 ## À venir
 
+- Page /bientot habillée avec le style G1 du canevas de refonte (24 nov. 2026, demande de Ben, d’après l’export G1 et l’aperçu H1PqQWmk…) : nouvelle feuille `apps/web/public/bientot/g1.css` chargée après `vc.css` (titres IBM Plex Mono, texte IBM Plex Sans, accent #4dbc7c, boutons rectangles, cartes sans arrondi avec ombre, pastilles carrées, grain en haut et sur toute la page, ruban fin incliné, héros centré sans logo animé ni fond alterné) ; titre du héros fixe ; six sections ajoutées (chiffres, étapes, catégories, engagements, compte à rebours jusqu’au 4 janv. 2027, journal de chantier) ; la page « Je patiente » charge aussi la feuille. `lp.css` et `vc.css` inchangés : retirer `g1.css` rend l’ancien style. Aucune migration.
 
 ## v2.1.0 (candidate) — gel de preprod le 18 nov. 2026, deuxième candidate le 21 nov. 2026
 
