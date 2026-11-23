@@ -10,10 +10,12 @@
 <title>Flemme.org en construction</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="lp.css">
 <script>document.documentElement.classList.add('js');</script>
 <link rel="stylesheet" href="vc.css">
+<!-- Aperçu G1 (canevas de refonte, 23/11) : habillage chargé après vc.css -->
+<link rel="stylesheet" href="g1.css">
 
 </head>
 <body class="lp lp-accueil">
@@ -60,15 +62,16 @@
 <header class="lp-hero fond-flemme flemme-chrome-home" data-fond="lumiere" id="haut">
   <div class="lp-hero-contenu">
     <h1 class="lp-hero-titre" id="titreHero">
-      <span class="lp-rotation" data-rotation="UNE FLEMME,|UNE ANNONCE,|UNE MISSION,"><span class="lp-mot">UNE FLEMME,</span></span>
-      <em>DES SOLUTIONS, (BIENTÔT…)</em>
+      <span class="lp-rotation"><span class="lp-mot">UNE FLEMME, UNE ANNONCE, UNE MISSION,</span></span>
+      <em>DES SOLUTIONS,</em>
+      <em>(BIENTÔT…)</em>
     </h1>
     <div class="lp-hero-bas">
       <div>
         <p class="lp-hero-accroche">Flemme ajuste ses derniers réglages pour te mettre en relation. Publie ce que tu repousses, propose ton aide, <span class="lp-souligne">fixe le prix avec l’autre membre</span>&#8239;: tout ça arrive bientôt.</p>
         <div class="lp-hero-actions">
-          <a class="lp-bouton noir" href="#inscription">SUIVRE L’AVANCEMENT<span class="lp-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="18" height="11"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-          <a class="lp-bouton contour" href="#essai">ESSAYER LA DÉMO<span class="lp-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="18" height="11"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="lp-bouton noir" href="#inscription">Suivre l’avancement<span class="lp-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="18" height="11"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a class="lp-bouton contour" href="#essai">Essayer la démo<span class="lp-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="18" height="11"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
         </div>
       </div>
     </div>
@@ -82,6 +85,14 @@
 </div></div></div>
 
 <main>
+
+<!-- G1 · chiffres clés -->
+<div class="g1-sec g1-chiffres" aria-label="Chiffres clés">
+  <div class="g1-carte"><b>0 €</b><span>pour publier une flemme ou proposer ton aide</span></div>
+  <div class="g1-carte"><b>10 %</b><span>de frais de plateforme pendant la bêta, affichés avant de signer</span></div>
+  <div class="g1-carte"><b>1 accord</b><span>signé par les deux membres et relu par l’équipe</span></div>
+  <div class="g1-carte"><b>75 %</b><span>du chantier terminé</span></div>
+</div>
   <!-- 2-3. Le principe en introduction, puis la démo interactive (données fictives, rien n’est envoyé). -->
   <section class="lp-section lp-teinte vc-modele" id="demo">
     <div class="vc-demo-tete">
@@ -220,6 +231,33 @@
     </div>
   </section>
 
+
+  <!-- G1 · comment ça marche -->
+  <section class="g1-sec" id="etapes">
+    <p class="lp-etiquette">Comment ça marche</p>
+    <h2 class="lp-titre titre-p">Quatre étapes, <em>pas une de plus.</em></h2>
+    <ol class="g1-etapes">
+      <li><small>ÉTAPE 1</small><h3>Tu publies</h3><p>Ta flemme en une phrase, le lieu ou « à distance », un budget si tu veux.</p></li>
+      <li><small>ÉTAPE 2</small><h3>On te propose</h3><p>Des membres proposent leur aide et posent leurs questions.</p></li>
+      <li><small>ÉTAPE 3</small><h3>Vous négociez</h3><p>Le prix et le délai se fixent entre vous, dans une conversation privée.</p></li>
+      <li><small>ÉTAPE 4</small><h3>Vous signez</h3><p>Un accord relu par l’équipe, puis la mission est réalisée.</p></li>
+    </ol>
+  </section>
+
+  <!-- G1 · catégories -->
+  <section class="g1-sec" id="categories">
+    <p class="lp-etiquette">Des flemmes de toutes les tailles</p>
+    <h2 class="lp-titre titre-p">Ce que tu pourras <em>déléguer.</em></h2>
+    <div class="g1-categories">
+      <div class="g1-carte"><b>MAISON</b><p>Monter une étagère, vider la cave, arroser les plantes.</p></div>
+      <div class="g1-carte"><b>DÉMARCHES</b><p>Changement d’adresse, dossier de mutuelle, résiliation.</p></div>
+      <div class="g1-carte"><b>NUMÉRIQUE</b><p>Trier ses photos, configurer une box, sauvegarder un téléphone.</p></div>
+      <div class="g1-carte"><b>COURSES</b><p>Récupérer un colis, faire un retour en magasin.</p></div>
+      <div class="g1-carte"><b>ÉCRITURE</b><p>Relire un CV, rédiger une lettre de réclamation.</p></div>
+      <div class="g1-carte"><b>À DISTANCE</b><p>Tout ce qui se fait depuis un ordinateur, partout en France.</p></div>
+    </div>
+  </section>
+
   <!-- 6. « Je patiente » (suggestion) : aperçu des mini-jeux, la page complète est je-patiente.html (bouton dans le menu). -->
   <section class="lp-section" id="je-patiente">
     <div class="vc-entete-section"><p class="lp-etiquette">Pour patienter</p></div>
@@ -234,6 +272,26 @@
       <a class="vc-jeu-carte revele" href="je-patiente.html#demineur"><svg class="vc-jeu-ico" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true" focusable="false"><defs><linearGradient id="jxdemineur" x1="0" y1="0" x2="1" y2="1"><stop offset="0.00" stop-color="#d7f5e4"/><stop offset="1.00" stop-color="#57d68d"/></linearGradient><linearGradient id="jxdemineurb" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff" stop-opacity=".45"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect width="64" height="64" fill="url(#jxdemineur)"/><rect x="11" y="11" width="42" height="42" rx="7" fill="#fff"/><path d="M25 11v42M39 11v42M11 25h42M11 39h42" stroke="#d7f5e4" stroke-width="1.6"/><rect x="12" y="12" width="12" height="12" rx="3" fill="#a3e8c0"/><rect x="40" y="40" width="12" height="12" rx="3" fill="#a3e8c0"/><rect x="26" y="40" width="12" height="12" rx="3" fill="#a3e8c0"/><text x="32" y="36.5" text-anchor="middle" font-family="Space Grotesk, system-ui, sans-serif" font-weight="700" font-size="11" fill="#3a8f5e">2</text><text x="18" y="50.5" text-anchor="middle" font-family="Space Grotesk, system-ui, sans-serif" font-weight="700" font-size="11" fill="#225337">1</text><circle cx="46" cy="18" r="6" fill="#121212"/><path d="M46 9.5v3M46 23.5v3M37.5 18h3M51.5 18h3M40 12l2 2M50 22l2 2M52 12l-2 2M42 22l-2 2" stroke="#121212" stroke-width="1.8" stroke-linecap="round"/><circle cx="44" cy="16" r="1.6" fill="#57d68d"/><rect width="64" height="64" fill="url(#jxdemineurb)"/></svg><span class="vc-jeu-texte"><span class="vc-meta">Classique revisité</span><b>Le démineur de corvées</b><small>Évite les corvées cachées.</small></span></a>
     </div>
     <a class="lp-bouton noir" href="je-patiente.html" style="margin-top:26px">Je patiente<span class="lp-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="18" height="11"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+  </section>
+
+  <!-- G1 · engagements -->
+  <section class="g1-sec" id="engagements">
+    <p class="lp-etiquette">Nos engagements</p>
+    <h2 class="lp-titre titre-p">Simple, clair, <em>relu.</em></h2>
+    <div class="g1-engagements">
+      <div><h3>Annonces relues</h3><p>Chaque flemme et chaque proposition est relue avant d’être visible.</p></div>
+      <div><h3>Prix libre</h3><p>Le prix se fixe entre membres. Les frais sont affichés avant de signer.</p></div>
+      <div><h3>Adresse privée</h3><p>Seule la ville est publique. Tes coordonnées restent masquées.</p></div>
+      <div><h3>Un seul endroit</h3><p>Échanges, accord et paiement restent au même endroit.</p></div>
+    </div>
+  </section>
+
+  <!-- G1 · compte à rebours (jours calculés au chargement) -->
+  <section class="g1-rebours" aria-label="Compte à rebours">
+    <div class="g1-rebours-in">
+      <p>Ouverture en janvier 2027.</p>
+      <div class="g1-rebours-cases"><div><b id="g1Jours">–</b><span>JOURS</span></div><div><b id="g1Semaines">–</b><span>SEMAINES</span></div><div><b>75%</b><span>CHANTIER</span></div></div>
+    </div>
   </section>
 
   <!-- 8. Encart d’inscription : création de compte dès maintenant = entrée dans la bêta (démo, rien n’est enregistré). -->
@@ -272,6 +330,19 @@
       <details><summary>Combien ça coûte&#8239;?</summary><p>Publier une flemme et proposer ton aide sont gratuits. Tu négocies le prix de la mission directement avec l’autre membre. Des frais de plateforme s’ajoutent seulement à la signature, et ils sont affichés avant de signer.</p></details>
       <details><summary>Est-ce que Flemme garantit le résultat&#8239;?</summary><p>Non. La mission est réalisée par un membre, pas par Flemme. Flemme relit les annonces et l’accord, garde les échanges et le paiement au même endroit, et examine le dossier en cas de désaccord.</p></details>
       <details><summary>Qui pourra résoudre les flemmes&#8239;?</summary><p>Tout membre inscrit peut proposer son aide sur une demande publiée, à distance ou sur place. Chaque proposition est relue avant d’être visible.</p></details>
+    </div>
+  </section>
+
+  <!-- G1 · journal de chantier -->
+  <section class="g1-sec" id="journal" style="padding-bottom:96px">
+    <p class="lp-etiquette">Journal de chantier</p>
+    <h2 class="lp-titre titre-p">Où on en est, <em>sans filtre.</em></h2>
+    <div class="g1-journal">
+      <div><span>FAIT</span><p style="margin:0">Comptes, publication des flemmes et propositions d’aide.</p></div>
+      <div><span>FAIT</span><p style="margin:0">Négociation du prix entre membres.</p></div>
+      <div><span class="encours">EN COURS</span><p style="margin:0">Accord signé et relu, paiement à la signature.</p></div>
+      <div><span class="encours">EN COURS</span><p style="margin:0">Bêta ouverte aux inscrits.</p></div>
+      <div><span class="avenir">À VENIR</span><p style="margin:0">Ouverture à tous en janvier 2027.</p></div>
     </div>
   </section>
 
@@ -739,5 +810,6 @@
   }));
 })();
 </script>
+<script>/* G1 : compte à rebours */(function(){var j=Math.max(0,Math.ceil((new Date('2027-01-04T09:00:00+01:00')-new Date())/864e5));var a=document.getElementById('g1Jours'),b=document.getElementById('g1Semaines');if(a)a.textContent=j;if(b)b.textContent=Math.ceil(j/7);})();</script>
 </body>
 </html>

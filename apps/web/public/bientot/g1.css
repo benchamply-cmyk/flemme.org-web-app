@@ -1,0 +1,161 @@
+/* Flemme /bientot · habillage G1 « Actuelle, titres mono » (canevas de refonte, 23/11/2026)
+   Réglages repris de l'export G1 : palette actuelle, accent #4dbc7c, titres IBM Plex Mono taille S
+   en majuscules pour le H1, texte IBM Plex Sans, boutons rectangles, cartes sans arrondi avec ombre,
+   pastilles carrées couleur accent, décor « grain gros » en haut, fond de page « grain léger » partout,
+   ruban fin légèrement incliné, héros centré, pas de fond alterné.
+   Cette feuille se charge après lp.css et vc.css et ne modifie pas leur contenu. */
+
+:root {
+  --g1-accent: #4dbc7c;
+  --g1-texte: #101e2a;
+  --g1-doux: #4c6157;
+  --g1-filet: #dceee3;
+  --g1-pastille: #d7f5e4;
+  --g1-grain: rgba(58,143,94,.35);
+  --g1-titre: 'IBM Plex Mono', ui-monospace, monospace;
+  --g1-corps: 'IBM Plex Sans', system-ui, sans-serif;
+  --g1-ombre: 0 12px 28px -16px rgba(0,0,0,.28);
+  --pp-police: var(--g1-corps);
+  --pn-police: var(--g1-corps);
+  --vc-vert: var(--g1-accent);
+  --lp-vert: var(--g1-accent);
+}
+
+/* Fond de page : grain léger sur toute la page, toutes sections comprises */
+html, body.lp { background: #fff; }
+body.lp { font-family: var(--g1-corps); position: relative; isolation: isolate; }
+body.lp::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image: radial-gradient(var(--g1-grain) .8px, transparent 1px); background-size: 9px 9px; opacity: .45;
+}
+.lp-teinte, .vc-modele, .vc-fin-contact, .vc-contact-uni, .lp-fin { background: transparent !important; }
+.lp-collines, .vc-contact-uni .ff-decor, .lp-teinte::before, .lp-fin::before { display: none !important; }
+
+/* Décor du haut : grain gros à la place des rubans chromés */
+.lp-hero.flemme-chrome-home::before, .lp-hero.flemme-chrome-home::after { display: none !important; }
+.lp-hero.fond-flemme { background: transparent !important; position: relative; }
+.lp-hero::after {
+  content: ""; display: block !important; position: absolute; left: 0; right: 0; top: 0; height: 900px; z-index: 0; pointer-events: none;
+  background-image: radial-gradient(var(--g1-grain) 2px, transparent 2.4px); background-size: 14px 14px; opacity: .7;
+  -webkit-mask-image: linear-gradient(#000, transparent); mask-image: linear-gradient(#000, transparent);
+  animation: none !important; transform: none !important; filter: none !important;
+}
+
+/* Logo « en chargement » et flèche de défilement : masqués (héros centré sans visuel) */
+.vc-sablier, .vc-defile { display: none !important; }
+
+/* Menu en bulles : on garde la forme, titre du logo en mono */
+.vc-logo { font-family: var(--g1-titre); font-weight: 600; letter-spacing: -.01em; }
+.vc-badge { font-family: var(--g1-titre); }
+.vc-badge i { border-radius: 1px; background: var(--g1-accent); }
+
+/* Héros centré */
+body.lp .lp-hero { align-items: center; min-height: auto !important; padding-top: 170px !important; padding-bottom: 120px !important; }
+.lp-hero-contenu { text-align: center; max-width: 1152px; }
+.lp-hero-titre {
+  font-family: var(--g1-titre); font-weight: 500; font-size: 46px; line-height: 1.05; letter-spacing: -.03em;
+  text-transform: uppercase; max-width: none; margin: 0 auto; color: var(--g1-texte);
+}
+.lp-hero-titre em, .lp-hero-titre .lp-rotation { font-style: normal; }
+.lp-hero-titre em { display: block; color: var(--g1-accent); }
+.lp-hero-bas { justify-content: center; }
+.lp-hero-bas > div { display: flex; flex-direction: column; align-items: center; }
+.lp-hero-accroche { margin: 8px auto 0; max-width: 620px; color: var(--g1-doux); font-size: 18px; }
+.lp-souligne { text-decoration-color: var(--g1-accent) !important; }
+.lp-hero-actions { justify-content: center; margin-top: 30px; }
+
+/* Boutons rectangles, texte en casse normale */
+.lp-bouton { border-radius: 6px !important; text-transform: none; letter-spacing: 0; font-family: var(--g1-titre); font-weight: 600; font-size: 16px; min-height: 48px; padding: 0 22px; box-shadow: none; }
+.lp-bouton.noir { background: #121212; color: #fff; }
+.lp-bouton.contour { background: var(--g1-pastille); color: var(--g1-texte); border: 1.5px solid var(--g1-accent); }
+.lp-bouton .lp-fleche { display: none; }
+
+/* Ruban : fin, légèrement incliné, rayures menthe */
+.vc-ruban-cadre { margin-top: 0; padding-block: 18px; }
+.vc-ruban { transform: rotate(-2.2deg); background: #121212; box-shadow: none; }
+.vc-ruban::before, .vc-ruban::after { height: 5px; background: repeating-linear-gradient(-45deg, #57d68d 0 12px, #121212 12px 24px); }
+.vc-ruban-piste { padding: 11px 0; }
+.vc-ruban-piste span { font: 600 12px/1 var(--g1-titre); letter-spacing: 0; padding-right: 18px; }
+.vc-ruban-piste span::after { color: #57d68d; margin-left: 18px; }
+
+/* Titres de section en mono, taille S */
+.lp-titre, .titre-p, .vc-sous-titre {
+  font-family: var(--g1-titre) !important; font-weight: 500; font-size: 36px !important; line-height: 1.08;
+  letter-spacing: -.03em; max-width: none; color: var(--g1-texte);
+}
+.lp-titre em, .titre-p em, .vc-sous-titre em { font-family: inherit !important; font-style: normal; color: var(--g1-accent); }
+.vc-sous-titre { font-size: 30px !important; }
+.lp-intro { color: var(--g1-doux); }
+
+/* Étiquettes : pilule avec pastille carrée accent */
+.lp-etiquette { font-family: var(--g1-titre); color: var(--g1-doux); background: #fff; border: 1px solid var(--g1-filet); }
+.lp-etiquette::before { content: ""; width: 7px; height: 7px; border-radius: 1px; background: var(--g1-accent); flex: none; }
+
+/* Cartes : sans arrondi, sans bordure, ombre douce */
+.lp-arg, .vc-faq details, .vc-boite, .vc-annonce, .lp-contact-boite, .vc-demo, .g1-carte {
+  border-radius: 0 !important; border-color: transparent !important; box-shadow: var(--g1-ombre) !important; background: #fff;
+}
+.vc-arg-num { font-family: var(--g1-titre); color: var(--g1-doux); }
+.lp-arg b { font-family: var(--g1-titre); font-weight: 600; }
+.lp-arg-chiffre { font-family: var(--g1-titre); }
+.vc-jeu-carte { border-radius: 0 !important; }
+.vc-puce, .vc-input, .vc-textarea { border-radius: 4px !important; }
+.vc-pastille { border-radius: 2px !important; }
+.vc-onglet-btn[aria-selected="true"] { background: #121212; color: #fff; }
+.vc-onglet-btn[aria-selected="false"] { background: #fff; color: var(--g1-texte); border: 1.5px solid var(--g1-texte); }
+
+/* FAQ : cartes, rond plein menthe */
+.vc-faq summary { font-family: var(--g1-corps); font-weight: 600; }
+
+/* Pied et grand mot FLEMME en mono */
+.vc-marque-mot, .vc-marque-date { font-family: var(--g1-titre) !important; }
+
+/* ---------- Nouvelles sections G1 ---------- */
+.g1-sec { max-width: 1152px; margin: 0 auto; padding: 96px clamp(16px, 4vw, 32px) 0; box-sizing: border-box; }
+.g1-sec h2 { margin: 0 0 32px; }
+.g1-chiffres { padding-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px; }
+.g1-chiffres .g1-carte { padding: 22px 22px 20px; }
+.g1-chiffres b { display: block; font: 600 34px/1.1 var(--g1-titre); letter-spacing: -.02em; color: var(--g1-texte); }
+.g1-chiffres span { display: block; margin-top: 6px; font-size: 14px; color: var(--g1-doux); }
+
+.g1-etapes { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); border-top: 2px solid var(--g1-texte); }
+.g1-etapes li { padding: 22px 22px 22px 0; }
+.g1-etapes small { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; font: 13px/1 var(--g1-titre); color: var(--g1-doux); }
+.g1-etapes small::before { content: ""; width: 7px; height: 7px; border-radius: 1px; background: var(--g1-accent); }
+.g1-etapes h3 { margin: 0 0 6px; font: 600 20px/1.2 var(--g1-titre); }
+.g1-etapes p { margin: 0; font-size: 15px; color: var(--g1-doux); }
+
+.g1-categories { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 12px; }
+.g1-categories .g1-carte { padding: 22px; }
+.g1-categories b { display: block; margin-bottom: 6px; font: 500 12px/1.2 var(--g1-titre); letter-spacing: .1em; color: var(--g1-accent); }
+.g1-categories p { margin: 0; font-size: 15px; color: var(--g1-doux); }
+
+.g1-engagements { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 28px; }
+.g1-engagements div { border-left: 2px solid var(--g1-accent); padding-left: 18px; }
+.g1-engagements h3 { margin: 0 0 6px; font: 600 19px/1.2 var(--g1-titre); }
+.g1-engagements p { margin: 0; font-size: 15px; color: var(--g1-doux); }
+
+.g1-rebours { margin-top: 96px; background: #121212; color: #fff; padding: 48px clamp(16px, 4vw, 32px); }
+.g1-rebours-in { max-width: 1152px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 24px; }
+.g1-rebours p { margin: 0; font: 500 26px/1.2 var(--g1-titre); letter-spacing: -.01em; }
+.g1-rebours-cases { display: flex; gap: 10px; }
+.g1-rebours-cases div { min-width: 92px; padding: 14px 16px; border: 1px solid #57d68d; border-radius: 12px; text-align: center; }
+.g1-rebours-cases b { display: block; font: 500 30px/1.1 var(--g1-titre); }
+.g1-rebours-cases span { display: block; margin-top: 2px; font-size: 12px; letter-spacing: .12em; opacity: .75; }
+
+.g1-journal { max-width: 900px; border-top: 1px solid var(--g1-filet); }
+.g1-journal div { display: grid; grid-template-columns: 120px 1fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--g1-filet); }
+.g1-journal span { font: 13px/1.5 var(--g1-titre); color: var(--g1-accent); }
+.g1-journal .encours { color: #3a8f5e; }
+.g1-journal .avenir { color: var(--g1-doux); }
+
+@media (max-width: 640px) {
+  body.lp .lp-hero { padding-top: 130px !important; padding-bottom: 72px !important; }
+  .lp-hero-titre { font-size: 30px; }
+  .lp-titre, .titre-p { font-size: 28px !important; }
+  .vc-sous-titre { font-size: 24px !important; }
+  .g1-sec { padding-top: 64px; }
+  .g1-rebours-in { flex-direction: column; align-items: flex-start; }
+  .g1-rebours-cases div { min-width: 0; flex: 1; }
+  .g1-journal div { grid-template-columns: 90px 1fr; }
+}
