@@ -6,6 +6,7 @@ Chaque PR ajoute une ligne sous « À venir ». Au gel de preprod, « À venir �
 
 ## À venir
 
+- Test de bout en bout du parcours marketplace (23 nov. 2026, chantier D, demande de Ben) : `apps/web/tests/e2e/parcours-demo.cjs` (`npm run e2e`) rejoue dans la démo locale dépôt, question publique, proposition, coordonnées masquées, choix, accord, double signature, paiement simulé, livraison, fin et avis, frise de 1 à 7 ; check-list manuelle pour preprod avec test.flemmard et test.brigadier dans `docs/tests-parcours-preprod.md`. Aucun changement du site ni de l’app. Aucune migration.
 
 ## v2.1.0 (candidate) — gel de preprod le 18 nov. 2026, deuxième candidate le 21 nov. 2026
 
