@@ -6,6 +6,7 @@ Chaque PR ajoute une ligne sous « À venir ». Au gel de preprod, « À venir �
 
 ## À venir
 
+- App mobile remise à niveau sur la v2.1.0 (23 nov. 2026, chantier « Remettre l’app mobile à niveau » demandé par Ben) : feature flags lus dans Supabase (`EXPO_PUBLIC_FLEMME_ENV`, prudent par défaut), nouveau Mon espace derrière `espace.refonte` (onglets Accueil, Demandes, Trouver, Messages, Profil ; À faire maintenant ; frise ; offres comparées ; messagerie avec non-lus ; filtres rapides et alertes ; profil et réglages), questions publiques et livraison derrière `espace.confiance`, masquage des coordonnées et repères de profil, textes du paiement v2, lien `flemme-mobile://messages`. Configuration `eas.json` (profils preview → preprod, production → prod) et marche à suivre EAS et stores dans `apps/mobile/README.md` ; `flemme-mobile://lien` reste à ajouter par Ben aux Redirect URLs Supabase. Aucune migration.
 
 ## v2.1.0 (candidate) — gel de preprod le 18 nov. 2026, deuxième candidate le 21 nov. 2026
 

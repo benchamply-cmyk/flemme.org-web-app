@@ -1,16 +1,19 @@
 import React from 'react';
 import { Text, View } from 'react-native';
-import { date, money, notices, offerInput, offerReviewLabel, offerStatus, price } from '../../../../packages/shared/src/index.ts';
+import { AVIS_MASQUAGE, date, money, notices, offerInput, offerReviewLabel, offerStatus, price } from '../../../../packages/shared/src/index.ts';
 import { Action, Bill } from '../ui/composants';
 import { styles } from '../ui/styles';
 import type { Ctx } from './contexte';
+import { ResumeOffre } from './Espace';
+import { useFlag } from '../flags';
 
 // Écrans « offer » (discussion autour d’une proposition) et « review » (récapitulatif avant d’accepter).
 export function Offre({ state: { busy, actorId }, place: { screen, offerId }, task, offer, can, draft, field, go, mutate, validated }: Ctx) {
+  const refonte = useFlag('espace.refonte').actif;
   if (!task || !offer) return null;
   const total = money(price(offer.amount).total);
   const mine = offer.brigadier.id === actorId, editable = mine && offer.status === 'pending' && task.status === 'open' && offer.review !== 'rejected';
-  return <><Text style={styles.heading}>{screen === 'review' ? 'On se met d’accord ?' : 'La proposition de ' + offer.brigadier.name}</Text><Text style={styles.cardTitle}>{task.title}</Text><Text style={styles.tag}>{offerStatus[offer.status]}</Text>
+  return <>{refonte && screen === 'offer' && <ResumeOffre task={task} offerId={offer.id}/>}<Text style={styles.heading}>{screen === 'review' ? 'On se met d’accord ?' : 'L’offre de ' + offer.brigadier.name}</Text><Text style={styles.cardTitle}>{task.title}</Text><Text style={styles.tag}>{offerStatus[offer.status]}</Text>
     <Action secondary onPress={() => go('profile', { userId: offer.brigadier.id })}>Voir le profil de {offer.brigadier.name}</Action>
     {mine && offer.review && offer.review !== 'approved' && <View accessibilityRole="alert" style={offer.review === 'pending' ? styles.notice : styles.error}><Text style={styles.strong}>{offerReviewLabel[offer.review]}</Text>{!!offer.reviewNote && <Text style={styles.body}>{offer.reviewNote}</Text>}</View>}
     <Text style={styles.sectionTitle}>Ce qui est convenu</Text><Text style={styles.body}>{offer.scope}</Text>{!!offer.result && <Text style={styles.body}><Text style={styles.strong}>Résultat promis : </Text>{offer.result}</Text>}<Text style={styles.muted}>{offer.slot}</Text><Bill amount={offer.amount}/>
@@ -22,9 +25,10 @@ export function Offre({ state: { busy, actorId }, place: { screen, offerId }, ta
         <Action disabled={busy || task.status !== 'open' || offer.status !== 'pending'} onPress={() => mutate('accept', { offerId }, 'detail', notices.accepted)}>Accepter · {total}</Action></>
       : <><Text style={styles.sectionTitle}>Votre discussion</Text>
         {offer.messages.length === 0 && <Text style={styles.muted}>Un détail à préciser avant de vous mettre d’accord ?</Text>}
-        {offer.messages.map((m, i) => <View key={i} style={styles.bubble}><Text style={styles.strong}>{m.actor.name}</Text><Text style={styles.body}>{m.text}</Text><Text style={styles.note}>{date(m.at)}</Text></View>)}
+        {offer.messages.map((m, i) => <View key={i} style={[styles.bubble, refonte && (m.actor.id === actorId ? styles.bulleMoi : styles.bulleAutre)]}><Text style={styles.strong}>{m.actor.name}</Text><Text style={styles.body}>{m.text}</Text><Text style={styles.note}>{date(m.at)}</Text></View>)}
         {field('Ton message', 'text', { multiline: true })}
+        {task.contract?.status !== 'signed' && <Text style={styles.note}>{AVIS_MASQUAGE}</Text>}
         <Action secondary disabled={busy} onPress={() => mutate('message', { offerId, text: draft.text }, 'offer')}>Envoyer le message</Action>
-        {can.isOwner && task.status === 'open' && offer.status === 'pending' && <><Action disabled={busy} onPress={() => go('review')}>Voir l’accord avant d’accepter</Action><Action secondary disabled={busy} onPress={() => mutate('decline', { offerId }, 'detail', notices.declined)}>Décliner cette proposition</Action></>}
-        <Text style={styles.note}>Pour changer le prix : décliner la proposition, puis demander un nouveau forfait au membre. Chaque proposition reste conservée.</Text></>}</>;
+        {can.isOwner && task.status === 'open' && offer.status === 'pending' && <><Action disabled={busy} onPress={() => go('review')}>{refonte ? 'Préparer le contrat' : 'Voir l’accord avant d’accepter'}</Action><Action secondary disabled={busy} onPress={() => mutate('decline', { offerId }, 'detail', notices.declined)}>Décliner cette proposition</Action></>}
+        <Text style={styles.note}>Pour changer le prix : décliner l’offre, puis demander un nouveau forfait au membre. Chaque proposition reste conservée.</Text></>}</>;
 }

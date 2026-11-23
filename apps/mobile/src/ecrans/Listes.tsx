@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Pressable, Text, TextInput, View } from 'react-native';
 import type { Option, SearchFilter, Task } from '../../../../packages/shared/src/index.ts';
-import { BUDGET_FILTERS, CATEGORIES, DEADLINES, MODES, SORTS, brigadierPitch, budgetLabel, cardHint, categoryLabel, date, deadlineLabel, money, partition, reviewLabel, rights, taskStatus } from '../../../../packages/shared/src/index.ts';
+import { BUDGET_FILTERS, CATEGORIES, DEADLINES, MODES, SORTS, brigadierPitch, budgetLabel, cardHint, categoryLabel, date, deadlineLabel, money, partition, reviewLabel, taskStatus } from '../../../../packages/shared/src/index.ts';
+import { prochaineAction } from '../../../../packages/shared/src/espace.ts';
 import { session } from '../session';
+import { useFlag } from '../flags';
+import { Alertes, FiltresRapides } from './Espace';
 import { Action, Loupe } from '../ui/composants';
 import { styles, v04 } from '../ui/styles';
 import type { Ctx } from './contexte';
@@ -12,32 +15,18 @@ export function TaskCard({ task: t, actorId, onOpen }: { task: Task; actorId: st
   return <Pressable accessibilityRole="button" accessibilityLabel={'Voir : ' + t.title} onPress={onOpen} style={({ pressed }) => [styles.card, pressed && { boxShadow: '5px 6px 0 #a5ccff' }]}><View style={styles.row}><Text style={[styles.tag, pending && styles.tagWarn]}>{pending ? reviewLabel[t.review!] : taskStatus[t.status]}</Text><Text style={styles.strong}>{budgetLabel(t, money)}</Text></View><Text style={styles.cardTitle}>{t.title}</Text><Text style={styles.muted}>{[categoryLabel(t), t.place, t.deadline ? deadlineLabel(t) : ''].filter(Boolean).join(' · ')}</Text><Text style={styles.link}>{cardHint(t, actorId)}</Text></Pressable>;
 }
 
-/** Prochaine étape attendue de la personne connectée sur une demande, ou '' si c’est à l’autre d’agir (comme le site). */
-function nextStep(t: Task, actorId: string) {
-  const can = rights(t, actorId);
-  if (can.isOwner && t.review === 'changes_requested') return 'Corriger ta demande';
-  if (can.isOwner && t.status === 'open' && t.offers.some(o => o.status === 'pending')) return 'Voir les propositions reçues';
-  if (can.canSign) return 'Relire et signer l’accord';
-  if (can.canContract && !t.contract) return 'Rédiger l’accord';
-  if (can.canContract && (t.contract?.status === 'draft' || t.contract?.status === 'changes_requested')) return 'Relire l’accord';
-  if (can.canPay) return 'Payer via Flemme';
-  if (can.canDeclarePayment) return 'Régler et déclarer le paiement';
-  if (can.canConfirmPayment) return 'Confirmer le paiement reçu';
-  if (can.canReview) return 'Donner ton avis';
-  return '';
-}
-
 // Mon espace (tab « mine ») et Flemmes à résoudre (tab « find »). Actualisation : tirer vers le bas (App.tsx).
 export function Listes(ctx: Ctx) {
   const { state: { tasks, actorId, busy, more, drafts }, place, go } = ctx;
   const { own, helping, available } = partition(tasks, actorId);
+  const confiance = useFlag('espace.confiance').actif;
   const moreButton = more ? <Action secondary disabled={busy} onPress={() => session.loadMore()}>Voir plus de demandes</Action> : null;
   const card = (t: Task) => <TaskCard key={t.id} task={t} actorId={actorId} onOpen={() => go('detail', { taskId: t.id, draftId: undefined })}/>;
   const taskDrafts = drafts.filter(d => d.kind === 'task'), offerDrafts = drafts.filter(d => d.kind === 'offer');
   const draftCard = (id: string, title: string, at: string, open: () => void) => <View key={id} style={styles.card}><Text style={styles.cardTitle}>{title}</Text><Text style={styles.note}>Enregistré le {date(at)} · visible de toi seul</Text>
     <View style={styles.row}><Action small disabled={busy} onPress={open}>Reprendre</Action><Action small secondary disabled={busy} onPress={() => session.deleteDraft(id)}>Supprimer</Action></View></View>;
   if (place.tab === 'mine') {
-    const todo = [...own, ...helping].map(t => ({ t, next: nextStep(t, actorId) })).filter(x => x.next);
+    const todo = [...own, ...helping].map(t => ({ t, next: prochaineAction(t, actorId, { confiance }) })).filter(x => x.next);
     return <><Text style={styles.heading}>Tes demandes et tes propositions</Text><Text style={styles.muted}>Retrouve ce que tu as délégué et l’aide que tu as proposée.</Text>
       <Action onPress={() => go('new', { draftId: undefined })}>＋ Déléguer ma flemme</Action>
       {todo.length > 0 && <><Text style={styles.sectionTitle}>À faire</Text>
@@ -59,6 +48,7 @@ export function Listes(ctx: Ctx) {
 // comme la page « Flemmes à résoudre » du site. La loupe de l’en-tête ouvre cet écran barre active et filtres dépliés.
 function Recherche({ ctx: { state: { busy, found, filter }, place }, card, fallback, skip }: { ctx: Ctx; card: (t: Task) => React.ReactNode; fallback: Task[]; skip: Task[] }) {
   const [f, setF] = useState<SearchFilter>(filter), [open, setOpen] = useState(!!place.recherche);
+  const refonte = useFlag('espace.refonte').actif;
   const input = useRef<React.ComponentRef<typeof TextInput>>(null);
   useEffect(() => {
     if (place.categorie) { setOpen(true); run({ ...filter, category: place.categorie }); return; }
@@ -92,6 +82,7 @@ function Recherche({ ctx: { state: { busy, found, filter }, place }, card, fallb
         <Action small secondary disabled={busy} onPress={() => run({ sort: f.sort })}>Réinitialiser les filtres</Action>
       </>}
     </View>
+    {refonte && <><FiltresRapides f={f} run={run}/><Alertes f={f} run={run}/></>}
     {found && <Text accessibilityLiveRegion="polite" style={styles.note}>{found.total === 0 ? 'Aucune demande ne correspond.' : found.total + ' demande(s) trouvée(s)' + (f.q ? ' pour « ' + f.q + ' »' : '')}</Text>}
     {list.length ? list.map(card) : !found && <Text style={styles.muted}>Aucune nouvelle demande pour l’instant. Tire la liste vers le bas pour l’actualiser.</Text>}
     {found?.total === 0 && (active > 0 || !!f.q) && <><Text style={styles.muted}>Essaie d’autres mots, d’élargir la zone ou d’afficher les tâches à distance.</Text><Action secondary disabled={busy} onPress={() => run({ sort: f.sort })}>Effacer la recherche et les filtres</Action></>}

@@ -49,3 +49,10 @@ export function Bulle({ size = 20, color = '#d2e4ff' }: { size?: number; color?:
     <View style={{ position: 'absolute', left: size * .2, bottom: size * .06, width: size * .26, height: size * .26, borderRightWidth: w, borderBottomWidth: w, borderColor: color, backgroundColor: 'transparent', transform: [{ rotate: '45deg' }] }}/>
   </View>;
 }
+/** Trois lignes (onglet Demandes de la refonte). */
+export function Liste({ size = 20, color = '#d2e4ff' }: { size?: number; color?: string }) {
+  const w = Math.max(2, size / 9);
+  return <View style={{ width: size, height: size, justifyContent: 'space-around', paddingVertical: size * .12 }} accessibilityElementsHidden importantForAccessibility="no">
+    {[1, 1, .62].map((l, i) => <View key={i} style={{ width: size * l, height: w, borderRadius: w / 2, backgroundColor: color }}/>)}
+  </View>;
+}

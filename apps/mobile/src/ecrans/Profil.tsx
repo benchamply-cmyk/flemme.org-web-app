@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Image, Text, View } from 'react-native';
-import { date, profileFields, profileInput, stars } from '../../../../packages/shared/src/index.ts';
+import { date, profileFields, profileInput, reperesProfil, stars } from '../../../../packages/shared/src/index.ts';
 import { pickFile } from '../fichiers';
 import { session } from '../session';
 import { Action } from '../ui/composants';
@@ -17,7 +17,9 @@ export function Profil({ state: { busy, actorId, profile }, place: { userId }, d
   if (!profile || profile.id !== id) return busy ? null : <><Text style={styles.heading}>Profil indisponible</Text><Action secondary onPress={() => session.openProfile(id)}>Réessayer</Action></>;
   return <><View style={styles.profileHead}><View style={styles.avatarPhoto}>{photo ? <Image source={{ uri: photo }} accessibilityLabel={'Photo de ' + profile.name} style={{ width: 64, height: 64 }}/> : <Text style={styles.avatarLettre}>{profile.name.slice(0, 1).toUpperCase()}</Text>}</View>
     <Text style={[styles.heading, { flex: 1 }]}>{own ? 'Mon profil public' : profile.name}</Text></View>
-    <Text style={styles.muted}>Membre depuis le {date(profile.since).split(' ')[0]} · {profile.missions} mission(s) réalisée(s){profile.rating != null ? ` · ${stars(profile.rating)} ${String(profile.rating).replace('.', ',')}/5` : ' · pas encore d’avis'}</Text>
+    <Text style={styles.muted}>Membre depuis le {date(profile.since).split(' ')[0]}{profile.rating != null ? ` · ${stars(profile.rating)}` : ''}</Text>
+    <View style={styles.tags}>{reperesProfil(profile).map(r => <Text style={styles.tag} key={r}>{r}</Text>)}</View>
+    <Text style={styles.note}>Repères calculés à partir des missions et avis sur Flemme. Les profils ne sont pas vérifiés par l’équipe pour l’instant.</Text>
     {!!profile.bio && <Text style={styles.body}>{profile.bio}</Text>}
     {profile.skills.length > 0 && <View style={styles.tags}>{profile.skills.map(s => <Text style={styles.tag} key={s}>{s}</Text>)}</View>}
     {!!profile.experience && <><Text style={styles.sectionTitle}>Expérience</Text><Text style={styles.body}>{profile.experience}</Text></>}

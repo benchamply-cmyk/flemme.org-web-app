@@ -34,3 +34,9 @@ export const linkSecret = {
   set: async (value: string) => set(secretKey, value),
   clear: async () => { const s = store(); try { s?.removeItem(secretKey); } catch { /* bloqué */ } memory.delete(secretKey); },
 };
+// Mon espace (refonte v2.1.0) : discussions lues et alertes, dans le stockage du navigateur.
+const espaceKey = 'flemme-mobile-espace';
+export const espaceStore = {
+  get: async () => get(espaceKey),
+  set: async (value: string) => set(espaceKey, value),
+};

@@ -29,3 +29,10 @@ export const linkSecret = {
   set: (value: string) => SecureStore.setItemAsync('flemme-mobile-lien', value),
   clear: () => SecureStore.deleteItemAsync('flemme-mobile-lien'),
 };
+// Mon espace (refonte v2.1.0) : discussions lues et alertes de demandes, gardées sur ce téléphone seulement.
+// Un seul petit fichier réécrit à chaque changement : ce ne sont pas des données de mission.
+const espaceFile = FS.documentDirectory + 'flemme-mobile-espace.json';
+export const espaceStore = {
+  get: async () => { try { return await FS.readAsStringAsync(espaceFile); } catch { return null; } },
+  set: (value: string) => FS.writeAsStringAsync(espaceFile, value),
+};

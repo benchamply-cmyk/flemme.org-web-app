@@ -6,7 +6,7 @@ import { backLabel, contractFields, footer, lireLien, money, rights, taskFields 
 import type { Adresse, Command, Input, Option, Screen, Task } from '../../packages/shared/src/index.ts';
 import { session, useSession } from './src/session';
 import { linkReceived } from './src/liens';
-import { Action, Bulle, Loupe, Maison, Personne } from './src/ui/composants';
+import { Action, Bulle, Liste, Loupe, Maison, Personne } from './src/ui/composants';
 import { styles, v04 } from './src/ui/styles';
 import type { Ctx, Draft, FieldOptions, Place } from './src/ecrans/contexte';
 import { Accueil } from './src/ecrans/Accueil';
@@ -21,6 +21,9 @@ import { NouvelleFlemme } from './src/ecrans/NouvelleFlemme';
 import { Offre } from './src/ecrans/Offre';
 import { Profil } from './src/ecrans/Profil';
 import { Signalement } from './src/ecrans/Signalement';
+import { AccueilEspace, Badge, Messages, MesDemandes, Reglages } from './src/ecrans/Espace';
+import { chargerFlags, useFlag } from './src/flags';
+import { chargerEspace, nonLus as compterNonLus, useEspace } from './src/espace';
 
 // Coque mobile : en-tête V0.4, pile de navigation, formulaire en cours et choix de l’écran.
 // Règles, état et textes partagés : packages/shared. Écrans : src/ecrans. Pendant web : apps/web/src/App.tsx.
@@ -57,6 +60,8 @@ function Mobile() {
 
   useEffect(() => {
     void session.initialize();
+    // Feature flags réglés dans /admin (repli sur le registre si le serveur ne répond pas) et repères locaux de Mon espace.
+    void chargerFlags(true); void chargerEspace();
     // Lien vers un écran qui a ouvert l’app.
     void Linking.getInitialURL().then(url => { const a = lireLien(url); if (a) show(pileDe(a)); }).catch(() => {});
     // Lien ouvert pendant que l’app tourne : écran demandé, ou lien e-mail (on relance la session pour l’utiliser).
@@ -95,6 +100,10 @@ function Mobile() {
       {items.map(o => <Pressable key={o.value} accessibilityRole="radio" accessibilityLabel={o.label} accessibilityState={{ checked: value === o.value, disabled: busy }} disabled={busy} onPress={() => setDraft(d => ({ ...d, [name]: o.value, ...(name === 'budgetRange' && o.value ? { amount: '' } : {}) }))} style={[styles.option, value === o.value && styles.optionSelected]}><Text style={styles.strong}>{o.label}</Text></Pressable>)}
     </View></View>;
   }
+  // Feature flags : Mon espace et le formulaire « Déléguer » peuvent être éteints depuis /admin ;
+  // espace.refonte bascule sur le nouveau Mon espace (v2.1.0, src/ecrans/Espace.tsx).
+  const monEspace = useFlag('espace.mon_espace').actif, deleguer = useFlag('formulaires.deleguer').actif, aide = useFlag('espace.aide').actif;
+  const refonte = useFlag('espace.refonte').actif, { lus } = useEspace(), nonLus = compterNonLus(tasks, actorId, lus);
   const ctx: Ctx = {
     state, place, draft, task, offer, can: rights(task, actorId), field, choice, go, back, mutate,
     fill: values => setDraft(d => ({ ...d, ...values })),
@@ -104,16 +113,22 @@ function Mobile() {
   };
 
   let content: React.ReactNode;
-  if (!ready) content = <ActivityIndicator accessibilityLabel="Chargement" color={v04.encre}/>;
+  const bientot = (titre: string) => <><Text style={styles.heading}>{titre}</Text><Text style={styles.body}>Bientôt disponible. Reviens un peu plus tard.</Text></>;
+  if (!monEspace) content = bientot('Mon espace');
+  else if (!ready) content = <ActivityIndicator accessibilityLabel="Chargement" color={v04.encre}/>;
   else if (session.remote && (!gateway || !actorId)) content = <Connexion {...ctx}/>;
   else if (!gateway) content = <><Text style={styles.heading}>Chargement interrompu</Text><Action onPress={() => session.initialize()}>Réessayer sans effacer mes données</Action></>;
   else if (recovering && session.remote) content = <MotDePasse {...ctx}/>;
-  else if (screen === 'account') content = <Compte {...ctx}/>;
+  else if (screen === 'account') content = refonte ? <Reglages {...ctx}><Compte {...ctx}/></Reglages> : <Compte {...ctx}/>;
   else if (screen === 'profile') content = <Profil key={visit} {...ctx}/>;
   else if (screen === 'help') content = <Aide key={visit} {...ctx}/>;
-  else if (screen === 'home') content = <Accueil {...ctx}/>;
+  else if (screen === 'home') content = refonte ? <AccueilEspace {...ctx}/> : <Accueil {...ctx}/>;
+  else if (screen === 'new' && !deleguer) content = bientot('Déléguer une flemme');
   else if (screen === 'new') content = <NouvelleFlemme key={visit} {...ctx}/>;
-  else if (screen === 'list') content = <Listes key={visit} {...ctx}/>;
+  else if (screen === 'list' && refonte && place.tab === 'messages') content = <Messages {...ctx}/>;
+  else if (screen === 'list' && refonte && place.tab === 'mine') content = <MesDemandes key={visit} {...ctx}/>;
+  // /messages sans la refonte : la messagerie n’existe pas encore, on ouvre Mon espace.
+  else if (screen === 'list') content = <Listes key={visit} {...ctx} place={place.tab === 'messages' ? { ...place, tab: 'mine' } : place}/>;
   else if (!task) content = <><Text style={styles.heading}>Demande indisponible</Text><Action secondary onPress={() => go('list')}>Revenir à la liste</Action></>;
   else if (screen === 'report') content = <Signalement {...ctx}/>;
   else if (screen === 'edit') content = <NouvelleFlemme key={visit} {...ctx}/>;
@@ -125,10 +140,18 @@ function Mobile() {
   // Barre du haut fixe : logo, Rechercher, Connexion (Mon compte une fois connecté).
   // Menu du bas statique et fixe, icône et petit texte (demande de Ben, 6 novembre 2026) : Accueil, Flemmes, Contact, Mon compte.
   // Il remplace le menu à quatre carrés ; Mon profil est dans Mon compte, Contact ouvre l’aide et le message à l’équipe.
-  const onglets: { label: string; icone: React.ReactNode; actif: boolean; action: () => void }[] = [
+  // Refonte (v2.1.0) : cinq onglets comme le site, Accueil, Demandes, Trouver, Messages (non-lus), Profil.
+  const enDemande = ['detail', 'edit', 'contract', 'report', 'review', 'new'].includes(screen);
+  const onglets: { label: string; icone: React.ReactNode; actif: boolean; action: () => void; badge?: number }[] = refonte ? [
+    { label: 'Accueil', icone: <Maison/>, actif: screen === 'home', action: () => go('home') },
+    { label: 'Demandes', icone: <Liste/>, actif: (screen === 'list' && place.tab === 'mine') || enDemande, action: () => go('list', { tab: 'mine' }) },
+    { label: 'Trouver', icone: <Loupe size={20} color={v04.glacier}/>, actif: screen === 'list' && place.tab === 'find', action: () => go('list', { tab: 'find', recherche: false }) },
+    { label: 'Messages', icone: <Bulle/>, actif: screen === 'offer' || (screen === 'list' && place.tab === 'messages'), action: () => go('list', { tab: 'messages' }), badge: nonLus },
+    { label: 'Profil', icone: <Personne size={20} color={v04.glacier}/>, actif: screen === 'account' || screen === 'profile' || screen === 'help', action: () => go('account') },
+  ] : [
     { label: 'Accueil', icone: <Maison/>, actif: screen === 'home', action: () => go('home') },
     { label: 'Flemmes', icone: <Loupe size={20} color={v04.glacier}/>, actif: screen === 'list' && place.tab === 'find', action: () => go('list', { tab: 'find', recherche: false }) },
-    { label: 'Contact', icone: <Bulle/>, actif: screen === 'help', action: () => go('help') },
+    ...(aide ? [{ label: 'Contact', icone: <Bulle/>, actif: screen === 'help', action: () => go('help') }] : []),
     { label: 'Mon compte', icone: <Personne size={20} color={v04.glacier}/>, actif: screen === 'account' || (screen === 'profile' && !place.userId), action: () => go('account') },
   ];
   return <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}><StatusBar style="dark"/><KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -141,16 +164,16 @@ function Mobile() {
         <Pressable accessibilityRole="button" accessibilityLabel={connecte ? 'Mon compte' : 'Connexion'} onPress={() => connecte && go('account')} style={[styles.burger, styles.perso]}><Personne size={18}/></Pressable>
       </View>
     </View>
-    <ScrollView ref={scroll} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled" refreshControl={screen === 'list' && connecte ? <RefreshControl refreshing={busy} onRefresh={() => session.refresh()} tintColor={v04.encre}/> : undefined}>
-      {screen !== 'home' && connecte && !(recovering && session.remote) && <Action secondary onPress={back}>{stack.length > 2 ? '← Retour' : backLabel(screen)}</Action>}
+    <ScrollView ref={scroll} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled" refreshControl={screen === 'list' && connecte ? <RefreshControl refreshing={busy} onRefresh={() => { void session.refresh(); void chargerFlags(); }} tintColor={v04.encre}/> : undefined}>
+      {screen !== 'home' && connecte && !(recovering && session.remote) && !(refonte && (screen === 'list' || screen === 'account')) && <Action secondary onPress={back}>{stack.length > 2 ? '← Retour' : backLabel(screen)}</Action>}
       {!!error && <View accessibilityRole="alert" style={styles.error}><Text style={styles.body}>{error}</Text></View>}
       {!!notice && <View accessibilityLiveRegion="polite" style={styles.notice}><Text style={styles.body}>{notice}</Text></View>}
       {content}
       {busy && <ActivityIndicator style={{ margin: 16 }} accessibilityLabel="En cours" color={v04.encre}/>}
     </ScrollView>
     <SafeAreaView edges={['bottom']} style={styles.pied}>
-      {connecte && <View style={styles.onglets} accessibilityRole="tablist">{onglets.map(o => <Pressable key={o.label} accessibilityRole="tab" accessibilityLabel={o.label} accessibilityState={{ selected: o.actif }} onPress={o.action} style={[styles.onglet, o.actif && styles.ongletActif]}>
-        <View style={styles.ongletIcone}>{o.icone}</View><Text style={[styles.ongletTexte, o.actif && styles.ongletTexteActif]}>{o.label}</Text></Pressable>)}</View>}
+      {connecte && <View style={styles.onglets} accessibilityRole="tablist">{onglets.map(o => <Pressable key={o.label} accessibilityRole="tab" accessibilityLabel={o.label + (o.badge ? `, ${o.badge} non lu(s)` : '')} accessibilityState={{ selected: o.actif }} onPress={o.action} style={[styles.onglet, o.actif && styles.ongletActif]}>
+        <View style={styles.ongletIcone}>{o.icone}{!!o.badge && <View style={styles.badgeOnglet}><Badge n={o.badge}/></View>}</View><Text style={[styles.ongletTexte, o.actif && styles.ongletTexteActif]}>{o.label}</Text></Pressable>)}</View>}
       <Text style={styles.piedTexte}>{footer(session.remote)}</Text>
     </SafeAreaView>
   </KeyboardAvoidingView></SafeAreaView>;

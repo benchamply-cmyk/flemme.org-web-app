@@ -1,5 +1,27 @@
 # FLEMME mobile — bêta native
 
+## Remise à niveau v2.1.0 — 23/11/2026
+
+L’app était figée depuis le 06/11 (aperçu v13). Elle reprend maintenant la marketplace ouverte v2 et la refonte de Mon espace du site, avec les mêmes règles de `packages/shared` (`espace.ts`, `confiance.ts`, `flags.ts`, `monetisation.ts`, `adresses.ts`) :
+
+- **Feature flags** (`src/flags.ts`) : registre partagé appliqué tout de suite, puis état réglé dans /admin › Fonctionnalités lu dans Supabase au démarrage et à chaque actualisation. L’environnement vient de `EXPO_PUBLIC_FLEMME_ENV` (profils de `eas.json`) ; sans valeur, « local » en démo et « prod » en mode connecté. Pas d’accès bêta vérifié sur mobile : un flag sur « testeurs » reste éteint dans l’app. `espace.mon_espace` et `formulaires.deleguer` éteints affichent « Bientôt disponible » ; `espace.aide` masque Contact.
+- **Nouveau Mon espace** (flag `espace.refonte`, `src/ecrans/Espace.tsx`) : cinq onglets Accueil, Demandes, Trouver, Messages (avec non-lus), Profil ; accueil « À faire maintenant » ; « Mes flemmes » Je délègue / J’aide avec filtres ; frise en 7 étapes et offres comparées sur la fiche ; messagerie avec résumé de l’offre ; filtres rapides et alertes dans Trouver ; profil avec taux de remplissage, chiffres et réglages. Discussions lues et alertes restent sur le téléphone (`src/espace.ts`, rien n’est envoyé au serveur). Flag éteint : l’ancien Mon espace.
+- **Confiance** (flag `espace.confiance`) : questions publiques sous une demande, « J’ai terminé la mission », libération après 7 jours sans désaccord. Avis de masquage des coordonnées sous les propositions et discussions, repères de confiance sur les profils.
+- **Paiement v2** : étape du paiement, rappel « une mission conclue sur Flemme se paie sur Flemme », récapitulatif avant signature, « Mission terminée, je libère le paiement ». Le paiement par carte (Stripe) reste sur flemme.org.
+- **Adresses** : `flemme-mobile://messages` s’ajoute aux liens profonds (sans la refonte, il ouvre Mon espace).
+
+### Ce que Ben doit faire (aucun réglage n’est changé par le code)
+
+1. Supabase, projet `flemme-preprod` puis prod au moment voulu : Authentication › URL Configuration › Redirect URLs, ajouter `flemme-mobile://lien`. Sans cela, les liens « mot de passe oublié » et « confirmer mon adresse » rouvrent le site au lieu de l’app.
+2. Builds EAS (compte Expo de Ben) : depuis `apps/mobile`, `npx eas-cli login`, puis `npx eas-cli init` (ajoute `extra.eas.projectId` à `app.json`, à committer dans une PR), puis déclarer les variables publiques par environnement :
+   `npx eas-cli env:create --environment preview --name EXPO_PUBLIC_SUPABASE_URL --value https://kklaqwmdphedomsimjim.supabase.co --visibility plaintext`
+   et `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (clé publishable de `flemme-preprod`, jamais une clé secrète) ; même chose en `production` avec le projet prod quand la v2 y sera.
+3. Build de test interne : `npx eas-cli build --profile preview --platform android` (APK à installer) ou `--platform ios` (appareils enregistrés). Pointe sur preprod, flags lus en « preprod ».
+4. Stores, quand Ben le décide : comptes Apple Developer et Google Play Console au nom de l’éditeur, confirmer les identifiants `org.flemme.mobile`, fiches (textes, captures, politique de confidentialité flemme.org/confidentialite, contact bonjour@flemme.org), puis `npx eas-cli build --profile production` et `npx eas-cli submit --profile production`. Les numéros de build sont incrémentés par EAS (`appVersionSource: remote`).
+5. Liens universels `https://flemme.org/…` (facultatif, après les stores) : `associatedDomains` iOS, `intentFilters` Android, et publication de `/.well-known/apple-app-site-association` et `/.well-known/assetlinks.json` sur le site.
+
+Limites : pas de notifications push, alertes et non-lus gardés sur le téléphone seulement, pas de paiement par carte dans l’app, pas de dictée.
+
 ## Liens profonds — 14/11/2026
 
 Chaque écran a la même adresse que sur le site (plan d'adresses validé par Ben, table dans `packages/shared/src/adresses.ts`) : `flemme-mobile://mes-demandes`, `flemme-mobile://flemmes?categorie=maison`, `flemme-mobile://deleguer/nouvelle`, `flemme-mobile://flemme/123` (+ `/modifier`, `/accord`, `/signaler`, `/proposition/456`), `flemme-mobile://compte`, `flemme-mobile://profil/789`, `flemme-mobile://aide`. `App.tsx` ouvre l'écran au démarrage ou pendant que l'app tourne, empilé sur l'accueil. `flemme-mobile://lien` reste réservé aux liens e-mail de connexion. Les liens `https://flemme.org/…` sont déjà reconnus (`lireLien`), mais n'ouvriront l'app qu'avec la publication sur les stores : il faudra alors déclarer le domaine (`associatedDomains` iOS, `intentFilters` Android) et publier sur le site `/.well-known/apple-app-site-association` et `/.well-known/assetlinks.json`. Le formulaire « autre » ou « devis » (`?formule=`) n'existe pas encore sur mobile : le lien ouvre le formulaire classique.
