@@ -6,6 +6,7 @@ import './reglages-pr55.css';
 import './nav.css';
 import './nav.ts';
 import './marque.css';
+import './g1.css';
 import { ouvrirCatalogue } from './filtre.ts';
 
 // Comportements communs à toutes les pages de la vitrine : menu burger, liens vers le catalogue filtré.

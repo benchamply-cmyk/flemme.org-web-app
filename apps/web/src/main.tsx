@@ -6,5 +6,6 @@ import './styles.css';
 import './site/nav.css';
 import './site/nav.ts';
 import './site/marque.css';
+import './site/g1.css';
 
 createRoot(document.getElementById('root')!).render(<StrictMode><App/></StrictMode>);

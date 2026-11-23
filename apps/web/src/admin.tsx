@@ -4,5 +4,6 @@ import AdminApp from './admin/AdminApp.tsx';
 import './styles.css';
 import './admin/admin.css';
 import './site/marque.css';
+import './site/g1.css';
 
 createRoot(document.getElementById('root')!).render(<StrictMode><AdminApp/></StrictMode>);

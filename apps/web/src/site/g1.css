@@ -1,0 +1,197 @@
+/* Flemme · habillage G1 « Actuelle, titres mono » sur tout le site (24/11/2026, demande de Ben)
+   Même style que la page /bientot (PR #108, apps/web/public/bientot/g1.css), étendu à l'accueil, aux pages de la vitrine,
+   aux pages légales, à l'espace connecté (app.html) et à l'admin.
+   Réglages : accent #4dbc7c, titres IBM Plex Mono, texte IBM Plex Sans, boutons rectangles, cartes sans arrondi avec ombre,
+   pastilles carrées couleur accent, grain gros en haut de page, grain léger partout, ruban fin incliné, pas de fond alterné.
+   Cette feuille se charge en dernier et ne modifie aucune autre feuille : retirer ses imports rend l'ancien style.
+   Les sélecteurs :root:root:root … !important passent devant marque.css et reglages*.css (eux-mêmes en !important). */
+
+:root {
+  --g1-accent: #4dbc7c;
+  --g1-texte: #101e2a;
+  --g1-doux: #4c6157;
+  --g1-filet: #dceee3;
+  --g1-pastille: #d7f5e4;
+  --g1-grain: rgba(58, 143, 94, .35);
+  --g1-titre: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  --g1-corps: 'IBM Plex Sans', system-ui, sans-serif;
+  --g1-ombre: 0 12px 28px -16px rgba(0, 0, 0, .28);
+  /* Variables des feuilles existantes, reprises par le thème */
+  --police: var(--g1-corps);
+  --display: var(--g1-corps);
+  --pp-police: var(--g1-corps);
+  --pn-police: var(--g1-corps);
+  --lp-vert: var(--g1-accent);
+  --green: var(--g1-accent);
+  --mono: var(--g1-titre);
+}
+
+/* ---------- Polices ---------- */
+:root:root:root body, :root:root:root body * { font-family: var(--g1-corps) !important; }
+:root:root:root body h1, :root:root:root body h1 *, :root:root:root body h2, :root:root:root body h2 *,
+:root:root:root body h3, :root:root:root body .titre, :root:root:root body .titre *, :root:root:root .lp-titre, :root:root:root .lp-titre *,
+:root:root:root .titre-p, :root:root:root .titre-p *, :root:root:root .heading, :root:root:root .section-title, :root:root:root .espace-titre,
+:root:root:root .surtitre, :root:root:root .eyebrow, :root:root:root .lp-etiquette, :root:root:root .etiquette, :root:root:root .exemple-etiquette,
+:root:root:root .lp-chiffre b, :root:root:root .lp-arg b, :root:root:root .lp-arg-chiffre, :root:root:root .lp-num, :root:root:root .moment-num,
+:root:root:root .pn-mot, :root:root:root .pn-logo, :root:root:root .logo, :root:root:root .lp-geant, :root:root:root .lp-geant *,
+:root:root:root .lp-bouton, :root:root:root .bouton, :root:root:root .cta-texte b, :root:root:root .btn, :root:root:root .choice-title,
+:root:root:root .price, :root:root:root .prix, :root:root:root .carte-titre, :root:root:root .card-title, :root:root:root code {
+  font-family: var(--g1-titre) !important;
+}
+:root:root:root body h1, :root:root:root body h2, :root:root:root .lp-titre, :root:root:root .titre-p, :root:root:root .titre {
+  font-weight: 500 !important; letter-spacing: -.03em !important; line-height: 1.08; color: var(--g1-texte);
+}
+:root:root:root body h3 { font-weight: 600 !important; letter-spacing: -.01em; }
+/* Fins de titre : plus de dégradé chromé ni d'italique, accent plein */
+:root:root:root h1 em, :root:root:root h2 em, :root:root:root .lp-titre em, :root:root:root .titre-p em, :root:root:root .lp-chute em, :root:root:root .lp-hero-titre em {
+  font-family: inherit !important; font-style: normal !important; font-weight: inherit !important; color: var(--g1-accent) !important;
+  background: none !important; -webkit-text-fill-color: currentColor !important; animation: none !important;
+}
+
+/* ---------- Fond : blanc, grain léger partout, grain gros en haut ---------- */
+:root:root:root, :root:root:root body { background: #fff !important; }
+:root:root:root body { position: relative; isolation: isolate; color: var(--g1-texte); }
+:root:root:root body::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image: radial-gradient(var(--g1-grain) .8px, transparent 1px); background-size: 9px 9px; opacity: .45;
+}
+:root:root:root body::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 900px; z-index: -1; pointer-events: none;
+  background-image: radial-gradient(var(--g1-grain) 2px, transparent 2.4px); background-size: 14px 14px; opacity: .7;
+  -webkit-mask-image: linear-gradient(#000, transparent); mask-image: linear-gradient(#000, transparent);
+}
+/* Rubans chromés, collines et fonds teintés retirés : le grain les remplace */
+:root:root:root .flemme-chrome-home, :root:root:root .fond-flemme, :root:root:root .bandeau { background: transparent !important; }
+:root:root:root .flemme-chrome-home::before, :root:root:root .flemme-chrome-home::after,
+:root:root:root .lp-collines, :root:root:root .lp-teinte::before, :root:root:root .lp-fin::before { display: none !important; }
+:root:root:root main, :root:root:root .lp main, :root:root:root body[data-page] main, :root:root:root body[data-page="comment"] main,
+:root:root:root .lp-teinte, :root:root:root .lp-fin, :root:root:root .fond-glacier, :root:root:root .fond-menthe,
+:root:root:root .app-bandeau, :root:root:root .famille-s { background: transparent !important; }
+:root:root:root .lp-hero .ff-objet, :root:root:root .lp-hero .lp-relief, :root:root:root .lp-hero canvas { display: none !important; }
+
+/* ---------- Héros de l'accueil : centré comme /bientot ---------- */
+:root:root:root body.lp .lp-hero { align-items: center; min-height: auto !important; padding-top: 170px !important; padding-bottom: 110px !important; background: transparent !important; }
+:root:root:root .lp-hero-contenu { text-align: center; max-width: 1152px; margin-inline: auto; }
+:root:root:root .lp-hero-titre { font-size: 46px !important; line-height: 1.05 !important; text-transform: uppercase; max-width: none; margin: 0 auto; }
+:root:root:root .lp-hero-titre em { display: block; }
+:root:root:root .lp-hero-bas { justify-content: center; }
+:root:root:root .lp-hero-bas > div { display: flex; flex-direction: column; align-items: center; }
+:root:root:root .lp-hero-accroche { margin: 8px auto 0; max-width: 620px; color: var(--g1-doux); font-size: 18px; }
+:root:root:root .lp-hero-actions { justify-content: center; margin-top: 30px; }
+:root:root:root .lp-souligne { text-decoration-color: var(--g1-accent) !important; }
+
+/* ---------- Titres des pages intérieures ---------- */
+:root:root:root .titre-page h1 { font-size: clamp(30px, 5vw, 46px) !important; text-transform: uppercase; }
+:root:root:root .titre-page > p:last-child, :root:root:root .lp-intro, :root:root:root .doux, :root:root:root .muted { color: var(--g1-doux) !important; }
+:root:root:root .lp-titre, :root:root:root .titre-p { font-size: 36px !important; max-width: none; }
+:root:root:root .bloc > h2, :root:root:root .titre { font-size: clamp(24px, 3.4vw, 30px) !important; }
+
+/* ---------- Étiquettes : pilule blanche, pastille carrée accent ---------- */
+:root:root:root .lp-etiquette, :root:root:root .surtitre, :root:root:root .eyebrow {
+  display: inline-flex; align-items: center; gap: 8px; color: var(--g1-doux) !important; font-size: 12px !important; letter-spacing: .08em !important;
+}
+:root:root:root .lp-etiquette { background: #fff !important; border: 1px solid var(--g1-filet) !important; }
+:root:root:root .lp-etiquette::before, :root:root:root .surtitre::before, :root:root:root .eyebrow::before {
+  content: ""; width: 7px; height: 7px; border-radius: 1px; background: var(--g1-accent); flex: none; box-shadow: none; animation: none;
+}
+
+/* ---------- Boutons : rectangles, casse normale ---------- */
+:root:root:root .lp-bouton, :root:root:root .bouton, :root:root:root .cta, :root:root:root .btn, :root:root:root .pn-cta, :root:root:root .decrire-bas button {
+  border-radius: 6px !important; text-transform: none !important; letter-spacing: 0 !important; font-weight: 600 !important; box-shadow: none !important;
+}
+:root:root:root .lp-bouton { font-size: 16px; min-height: 48px; padding: 0 22px; }
+:root:root:root .lp-bouton.noir, :root:root:root .bouton:not(.clair):not(.vert), :root:root:root .cta:not(.vert), :root:root:root .btn:not(.secondary) {
+  background: #121212 !important; color: #fff !important;
+}
+:root:root:root .lp-bouton.contour, :root:root:root .bouton.vert, :root:root:root .cta.vert, :root:root:root .choice.secondary {
+  background: var(--g1-pastille) !important; color: var(--g1-texte) !important; border: 1.5px solid var(--g1-accent) !important;
+}
+:root:root:root .bouton.clair, :root:root:root .btn.secondary {
+  background: #fff !important; color: var(--g1-texte) !important; border: 1.5px solid var(--g1-texte) !important; box-shadow: none !important;
+}
+:root:root:root .lp-bouton:hover, :root:root:root .bouton:hover, :root:root:root .cta:hover, :root:root:root .btn:hover { transform: translateY(-1px); filter: brightness(1.06); }
+:root:root:root .lp-bouton .lp-fleche { display: none; }
+:root:root:root .cta, :root:root:root .cta-fleche { border-radius: 6px !important; }
+:root:root:root .cta.vert .cta-fleche { background: #121212 !important; }
+
+/* ---------- Cartes : sans arrondi, sans bordure, ombre douce ---------- */
+:root:root:root .carte, :root:root:root .exemple-carte, :root:root:root .contact-carte, :root:root:root .etapes li, :root:root:root .exemple,
+:root:root:root .parcours-duo > div, :root:root:root .lp-arg, :root:root:root .lp-carte, :root:root:root .lp-diapo, :root:root:root .lp-liste,
+:root:root:root .lp .moment, :root:root:root .lp-chiffre, :root:root:root .questions details, :root:root:root .famille-s, :root:root:root .offres > div,
+:root:root:root .premium-bandeau, :root:root:root .premium-court > div, :root:root:root .decrire, :root:root:root .card, :root:root:root .choice,
+:root:root:root .carte-espace, :root:root:root .alert, :root:root:root .notice, :root:root:root .lp-tableau {
+  border-radius: 0 !important; border-color: transparent !important; box-shadow: var(--g1-ombre) !important; background: #fff !important;
+}
+:root:root:root .offres .sombre, :root:root:root .premium-bandeau { background: #121212 !important; color: #fff !important; }
+:root:root:root .offres .sombre *, :root:root:root .premium-bandeau * { color: inherit; }
+:root:root:root .carte > b:first-child, :root:root:root .exemple-titre, :root:root:root .lp-carte h3, :root:root:root .lp-diapo h3 { font-family: var(--g1-titre) !important; font-weight: 600; }
+:root:root:root .lp-arg-chiffre, :root:root:root .lp-num, :root:root:root .moment-num { color: var(--g1-doux) !important; }
+
+/* Espace connecté : tuiles, offres et chiffres gardent leur fond (tuile noire « Déléguer »), coins carrés */
+:root:root:root .tuile, :root:root:root .offre, :root:root:root .chiffre, :root:root:root .resume-offre, :root:root:root .bandeau-alerte, :root:root:root .reglage {
+  border-radius: 0 !important; box-shadow: var(--g1-ombre) !important;
+}
+:root:root:root .tuile-titre, :root:root:root .offre-prix, :root:root:root .chiffre b { font-family: var(--g1-titre) !important; }
+
+/* Étapes : filet noir en haut, pastilles carrées */
+:root:root:root .etapes { border-top: 2px solid var(--g1-texte); padding-top: 12px; }
+
+/* Pastilles, puces, étiquettes de catégorie : coins carrés */
+:root:root:root .pastille-s, :root:root:root .exemple-etiquette, :root:root:root .etiquette, :root:root:root .tag, :root:root:root .badge,
+:root:root:root .pastille-initiale, :root:root:root .exemple-cat { border-radius: 2px !important; }
+:root:root:root .puce span, :root:root:root .filtre summary, :root:root:root .categories a, :root:root:root .onglets a { border-radius: 4px !important; }
+:root:root:root .puce input:checked + span, :root:root:root .onglets a[aria-current] { background: #121212 !important; color: #fff !important; border-color: #121212 !important; }
+
+/* Champs : rectangles nets */
+:root:root:root .champ input, :root:root:root .champ textarea, :root:root:root .champ select, :root:root:root .field input,
+:root:root:root .field textarea, :root:root:root .field select, :root:root:root .recherche input, :root:root:root .barre input,
+:root:root:root .decrire textarea, :root:root:root .searchbar input { border-radius: 4px !important; }
+:root:root:root .barre { border-radius: 6px !important; }
+:root:root:root .barre button { border-radius: 4px !important; }
+:root:root:root input:focus-visible, :root:root:root textarea:focus-visible, :root:root:root select:focus-visible { outline: 2px solid var(--g1-accent) !important; outline-offset: 1px; }
+
+/* FAQ : cartes, questions en gras */
+:root:root:root .questions summary { font-weight: 600; }
+
+/* Bande défilante de l'accueil : ruban fin incliné, noir, rayures menthe */
+:root:root:root .lp-bande { transform: rotate(-2.2deg); background: #121212 !important; color: #fff; box-shadow: none !important; border: 0 !important; margin-block: 24px; position: relative; }
+:root:root:root .lp-bande::before, :root:root:root .lp-bande::after {
+  content: ""; position: absolute; left: 0; right: 0; height: 5px; background: repeating-linear-gradient(-45deg, #57d68d 0 12px, #121212 12px 24px);
+}
+:root:root:root .lp-bande::before { top: 0; } :root:root:root .lp-bande::after { bottom: 0; }
+:root:root:root .lp-bande li { font: 600 12px/1 var(--g1-titre) !important; color: #fff !important; }
+:root:root:root .lp-bande li::after { color: #57d68d !important; }
+
+/* Menu en bulles : on garde la forme, logo en mono */
+:root:root:root .pn-mot { font-weight: 600; letter-spacing: -.01em; }
+
+/* Phrases géantes de l'accueil : mono, taille contenue, accent plein au lieu du dégradé */
+:root:root:root .lp-geant { font-size: clamp(34px, 6vw, 72px) !important; font-weight: 500 !important; letter-spacing: -.04em !important; line-height: 1.05 !important; }
+:root:root:root .lp-geant .m, :root:root:root .lp-degrade-vert, :root:root:root .lp-degrade-vert .m {
+  background: none !important; -webkit-text-fill-color: currentColor !important; animation-name: none;
+}
+:root:root:root .lp-degrade-vert .m:nth-child(2n) { color: var(--g1-accent) !important; }
+
+/* Pied de page : fond clair, filet, liens doux */
+:root:root:root .pied { background: #fff !important; color: var(--g1-texte) !important; border-top: 1px solid var(--g1-filet); }
+:root:root:root .pied a { color: var(--g1-doux) !important; }
+:root:root:root .pied a:hover { color: var(--g1-texte) !important; }
+:root:root:root .pied b, :root:root:root .pied h2, :root:root:root .pied h3 { font-family: var(--g1-titre) !important; color: var(--g1-texte) !important; }
+
+/* Liens forts : soulignement accent */
+:root:root:root .lien-fort, :root:root:root .lp-lien, :root:root:root .link, :root:root:root .lien { text-decoration-color: var(--g1-accent) !important; }
+
+/* Pages légales : texte lisible, titres mono */
+:root:root:root .texte-legal h2 { font-size: 17px !important; letter-spacing: -.01em !important; }
+
+@media (max-width: 640px) {
+  :root:root:root body.lp .lp-hero { padding-top: 130px !important; padding-bottom: 64px !important; }
+  :root:root:root .lp-hero-titre { font-size: 30px !important; }
+  :root:root:root .lp-titre, :root:root:root .titre-p { font-size: 28px !important; }
+  :root:root:root .titre-page h1 { font-size: 30px !important; }
+  :root:root:root .bloc > h2, :root:root:root .titre { font-size: 24px !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:root:root .lp-bouton:hover, :root:root:root .bouton:hover, :root:root:root .cta:hover, :root:root:root .btn:hover { transform: none; }
+}
