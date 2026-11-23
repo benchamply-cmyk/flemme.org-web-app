@@ -6,6 +6,7 @@ Chaque PR ajoute une ligne sous « À venir ». Au gel de preprod, « À venir �
 
 ## À venir
 
+- Pages légales préparées pour une SASU (23 nov. 2026, demande de Ben, chantier juridique / FLM-25) : éditeur = SASU en cours de création (dénomination, capital, siège, SIREN, RCS et TVA laissés à compléter), directeur de la publication Benjamin Champly ; service réservé aux personnes majeures (CGU, mentions, CGV, confidentialité) ; validation automatique à 7 jours ; politique de remboursement détaillée dans les CGV (7 cas, conditions d'éligibilité, exclusions) ; rétractation limitée au service de plateforme ; médiateur de la consommation (nom à compléter) dans les mentions, CGU et CGV ; obligations fiscales et DAC7 des membres rémunérés dans les CGU ; durées de conservation (12 mois, 10 ans) et transferts hors UE dans la politique de confidentialité ; sitemap daté du 23/11. Toujours des brouillons à faire relire par un juriste. Aucune migration.
 
 ## v2.1.0 (candidate) — gel de preprod le 18 nov. 2026, deuxième candidate le 21 nov. 2026
 
