@@ -28,7 +28,7 @@ export type Contract = {
   feeDueAt?: string | null;
 };
 export const contractStatusLabel: Record<ContractStatus, string> = {
-  draft: 'Brouillon · à relire puis soumettre', pending: 'En cours de contrôle par l’équipe FLEMME',
+  draft: 'Brouillon · à relire puis soumettre', pending: 'En cours de vérification par Flemme',
   changes_requested: 'Correction demandée par l’équipe FLEMME', approved: 'Contrôlé · prêt à signer', signed: 'Signé par les deux parties',
 };
 /** Rubriques de l’accord : libellé, aide et longueur maximale (mêmes limites que flemme_v2.agreement_terms). */
