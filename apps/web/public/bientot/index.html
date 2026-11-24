@@ -89,8 +89,8 @@
 <!-- G1 · chiffres clés -->
 <div class="g1-sec g1-chiffres" aria-label="Chiffres clés">
   <div class="g1-carte"><b>0 €</b><span>pour publier une flemme ou proposer votre aide</span></div>
-  <div class="g1-carte"><b>10 %</b><span>de frais de plateforme pendant la bêta, affichés avant de signer</span></div>
-  <div class="g1-carte"><b>1 accord</b><span>signé par vous et votre Brigadier, relu par l’équipe</span></div>
+  <div class="g1-carte"><b>0 € réel</b><span>pendant la bêta&#8239;: les missions se règlent en crédits fondateurs</span></div>
+  <div class="g1-carte"><b>1 accord</b><span>signé par vous et votre Brigadier, vérifié par Flemme</span></div>
   <div class="g1-carte"><b>75 %</b><span>du chantier terminé</span></div>
 </div>
   <!-- 2-3. Le principe en introduction, puis la démo interactive (données fictives, rien n’est envoyé). -->
@@ -159,7 +159,7 @@
                     <button type="button" class="vc-puce" aria-pressed="false" data-val="Organisation">Organisation</button>
                   </div>
                 </div>
-                <p class="vc-aide">Un seul choix. Vous pourrez la changer tant que l’annonce n’est pas relue.</p>
+                <p class="vc-aide">Un seul choix. Vous pourrez la changer tant que l’annonce n’est pas vérifiée.</p>
               </div></div>
             </div>
             <div class="vc-etape" data-etape="4">
@@ -277,9 +277,9 @@
   <!-- G1 · engagements -->
   <section class="g1-sec" id="engagements">
     <p class="lp-etiquette">Nos engagements</p>
-    <h2 class="lp-titre titre-p">Simple, clair, <em>relu.</em></h2>
+    <h2 class="lp-titre titre-p">Simple, clair, <em>vérifié.</em></h2>
     <div class="g1-engagements">
-      <div><h3>Annonces relues</h3><p>Chaque flemme et chaque proposition est relue avant d’être visible.</p></div>
+      <div><h3>Annonces vérifiées</h3><p>Chaque flemme et chaque proposition est vérifiée avant d’être visible.</p></div>
       <div><h3>Prix libre</h3><p>Le prix se fixe avec le Brigadier. Les frais sont affichés avant de signer.</p></div>
       <div><h3>Adresse privée</h3><p>Seule la ville est publique. Vos coordonnées restent masquées.</p></div>
       <div><h3>Un seul endroit</h3><p>Échanges, accord et paiement restent au même endroit.</p></div>
@@ -325,7 +325,7 @@
     <div class="vc-entete-section"><p class="lp-etiquette">Questions fréquentes</p></div>
     <h2 class="lp-titre titre-p">Les questions <em>qu’on se pose déjà.</em></h2>
     <div class="vc-faq">
-      <details open><summary>Flemme, c’est quoi exactement&#8239;?</summary><p>Une plateforme de mise en relation. Vous publiez une tâche que vous repoussez, des Brigadiers vous proposent de s’en charger, vous fixez le prix et le délai avec votre ou votre Brigadier, puis vous signez tous les deux un accord relu par l’équipe Flemme.</p></details>
+      <details open><summary>Flemme, c’est quoi exactement&#8239;?</summary><p>Une plateforme de mise en relation. Vous publiez une tâche que vous repoussez, des Brigadiers vous proposent de s’en charger, vous fixez le prix et le délai avec votre ou votre Brigadier, puis vous signez tous les deux un accord vérifié par Flemme.</p></details>
       <details><summary>Quand est-ce que ça ouvre&#8239;?</summary><p>L’ouverture est visée pour janvier 2027. D’ici là, vous pouvez déjà créer votre compte&#8239;: vous faites partie de la bêta, vous enregistrez vos annonces et vos recherches, et on vous prévient le jour J.</p></details>
       <details><summary>Combien ça coûte&#8239;?</summary><p>Publier une flemme et proposer votre aide sont gratuits. Vous négociez le prix de la mission directement avec votre Brigadier. Des frais de plateforme dégressifs s’ajoutent seulement à la signature (15&#8239;% jusqu’à 30&#8239;€, puis moins, 2&#8239;€ au minimum), et ils sont affichés avant de signer. Pendant la bêta, aucun argent réel&#8239;: vous payez en crédits fondateurs, gratuits et jamais convertis en euros.</p></details>
       <details><summary>Est-ce que Flemme garantit le résultat&#8239;?</summary><p>Non. La mission est réalisée par un Brigadier, pas par Flemme. Flemme vérifie les annonces et l’accord, garde les échanges et le paiement au même endroit, et examine le dossier en cas de désaccord.</p></details>
@@ -340,7 +340,7 @@
     <div class="g1-journal">
       <div><span>FAIT</span><p style="margin:0">Comptes, publication des flemmes et propositions d’aide.</p></div>
       <div><span>FAIT</span><p style="margin:0">Négociation du prix avec le Brigadier.</p></div>
-      <div><span class="encours">EN COURS</span><p style="margin:0">Accord signé et relu, paiement à la signature.</p></div>
+      <div><span class="encours">EN COURS</span><p style="margin:0">Accord signé et vérifié, paiement à la signature.</p></div>
       <div><span class="encours">EN COURS</span><p style="margin:0">Bêta ouverte aux inscrits.</p></div>
       <div><span class="avenir">À VENIR</span><p style="margin:0">Ouverture à tous en janvier 2027.</p></div>
     </div>
@@ -706,7 +706,7 @@
     const v = reduit ? 0 : 1, lance = (f, t) => minuteurs.push(setTimeout(f, t * v));
     $('annonce').classList.add('vole');
     lance(() => { etapes[0].classList.add('ok'); $('etatAnnonce').textContent = 'Envoyée'; }, 150);
-    lance(() => { etapes[1].classList.add('ok'); $('etatAnnonce').textContent = 'En relecture'; $('tampon').classList.add('pose'); }, 1000);
+    lance(() => { etapes[1].classList.add('ok'); $('etatAnnonce').textContent = 'En vérification'; $('tampon').classList.add('pose'); }, 1000);
     lance(() => { etapes[2].classList.add('ok'); $('etatAnnonce').textContent = 'En ligne'; $('annonce').classList.remove('vole'); document.dispatchEvent(new CustomEvent('vc:publie')); }, 1800);
     const b = +dB.value || 60;
     const offres = [
