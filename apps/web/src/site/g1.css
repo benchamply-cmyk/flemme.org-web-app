@@ -60,24 +60,18 @@
   background-image: radial-gradient(var(--g1-grain) 2px, transparent 2.4px); background-size: 14px 14px; opacity: .7;
   -webkit-mask-image: linear-gradient(#000, transparent); mask-image: linear-gradient(#000, transparent);
 }
-/* Rubans chromés, collines et fonds teintés retirés : le grain les remplace */
+/* Rubans chromés, collines et fonds teintés retirés : le grain les remplace (le logo en relief de l'accueil reste) */
 :root:root:root .flemme-chrome-home, :root:root:root .fond-flemme, :root:root:root .bandeau { background: transparent !important; }
 :root:root:root .flemme-chrome-home::before, :root:root:root .flemme-chrome-home::after,
 :root:root:root .lp-collines, :root:root:root .lp-teinte::before, :root:root:root .lp-fin::before { display: none !important; }
 :root:root:root main, :root:root:root .lp main, :root:root:root body[data-page] main, :root:root:root body[data-page="comment"] main,
 :root:root:root .lp-teinte, :root:root:root .lp-fin, :root:root:root .fond-glacier, :root:root:root .fond-menthe,
 :root:root:root .app-bandeau, :root:root:root .famille-s { background: transparent !important; }
-:root:root:root .lp-hero .ff-objet, :root:root:root .lp-hero .lp-relief, :root:root:root .lp-hero canvas { display: none !important; }
 
-/* ---------- Héros de l'accueil : centré comme /bientot ---------- */
-:root:root:root body.lp .lp-hero { align-items: center; min-height: auto !important; padding-top: 170px !important; padding-bottom: 110px !important; background: transparent !important; }
-:root:root:root .lp-hero-contenu { text-align: center; max-width: 1152px; margin-inline: auto; }
-:root:root:root .lp-hero-titre { font-size: 46px !important; line-height: 1.05 !important; text-transform: uppercase; max-width: none; margin: 0 auto; }
+/* ---------- Héros de l'accueil : même mise en page et même logo en relief que l'accueil, seule la typographie passe en G1 ---------- */
+:root:root:root .lp-hero-titre { font-size: clamp(30px, 4.4vw, 50px) !important; line-height: 1.05 !important; text-transform: uppercase; }
 :root:root:root .lp-hero-titre em { display: block; }
-:root:root:root .lp-hero-bas { justify-content: center; }
-:root:root:root .lp-hero-bas > div { display: flex; flex-direction: column; align-items: center; }
-:root:root:root .lp-hero-accroche { margin: 8px auto 0; max-width: 620px; color: var(--g1-doux); font-size: 18px; }
-:root:root:root .lp-hero-actions { justify-content: center; margin-top: 30px; }
+:root:root:root .lp-hero-accroche { color: var(--g1-doux); }
 :root:root:root .lp-souligne { text-decoration-color: var(--g1-accent) !important; }
 
 /* ---------- Titres des pages intérieures ---------- */
@@ -185,7 +179,6 @@
 :root:root:root .texte-legal h2 { font-size: 17px !important; letter-spacing: -.01em !important; }
 
 @media (max-width: 640px) {
-  :root:root:root body.lp .lp-hero { padding-top: 130px !important; padding-bottom: 64px !important; }
   :root:root:root .lp-hero-titre { font-size: 30px !important; }
   :root:root:root .lp-titre, :root:root:root .titre-p { font-size: 28px !important; }
   :root:root:root .titre-page h1 { font-size: 30px !important; }
