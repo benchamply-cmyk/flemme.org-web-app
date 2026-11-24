@@ -10,10 +10,10 @@ export const offerStatus: Record<Offer['status'], string> = { pending: 'En atten
 export const date = (iso: string) => new Date(iso).toLocaleString('fr-FR');
 
 export const notices = {
-  published: 'Ta demande est publiée.',
-  sentForReview: 'Ta demande a été reçue. Elle est en cours de relecture : tu peux suivre son état dans « Mes demandes ».',
+  published: 'Votre demande est publiée.',
+  sentForReview: 'Votre demande a été reçue. Elle est en cours de relecture : vous pouvez suivre son état dans « Mes demandes ».',
   edited: 'Demande modifiée.',
-  draftSaved: 'Brouillon enregistré sur ton compte.',
+  draftSaved: 'Brouillon enregistré sur votre compte.',
   draftDeleted: 'Brouillon supprimé.',
   offerSent: 'Proposition envoyée. La demande reste ouverte jusqu’à ce qu’une proposition soit acceptée.',
   applied: (o?: { review?: string }) => o?.review === 'pending'
@@ -21,18 +21,18 @@ export const notices = {
   contractSaved: 'Accord enregistré. Relisez-le à deux, puis soumettez-le.',
   contractSubmitted: (status?: string) => status === 'pending' ? 'Accord soumis : l’équipe FLEMME le contrôle avant la signature.' : 'Accord prêt à signer.',
   signed: 'Signature enregistrée et horodatée.',
-  reviewSent: 'Merci, ton avis est publié sur le profil de l’autre personne.',
+  reviewSent: 'Merci, votre avis est publié sur le profil de l’autre personne.',
   profileSaved: 'Profil enregistré.',
   fileSent: 'Fichier ajouté. Seuls le déposant et le membre retenu peuvent l’ouvrir.',
   fileDeleted: 'Fichier supprimé.',
   avatarSaved: 'Photo de profil enregistrée.',
   helpSent: 'Message envoyé à l’équipe FLEMME. La réponse s’affichera ici.',
   accepted: 'Proposition choisie. Rédigez maintenant l’accord ensemble : rien n’est dû avant sa signature.',
-  paid: 'Paiement enregistré via Flemme (simulation : aucun argent réel). Tu pourras confirmer la fin de la mission une fois réalisée.',
+  paid: 'Paiement enregistré via Flemme (simulation : aucun argent réel). Vous pourrez confirmer la fin de la mission une fois réalisée.',
   payout: 'Part du membre versée sur son compte Stripe.',
   declined: 'Offre déclinée et conservée. Le membre peut proposer un nouveau forfait.',
-  checkEmail: 'Vérifie ton e-mail, puis connecte-toi.',
-  recoverSent: 'Si un compte existe pour cette adresse, un e-mail vient de partir. Ouvre le lien dans ce navigateur pour choisir ton mot de passe.',
+  checkEmail: 'Vérifiez votre e-mail, puis connectez-vous.',
+  recoverSent: 'Si un compte existe pour cette adresse, un e-mail vient de partir. Ouvrez le lien dans ce navigateur pour choisir votre mot de passe.',
   passwordSaved: 'Mot de passe enregistré.',
   nameUpdated: 'Nom affiché mis à jour.',
   report: (remote: boolean) => remote ? 'Signalement enregistré pour examen manuel. Aucun remboursement automatique.' : 'Signalement local enregistré. Aucun support réel contacté.',
@@ -43,12 +43,12 @@ export const footer = (remote: boolean, online = false) => remote ? (online ? 'P
 export const commissionNote = () => COMMISSION.model === 'ajout'
   ? fraisDeposant(COMMISSION) : `FLEMME garde ${rateLabel()} du prix payé.`;
 export const brigadierPitch = () => COMMISSION.model === 'ajout'
-  ? fraisIntervenant(COMMISSION) : `Propose ton prix. FLEMME garde ${rateLabel()}, le reste est pour toi.`;
+  ? fraisIntervenant(COMMISSION) : `Proposez votre prix. FLEMME garde ${rateLabel()}, le reste est pour vous.`;
 /** Note sous l’accord : paiement via Flemme (v2.0.0, simulé), paiement en ligne (Stripe Connect) ou paiement direct déclaratif. */
 export function paymentNote(a: Agreement, online: boolean, money: (n: number) => string, viaFlemme = false, simulation = true) {
   if (viaFlemme) return `Paiement via Flemme, obligatoire, une fois l’accord signé par les deux : ${money(a.total)} au total, dont ${money(a.commission)} de frais de plateforme. ${money(a.payout ?? a.amount)} reviennent à ${a.brigadier.name}` + (simulation
     ? '. Version de test : le paiement est simulé, aucun argent réel ne circule.'
-    : ', versés à la fin de la mission. Paiement par carte avec Stripe : Flemme ne voit pas ton numéro de carte.');
+    : ', versés à la fin de la mission. Paiement par carte avec Stripe : Flemme ne voit pas votre numéro de carte.');
   return online
     ? `Paiement en ligne une fois la tâche terminée : ${money(a.total)} par carte via Stripe. ${money(a.payout ?? a.amount)} sont versés au membre, ${money(a.commission)} reviennent à FLEMME.`
     : `Paiement direct : ${money(a.amount)} au membre. Commission FLEMME : ${money(a.commission)} à régler séparément, non encaissée dans cette version.`;

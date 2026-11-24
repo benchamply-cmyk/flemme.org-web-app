@@ -37,7 +37,7 @@ export function avancement(t: Task): string {
 /** `confiance` : flag espace.confiance allumé (livraison et libération du paiement, v2.1.0). */
 export function prochaineAction(t: Task, actorId: string, { confiance = false }: { confiance?: boolean } = {}): string {
   const can = rights(t, actorId);
-  if (can.isOwner && t.review === 'changes_requested') return 'Corriger ta demande';
+  if (can.isOwner && t.review === 'changes_requested') return 'Corriger votre demande';
   if (can.isOwner && t.status === 'open' && t.offers.some(o => o.status === 'pending')) return 'Comparer les offres reçues';
   if (can.canSign) return 'Relire et signer le contrat';
   if (can.canContract && !t.contract) return 'Préparer le contrat';
@@ -48,7 +48,7 @@ export function prochaineAction(t: Task, actorId: string, { confiance = false }:
   if (confiance && can.canDeliver) return 'Déclarer la mission livrée';
   if (confiance && can.canRelease) return 'Clôturer et libérer le paiement';
   if (can.canComplete) return 'Confirmer la tâche terminée';
-  if (can.canReview) return 'Donner ton avis';
+  if (can.canReview) return 'Donner votre avis';
   return '';
 }
 

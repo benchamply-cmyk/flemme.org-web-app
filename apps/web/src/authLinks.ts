@@ -25,7 +25,7 @@ export function readLinkReturn(search: string, hash: string, store: Storage = lo
   let saved: { verifier?: string; purpose?: string } = {};
   try { saved = JSON.parse(store.getItem(key) || '{}'); } catch { /* secret illisible : traité comme absent */ }
   store.removeItem(key);
-  if (err) return { error: authMessage(err.get('error_code') || err.get('error'), err.get('error_description') || 'Ce lien n’a pas pu être utilisé. Demande-en un nouveau.') };
+  if (err) return { error: authMessage(err.get('error_code') || err.get('error'), err.get('error_description') || 'Ce lien n’a pas pu être utilisé. Demandez-en un nouveau.') };
   if (!saved.verifier) return { error: authMessage('flow_state_not_found', '') };
   return { code: code!, verifier: saved.verifier, purpose: saved.purpose === 'recovery' ? 'recovery' : 'signup' };
 }

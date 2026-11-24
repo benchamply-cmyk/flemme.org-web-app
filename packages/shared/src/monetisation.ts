@@ -37,10 +37,10 @@ export const FRAIS_LIBELLE = 'Frais de plateforme Flemme';
 
 /** Rappel affiché au dépôt d'une demande : rien n'est payé avant la signature. */
 export const fraisDeposant = (p: Pick<Price, 'rateBps'>) =>
-  `Publier et recevoir des propositions est gratuit. Si tu signes un accord, des frais de plateforme de ${rateLabel(p)} du prix convenu s’ajoutent, à ta charge.`;
+  `Publier et recevoir des propositions est gratuit. Si vous signez un accord, des frais de plateforme de ${rateLabel(p)} du prix convenu s’ajoutent, à votre charge.`;
 /** Rappel côté intervenant : il touche tout le prix qu'il a négocié. */
 export const fraisIntervenant = (p: Pick<Price, 'rateBps'>) =>
-  `Proposer est gratuit et ton prix t’est versé en entier : les frais de plateforme (${rateLabel(p)}) sont payés par le déposant.`;
+  `Proposer est gratuit et votre prix vous est versé en entier : les frais de plateforme (${rateLabel(p)}) sont payés par le déposant.`;
 /** Règle commerciale (D6), formulée sans surveillance des messages ni promesse de garantie. */
 export const PAIEMENT_OBLIGATOIRE = 'Une mission conclue sur Flemme se paie sur Flemme. C’est ce qui garde l’accord signé, le paiement et l’historique au même endroit si un problème survient.';
 /** Sensibilisation au moment de l'engagement (anti-contournement proportionné, étude v0.2 § 9). */

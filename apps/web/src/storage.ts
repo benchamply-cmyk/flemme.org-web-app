@@ -30,7 +30,7 @@ export async function writeDemo(state: DemoState, store: Storage = localStorage)
     // on garde les `keep` copies les plus récentes (de quoi revenir en arrière si la dernière est illisible) et on réessaie une fois.
     for (const old of snapshotKeys(store).slice(keep)) store.removeItem(old);
     try { store.setItem(key, value); }
-    catch { throw new Error('Stockage du navigateur plein : ton action n’a pas été enregistrée.'); }
+    catch { throw new Error('Stockage du navigateur plein : votre action n’a pas été enregistrée.'); }
   }
 }
 

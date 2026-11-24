@@ -119,7 +119,7 @@ test('lien expiré : erreur affichée, sans perdre la session déjà ouverte ; c
 });
 test('mot de passe oublié et nom affiché', async () => {
   const s = remote(); await s.initialize();
-  await s.recover('  ', async () => ({}), () => {}); assert.match(s.getState().error, /Indique ton adresse/);
+  await s.recover('  ', async () => ({}), () => {}); assert.match(s.getState().error, /Indiquez votre adresse/);
   await s.recover('u@example.com', async () => ({ redirectTo: 'https://flemme.org/app.html' }), () => {}); assert.match(s.getState().notice, /un e-mail vient de partir/);
   await s.login('u@example.com', 'motdepasse-long', () => {});
   await s.updateProfile('Ben', () => {}); assert.equal(s.getState().gateway!.actor.name, 'Ben'); assert.equal(s.getState().notice, 'Nom affiché mis à jour.');

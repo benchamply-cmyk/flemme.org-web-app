@@ -82,7 +82,7 @@ export default function AdminApp() {
   let content: ReactNode = null;
   const o = data.overview;
   if (!ready) content = <p className="muted" role="status">Chargement…</p>;
-  else if (!source) content = <div className="narrow"><h1 className="heading">Admin FLEMME</h1><p>Connecte-toi avec un compte de l’équipe.</p>
+  else if (!source) content = <div className="narrow"><h1 className="heading">Admin FLEMME</h1><p>Connectez-vous avec un compte de l’équipe.</p>
     <div className="field"><label htmlFor="a-email">E-mail</label><input id="a-email" type="email" autoComplete="email" value={draft.email || ''} onChange={set('email')} disabled={busy}/></div>
     <div className="field"><label htmlFor="a-password">Mot de passe</label><input id="a-password" type="password" autoComplete="current-password" value={draft.password || ''} onChange={set('password')} disabled={busy}/></div>
     <button type="button" className="btn" disabled={busy || !gateway} onClick={() => run(async () => { const g = gateway as RemoteGateway; await g.login(draft.email || '', draft.password || ''); setDraft({}); try { await open(remoteSource(g, (draft.email || '').trim())); } catch (e) { await g.logout(); throw e; } })}>Me connecter</button></div>;
@@ -100,7 +100,7 @@ export default function AdminApp() {
     const review = (taskId: string, decision: ReviewDecision, message: string) =>
       act('task_review', { taskId, decision, note: draft['m-' + taskId] || '' }, message, ['moderation']);
     content = <>
-      <p className="muted">Chaque nouvelle demande, ou demande modifiée, reste privée jusqu’à ta décision. Une correction ou un refus doit être expliqué : le déposant voit ton message. Ce contrôle ne garantit pas le résultat.</p>
+      <p className="muted">Chaque nouvelle demande, ou demande modifiée, reste privée jusqu’à votre décision. Une correction ou un refus doit être expliqué : le déposant voit votre message. Ce contrôle ne garantit pas le résultat.</p>
       {m && m.waiting > 0 && <p className="note">{m.waiting} demande(s) attendent une correction de leur déposant.</p>}
       {m?.tasks.length ? m.tasks.map(t => <div className="card" key={t.id}>
         <div className="row"><span className="tag">{categoryLabel(t) || 'Sans catégorie'}</span><span className="note">Envoyée le {when(t.updatedAt)} · {t.owner.name}{t.ownerEmail ? ' · ' + t.ownerEmail : ''}</span></div>
@@ -111,8 +111,8 @@ export default function AdminApp() {
         <div className="field"><label htmlFor={'m-' + t.id}>Message au déposant (obligatoire pour une correction ou un refus)</label><textarea id={'m-' + t.id} maxLength={900} value={draft['m-' + t.id] || ''} onChange={set('m-' + t.id)} disabled={busy}/></div>
         <div className="chips">
           <Button disabled={busy} onClick={() => review(t.id, 'publish', 'Demande publiée : elle apparaît dans « Résoudre une flemme ».')}>Valider et publier</Button>
-          <Button secondary disabled={busy} onClick={() => review(t.id, 'changes', 'Correction demandée. Le déposant voit ton message.')}>Demander une correction</Button>
-          <Button secondary disabled={busy} onClick={() => review(t.id, 'reject', 'Demande refusée. Le déposant voit ton message.')}>Refuser</Button>
+          <Button secondary disabled={busy} onClick={() => review(t.id, 'changes', 'Correction demandée. Le déposant voit votre message.')}>Demander une correction</Button>
+          <Button secondary disabled={busy} onClick={() => review(t.id, 'reject', 'Demande refusée. Le déposant voit votre message.')}>Refuser</Button>
         </div>
       </div>) : <p className="muted">Aucune demande à valider.</p>}
     </>;
@@ -120,7 +120,7 @@ export default function AdminApp() {
     const q = data.queue;
     const note = (id: string) => draft['q-' + id] || '';
     content = <>
-      <p className="muted">Les candidatures sont transmises au déposant seulement après ta validation. Les accords écrits ne peuvent être signés qu’après ton contrôle. Une correction ou un refus doit être expliqué : la personne voit ton message.</p>
+      <p className="muted">Les candidatures sont transmises au déposant seulement après votre validation. Les accords écrits ne peuvent être signés qu’après votre contrôle. Une correction ou un refus doit être expliqué : la personne voit votre message.</p>
       <h2 className="section-title">Candidatures ({q?.offers.length ?? 0})</h2>
       {q?.offers.length ? q.offers.map(o => <div className="card" key={o.id}>
         <div className="row"><span className="strong">{o.brigadier.name}</span><span className="price">{money(o.amount)}</span></div>
@@ -145,7 +145,7 @@ export default function AdminApp() {
   } else if (tab === 'help') {
     const rows = data.help || [];
     content = <>
-      <p className="muted">Messages envoyés depuis l’assistant de l’app. Ta réponse s’affiche dans l’écran « Aide » du membre (pas d’e-mail automatique).</p>
+      <p className="muted">Messages envoyés depuis l’assistant de l’app. Votre réponse s’affiche dans l’écran « Aide » du membre (pas d’e-mail automatique).</p>
       {rows.length ? rows.map(h => <div className="card" key={h.id}>
         <div className="row"><span className="tag">{h.topic}</span><span className="note">{h.status === 'open' ? 'À traiter' : h.status === 'answered' ? 'Répondu' : 'Clos'} · {when(h.at)}</span></div>
         <p className="strong">{h.user.name}{h.email ? ' · ' + h.email : ''}{h.title ? ' · « ' + h.title + ' »' : ''}</p><p>{h.text}</p>

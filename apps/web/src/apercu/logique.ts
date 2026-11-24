@@ -24,11 +24,11 @@ export function budgetLabel(d: Demande): string {
 /** Message d’erreur du formulaire de dépôt, ou chaîne vide si tout est bon. */
 export function validateRequest(d: Demande, files: { size: number }[] = []): string {
   if (!d.title?.trim() || !d.description?.trim()) return 'Titre et description sont nécessaires.';
-  if (!d.category) return 'Choisis une catégorie.';
-  if (d.delay === 'Autre' && !d.otherDelay?.trim()) return 'Précise le délai approximatif.';
-  if (d.mode && d.mode !== 'À distance' && !d.city?.trim()) return 'Indique une ville ou un secteur pour une tâche sur place.';
-  if (String(d.budget ?? '').trim() && d.range) return 'Choisis un budget libre ou une fourchette, pas les deux.';
-  if (files.some(f => f.size > TAILLE_MAX)) return 'Un fichier dépasse 10 Mo. Choisis un fichier plus petit pour cet aperçu.';
+  if (!d.category) return 'Choisissez une catégorie.';
+  if (d.delay === 'Autre' && !d.otherDelay?.trim()) return 'Précisez le délai approximatif.';
+  if (d.mode && d.mode !== 'À distance' && !d.city?.trim()) return 'Indiquez une ville ou un secteur pour une tâche sur place.';
+  if (String(d.budget ?? '').trim() && d.range) return 'Choisissez un budget libre ou une fourchette, pas les deux.';
+  if (files.some(f => f.size > TAILLE_MAX)) return 'Un fichier dépasse 10 Mo. Choisissez un fichier plus petit pour cet aperçu.';
   return '';
 }
 

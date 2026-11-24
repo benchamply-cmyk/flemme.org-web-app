@@ -21,7 +21,7 @@ test('accord : contrôles des formulaires', () => {
   assert.deepEqual(contractInput({ ...terms, scope: ' Montage ' }), terms);
   assert.throws(() => offerInput({ slot: 'Samedi', scope: 'Tout' }), /montant/);
   assert.deepEqual(offerInput({ amount: '42,5', slot: ' Samedi ', scope: 'Tout', result: '' }), { amount: 4250, slot: 'Samedi', scope: 'Tout', result: null });
-  assert.throws(() => signatureInput('Ondine', false), /Coche la case/);
+  assert.throws(() => signatureInput('Ondine', false), /Cochez la case/);
   assert.throws(() => signatureInput(' ', true), /nom complet/);
   assert.deepEqual(profileInput({ skills: 'Montage, montage, Montage,, Peinture', bio: '' }), { bio: null, experience: null, skills: ['Montage', 'montage', 'Peinture'] });
   assert.throws(() => profileInput({ skills: Array.from({ length: 11 }, (_, i) => 'c' + i).join(',') }), /10 compétences/);

@@ -13,7 +13,7 @@ export function useFlag(cle: CleFlag): ValeurFlag {
 export function BientotDisponible({ titre }: { titre: string }) {
   return <div className="card" role="status" data-flag-bientot>
     <p className="card-title">{titre}</p>
-    <p className="muted">Bientôt disponible. Cette fonctionnalité est en préparation : reviens un peu plus tard, ou écris-nous depuis la page Contact.</p>
+    <p className="muted">Bientôt disponible. Cette fonctionnalité est en préparation : revenez un peu plus tard, ou écrivez-nous depuis la page Contact.</p>
     <a className="btn secondary" href="contact.html">Nous contacter</a>
   </div>;
 }

@@ -24,30 +24,30 @@ export function Listes(ctx: Ctx) {
   const offerDrafts = drafts.filter(d => d.kind === 'offer');
   // « À faire » d’abord : chaque mission où c’est à la personne connectée d’agir, avec la prochaine étape.
   const todo = [...own, ...helping].map(t => ({ t, next: nextStep(t, actorId) })).filter(x => x.next);
-  if (place.tab === 'mine') return <><h1 className="heading">Tes demandes et tes propositions</h1><p className="muted">Retrouve ce que tu as délégué et l’aide que tu as proposée.</p>
+  if (place.tab === 'mine') return <><h1 className="heading">Vos demandes et vos propositions</h1><p className="muted">Retrouvez ce que vous avez délégué et l’aide que vous avez proposée.</p>
     <Action onClick={() => go('new', { draftId: undefined })}>＋ Déléguer ma flemme</Action>
     {todo.length > 0 && <><h2 className="section-title">À faire</h2>
       {todo.map(({ t, next }) => <button type="button" key={t.id} className="card todo" onClick={() => go('detail', { taskId: t.id })}><span className="card-title">{t.title}</span><span className="strong">{next}</span><span className="note">{t.owner.id === actorId ? 'Ta demande' : 'Ta proposition'} · {taskStatus[t.status]}</span></button>)}</>}
     {taskDrafts.length > 0 && <><h2 className="section-title">Mes brouillons</h2>
-      {taskDrafts.map(d => <div className="card" key={d.id}><span className="card-title">{d.fields.title || 'Brouillon sans titre'}</span><span className="note">Enregistré le {date(d.updatedAt)} · visible de toi seul</span>
+      {taskDrafts.map(d => <div className="card" key={d.id}><span className="card-title">{d.fields.title || 'Brouillon sans titre'}</span><span className="note">Enregistré le {date(d.updatedAt)} · visible de vous seul</span>
         <span className="row"><button type="button" className="btn small" disabled={busy} onClick={() => go('new', { draftId: d.id })}>Reprendre</button><button type="button" className="btn small secondary" disabled={busy} onClick={() => session.deleteDraft(d.id)}>Supprimer</button></span></div>)}</>}
     <h2 className="section-title">Mes demandes</h2>
-    {own.length ? own.map(card) : <p className="muted">Aucune demande pour l’instant. Qu’aimerais-tu déléguer ?</p>}
+    {own.length ? own.map(card) : <p className="muted">Aucune demande pour l’instant. Qu’aimeriez-vous déléguer ?</p>}
     <h2 className="section-title">Mes propositions</h2>
     {offerDrafts.length > 0 && <>
-      {offerDrafts.map(d => <div className="card" key={d.id}><span className="card-title">{tasks.find(t => t.id === d.taskId)?.title || 'Proposition'}</span><span className="note">Brouillon enregistré le {date(d.updatedAt)} · visible de toi seul</span>
+      {offerDrafts.map(d => <div className="card" key={d.id}><span className="card-title">{tasks.find(t => t.id === d.taskId)?.title || 'Proposition'}</span><span className="note">Brouillon enregistré le {date(d.updatedAt)} · visible de vous seul</span>
         <span className="row"><button type="button" className="btn small" disabled={busy} onClick={() => go('detail', { taskId: d.taskId || '', draftId: d.id })}>Reprendre</button><button type="button" className="btn small secondary" disabled={busy} onClick={() => session.deleteDraft(d.id)}>Supprimer</button></span></div>)}</>}
-    {helping.length ? helping.map(card) : !offerDrafts.length && <p className="muted">Aucune proposition envoyée. Trouve une demande dans « Flemmes à résoudre ».</p>}
+    {helping.length ? helping.map(card) : !offerDrafts.length && <p className="muted">Aucune proposition envoyée. Trouvez une demande dans « Flemmes à résoudre ».</p>}
     <Action secondary onClick={() => { location.href = 'resoudre'; }}>Voir les demandes à résoudre</Action>{reload}</>;
-  return <><p className="eyebrow">À toi de jouer.</p><h1 className="heading">Flemmes à résoudre</h1><p className="muted">Trouve une tâche près de chez toi ou à distance. {brigadierPitch()}</p>
-    {(helping.length > 0 || offerDrafts.length > 0) && <p className="note">Tes propositions et tes brouillons sont dans <button type="button" className="link" onClick={() => go('list', { tab: 'mine' })}>Mon espace</button>.</p>}
+  return <><p className="eyebrow">À vous de jouer.</p><h1 className="heading">Flemmes à résoudre</h1><p className="muted">Trouvez une tâche près de chez vous ou à distance. {brigadierPitch()}</p>
+    {(helping.length > 0 || offerDrafts.length > 0) && <p className="note">Vos propositions et vos brouillons sont dans <button type="button" className="link" onClick={() => go('list', { tab: 'mine' })}>Mon espace</button>.</p>}
     <Recherche {...ctx} card={card} fallback={available} skip={helping}/></>;
 }
 
 /** Prochaine étape attendue de la personne connectée sur une demande, ou '' si c’est à l’autre d’agir. */
 function nextStep(t: Task, actorId: string) {
   const can = rights(t, actorId);
-  if (can.isOwner && t.review === 'changes_requested') return 'Corriger ta demande';
+  if (can.isOwner && t.review === 'changes_requested') return 'Corriger votre demande';
   if (can.isOwner && t.status === 'open' && t.offers.some(o => o.status === 'pending')) return 'Voir les propositions reçues';
   if (can.canSign) return 'Relire et signer l’accord';
   if (can.canContract && !t.contract) return 'Rédiger l’accord';
@@ -55,7 +55,7 @@ function nextStep(t: Task, actorId: string) {
   if (can.canPay) return 'Payer via Flemme';
   if (can.canDeclarePayment) return 'Régler et déclarer le paiement';
   if (can.canConfirmPayment) return 'Confirmer le paiement reçu';
-  if (can.canReview) return 'Donner ton avis';
+  if (can.canReview) return 'Donner votre avis';
   return '';
 }
 
@@ -102,9 +102,9 @@ function Recherche({ state: { busy, found, filter }, card, fallback, skip }: Ctx
     {select('Trier par', 'sort', SORTS, '')}
     {found && <p className="note" aria-live="polite">{found.total === 0 ? 'Aucune demande avec ces filtres.' : found.total + ' demande(s) trouvée(s)'}</p>}
     {list.length ? list.map(card) : !found && <p className="muted">Aucune nouvelle demande pour l’instant. Actualise la liste un peu plus tard.</p>}
-    {found?.total === 0 && active > 0 && <><p className="muted">Essaie d’élargir la zone ou d’afficher les tâches à distance.</p><button type="button" className="btn secondary" disabled={busy} onClick={() => run({ sort: f.sort })}>Effacer les filtres</button></>}
+    {found?.total === 0 && active > 0 && <><p className="muted">Essayez d’élargir la zone ou d’afficher les tâches à distance.</p><button type="button" className="btn secondary" disabled={busy} onClick={() => run({ sort: f.sort })}>Effacer les filtres</button></>}
     {found?.nextCursor && <button type="button" className="btn secondary" disabled={busy} onClick={() => session.search(filter, true)}>Voir plus de demandes</button>}
     <button type="button" className="btn secondary" disabled={busy} onClick={() => session.search(filter)}>↻ Actualiser</button>
-    <p className="note">Seules les demandes validées par l’équipe apparaissent ici. Prix indicatifs hors frais FLEMME. Ouvrir une demande ne crée aucune conversation : c’est toi qui proposes ton aide.</p>
+    <p className="note">Seules les demandes validées par l’équipe apparaissent ici. Prix indicatifs hors frais FLEMME. Ouvrir une demande ne crée aucune conversation : c’est vous qui proposes votre aide.</p>
   </>;
 }

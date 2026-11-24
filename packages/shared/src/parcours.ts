@@ -61,15 +61,15 @@ export function taskInput(f: Record<string, string | undefined>): Input {
   if (title.length > 100) throw new Error('Titre trop long (100 caractères au plus).');
   if (details.length > 1000) throw new Error('Description trop longue (1000 caractères au plus).');
   const category = pick(CATEGORIES, f.category, 'Catégorie');
-  if (!category) throw new Error('Choisis une catégorie.');
+  if (!category) throw new Error('Choisissez une catégorie.');
   const deadline = pick(DEADLINES, f.deadline, 'Délai');
   const deadlineNote = deadline === 'autre' ? (f.deadlineNote || '').trim() : '';
-  if (deadline === 'autre' && !deadlineNote) throw new Error('Précise le délai approximatif.');
+  if (deadline === 'autre' && !deadlineNote) throw new Error('Précisez le délai approximatif.');
   const budget = parseMoney(f.amount || '', true), budgetRange = pick(BUDGET_RANGES, f.budgetRange, 'Fourchette');
-  if (budget != null && budgetRange) throw new Error('Choisis un budget libre ou une fourchette, pas les deux.');
+  if (budget != null && budgetRange) throw new Error('Choisissez un budget libre ou une fourchette, pas les deux.');
   const mode = pick(MODES, f.mode || 'distance', 'Lieu') as WorkMode;
   const place = (f.place || '').trim();
-  if (mode !== 'distance' && !place) throw new Error('Indique une ville ou un secteur pour une tâche sur place.');
+  if (mode !== 'distance' && !place) throw new Error('Indiquez une ville ou un secteur pour une tâche sur place.');
   return {
     title, details, category, deadline, deadlineNote: deadlineNote || null, budget, budgetRange, mode,
     place: place || (mode === 'distance' ? 'À distance' : ''), address: mode === 'distance' ? null : (f.address || '').trim() || null,

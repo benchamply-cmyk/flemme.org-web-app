@@ -34,5 +34,5 @@ document.querySelectorAll<HTMLButtonElement>('[data-copier]').forEach(b => b.add
   const cible = document.getElementById(b.dataset.copier || ''), note = document.getElementById(b.dataset.note || '');
   if (!cible) return;
   try { await navigator.clipboard.writeText(cible.textContent || ''); if (note) note.textContent = 'Adresse copiée.'; }
-  catch { getSelection()?.selectAllChildren(cible); if (note) note.textContent = 'Adresse sélectionnée : copie-la avec Ctrl+C ou ⌘C.'; }
+  catch { getSelection()?.selectAllChildren(cible); if (note) note.textContent = 'Adresse sélectionnée : copiez-la avec Ctrl+C ou ⌘C.'; }
 }));

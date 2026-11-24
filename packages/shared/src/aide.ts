@@ -38,9 +38,9 @@ export type HelpTopic = typeof HELP_TOPICS[number]['value'];
 export type HelpRequest = { id: string; topic: HelpTopic; text: string; status: 'open' | 'answered' | 'closed'; answer: string | null; taskId: string | null; at: string; answeredAt: string | null };
 export const helpStatus: Record<HelpRequest['status'], string> = { open: 'En attente de réponse', answered: 'Répondu', closed: 'Clos' };
 export function helpInput(topic: string | undefined, text: string | undefined, taskId?: string | null): Input {
-  if (!HELP_TOPICS.some(t => t.value === topic)) throw new Error('Choisis un sujet.');
+  if (!HELP_TOPICS.some(t => t.value === topic)) throw new Error('Choisissez un sujet.');
   const body = (text || '').trim();
-  if (!body) throw new Error('Explique ta question en quelques mots.');
+  if (!body) throw new Error('Expliquez votre question en quelques mots.');
   if (body.length > 2000) throw new Error('2 000 caractères au plus.');
   return { topic, text: body, taskId: taskId || null };
 }
@@ -48,11 +48,11 @@ export function helpInput(topic: string | undefined, text: string | undefined, t
 /** Réponses prédéfinies de l’assistant. Aucune IA : recherche par mots clés, puis proposition de parler à un humain. */
 export const FAQ: { id: string; question: string; keywords: string[]; answer: string; topic: HelpTopic }[] = [
   { id: 'deposer', topic: 'demande', question: 'Comment déposer une flemme ?', keywords: ['deposer', 'publier', 'demande', 'creer', 'nouvelle'],
-    answer: 'Choisis « Déléguer ma flemme » et décris ce dont tu as besoin, avec tes mots. Précise le lieu si c’est sur place et un délai si tu en as un : le budget est facultatif. L’équipe FLEMME relit ta demande avant de la publier.' },
+    answer: 'Choisissez « Déléguer ma flemme » et décrivez ce dont vous avez besoin, avec vos mots. Précisez le lieu si c’est sur place et un délai si vous en avez un : le budget est facultatif. L’équipe FLEMME relit votre demande avant de la publier.' },
   { id: 'validation', topic: 'demande', question: 'Pourquoi ma demande n’est pas visible ?', keywords: ['visible', 'validation', 'attente', 'publiee', 'privee', 'refusee'],
-    answer: 'Chaque demande reste privée jusqu’à sa validation par l’équipe. Si une correction est demandée, le message de l’équipe s’affiche sur ta demande : corrige-la, elle repart en validation.' },
+    answer: 'Chaque demande reste privée jusqu’à sa validation par l’équipe. Si une correction est demandée, le message de l’équipe s’affiche sur votre demande : corrige-la, elle repart en validation.' },
   { id: 'candidature', topic: 'mission', question: 'Comment proposer mon aide ?', keywords: ['proposer', 'candidature', 'aider', 'brigadier', 'offre'],
-    answer: 'Ouvre une demande dans « Flemmes à résoudre », puis « Proposer mon aide » : indique ton forfait, tes disponibilités et le résultat que tu peux livrer. L’équipe relit ta proposition avant de la transmettre à la personne qui a publié la demande.' },
+    answer: 'Ouvrez une demande dans « Flemmes à résoudre », puis « Proposer mon aide » : indiquez votre forfait, vos disponibilités et le résultat que vous pouvez livrer. L’équipe relit votre proposition avant de la transmettre à la personne qui a publié la demande.' },
   { id: 'prix', topic: 'paiement', question: 'Combien coûte FLEMME ?', keywords: ['prix', 'commission', 'frais', 'cout', 'tarif', 'pourcentage'],
     answer: 'Publier, proposer et discuter sont gratuits. Le prix de la mission est négocié entre vous deux. À la signature de l’accord, des frais de plateforme s’ajoutent, en pourcentage du prix convenu, à la charge de la personne qui délègue. Ils comprennent le contrat standard : aucune autre ligne de frais. Le détail s’affiche sur un seul écran avant de signer.' },
   { id: 'payer', topic: 'paiement', question: 'Comment payer le membre qui m’aide ?', keywords: ['payer', 'paiement', 'carte', 'stripe', 'virement', 'rembourse'],
@@ -60,11 +60,11 @@ export const FAQ: { id: string; question: string; keywords: string[]; answer: st
   { id: 'accord', topic: 'mission', question: 'À quoi sert l’accord écrit ?', keywords: ['accord', 'contrat', 'signer', 'signature', 'conditions'],
     answer: 'Après le choix d’une proposition, vous écrivez ensemble le périmètre, le résultat attendu, le délai, l’annulation et la confidentialité, et vous ajustez le prix si vous l’avez renégocié. L’équipe le contrôle, puis chacun le signe (acceptation simple et horodatée). Toute modification crée une nouvelle version à signer de nouveau.' },
   { id: 'litige', topic: 'securite', question: 'Ça se passe mal, que faire ?', keywords: ['probleme', 'litige', 'signaler', 'desaccord', 'arnaque', 'comportement', 'annuler'],
-    answer: 'Sur la fiche de la flemme, choisis « Signaler un désaccord ». L’équipe examine chaque signalement à la main. Aucun remboursement n’est automatique.' },
+    answer: 'Sur la fiche de la flemme, choisissez « Signaler un désaccord ». L’équipe examine chaque signalement à la main. Aucun remboursement n’est automatique.' },
   { id: 'fichiers', topic: 'mission', question: 'Puis-je envoyer des documents ?', keywords: ['fichier', 'document', 'piece', 'jointe', 'photo', 'pdf', 'envoyer'],
     answer: 'Oui : une fois le membre choisi, vous pouvez tous les deux joindre des PDF, images ou documents Word (10 Mo au plus). Ils ne sont visibles que d’eux deux.' },
   { id: 'motdepasse', topic: 'compte', question: 'J’ai oublié mon mot de passe', keywords: ['mot', 'passe', 'connexion', 'connecter', 'email', 'oublie', 'compte'],
-    answer: 'Sur l’écran de connexion, choisis « Mot de passe oublié ? ». Ouvre le lien reçu dans le même navigateur. Pense à regarder dans les indésirables.' },
+    answer: 'Sur l’écran de connexion, choisissez « Mot de passe oublié ? ». Ouvrez le lien reçu dans le même navigateur. Pensez à regarder dans les indésirables.' },
 ];
 const plain = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 /** Jusqu’à 3 réponses, les plus proches de la question d’abord. */

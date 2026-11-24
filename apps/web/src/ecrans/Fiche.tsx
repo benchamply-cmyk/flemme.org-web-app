@@ -33,9 +33,9 @@ export function Fiche({ state: { busy, actorId, files }, place, task, can, draft
         : <Action disabled={busy} onClick={() => mutate('pay', {}, 'detail', notices.paid)}>Payer via Flemme · {money(agreement.total)} (simulation)</Action>}</>}
       {can.canPayout && <Action secondary disabled={busy} onClick={() => payoutStripe(task.id)}>Verser la part du membre · {money(agreement.payout ?? agreement.amount)}</Action>}
       {confiance && task.deliveredAt && task.status === 'assigned' && <p className="note">Mission déclarée livrée le {date(task.deliveredAt)}. {can.isOwner
-        ? `Vérifie le résultat puis confirme. Sans réponse ni désaccord signalé d’ici le ${date(liberationPossibleLe(task.deliveredAt)).split(' ')[0]}, le membre pourra clôturer et le paiement sera libéré.`
-        : `Le déposant confirme, ou tu pourras clôturer toi-même à partir du ${date(liberationPossibleLe(task.deliveredAt)).split(' ')[0]} si aucun désaccord n’est signalé.`}</p>}
-      {confiance && can.canDeliver && <><p className="note">Mission terminée de ton côté ? Déclare-la livrée : le déposant a {DELAI_LIBERATION_JOURS} jours pour confirmer ou signaler un désaccord.</p>
+        ? `Vérifiez le résultat puis confirmez. Sans réponse ni désaccord signalé d’ici le ${date(liberationPossibleLe(task.deliveredAt)).split(' ')[0]}, le membre pourra clôturer et le paiement sera libéré.`
+        : `Le déposant confirme, ou vous pourrez clôturer vous-même à partir du ${date(liberationPossibleLe(task.deliveredAt)).split(' ')[0]} si aucun désaccord n’est signalé.`}</p>}
+      {confiance && can.canDeliver && <><p className="note">Mission terminée de votre côté ? Déclarez-la livrée : le déposant a {DELAI_LIBERATION_JOURS} jours pour confirmer ou signaler un désaccord.</p>
         <Action disabled={busy} onClick={() => mutate('deliver', {}, 'detail', 'Mission déclarée livrée. Le déposant est invité à confirmer.')}>J’ai terminé la mission</Action></>}
       {confiance && can.canRelease && <Action disabled={busy} onClick={() => mutate('complete', {}, 'detail', 'Mission clôturée : le paiement est libéré.')}>Clôturer la mission et libérer mon paiement</Action>}
       {can.canComplete && <Action disabled={busy} onClick={() => mutate('complete', {})}>{can.viaFlemme ? 'Mission terminée, je libère le paiement' : 'Confirmer la tâche terminée'}</Action>}
@@ -54,30 +54,30 @@ export function Fiche({ state: { busy, actorId, files }, place, task, can, draft
         {can.canContract && (task.contract?.status === 'draft' || task.contract?.status === 'changes_requested') && <Action disabled={busy} onClick={() => mutate('agreement_submit', {}, 'detail', t => notices.contractSubmitted(t.contract?.status))}>Soumettre l’accord à l’équipe FLEMME</Action>}
         {can.canSign && <><Recap agreed={agreement} cancellation={task.contract?.terms.cancellation}/>
           {can.viaFlemme && <p className="note">En signant, le déposant s’engage à payer ces frais de plateforme et la mission via Flemme. {RAPPEL_CONTOURNEMENT}</p>}
-          <p className="note">Signature électronique simple : ton nom et ton acceptation sont enregistrés et horodatés. Ce n’est pas une signature qualifiée.</p>
-          {field('Ton nom complet', 'signature', { max: 80 })}
+          <p className="note">Signature électronique simple : votre nom et votre acceptation sont enregistrés et horodatés. Ce n’est pas une signature qualifiée.</p>
+          {field('Votre nom complet', 'signature', { max: 80 })}
           <label className="check"><input type="checkbox" checked={accept} disabled={busy} onChange={e => setAccept(e.target.checked)}/> J’ai lu l’accord et je l’accepte.</label>
           <Action disabled={busy} onClick={() => validated(() => { void mutate('agreement_sign', signatureInput(draft.signature, accept), 'detail', notices.signed); })}>Signer l’accord</Action></>}
         {can.isOwner && task.status === 'assigned' && task.contract && task.contract.status !== 'signed' && <p className="muted">La fin de la tâche se confirme une fois l’accord signé par les deux.</p>}</>}
-      {task.myReview && <p className="note">Ton avis : {stars(task.myReview.rating)}{task.myReview.text ? ' · ' + task.myReview.text : ''}</p>}
+      {task.myReview && <p className="note">Votre avis : {stars(task.myReview.rating)}{task.myReview.text ? ' · ' + task.myReview.text : ''}</p>}
       {can.canReview && <><h2 className="section-title">Donner mon avis</h2>
         <div className="field"><label htmlFor="f-rating">Note</label><select id="f-rating" value={rating} disabled={busy} onChange={e => setRating(e.target.value)}><option value="">Choisir</option>{[5, 4, 3, 2, 1].map(n => <option key={n} value={n}>{stars(n)} · {n}/5</option>)}</select></div>
         {field('Commentaire (facultatif)', 'reviewText', { multiline: true, max: 600 })}
         <Action disabled={busy} onClick={() => validated(() => { void mutate('review', reviewInput(rating, draft.reviewText), 'detail', notices.reviewSent); })}>Publier mon avis</Action></>}</>}
     {confiance && (questions.length > 0 || can.canAsk) && <><h2 className="section-title">Questions publiques{questions.length ? ` (${questions.length})` : ''}</h2>
       <p className="note">{AVIS_QUESTIONS}</p>
-      {questions.length === 0 && <p className="muted">Pas encore de question. Un détail à préciser avant de proposer ? Demande-le ici.</p>}
+      {questions.length === 0 && <p className="muted">Pas encore de question. Un détail à préciser avant de proposer ? Demandez-le ici.</p>}
       {questions.map(q => <div className="bubble" key={q.id}><span className="strong">{q.author.name}</span><span>{q.text}</span><span className="note">{date(q.at)}</span>
         {q.answer ? <><span className="strong">Réponse de {task.owner.name}</span><span>{q.answer}</span></>
-          : can.isOwner && task.status === 'open' ? <>{field('Ta réponse publique', 'answer-' + q.id, { multiline: true, max: 1000 })}
+          : can.isOwner && task.status === 'open' ? <>{field('Votre réponse publique', 'answer-' + q.id, { multiline: true, max: 1000 })}
             <Action secondary disabled={busy} onClick={() => validated(() => { void mutate('answer', { questionId: q.id, text: draft['answer-' + q.id] }, 'detail', 'Réponse publiée.'); })}>Répondre</Action></>
           : <span className="muted">En attente de réponse</span>}</div>)}
-      {can.canAsk && <>{field('Ta question', 'question', { multiline: true, max: 600 })}
+      {can.canAsk && <>{field('Votre question', 'question', { multiline: true, max: 600 })}
         <Action secondary disabled={busy} onClick={() => validated(() => { void mutate('ask', { text: draft.question }, 'detail', 'Question publiée.'); })}>Poser ma question</Action></>}</>}
     {refonte && can.isOwner && task.status === 'open' && <ComparerOffres task={task} go={go}/>}
     {task.offers.length > 0 && !(refonte && can.isOwner && task.status === 'open') && <><h2 className="section-title">{can.isOwner ? 'Les propositions' : 'Mes propositions'}</h2>
       {task.offers.map(o => <button type="button" key={o.id} onClick={() => go('offer', { offerId: o.id })} className="card"><span className="row"><span className="strong">{o.brigadier.name}</span><span className="price">{money(o.amount)}</span></span><span>{o.scope}</span>{o.result && <span className="note">Résultat promis : {o.result}</span>}<span className="muted">{offerStatus[o.status]}{o.review && o.review !== 'approved' ? ' · ' + offerReviewLabel[o.review] : ''}</span><span className="link">Discussion et récapitulatif →</span></button>)}</>}
-    {can.canOffer && <div className="card propose"><h2 className="section-title" style={{ marginTop: 0 }}>{place.draftId ? 'Reprendre ma proposition' : 'Tu peux t’en charger ?'}</h2><p className="muted">Indique ton prix et précise ce que tu proposes.</p>{field('Mon prix', 'amount', { numeric: true })}{preview}{field('Mes disponibilités', 'slot')}{field('Ce qui est inclus et non inclus', 'scope', { multiline: true })}
+    {can.canOffer && <div className="card propose"><h2 className="section-title" style={{ marginTop: 0 }}>{place.draftId ? 'Reprendre ma proposition' : 'Vous pouvez vous en charger ?'}</h2><p className="muted">Indiquez votre prix et précisez ce que vous proposez.</p>{field('Mon prix', 'amount', { numeric: true })}{preview}{field('Mes disponibilités', 'slot')}{field('Ce qui est inclus et non inclus', 'scope', { multiline: true })}
       {field('Résultat promis (facultatif)', 'result', { multiline: true, hint: 'Ce que la personne aura à la fin. Ex. : étagère fixée et de niveau.' })}
       <p className="note">L’équipe FLEMME relit chaque proposition avant de la transmettre à la personne qui a publié la demande. {AVIS_MASQUAGE}</p>
       <Action disabled={busy} onClick={() => validated(() => { void mutate('apply', { ...offerInput(draft), draftId: place.draftId || null }, 'detail', t => notices.applied(t.offers.find(o => o.brigadier.id === actorId && o.status === 'pending'))); })}>Envoyer ma proposition</Action>

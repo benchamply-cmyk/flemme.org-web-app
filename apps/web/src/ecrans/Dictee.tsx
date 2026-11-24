@@ -10,8 +10,8 @@ type Recognition = { lang: string; interimResults: boolean; continuous: boolean;
 const Engine = (globalThis as unknown as { SpeechRecognition?: new () => Recognition; webkitSpeechRecognition?: new () => Recognition }).SpeechRecognition
   || (globalThis as unknown as { webkitSpeechRecognition?: new () => Recognition }).webkitSpeechRecognition;
 const errors: Record<string, string> = {
-  'not-allowed': 'Micro refusé. Autorise-le dans les réglages du navigateur pour dicter.',
-  'no-speech': 'Aucune parole détectée. Réessaie plus près du micro.',
+  'not-allowed': 'Micro refusé. Autorisez-le dans les réglages du navigateur pour dicter.',
+  'no-speech': 'Aucune parole détectée. Réessayez plus près du micro.',
   network: 'Dictée indisponible sans connexion.',
 };
 
@@ -36,7 +36,7 @@ export function Dictee({ current, onText, disabled }: { current: string; onText:
   }
   return <div className="dictee">
     <button type="button" className="btn small secondary" disabled={disabled} aria-pressed={listening} onClick={toggle}>{listening ? '■ Arrêter la dictée' : '◉ Dicter'}</button>
-    <span className="note" aria-live="polite">{listening ? 'Je t’écoute… Le texte s’ajoute à la description, modifiable.' : 'La reconnaissance vocale de ton navigateur peut envoyer l’audio à son éditeur (Google pour Chrome).'}</span>
+    <span className="note" aria-live="polite">{listening ? 'Je vous écoute… Le texte s’ajoute à la description, modifiable.' : 'La reconnaissance vocale de votre navigateur peut envoyer l’audio à son éditeur (Google pour Chrome).'}</span>
     {error && <span role="alert" className="note">{error}</span>}
   </div>;
 }

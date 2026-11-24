@@ -38,7 +38,7 @@ export type SessionOptions = {
   onStart?: (g: RemoteGateway) => Promise<StartResult>;
 };
 const message = (e: unknown) => e instanceof Error ? e.message : 'Une erreur est survenue.';
-const shortPassword = 'Choisis un mot de passe d’au moins 12 caractères.';
+const shortPassword = 'Choisissez un mot de passe d’au moins 12 caractères.';
 
 export class FlemmeSession {
   readonly remote: boolean;
@@ -127,7 +127,7 @@ export class FlemmeSession {
   /** Mot de passe oublié, ou jamais créé (comptes repris de l’ancien espace). */
   async recover(email: string, link: () => Promise<AuthLinkOptions>, done: () => void) {
     await this.execute(async () => {
-      if (!email.trim()) throw new Error('Indique ton adresse e-mail, puis choisis « Mot de passe oublié ? ».');
+      if (!email.trim()) throw new Error('Indiquez votre adresse e-mail, puis choisissez « Mot de passe oublié ? ».');
       await this.remoteGateway().recover(email, await link());
       this.set({ notice: notices.recoverSent }); done();
     });

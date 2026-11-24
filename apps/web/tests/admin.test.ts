@@ -11,7 +11,7 @@ test('démo admin : un litige ouvert issu d’un signalement, comptes de l’anc
 });
 test('démo admin : clôture d’un litige avec décision obligatoire, ajoutée à l’historique et au journal', async () => {
   const a = new DemoAdmin(), [d] = (await a.call('disputes')).disputes;
-  await assert.rejects(a.call('dispute_update', { taskId: d.taskId, status: 'resolved', note: ' ' }), /Complète ce champ/);
+  await assert.rejects(a.call('dispute_update', { taskId: d.taskId, status: 'resolved', note: ' ' }), /Complétez ce champ/);
   await assert.rejects(a.call('dispute_update', { taskId: d.taskId, status: 'supprimé' }), /invalide/);
   await a.call('dispute_update', { taskId: d.taskId, status: 'in_review' });
   await a.call('dispute_update', { taskId: d.taskId, status: 'resolved', note: 'Remboursement du déplacement convenu' });
@@ -23,7 +23,7 @@ test('démo admin : suspension avec motif, jamais d’un admin, puis rétablisse
   const a = new DemoAdmin(), users = (await a.call('users')).users;
   const admin = users.find((u: { admin: boolean }) => u.admin), member = users.find((u: { admin: boolean }) => !u.admin);
   await assert.rejects(a.call('user_suspend', { userId: admin.id, reason: 'Test' }), /administrateur/);
-  await assert.rejects(a.call('user_suspend', { userId: member.id, reason: '' }), /Complète ce champ/);
+  await assert.rejects(a.call('user_suspend', { userId: member.id, reason: '' }), /Complétez ce champ/);
   await a.call('user_suspend', { userId: member.id, reason: 'Annonces frauduleuses' });
   assert.equal((await a.call('overview')).suspended, 1);
   await a.call('user_restore', { userId: member.id });
