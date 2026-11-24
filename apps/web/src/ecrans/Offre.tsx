@@ -18,14 +18,14 @@ export function Offre({ state: { busy, actorId }, place: { screen, offerId }, ta
       {field('Mon prix', 'amount', { numeric: true })}{field('Mes disponibilités', 'slot')}{field('Ce qui est inclus et non inclus', 'scope', { multiline: true })}{field('Résultat promis (facultatif)', 'result', { multiline: true })}
       <Action disabled={busy} onClick={() => validated(() => { void mutate('apply_edit', { offerId, ...offerInput(draft) }, 'offer', t => notices.applied(t.offers.find(o => o.id === offerId))); })}>Renvoyer ma proposition</Action></>}
     {screen === 'review'
-      ? <><p className="note">Tu confies cette demande à {offer.brigadier.name}. Les autres propositions restent dans l’historique. Forfait et frais sont confirmés ensemble.</p>
+      ? <><p className="note">Vous confiez cette demande à {offer.brigadier.name}. Les autres propositions restent dans l’historique. Forfait et frais sont confirmés ensemble.</p>
         <Action disabled={busy || task.status !== 'open' || offer.status !== 'pending'} onClick={() => mutate('accept', { offerId }, 'detail', notices.accepted)}>Accepter · {total}</Action></>
       : <><h2 className="section-title">Votre discussion</h2>
         {offer.messages.length === 0 && <p className="muted">Un détail à préciser avant de vous mettre d’accord ?</p>}
         {offer.messages.map((m, i) => <div key={i} className={'bubble' + (m.actor.id === actorId ? ' moi' : '')}><span className="strong">{m.actor.name}</span><span>{m.text}</span><span className="note">{date(m.at)}</span></div>)}
-        {field('Ton message', 'text', { multiline: true })}
+        {field('Votre message', 'text', { multiline: true })}
         {task.contract?.status !== 'signed' && <p className="note">{AVIS_MASQUAGE}</p>}
         <Action secondary disabled={busy} onClick={() => mutate('message', { offerId, text: draft.text }, 'offer')}>Envoyer le message</Action>
         {can.isOwner && task.status === 'open' && offer.status === 'pending' && <><Action disabled={busy} onClick={() => go('review')}>{refonte ? 'Préparer le contrat' : 'Voir l’accord avant d’accepter'}</Action><Action secondary disabled={busy} onClick={() => mutate('decline', { offerId }, 'detail', notices.declined)}>Décliner cette proposition</Action></>}
-        <p className="note">Pour changer le prix : décliner l’offre, puis demander un nouveau forfait au membre. Chaque proposition reste conservée.</p></>}</>;
+        <p className="note">Pour changer le prix : décliner l’offre, puis demander un nouveau forfait au Brigadier. Chaque proposition reste conservée.</p></>}</>;
 }

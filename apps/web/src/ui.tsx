@@ -8,7 +8,7 @@ export function Action({ children, onClick, secondary = false, disabled = false 
 // Accord conclu : montants figés par le serveur (agreed) ; sinon calcul avec le réglage courant (COMMISSION).
 export function Bill({ amount, agreed }: { amount: number; agreed?: Price }) {
   const p = agreed?.payout != null ? agreed : price(amount);
-  return <div className="card" aria-label="Récapitulatif du prix"><div className="row"><span>{p.model === 'ajout' ? 'Prix du membre' : 'Reversé au membre'}</span><span className="strong">{money(p.model === 'ajout' ? p.amount : p.payout)}</span></div><div className="row"><span>{FRAIS_LIBELLE} · {rateLabel(p)}</span><span className="strong">{money(p.commission)}</span></div><div className="divider"/><div className="row"><span className="strong">Total déposant</span><span className="price">{money(p.total)}</span></div></div>;
+  return <div className="card" aria-label="Récapitulatif du prix"><div className="row"><span>{p.model === 'ajout' ? 'Prix du Brigadier' : 'Reversé au Brigadier'}</span><span className="strong">{money(p.model === 'ajout' ? p.amount : p.payout)}</span></div><div className="row"><span>{FRAIS_LIBELLE} · {rateLabel(p)}</span><span className="strong">{money(p.commission)}</span></div><div className="divider"/><div className="row"><span className="strong">Total déposant</span><span className="price">{money(p.total)}</span></div></div>;
 }
 
 // v2.0.0 : écran unique avant signature (étude de monétisation v0.2) : une seule ligne de frais, total et part de l’intervenant.

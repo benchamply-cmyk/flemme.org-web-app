@@ -37,17 +37,17 @@ export function alerte(body, site = 'https://flemme.org') {
     // Validation des demandes (migration parcours) : la demande attend une décision dans /admin.
     const toReview = p.review === 'pending', edited = body.kind === 'task_edited';
     subject = `${toReview ? (edited ? 'Demande modifiée à valider' : 'Demande à valider') : 'Nouvelle flemme'} : ${short(p.title)}`;
-    title = toReview ? (edited ? 'Une demande modifiée attend ta validation' : 'Une nouvelle demande attend ta validation') : edited ? 'Flemme modifiée' : 'Nouvelle flemme publiée';
+    title = toReview ? (edited ? 'Une demande modifiée attend votre validation' : 'Une nouvelle demande attend votre validation') : edited ? 'Flemme modifiée' : 'Nouvelle flemme publiée';
     button = toReview ? 'Valider dans l’admin' : 'Ouvrir l’admin';
     lines = [['Flemme', p.title], ['Lieu', p.place], ['Budget', p.budget == null ? 'Prix à proposer' : euros(p.budget)], ['Déposant', p.owner], ref];
   } else if (body.kind === 'agreement') {
     subject = `Accord conclu : ${short(p.title)}`; title = 'Un accord a été conclu'; button = 'Ouvrir l’admin';
     lines = [['Flemme', p.title], ['Déposant', p.owner], ['Brigadier', p.brigadier], ['Forfait', euros(p.amount)], ['Commission FLEMME à régler', euros(p.commission)], ref];
   } else if (body.kind === 'offer_review') {
-    subject = `Candidature à valider : ${short(p.title)}`; title = 'Une candidature attend ta validation'; button = 'Valider dans l’admin';
+    subject = `Candidature à valider : ${short(p.title)}`; title = 'Une candidature attend votre validation'; button = 'Valider dans l’admin';
     lines = [['Flemme', p.title], ['Brigadier', p.brigadier], ['Forfait proposé', p.amount == null ? null : euros(p.amount)], ['Déposant', p.owner], ref];
   } else if (body.kind === 'agreement_review') {
-    subject = `Accord écrit à contrôler : ${short(p.title)}`; title = 'Un accord écrit attend ton contrôle'; button = 'Contrôler dans l’admin';
+    subject = `Accord écrit à contrôler : ${short(p.title)}`; title = 'Un accord écrit attend votre contrôle'; button = 'Contrôler dans l’admin';
     lines = [['Flemme', p.title], ['Déposant', p.owner], ['Brigadier', p.brigadier], ref];
   } else if (body.kind === 'help') {
     subject = `Demande d’aide : ${short(p.text)}`; title = 'Un membre demande de l’aide'; button = 'Répondre dans l’admin';

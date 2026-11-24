@@ -22,11 +22,11 @@ export function Profil({ state: { busy, actorId, profile }, place: { userId }, d
     <h2 className="section-title">Avis reçus</h2>
     {profile.reviews.length === 0 && <p className="muted">Aucun avis pour l’instant. Les avis arrivent après chaque mission terminée.</p>}
     {profile.reviews.map((r, i) => <div className="bubble" key={i}><span className="strong">{stars(r.rating)} · {r.author.name}</span>{r.text && <span>{r.text}</span>}<span className="note">{r.task} · {date(r.at)}</span></div>)}
-    {own && <><h2 className="section-title">Modifier mon profil</h2><p className="note">Visible des autres membres connectés. Jamais ton e-mail ni ton adresse.</p>
+    {own && <><h2 className="section-title">Modifier mon profil</h2><p className="note">Visible des autres membres connectés. Jamais votre e-mail ni votre adresse.</p>
       <input ref={input} type="file" accept={fileAccept(true)} hidden onChange={e => { const f = e.target.files?.[0]; e.target.value = ''; if (f) void session.upload(null, f); }}/>
       <Action secondary disabled={busy} onClick={() => input.current?.click()}>{avatar ? 'Changer ma photo' : 'Ajouter une photo'} · JPEG ou PNG, 10 Mo au plus</Action>
       {field('Nom affiché', 'displayName', { max: 40 })}
-      {field('Présentation', 'bio', { multiline: true, max: 600, hint: 'Quelques mots sur toi et ce que tu aimes faire.' })}
+      {field('Présentation', 'bio', { multiline: true, max: 600, hint: 'Quelques mots sur vous et ce que vous aimez faire.' })}
       {field('Compétences', 'skills', { max: 500, hint: 'Séparées par des virgules, 10 au plus. Ex. : montage de meubles, démarches en ligne' })}
       {field('Expérience', 'experience', { multiline: true, max: 1000 })}
       <Action disabled={busy} onClick={() => validated(() => { void session.saveProfile(profileInput(draft), () => {}); })}>Enregistrer mon profil</Action></>}</>;

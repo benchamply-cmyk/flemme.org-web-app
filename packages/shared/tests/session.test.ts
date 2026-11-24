@@ -60,7 +60,7 @@ test('changement de personnage puis proposition et droits calculés', async () =
 test('parcours et paiement : écran parent et libellés', () => {
   assert.equal(parentScreen('review'), 'offer'); assert.equal(parentScreen('report'), 'detail'); assert.equal(parentScreen('account'), 'home'); assert.equal(parentScreen('detail'), 'list');
   const t = { paymentDeclared: true } as Parameters<typeof paymentStatus>[0];
-  assert.equal(paymentStatus(t), 'Paiement déclaré · confirmation du membre attendue');
+  assert.equal(paymentStatus(t), 'Paiement déclaré · confirmation du Brigadier attendue');
 });
 test('déconnexion : la session locale est effacée même si le serveur ne répond pas', async () => {
   let calls = 0;
@@ -119,7 +119,7 @@ test('lien expiré : erreur affichée, sans perdre la session déjà ouverte ; c
 });
 test('mot de passe oublié et nom affiché', async () => {
   const s = remote(); await s.initialize();
-  await s.recover('  ', async () => ({}), () => {}); assert.match(s.getState().error, /Indique ton adresse/);
+  await s.recover('  ', async () => ({}), () => {}); assert.match(s.getState().error, /Indiquez votre adresse/);
   await s.recover('u@example.com', async () => ({ redirectTo: 'https://flemme.org/app.html' }), () => {}); assert.match(s.getState().notice, /un e-mail vient de partir/);
   await s.login('u@example.com', 'motdepasse-long', () => {});
   await s.updateProfile('Ben', () => {}); assert.equal(s.getState().gateway!.actor.name, 'Ben'); assert.equal(s.getState().notice, 'Nom affiché mis à jour.');

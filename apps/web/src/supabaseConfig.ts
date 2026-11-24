@@ -8,6 +8,6 @@ export function supabaseConfigProblem(url = '', key = ''): string {
   if (!url && !key) return '';
   if (!url || !key) return 'Configuration Supabase incomplète : renseigne à la fois VITE_SUPABASE_URL et VITE_SUPABASE_PUBLISHABLE_KEY (ou aucune des deux pour la démo locale).';
   if (!/^https:\/\/[^/\s]+\/?$/.test(url)) return 'VITE_SUPABASE_URL doit être l’adresse HTTPS du projet, par exemple https://xxxx.supabase.co, sans chemin.';
-  if (isSecretKey(key)) return 'VITE_SUPABASE_PUBLISHABLE_KEY contient une clé secrète (sb_secret_ ou service_role) : elle serait publiée dans le site. Utilise la clé publique (sb_publishable_ ou anon).';
+  if (isSecretKey(key)) return 'VITE_SUPABASE_PUBLISHABLE_KEY contient une clé secrète (sb_secret_ ou service_role) : elle serait publiée dans le site. Utilisez la clé publique (sb_publishable_ ou anon).';
   return '';
 }

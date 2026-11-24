@@ -20,7 +20,7 @@ test('parcours : mêmes codes que les contraintes de la migration', () => {
 test('parcours : contrôles du formulaire de dépôt', () => {
   assert.throws(() => taskInput({ ...form, title: '' }), /titre et une description/);
   assert.throws(() => taskInput({ ...form, category: '' }), /catégorie/);
-  assert.throws(() => taskInput({ ...form, deadline: 'autre' }), /Précise le délai/);
+  assert.throws(() => taskInput({ ...form, deadline: 'autre' }), /Précisez le délai/);
   assert.throws(() => taskInput({ ...form, amount: '40', budgetRange: '10_50' }), /pas les deux/);
   assert.throws(() => taskInput({ ...form, mode: 'sur_place' }), /ville ou un secteur/);
   assert.deepEqual(taskInput({ ...form, amount: '40,5', address: 'ignorée' }), {

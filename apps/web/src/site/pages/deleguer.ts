@@ -31,7 +31,7 @@ document.querySelectorAll<HTMLAnchorElement>('[data-formule]').forEach(a => a.ad
 document.getElementById('deleguerForm')!.addEventListener('submit', e => {
   e.preventDefault();
   const aide = document.getElementById('deleguerAide')!;
-  if (texte.value.trim().length < 10) { aide.textContent = 'Décris ta flemme en une phrase au moins : ce que tu attends, ce qui te bloque.'; texte.focus(); return; }
+  if (texte.value.trim().length < 10) { aide.textContent = 'Décrivez votre flemme en une phrase au moins : ce que vous attendez, ce qui vous bloque.'; texte.focus(); return; }
   garder();
   location.href = '/deleguer/nouvelle' + (choix.formule === 'autre' || choix.formule === 'devis' ? '?formule=' + choix.formule : '');
 });

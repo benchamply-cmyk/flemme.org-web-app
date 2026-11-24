@@ -54,7 +54,7 @@ export const CONTRACT_DEFAULTS: Partial<Record<keyof ContractTerms, string>> = {
 /** Clauses communes à tout accord signé sur Flemme (non modifiables), affichées avant la signature. Reprennent les CGU et CGV. */
 export const CONTRACT_COMMON_CLAUSES = [
   'L’accord engage les deux membres. Flemme fournit l’outil, le contrat type et son contrôle, mais n’est pas partie à l’accord.',
-  'Le paiement de la mission passe par Flemme, en une fois, après la double signature. La part du membre lui est versée à la fin de la mission.',
+  'Le paiement de la mission passe par Flemme, en une fois, après la double signature. La part du Brigadier lui est versée à la fin de la mission.',
   'Les frais de plateforme, affichés avant la signature, sont à la charge du déposant et deviennent dus à la seconde signature.',
   'Toute modification crée une nouvelle version de l’accord et efface les signatures : chacun relit et signe à nouveau.',
   'En cas de désaccord, les membres cherchent d’abord une solution ensemble, puis peuvent signaler le problème à Flemme.',
@@ -63,7 +63,7 @@ export const CONTRACT_COMMON_CLAUSES = [
 
 const need = (value: string | undefined, max: number, what: string) => {
   const v = (value || '').trim();
-  if (!v) throw new Error(`Complète « ${what} ».`);
+  if (!v) throw new Error(`Complétez « ${what} ».`);
   if (v.length > max) throw new Error(`« ${what} » : ${max} caractères au plus.`);
   return v;
 };
@@ -91,7 +91,7 @@ export const contractFields = (c: Contract | null | undefined, amount?: number |
 /** Formulaire de candidature → données envoyées (apply, apply_edit). Forfait saisi en euros, envoyé en centimes. */
 export function offerInput(f: Record<string, string | undefined>): Input {
   const amount = parseMoney(f.amount || '');
-  if (amount == null) throw new Error('Indique ton forfait.');
+  if (amount == null) throw new Error('Indiquez votre forfait.');
   return { amount, slot: need(f.slot, 100, 'Mes disponibilités'), scope: need(f.scope, 1000, 'Ce qui est inclus et non inclus'),
     result: optional(f.result, 1000, 'Résultat promis') };
 }
@@ -99,8 +99,8 @@ export const OFFER_FIELDS = ['amount', 'slot', 'scope', 'result'] as const;
 
 /** Signature : nom saisi et case cochée. */
 export function signatureInput(name: string | undefined, accept: boolean): Input {
-  if (!accept) throw new Error('Coche la case pour accepter l’accord.');
-  return { signature: need(name, 80, 'Ton nom complet'), accept: true };
+  if (!accept) throw new Error('Cochez la case pour accepter l’accord.');
+  return { signature: need(name, 80, 'Votre nom complet'), accept: true };
 }
 
 export type Profile = {
@@ -132,7 +132,7 @@ export type MyReview = { rating: number; text: string | null };
 /** Avis après mission : note de 1 à 5 et commentaire facultatif. */
 export function reviewInput(rating: string | undefined, text: string | undefined): Input {
   const n = Number(rating);
-  if (![1, 2, 3, 4, 5].includes(n)) throw new Error('Choisis une note de 1 à 5.');
+  if (![1, 2, 3, 4, 5].includes(n)) throw new Error('Choisissez une note de 1 à 5.');
   return { rating: n, text: optional(text, 600, 'Commentaire') };
 }
 export const stars = (n: number) => '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n));

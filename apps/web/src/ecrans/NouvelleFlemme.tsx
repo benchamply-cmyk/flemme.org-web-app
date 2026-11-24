@@ -34,31 +34,31 @@ export function NouvelleFlemme({ state: { busy }, place, task, draft, field, cho
   const lieu = mode === 'distance' ? 'À distance' : [label(MODES, mode), draft.place].filter(Boolean).join(' · ');
   const budget = formule === 'devis' ? 'Sur devis' : formule ? 'Prix proposé par l’équipe' : estimate ? money(estimate.amount) : label(BUDGET_RANGES, draft.budgetRange) || 'Prix à proposer';
   return <>
-    <h1 className="heading">{editing ? 'Modifier ma demande' : place.draftId ? 'Reprendre ma demande' : f ? f.titre : 'Qu’aimerais-tu déléguer ?'}</h1>
-    <p className="muted">{f ? f.intro : 'Pas besoin d’un brief parfait. Commence avec tes mots.'}</p>
+    <h1 className="heading">{editing ? 'Modifier ma demande' : place.draftId ? 'Reprendre ma demande' : f ? f.titre : 'Qu’aimeriez-vous déléguer ?'}</h1>
+    <p className="muted">{f ? f.intro : 'Pas besoin d’un brief parfait. Commencez avec vos mots.'}</p>
     {f && <ol className="note">{f.etapes.map(e => <li key={e}>{e}</li>)}</ol>}
-    {field('Décris ce dont tu as besoin', 'details', { multiline: true, hint: f ? f.aide : 'Exemple : « J’aimerais mettre mon CV à jour avant vendredi. » Le résultat attendu, ce qui te bloque…' })}
+    {field('Décrivez ce dont vous avez besoin', 'details', { multiline: true, hint: f ? f.aide : 'Exemple : « J’aimerais mettre mon CV à jour avant vendredi. » Le résultat attendu, ce qui vous bloque…' })}
     <Dictee disabled={busy} current={draft.details || ''} onText={details => fill({ details })}/>
-    {field('Un titre court pour ta demande', 'title', { hint: 'Ex. Mettre mon CV à jour' })}
+    {field('Un titre court pour votre demande', 'title', { hint: 'Ex. Mettre mon CV à jour' })}
     {!draft.title && suggestion.length > 3 && <button type="button" className="btn small secondary" disabled={busy} onClick={() => fill({ title: suggestion[0].toUpperCase() + suggestion.slice(1) })}>Utiliser « {suggestion} » comme titre</button>}
     {choice('Catégorie', 'category', CATEGORIES, 'Choisir une catégorie')}
     {choice('Où se déroule la tâche ?', 'mode', MODES)}
     {mode !== 'distance' && <>
       {field('Ville ou secteur · public', 'place', { hint: 'Ex. Lyon · Croix-Rousse' })}
-      {field('Adresse précise · privée', 'address', { max: 200, hint: 'Visible seulement par toi, le membre que tu retiens et l’équipe FLEMME. Jamais sur la fiche publique.' })}
+      {field('Adresse précise · privée', 'address', { max: 200, hint: 'Visible seulement par vous, le Brigadier que vous retenez et l’équipe FLEMME. Jamais sur la fiche publique.' })}
     </>}
     {choice('Délai approximatif', 'deadline', DEADLINES, 'À discuter')}
-    {draft.deadline === 'autre' && field('Précise le délai', 'deadlineNote', { hint: 'Ex. avant la rentrée' })}
-    {f ? <p className="note">Pas de budget à indiquer : {formule === 'devis' ? 'l’équipe t’envoie un devis détaillé, gratuit et sans engagement.' : 'l’équipe t’indique un prix fixe avant tout paiement.'}</p> : <>
+    {draft.deadline === 'autre' && field('Précisez le délai', 'deadlineNote', { hint: 'Ex. avant la rentrée' })}
+    {f ? <p className="note">Pas de budget à indiquer : {formule === 'devis' ? 'l’équipe vous envoie un devis détaillé, gratuit et sans engagement.' : 'l’équipe vous indique un prix fixe avant tout paiement.'}</p> : <>
     {field('Budget · facultatif, hors frais', 'amount', { numeric: true })}
     {choice('Ou une fourchette · facultatif', 'budgetRange', BUDGET_RANGES, 'À discuter')}
     </>}
-    {!f && estimate && <p className="note">Si une proposition à ce prix est acceptée, tu paieras {money(estimate.total)} : {money(estimate.amount)} pour la personne qui t’aide et {money(estimate.commission)} de frais FLEMME.</p>}
-    <h2 className="section-title">Vérifie ta demande</h2>
-    <p className="muted">Voici les informations qui pourront être visibles sur ta fiche.</p>
-    <div className="card apercu-demande" aria-label="Aperçu de ta fiche publique"><span className="row"><span className="tag">{label(CATEGORIES, draft.category) || 'Catégorie à choisir'}</span><span className="strong">{budget}</span></span><span className="card-title">{draft.title ? titreAvecFormule(draft.title, formule) : 'Titre à compléter'}</span><span className="muted">{[lieu, draft.deadline ? (draft.deadline === 'autre' ? draft.deadlineNote : label(DEADLINES, draft.deadline)) : 'Délai à discuter'].filter(Boolean).join(' · ')}</span>{draft.details && <span>{draft.details}</span>}</div>
-    <p className="note">Sans expiration. {commissionNote()} Ta demande reste privée jusqu’à sa relecture par l’équipe FLEMME, qui peut te demander une correction. Cette relecture ne garantit pas le résultat.</p>
-    <p className="note">N’ajoute pas d’informations sensibles dans le titre ni la description : tu pourras transmettre les détails utiles en privé.</p>
+    {!f && estimate && <p className="note">Si une proposition à ce prix est acceptée, vous paierez {money(estimate.total)} : {money(estimate.amount)} pour la personne qui vous aide et {money(estimate.commission)} de frais FLEMME.</p>}
+    <h2 className="section-title">Vérifiez votre demande</h2>
+    <p className="muted">Voici les informations qui pourront être visibles sur votre fiche.</p>
+    <div className="card apercu-demande" aria-label="Aperçu de votre fiche publique"><span className="row"><span className="tag">{label(CATEGORIES, draft.category) || 'Catégorie à choisir'}</span><span className="strong">{budget}</span></span><span className="card-title">{draft.title ? titreAvecFormule(draft.title, formule) : 'Titre à compléter'}</span><span className="muted">{[lieu, draft.deadline ? (draft.deadline === 'autre' ? draft.deadlineNote : label(DEADLINES, draft.deadline)) : 'Délai à discuter'].filter(Boolean).join(' · ')}</span>{draft.details && <span>{draft.details}</span>}</div>
+    <p className="note">Sans expiration. {commissionNote()} Votre demande reste privée jusqu’à sa relecture par l’équipe FLEMME, qui peut vous demander une correction. Cette relecture ne garantit pas le résultat.</p>
+    <p className="note">N’ajoute pas d’informations sensibles dans le titre ni la description : vous pourrez transmettre les détails utiles en privé.</p>
     <Action disabled={busy} onClick={send}>{editing ? 'Renvoyer ma demande' : 'Envoyer ma demande'}</Action>
     {!editing && <Action secondary disabled={busy} onClick={() => session.saveDraft({ id: place.draftId, kind: 'task', fields: fields() }, d => keepDraft(d.id))}>Enregistrer le brouillon</Action>}
   </>;

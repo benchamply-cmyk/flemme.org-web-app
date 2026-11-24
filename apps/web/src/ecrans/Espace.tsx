@@ -112,8 +112,8 @@ export function AccueilEspace({ state: { gateway, tasks, actorId, found }, go }:
     <section aria-labelledby="a-faire"><h2 className="espace-section" id="a-faire">À faire maintenant{aFaire.length ? ` · ${aFaire.length}` : ''}</h2>
       {aFaire.length ? aFaire.map(({ t, a }) => <button type="button" key={t.id} className="carte-espace a-faire" onClick={() => go('detail', { taskId: t.id })}>
         <span className="carte-action">{a}</span><span className="carte-titre">{t.title}</span><span className="note">{t.owner.id === actorId ? 'Ta demande' : 'Ta mission'} · {avancement(t)}</span></button>)
-        : <p className="muted">Rien à faire pour l’instant. Tu seras prévenu ici dès qu’une offre ou un message arrive.</p>}
-      {nouvelles > 0 && <button type="button" className="carte-espace alerte" onClick={() => go('list', { tab: 'find' })}><span className="carte-titre">{nouvelles} nouvelle{nouvelles > 1 ? 's' : ''} demande{nouvelles > 1 ? 's' : ''} pour tes alertes</span><span className="carte-action">Voir ›</span></button>}
+        : <p className="muted">Rien à faire pour l’instant. Vous serez prévenu ici dès qu’une offre ou un message arrive.</p>}
+      {nouvelles > 0 && <button type="button" className="carte-espace alerte" onClick={() => go('list', { tab: 'find' })}><span className="carte-titre">{nouvelles} nouvelle{nouvelles > 1 ? 's' : ''} demande{nouvelles > 1 ? 's' : ''} pour vos alertes</span><span className="carte-action">Voir ›</span></button>}
     </section>
     <section className="tuiles" aria-label="Raccourcis">
       <button type="button" className="tuile fonce" onClick={() => go('new', { tab: 'mine', draftId: undefined })}><span className="tuile-titre">Déléguer</span><span className="note">Publier une demande</span></button>
@@ -121,7 +121,7 @@ export function AccueilEspace({ state: { gateway, tasks, actorId, found }, go }:
     </section>
     {enCours.length > 0 && <section aria-labelledby="en-cours"><div className="row"><h2 className="espace-section" id="en-cours">En cours</h2><button type="button" className="lien" onClick={() => go('list', { tab: 'mine' })}>Tout voir</button></div>
       {enCours.slice(0, 4).map(t => <CarteDemande key={t.id} task={t} actorId={actorId} go={go}/>)}</section>}
-    {premium.actif && <a className="lien-discret" href="premium">Flemme Premium · pour les membres qui aident souvent</a>}
+    {premium.actif && <a className="lien-discret" href="premium">Flemme Premium · pour les Brigadiers</a>}
   </div>;
 }
 
@@ -141,10 +141,10 @@ export function MesDemandes({ state: { tasks, actorId, busy, drafts, more }, go 
     <div className="puces" role="group" aria-label="Filtrer">{([['tous', 'Toutes'], ['actives', 'En cours'], ['terminees', 'Terminées']] as const).map(([v, l]) =>
       <button type="button" key={v} className="puce" aria-pressed={etat === v} onClick={() => setEtat(v)}>{l}</button>)}</div>
     {liste.length ? liste.map(t => <CarteDemande key={t.id} task={t} actorId={actorId} go={go}/>)
-      : <p className="muted">{cote === 'delegue' ? 'Aucune demande ici. Qu’aimerais-tu déléguer ?' : 'Aucune mission ici. Trouve une demande dans l’onglet Trouver.'}</p>}
+      : <p className="muted">{cote === 'delegue' ? 'Aucune demande ici. Qu’aimeriez-vous déléguer ?' : 'Aucune mission ici. Trouvez une demande dans l’onglet Trouver.'}</p>}
     {brouillons.length > 0 && <><h2 className="espace-section">Brouillons</h2>{brouillons.map(d => <div key={d.id} className="carte-espace brouillon">
       <span className="carte-titre">{d.kind === 'task' ? d.fields.title || 'Brouillon sans titre' : tasks.find(t => t.id === d.taskId)?.title || 'Proposition'}</span>
-      <span className="note">Enregistré le {date(d.updatedAt)} · visible de toi seul</span>
+      <span className="note">Enregistré le {date(d.updatedAt)} · visible de vous seul</span>
       <span className="row"><button type="button" className="btn small" disabled={busy} onClick={() => d.kind === 'task' ? go('new', { draftId: d.id }) : go('detail', { taskId: d.taskId || '', draftId: d.id })}>Reprendre</button><button type="button" className="btn small secondary" disabled={busy} onClick={() => session.deleteDraft(d.id)}>Supprimer</button></span></div>)}</>}
     {more && <button type="button" className="btn secondary" disabled={busy} onClick={() => session.loadMore()}>Voir plus de demandes</button>}
   </>;
@@ -184,7 +184,7 @@ export function Messages({ state: { tasks, actorId, busy }, go }: Ctx) {
       <span className="pastille-nom" aria-hidden="true">{f.avec.slice(0, 1)}</span>
       <span className="fil-texte"><span className="row"><span className="strong">{f.avec}</span><span className="note">{f.dernier ? date(f.dernier.at) : ''}</span></span>
         <span className="note">{f.task.title}</span>
-        <span className="fil-apercu">{f.dernier ? (f.dernier.moi ? 'Toi : ' : '') + f.dernier.text : 'Pas encore de message. Pose une question avant de vous mettre d’accord.'}</span></span>
+        <span className="fil-apercu">{f.dernier ? (f.dernier.moi ? 'Vous : ' : '') + f.dernier.text : 'Pas encore de message. Posez une question avant de vous mettre d’accord.'}</span></span>
       {f.nonLus > 0 && <span className="onglet-badge">{f.nonLus}<span className="sr"> non lu(s)</span></span>}
     </button></li>)}</ul>
       : <p className="muted">Aucune discussion pour l’instant. Une discussion s’ouvre avec chaque proposition d’aide.</p>}
@@ -226,7 +226,7 @@ export function Alertes({ f, run }: { f: SearchFilter; run: (next: SearchFilter)
     {alertes.length > 0 && <details className="mes-alertes"><summary>Mes alertes · {alertes.length}</summary><ul>{alertes.map(a => <li key={a.id} className="row">
       <button type="button" className="lien" onClick={() => { ecrire(CLE_ALERTES, alertes.map(x => x.id === a.id ? { ...x, vuLe: new Date().toISOString() } : x)); run({ ...a.filtre, sort: f.sort }); }}>{a.libelle}</button>
       <button type="button" className="lien" onClick={() => ecrire(CLE_ALERTES, alertes.filter(x => x.id !== a.id))}>Supprimer<span className="sr"> l’alerte {a.libelle}</span></button></li>)}</ul>
-      <p className="note">Alertes gardées dans ce navigateur : les nouvelles demandes sont signalées sur ton accueil. Pas encore d’e-mail ni de notification.</p></details>}
+      <p className="note">Alertes gardées dans ce navigateur : les nouvelles demandes sont signalées sur votre accueil. Pas encore d’e-mail ni de notification.</p></details>}
   </>;
 }
 const correspond = (t: Task, f: SearchFilter) => (!f.category || t.category === f.category) && (!f.mode || t.mode === f.mode || t.mode === 'les_deux')

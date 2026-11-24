@@ -21,7 +21,7 @@ test('accord : contrôles des formulaires', () => {
   assert.deepEqual(contractInput({ ...terms, scope: ' Montage ' }), terms);
   assert.throws(() => offerInput({ slot: 'Samedi', scope: 'Tout' }), /montant/);
   assert.deepEqual(offerInput({ amount: '42,5', slot: ' Samedi ', scope: 'Tout', result: '' }), { amount: 4250, slot: 'Samedi', scope: 'Tout', result: null });
-  assert.throws(() => signatureInput('Ondine', false), /Coche la case/);
+  assert.throws(() => signatureInput('Ondine', false), /Cochez la case/);
   assert.throws(() => signatureInput(' ', true), /nom complet/);
   assert.deepEqual(profileInput({ skills: 'Montage, montage, Montage,, Peinture', bio: '' }), { bio: null, experience: null, skills: ['Montage', 'montage', 'Peinture'] });
   assert.throws(() => profileInput({ skills: Array.from({ length: 11 }, (_, i) => 'c' + i).join(',') }), /10 compétences/);
@@ -35,7 +35,7 @@ test('accord : parcours complet en local (candidature, accord, deux signatures, 
   assert.equal(t.offers[0].result, 'Fixée'); assert.equal(t.offers[0].review, 'approved');
   t = applyCommand(t, brig, 'apply_edit', { offerId: 'p', amount: 4200, slot: 'Samedi', scope: 'Montage' }, at);
   assert.equal(t.offers[0].amount, 4200);
-  assert.throws(() => applyCommand(t, owner, 'agreement_save', terms, at), /membre choisi/);
+  assert.throws(() => applyCommand(t, owner, 'agreement_save', terms, at), /Brigadier choisi/);
   t = applyCommand(t, owner, 'accept', { offerId: 'p' }, at);
   assert.throws(() => applyCommand(t, other, 'agreement_save', terms, at), /inaccessible/);
   t = applyCommand(t, brig, 'agreement_save', terms, at);

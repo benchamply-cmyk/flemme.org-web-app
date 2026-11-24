@@ -18,10 +18,8 @@
 [context.production.environment]
   FLEMME_MODE_BIENTOT = "1"
 
-# Aperçus des PR aussi (demande de Ben du 21/11/2026), pour vérifier le renvoi avant la mise en prod.
-# La branche preprod (contexte branch-deploy) garde la vitrine.
-[context.deploy-preview.environment]
-  FLEMME_MODE_BIENTOT = "1"
+# Aperçus des PR : plus de renvoi (demande de Ben du 24/11/2026, « ne pas remplacer l'accueil par /bientot ») :
+# l'aperçu montre la vitrine complète, comme la branche preprod ; /bientot/ reste une page à part.
 
 [[headers]]
   for = "/*"

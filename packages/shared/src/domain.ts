@@ -81,14 +81,14 @@ export function money(amount: number) {
 export function parseMoney(value: string, optional = false): number | null {
   const clean = value.trim().replace(',', '.');
   if (!clean && optional) return null;
-  if (!/^\d{1,5}(\.\d{1,2})?$/.test(clean)) throw new Error('Indique un montant en euros avec au plus deux décimales.');
+  if (!/^\d{1,5}(\.\d{1,2})?$/.test(clean)) throw new Error('Indiquez un montant en euros avec au plus deux décimales.');
   const [euros, cents = ''] = clean.split('.');
   const n = Number(euros) * 100 + Number(cents.padEnd(2, '0'));
   if (n < 1 || n > 1000000) throw new Error('Le montant doit être compris entre 0,01 € et 10 000 €.');
   return n;
 }
 export function text(value: unknown, max = 1000) {
-  if (typeof value !== 'string' || !value.trim() || value.trim().length > max) throw new Error(`Complète ce champ (1 à ${max} caractères).`);
+  if (typeof value !== 'string' || !value.trim() || value.trim().length > max) throw new Error(`Complétez ce champ (1 à ${max} caractères).`);
   return value.trim();
 }
 function optionalText(value: unknown, max = 1000) {
@@ -108,11 +108,11 @@ function code<T extends string>(list: readonly { value: T }[], value: unknown, w
 function taskData(data: Input) {
   const mode = code(MODES, data.mode, 'Lieu'), deadline = code(DEADLINES, data.deadline, 'Délai');
   const budget = data.budget == null ? null : amount(data.budget), budgetRange = code(BUDGET_RANGES, data.budgetRange, 'Fourchette');
-  if (budget != null && budgetRange) throw new Error('Choisis un budget libre ou une fourchette, pas les deux.');
+  if (budget != null && budgetRange) throw new Error('Choisissez un budget libre ou une fourchette, pas les deux.');
   const note = typeof data.deadlineNote === 'string' && data.deadlineNote.trim() ? text(data.deadlineNote, 100) : null;
-  if (deadline === 'autre' && !note) throw new Error('Précise le délai approximatif.');
+  if (deadline === 'autre' && !note) throw new Error('Précisez le délai approximatif.');
   const given = typeof data.place === 'string' && data.place.trim() ? text(data.place, 100) : null;
-  if (mode !== 'distance' && !given) throw new Error('Indique une ville ou un secteur pour une tâche sur place.');
+  if (mode !== 'distance' && !given) throw new Error('Indiquez une ville ou un secteur pour une tâche sur place.');
   const address = mode === 'sur_place' || mode === 'les_deux' ? (typeof data.address === 'string' && data.address.trim() ? text(data.address, 200) : null) : null;
   return { title: text(data.title, 100), details: text(data.details), place: given || 'À distance', budget, budgetRange,
     category: code(CATEGORIES, data.category, 'Catégorie'), deadline, deadlineNote: deadline === 'autre' ? note : null, mode, address };
@@ -140,7 +140,7 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
     // Démo locale : pas d’équipe FLEMME, la candidature est validée d’office (comme moderation_offers = false).
     if (t.review && t.review !== 'published' && !owner) throw new Error('Flemme introuvable.');
     if (owner || t.status !== 'open') throw new Error('Cette flemme ne peut pas recevoir cette proposition.');
-    if (t.offers.some(o => o.brigadier.id === actor.id && o.status === 'pending')) throw new Error('Tu as déjà une proposition en attente.');
+    if (t.offers.some(o => o.brigadier.id === actor.id && o.status === 'pending')) throw new Error('Vous avez déjà une proposition en attente.');
     t.offers.push({ id: text(data.id, 100), brigadier: actor, amount: amount(data.amount), slot: masquerCoordonnees(text(data.slot, 100)), scope: masquerCoordonnees(text(data.scope)), status: 'pending', messages: [],
       ...(command === 'apply' ? { result: optionalMasked(data.result), review: 'approved' as const, reviewNote: null } : {}) });
     event('Proposition reçue');
@@ -151,7 +151,7 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
     event('Candidature modifiée');
   } else if (command === 'agreement_save' || command === 'agreement_submit' || command === 'agreement_sign') {
     if (!owner && chosen?.brigadier.id !== actor.id) throw new Error('Accord inaccessible.');
-    if (t.status !== 'assigned') throw new Error('L’accord se prépare une fois le membre choisi, avant la fin de la tâche.');
+    if (t.status !== 'assigned') throw new Error('L’accord se prépare une fois le Brigadier choisi, avant la fin de la tâche.');
     const c = t.contract;
     if (command === 'agreement_save') {
       if (c?.status === 'signed') throw new Error('Accord déjà signé par les deux parties.');
@@ -175,10 +175,10 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
       c.status = 'approved'; c.updatedAt = at; c.updatedBy = actor; event('Accord prêt à signer');
     } else {
       if (!c || c.status !== 'approved') throw new Error('L’accord doit être validé avant d’être signé.');
-      if (data.accept !== true) throw new Error('Coche la case pour accepter l’accord.');
+      if (data.accept !== true) throw new Error('Cochez la case pour accepter l’accord.');
       const name = text(data.signature, 80);
-      if (owner) { if (c.ownerSignedAt) throw new Error('Tu as déjà signé.'); c.ownerSignedAt = at; c.ownerSignature = name; }
-      else { if (c.brigadierSignedAt) throw new Error('Tu as déjà signé.'); c.brigadierSignedAt = at; c.brigadierSignature = name; }
+      if (owner) { if (c.ownerSignedAt) throw new Error('Vous avez déjà signé.'); c.ownerSignedAt = at; c.ownerSignature = name; }
+      else { if (c.brigadierSignedAt) throw new Error('Vous avez déjà signé.'); c.brigadierSignedAt = at; c.brigadierSignature = name; }
       event(`Accord signé par ${actor.name} (« ${name} »)`);
       if (c.ownerSignedAt && c.brigadierSignedAt) {
         // Décision D1 (18/11/2026) : la signature, ici la seconde, déclenche les frais de plateforme uniques.
@@ -191,7 +191,7 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
     const rating = data.rating;
     if (typeof rating !== 'number' || ![1, 2, 3, 4, 5].includes(rating)) throw new Error('Note invalide (1 à 5).');
     t.ratings ||= [];
-    if (t.ratings.some(r => r.authorId === actor.id)) throw new Error('Tu as déjà donné ton avis sur cette mission.');
+    if (t.ratings.some(r => r.authorId === actor.id)) throw new Error('Vous avez déjà donné votre avis sur cette mission.');
     const review = { rating, text: optionalText(data.text, 600) };
     t.ratings.push({ authorId: actor.id, targetId: owner ? chosen.brigadier.id : t.owner.id, ...review, at });
     event('Avis publié par ' + actor.name);
@@ -219,17 +219,17 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
     // Question publique : tout membre qui voit la demande ouverte, sauf le déposant. Jamais de coordonnées.
     if (owner || t.status !== 'open' || (t.review && t.review !== 'published')) throw new Error('Questions fermées pour cette demande.');
     t.questions ||= [];
-    if (t.questions.filter(q => q.author.id === actor.id && !q.answer).length >= 3) throw new Error('Tu as déjà 3 questions sans réponse sur cette demande.');
+    if (t.questions.filter(q => q.author.id === actor.id && !q.answer).length >= 3) throw new Error('Vous avez déjà 3 questions sans réponse sur cette demande.');
     t.questions.push({ id: text(data.id, 100), author: actor, text: masquerCoordonnees(text(data.text, 600)), at, answer: null, answeredAt: null });
     event('Question publique posée');
   } else if (command === 'answer') {
     const q = t.questions?.find(v => v.id === data.questionId);
     if (!owner || !q) throw new Error('Question introuvable.');
-    if (q.answer) throw new Error('Tu as déjà répondu à cette question.');
+    if (q.answer) throw new Error('Vous avez déjà répondu à cette question.');
     q.answer = masquerCoordonnees(text(data.text)); q.answeredAt = at; event('Réponse publique du déposant');
   } else if (command === 'deliver') {
     // Le membre retenu déclare la mission livrée : le déposant confirme, ou le paiement se libère après le délai.
-    if (chosen?.brigadier.id !== actor.id || t.status !== 'assigned') throw new Error('Seul le membre retenu peut déclarer la mission livrée.');
+    if (chosen?.brigadier.id !== actor.id || t.status !== 'assigned') throw new Error('Seul le Brigadier retenu peut déclarer la mission livrée.');
     if ((t.contract || viaFlemme) && !signed) throw new Error('L’accord doit être signé par les deux parties avant la livraison.');
     if (viaFlemme && t.payment?.status !== 'paid') throw new Error('La mission doit être payée via Flemme avant la livraison.');
     if (t.deliveredAt) throw new Error('Mission déjà déclarée livrée.');
@@ -237,13 +237,13 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
   } else if (command === 'complete') {
     const auto = !owner && chosen?.brigadier.id === actor.id && t.status === 'assigned' && liberationAutomatique(t, at);
     if ((!owner && !auto) || t.status !== 'assigned') throw new Error(chosen?.brigadier.id === actor.id
-      ? 'Tu pourras clôturer toi-même 7 jours après avoir déclaré la mission livrée, sauf désaccord signalé.' : 'Seul le déposant peut confirmer la fin.');
+      ? 'Vous pourrez clôturer vous-même 7 jours après avoir déclaré la mission livrée, sauf désaccord signalé.' : 'Seul le déposant peut confirmer la fin.');
     if (t.contract && t.contract.status !== 'signed') throw new Error('L’accord doit être signé par les deux parties avant la fin de la tâche.');
     if (viaFlemme && t.contract?.status !== 'signed') throw new Error('L’accord doit être signé par les deux parties avant la fin de la tâche.');
     if (viaFlemme && t.payment?.status !== 'paid') throw new Error('La mission doit être payée via Flemme avant d’être déclarée terminée.');
     t.status = 'completed';
     event(auto ? 'Paiement libéré automatiquement · 7 jours sans réponse du déposant après la livraison'
-      : viaFlemme ? 'Mission confirmée terminée par le déposant · paiement libéré pour le membre' : 'Tâche déclarée terminée par le déposant');
+      : viaFlemme ? 'Mission confirmée terminée par le déposant · paiement libéré pour le Brigadier' : 'Tâche déclarée terminée par le déposant');
   } else if (command === 'declare_payment') {
     if (viaFlemme) throw new Error('Cette mission se paie via Flemme.');
     if (!owner || t.status !== 'completed' || t.paymentDeclared) throw new Error('Déclaration impossible.');
@@ -251,7 +251,7 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
   } else if (command === 'confirm_payment') {
     if (viaFlemme) throw new Error('Cette mission se paie via Flemme.');
     if (chosen?.brigadier.id !== actor.id || !t.paymentDeclared || t.paymentConfirmed) throw new Error('Confirmation impossible.');
-    t.paymentConfirmed = true; event('Réception du paiement confirmée par le membre · non vérifiée par une banque');
+    t.paymentConfirmed = true; event('Réception du paiement confirmée par le Brigadier · non vérifiée par une banque');
   } else if (command === 'report') {
     if (!owner && chosen?.brigadier.id !== actor.id) throw new Error('Signalement inaccessible.');
     t.reports.push({ actor, text: text(data.text), at }); event('Désaccord signalé · examen humain demandé');

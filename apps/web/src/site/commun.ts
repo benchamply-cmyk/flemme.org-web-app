@@ -6,6 +6,7 @@ import './reglages-pr55.css';
 import './nav.css';
 import './nav.ts';
 import './marque.css';
+import './g1.css';
 import { ouvrirCatalogue } from './filtre.ts';
 
 // Comportements communs à toutes les pages de la vitrine : menu burger, liens vers le catalogue filtré.
@@ -33,5 +34,5 @@ document.querySelectorAll<HTMLButtonElement>('[data-copier]').forEach(b => b.add
   const cible = document.getElementById(b.dataset.copier || ''), note = document.getElementById(b.dataset.note || '');
   if (!cible) return;
   try { await navigator.clipboard.writeText(cible.textContent || ''); if (note) note.textContent = 'Adresse copiée.'; }
-  catch { getSelection()?.selectAllChildren(cible); if (note) note.textContent = 'Adresse sélectionnée : copie-la avec Ctrl+C ou ⌘C.'; }
+  catch { getSelection()?.selectAllChildren(cible); if (note) note.textContent = 'Adresse sélectionnée : copiez-la avec Ctrl+C ou ⌘C.'; }
 }));

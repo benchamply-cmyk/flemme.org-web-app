@@ -160,15 +160,15 @@ type Session = { access_token: string; refresh_token: string; expires_in: number
 // Codes d’erreur stables de Supabase Auth, traduits pour l’utilisateur.
 const authErrors: Record<string, string> = {
   invalid_credentials: 'E-mail ou mot de passe incorrect.',
-  email_not_confirmed: 'Confirme d’abord ton adresse avec le lien reçu par e-mail.',
-  user_already_exists: 'Un compte existe déjà avec cette adresse : connecte-toi, ou choisis « Mot de passe oublié ? ».',
+  email_not_confirmed: 'Confirmez d’abord votre adresse avec le lien reçu par e-mail.',
+  user_already_exists: 'Un compte existe déjà avec cette adresse : connectez-vous, ou choisissez « Mot de passe oublié ? ».',
   email_address_invalid: 'Cette adresse e-mail n’est pas valide.',
-  weak_password: 'Mot de passe trop faible : choisis-en un plus long.',
-  same_password: 'C’est déjà ton mot de passe actuel.',
-  over_email_send_rate_limit: 'Trop d’e-mails envoyés pour l’instant. Réessaie un peu plus tard ou utilise le dernier e-mail reçu.',
-  over_request_rate_limit: 'Trop de tentatives. Patiente une minute avant de réessayer.',
-  otp_expired: 'Ce lien a expiré ou a déjà servi. Demande-en un nouveau.',
-  flow_state_expired: 'Ce lien a expiré. Demande-en un nouveau.',
+  weak_password: 'Mot de passe trop faible : choisissez-en un plus long.',
+  same_password: 'C’est déjà votre mot de passe actuel.',
+  over_email_send_rate_limit: 'Trop d’e-mails envoyés pour l’instant. Réessayez un peu plus tard ou utilisez le dernier e-mail reçu.',
+  over_request_rate_limit: 'Trop de tentatives. Patientez une minute avant de réessayer.',
+  otp_expired: 'Ce lien a expiré ou a déjà servi. Demandez-en un nouveau.',
+  flow_state_expired: 'Ce lien a expiré. Demandez-en un nouveau.',
   flow_state_not_found: 'Ce lien a été ouvert dans un autre navigateur que celui de la demande. Redemande-le depuis ce navigateur.',
   access_denied: 'Connexion annulée.',
 };
@@ -193,19 +193,19 @@ export class RemoteGateway implements Gateway {
   constructor(url: string, key: string, tokens: TokenStorage, transport: typeof fetch = (input, init) => fetch(input, init)) {
     this.url = url; this.key = key; this.tokens = tokens; this.transport = transport;
     if (!/^https:\/\//.test(url)) throw new Error('La connexion Supabase doit utiliser HTTPS.');
-    if (!key || isSecretKey(key)) throw new Error('Utilise uniquement une clé Supabase publique.');
+    if (!key || isSecretKey(key)) throw new Error('Utilisez uniquement une clé Supabase publique.');
   }
   private async request(path: string, body: unknown, token = '', method = 'POST') {
     const controller = new AbortController(); const timeout = setTimeout(() => controller.abort(), 15000);
     let response: Response;
     try { response = await this.transport(this.url.replace(/\/$/, '') + path, { method, headers: { apikey: this.key, 'Content-Type': 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) }, body: JSON.stringify(body), signal: controller.signal }); }
-    catch { throw new Error('Connexion interrompue. Réessaie : ton action ne sera pas dupliquée.'); }
+    catch { throw new Error('Connexion interrompue. Réessayez : votre action ne sera pas dupliquée.'); }
     finally { clearTimeout(timeout); }
     // Certaines réponses sont vides (déconnexion : 204) : ne pas les prendre pour une erreur.
     let result: any = {};
     try { const text = await response.text(); if (text) result = JSON.parse(text); } catch { if (response.ok) throw new Error('Réponse illisible du service.'); }
     if (!response.ok) {
-      if (response.status === 401 || response.status === 403) throw new Error('Session ou accès refusé. Reconnecte-toi si nécessaire.');
+      if (response.status === 401 || response.status === 403) throw new Error('Session ou accès refusé. Reconnectez-vous si nécessaire.');
       throw new Error(authMessage(result.error_code || result.code, result.message || result.msg || 'Le service est indisponible.'));
     }
     return result;
@@ -235,7 +235,7 @@ export class RemoteGateway implements Gateway {
   async updateProfile(displayName: string) { this.actor = (await this.rpc('update_profile', null, { displayName }, null)).profile; }
   private async refresh() {
     if (!this.refreshing) this.refreshing = (async () => {
-      const token = await this.tokens.get(); if (!token) throw new Error('Connecte-toi pour continuer.');
+      const token = await this.tokens.get(); if (!token) throw new Error('Connectez-vous pour continuer.');
       await this.session(await this.request('/auth/v1/token?grant_type=refresh_token', { refresh_token: token }));
     })().finally(() => { this.refreshing = null; });
     return this.refreshing;
@@ -332,7 +332,7 @@ export class RemoteGateway implements Gateway {
     let response: Response;
     try { response = await this.transport(this.url.replace(/\/$/, '') + '/storage/v1/' + path.split('/').map(encodeURIComponent).join('/'), { method, body,
       headers: { apikey: this.key, Authorization: 'Bearer ' + this.access, ...(type ? { 'Content-Type': type } : {}), 'x-upsert': 'false' } }); }
-    catch { throw new Error('Connexion interrompue pendant l’envoi du fichier. Réessaie.'); }
+    catch { throw new Error('Connexion interrompue pendant l’envoi du fichier. Réessayez.'); }
     const text = await response.text().catch(() => '');
     if (!response.ok) throw new Error(response.status === 413 ? 'Fichier trop lourd : 10 Mo au plus.' : 'Fichier refusé ou introuvable.');
     try { return text ? JSON.parse(text) : {}; } catch { return {}; }

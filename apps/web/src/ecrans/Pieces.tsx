@@ -14,7 +14,7 @@ export function Pieces({ task, actorId, files, busy }: { task: Task; actorId: st
     if (w && url) w.location.href = url; else w?.close();
   }
   return <><h2 className="section-title">Pièces jointes</h2>
-    <p className="note">Visibles seulement du déposant et du membre retenu. PDF, JPEG, PNG ou Word, 10 Mo au plus.</p>
+    <p className="note">Visibles seulement du déposant et du Brigadier retenu. PDF, JPEG, PNG ou Word, 10 Mo au plus.</p>
     {files?.length ? files.map(f => <div className="card" key={f.id}><span className="row"><button type="button" className="link" onClick={() => void open(f)}>{f.name}</button><span className="note">{fileSize(f.size)}</span></span>
       <span className="note">Ajouté par {f.owner.name} · {date(f.at)}</span>
       {f.owner.id === actorId && <button type="button" className="btn small secondary" disabled={busy} onClick={() => session.deleteFile(task.id, f)}>Supprimer</button>}</div>)
