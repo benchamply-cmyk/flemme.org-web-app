@@ -105,6 +105,6 @@ function Recherche({ state: { busy, found, filter }, card, fallback, skip }: Ctx
     {found?.total === 0 && active > 0 && <><p className="muted">Essayez d’élargir la zone ou d’afficher les tâches à distance.</p><button type="button" className="btn secondary" disabled={busy} onClick={() => run({ sort: f.sort })}>Effacer les filtres</button></>}
     {found?.nextCursor && <button type="button" className="btn secondary" disabled={busy} onClick={() => session.search(filter, true)}>Voir plus de demandes</button>}
     <button type="button" className="btn secondary" disabled={busy} onClick={() => session.search(filter)}>↻ Actualiser</button>
-    <p className="note">Seules les demandes validées par l’équipe apparaissent ici. Prix indicatifs hors frais FLEMME. Ouvrir une demande ne crée aucune conversation : c’est vous qui proposes votre aide.</p>
+    <p className="note">Seules les demandes validées par l’équipe apparaissent ici. Prix indicatifs hors frais FLEMME. Ouvrir une demande ne crée aucune conversation : c’est vous qui proposez votre aide.</p>
   </>;
 }
