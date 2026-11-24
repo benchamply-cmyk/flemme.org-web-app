@@ -27,5 +27,5 @@ export function Offre({ state: { busy, actorId }, place: { screen, offerId }, ta
         {task.contract?.status !== 'signed' && <p className="note">{AVIS_MASQUAGE}</p>}
         <Action secondary disabled={busy} onClick={() => mutate('message', { offerId, text: draft.text }, 'offer')}>Envoyer le message</Action>
         {can.isOwner && task.status === 'open' && offer.status === 'pending' && <><Action disabled={busy} onClick={() => go('review')}>{refonte ? 'Préparer le contrat' : 'Voir l’accord avant d’accepter'}</Action><Action secondary disabled={busy} onClick={() => mutate('decline', { offerId }, 'detail', notices.declined)}>Décliner cette proposition</Action></>}
-        <p className="note">Pour changer le prix : décliner l’offre, puis demander un nouveau forfait au membre. Chaque proposition reste conservée.</p></>}</>;
+        <p className="note">Pour changer le prix : décliner l’offre, puis demander un nouveau forfait au Brigadier. Chaque proposition reste conservée.</p></>}</>;
 }

@@ -10,7 +10,7 @@ export function Accueil({ go }: Ctx) {
     <div className="home-liens">
     <button type="button" className="btn secondary" onClick={() => go('list', { tab: 'mine' })}>Mon espace · mes demandes et mes propositions</button>
     {/* Brigadier Premium : seul lien depuis l’espace, repris de l’ancienne page espace-connecte.html. */}
-    <a className="btn secondary" href="premium">Flemme Premium · pour les membres qui aident souvent</a>
+    <a className="btn secondary" href="premium">Flemme Premium · pour les Brigadiers</a>
     </div>
     {/* v2.1.0 (Ben, 18/11/2026) : bloc « Version test » retiré de l’accueil ; les testeurs gardent la pastille « Test » de l’en-tête. */}
     </div>;

@@ -36,7 +36,7 @@ export const CONDITIONS_COMMUNES = [
 
 // Formules : textes provisoires, à valider par Ben avant toute ouverture.
 export const FORMULES: FormuleAbonnement[] = [
-  { id: 'membre-premium', nom: 'Membre Premium', accroche: 'Pour les membres qui aident souvent.', pour: 'membre',
+  { id: 'membre-premium', nom: 'Membre Premium', accroche: 'Pour les Brigadiers qui aident souvent.', pour: 'membre',
     prixMensuel: null, prixAnnuel: null, essaiJours: 0, statut: 'brouillon',
     avantages: ['Alertes en priorité sur les nouvelles flemmes', 'Profil mis en avant et badge Premium', 'Suivi des prestations et des revenus dans l’app'],
     conditions: [] },

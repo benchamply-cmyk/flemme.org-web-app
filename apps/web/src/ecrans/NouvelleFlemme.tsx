@@ -45,7 +45,7 @@ export function NouvelleFlemme({ state: { busy }, place, task, draft, field, cho
     {choice('Où se déroule la tâche ?', 'mode', MODES)}
     {mode !== 'distance' && <>
       {field('Ville ou secteur · public', 'place', { hint: 'Ex. Lyon · Croix-Rousse' })}
-      {field('Adresse précise · privée', 'address', { max: 200, hint: 'Visible seulement par vous, le membre que vous retenez et l’équipe FLEMME. Jamais sur la fiche publique.' })}
+      {field('Adresse précise · privée', 'address', { max: 200, hint: 'Visible seulement par vous, le Brigadier que vous retenez et l’équipe FLEMME. Jamais sur la fiche publique.' })}
     </>}
     {choice('Délai approximatif', 'deadline', DEADLINES, 'À discuter')}
     {draft.deadline === 'autre' && field('Précisez le délai', 'deadlineNote', { hint: 'Ex. avant la rentrée' })}

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Flemme.org arrive bientôt : publiez ce que vous repoussez, des membres proposent de s’en charger, et vous fixez le prix à deux.">
+<meta name="description" content="Flemme.org arrive bientôt : publiez ce que vous repoussez, des Brigadiers proposent de s’en charger, et vous fixez le prix à deux.">
 <link rel="icon" type="image/svg+xml" href="/bientot/marque/flemme-ruban.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="/bientot/marque/favicon-32.png">
 <link rel="apple-touch-icon" href="/bientot/marque/favicon-180.png">
@@ -68,7 +68,7 @@
     </h1>
     <div class="lp-hero-bas">
       <div>
-        <p class="lp-hero-accroche">Flemme ajuste ses derniers réglages pour vous mettre en relation. Publiez ce que vous repoussez, proposez votre aide, <span class="lp-souligne">fixez le prix avec l’autre membre</span>&#8239;: tout ça arrive bientôt.</p>
+        <p class="lp-hero-accroche">Flemme ajuste ses derniers réglages pour vous mettre en relation. Publiez ce que vous repoussez, proposez votre aide, <span class="lp-souligne">fixez le prix avec votre Brigadier</span>&#8239;: tout ça arrive bientôt.</p>
         <div class="lp-hero-actions">
           <a class="lp-bouton noir" href="#inscription">Suivre l’avancement<span class="lp-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="18" height="11"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
           <a class="lp-bouton contour" href="#essai">Essayer la démo<span class="lp-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="18" height="11"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
@@ -80,8 +80,8 @@
 
 <!-- Ruban de chantier (nouveau) : bande noire et menthe qui défile, inclinée. -->
 <div class="vc-ruban-cadre"><div class="vc-ruban" aria-hidden="true"><div class="vc-ruban-piste">
-  <span>Finalisation en cours</span><span>On se dépêche</span><span>Plateforme indépendante</span><span>Mise en relation de particuliers</span><span>Prix négocié entre membres</span><span>Accord relu et soutien de l’équipe</span><span>Accompagnement de nos équipes</span><span>Transparence et qualité</span>
-  <span>Finalisation en cours</span><span>On se dépêche</span><span>Plateforme indépendante</span><span>Mise en relation de particuliers</span><span>Prix négocié entre membres</span><span>Accord relu et soutien de l’équipe</span><span>Accompagnement de nos équipes</span><span>Transparence et qualité</span>
+  <span>Finalisation en cours</span><span>On se dépêche</span><span>Plateforme indépendante</span><span>Mise en relation de particuliers</span><span>Prix négocié avec le Brigadier</span><span>Accord relu et soutien de l’équipe</span><span>Accompagnement de nos équipes</span><span>Transparence et qualité</span>
+  <span>Finalisation en cours</span><span>On se dépêche</span><span>Plateforme indépendante</span><span>Mise en relation de particuliers</span><span>Prix négocié avec le Brigadier</span><span>Accord relu et soutien de l’équipe</span><span>Accompagnement de nos équipes</span><span>Transparence et qualité</span>
 </div></div></div>
 
 <main>
@@ -90,7 +90,7 @@
 <div class="g1-sec g1-chiffres" aria-label="Chiffres clés">
   <div class="g1-carte"><b>0 €</b><span>pour publier une flemme ou proposer votre aide</span></div>
   <div class="g1-carte"><b>10 %</b><span>de frais de plateforme pendant la bêta, affichés avant de signer</span></div>
-  <div class="g1-carte"><b>1 accord</b><span>signé par les deux membres et relu par l’équipe</span></div>
+  <div class="g1-carte"><b>1 accord</b><span>signé par vous et votre Brigadier, relu par l’équipe</span></div>
   <div class="g1-carte"><b>75 %</b><span>du chantier terminé</span></div>
 </div>
   <!-- 2-3. Le principe en introduction, puis la démo interactive (données fictives, rien n’est envoyé). -->
@@ -134,7 +134,7 @@
                   <label for="dTitre">Votre flemme en une phrase</label>
                   <input class="vc-input" id="dTitre" maxlength="70" autocomplete="off">
                 </div>
-                <p class="vc-aide">Un verbe d’action et l’objet, c’est tout. Le titre est ce que les membres voient en premier.</p>
+                <p class="vc-aide">Un verbe d’action et l’objet, c’est tout. Le titre est ce que les Brigadiers voient en premier.</p>
               </div></div>
             </div>
             <div class="vc-etape" data-etape="2">
@@ -188,7 +188,7 @@
                   <label for="dBudget">Budget indicatif <small>(facultatif)</small> : <b id="budgetTxt">à discuter</b></label>
                   <input class="vc-curseur" type="range" id="dBudget" min="0" max="200" step="5" value="0">
                 </div>
-                <p class="vc-aide">Un repère, pas un engagement : les membres vous font une proposition et vous fixez le prix avec celui ou celle que vous choisissez.</p>
+                <p class="vc-aide">Un repère, pas un engagement : les Brigadiers vous font une proposition et vous fixez le prix avec celui ou celle que vous choisissez.</p>
                 <div class="vc-actions">
               <button type="submit" class="lp-bouton noir" id="btnPublier">Publier (démo)<span class="lp-fleche" aria-hidden="true"><svg viewBox="0 0 20 12" width="18" height="11"><path d="M1 6h17M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
               <button type="button" class="lp-bouton contour" id="btnRecommencer" hidden>Recommencer</button>
@@ -238,7 +238,7 @@
     <h2 class="lp-titre titre-p">Quatre étapes, <em>pas une de plus.</em></h2>
     <ol class="g1-etapes">
       <li><small>ÉTAPE 1</small><h3>Vous publiez</h3><p>Votre flemme en une phrase, le lieu ou « à distance », un budget si vous voulez.</p></li>
-      <li><small>ÉTAPE 2</small><h3>On vous propose</h3><p>Des membres proposent leur aide et posent leurs questions.</p></li>
+      <li><small>ÉTAPE 2</small><h3>On vous propose</h3><p>Des Brigadiers proposent leur aide et posent leurs questions.</p></li>
       <li><small>ÉTAPE 3</small><h3>Vous négociez</h3><p>Le prix et le délai se fixent entre vous, dans une conversation privée.</p></li>
       <li><small>ÉTAPE 4</small><h3>Vous signez</h3><p>Un accord relu par l’équipe, puis la mission est réalisée.</p></li>
     </ol>
@@ -280,7 +280,7 @@
     <h2 class="lp-titre titre-p">Simple, clair, <em>relu.</em></h2>
     <div class="g1-engagements">
       <div><h3>Annonces relues</h3><p>Chaque flemme et chaque proposition est relue avant d’être visible.</p></div>
-      <div><h3>Prix libre</h3><p>Le prix se fixe entre membres. Les frais sont affichés avant de signer.</p></div>
+      <div><h3>Prix libre</h3><p>Le prix se fixe avec le Brigadier. Les frais sont affichés avant de signer.</p></div>
       <div><h3>Adresse privée</h3><p>Seule la ville est publique. Vos coordonnées restent masquées.</p></div>
       <div><h3>Un seul endroit</h3><p>Échanges, accord et paiement restent au même endroit.</p></div>
     </div>
@@ -325,11 +325,11 @@
     <div class="vc-entete-section"><p class="lp-etiquette">Questions fréquentes</p></div>
     <h2 class="lp-titre titre-p">Les questions <em>qu’on se pose déjà.</em></h2>
     <div class="vc-faq">
-      <details open><summary>Flemme, c’est quoi exactement&#8239;?</summary><p>Une plateforme de mise en relation. Vous publiez une tâche que vous repoussez, des membres vous proposent de s’en charger, vous fixez le prix et le délai avec votre ou votre Brigadier, puis vous signez tous les deux un accord relu par l’équipe Flemme.</p></details>
+      <details open><summary>Flemme, c’est quoi exactement&#8239;?</summary><p>Une plateforme de mise en relation. Vous publiez une tâche que vous repoussez, des Brigadiers vous proposent de s’en charger, vous fixez le prix et le délai avec votre ou votre Brigadier, puis vous signez tous les deux un accord relu par l’équipe Flemme.</p></details>
       <details><summary>Quand est-ce que ça ouvre&#8239;?</summary><p>L’ouverture est visée pour janvier 2027. D’ici là, vous pouvez déjà créer votre compte&#8239;: vous faites partie de la bêta, vous enregistrez vos annonces et vos recherches, et on vous prévient le jour J.</p></details>
-      <details><summary>Combien ça coûte&#8239;?</summary><p>Publier une flemme et proposer votre aide sont gratuits. Vous négociez le prix de la mission directement avec l’autre membre. Des frais de plateforme s’ajoutent seulement à la signature, et ils sont affichés avant de signer.</p></details>
-      <details><summary>Est-ce que Flemme garantit le résultat&#8239;?</summary><p>Non. La mission est réalisée par un membre, pas par Flemme. Flemme relit les annonces et l’accord, garde les échanges et le paiement au même endroit, et examine le dossier en cas de désaccord.</p></details>
-      <details><summary>Qui pourra résoudre les flemmes&#8239;?</summary><p>Tout membre inscrit peut proposer son aide sur une demande publiée, à distance ou sur place. Chaque proposition est relue avant d’être visible.</p></details>
+      <details><summary>Combien ça coûte&#8239;?</summary><p>Publier une flemme et proposer votre aide sont gratuits. Vous négociez le prix de la mission directement avec votre Brigadier. Des frais de plateforme s’ajoutent seulement à la signature, et ils sont affichés avant de signer.</p></details>
+      <details><summary>Est-ce que Flemme garantit le résultat&#8239;?</summary><p>Non. La mission est réalisée par un Brigadier, pas par Flemme. Flemme relit les annonces et l’accord, garde les échanges et le paiement au même endroit, et examine le dossier en cas de désaccord.</p></details>
+      <details><summary>Qui pourra résoudre les flemmes&#8239;?</summary><p>Tout inscrit peut devenir Brigadier et proposer son aide sur une demande publiée, à distance ou sur place. Chaque proposition est relue avant d’être visible.</p></details>
     </div>
   </section>
 
@@ -339,7 +339,7 @@
     <h2 class="lp-titre titre-p">Où on en est, <em>sans filtre.</em></h2>
     <div class="g1-journal">
       <div><span>FAIT</span><p style="margin:0">Comptes, publication des flemmes et propositions d’aide.</p></div>
-      <div><span>FAIT</span><p style="margin:0">Négociation du prix entre membres.</p></div>
+      <div><span>FAIT</span><p style="margin:0">Négociation du prix avec le Brigadier.</p></div>
       <div><span class="encours">EN COURS</span><p style="margin:0">Accord signé et relu, paiement à la signature.</p></div>
       <div><span class="encours">EN COURS</span><p style="margin:0">Bêta ouverte aux inscrits.</p></div>
       <div><span class="avenir">À VENIR</span><p style="margin:0">Ouverture à tous en janvier 2027.</p></div>

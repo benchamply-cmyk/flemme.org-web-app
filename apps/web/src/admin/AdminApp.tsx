@@ -172,14 +172,14 @@ export default function AdminApp() {
       {rows.length ? rows.map(d => { const t = d.task, a = t.agreement; return <div className={'card' + (focus === d.taskId ? ' focus' : '')} key={d.taskId}>
         <div className="row"><span className="tag">{disputeLabel[d.status]}</span><span className="note">Ouvert le {when(d.openedAt)}{d.updatedBy ? ' · dernière action : ' + d.updatedBy : ''}</span></div>
         <p className="card-title">{t.title}</p>
-        <p className="muted">{t.place} · {taskLabel[t.status]} · déposée par {t.owner.name}{a ? ' · Membre retenu : ' + a.brigadier.name + ' · forfait ' + money(a.amount) + ' + commission ' + money(a.commission) : ''}</p>
-        {a && <p className="note">{t.paymentConfirmed ? 'Paiement confirmé par les deux personnes (déclaratif)' : t.paymentDeclared ? 'Paiement déclaré par le déposant, non confirmé par le membre' : 'Paiement non déclaré'}</p>}
+        <p className="muted">{t.place} · {taskLabel[t.status]} · déposée par {t.owner.name}{a ? ' · Brigadier retenu : ' + a.brigadier.name + ' · forfait ' + money(a.amount) + ' + commission ' + money(a.commission) : ''}</p>
+        {a && <p className="note">{t.paymentConfirmed ? 'Paiement confirmé par les deux personnes (déclaratif)' : t.paymentDeclared ? 'Paiement déclaré par le déposant, non confirmé par le Brigadier' : 'Paiement non déclaré'}</p>}
         {t.reports.map((r, i) => <div className="bubble" key={i}><span className="strong">Signalement de {r.actor.name}</span><span>{r.text}</span><span className="note">{when(r.at)}</span></div>)}
         {d.resolution && <p><span className="strong">Résolution : </span>{d.resolution}</p>}
         <details><summary>Historique de la flemme ({t.history.length})</summary>{t.history.map((h, i) => <div key={i} className="history"><p>{h.text}</p><span className="note">{when(h.at)}</span></div>)}</details>
         {d.status !== 'resolved' && <>
           {d.status === 'open' && <Button secondary disabled={busy} onClick={() => act('dispute_update', { taskId: d.taskId, status: 'in_review' }, 'Litige pris en charge. Les deux participants le voient dans l’historique.', ['disputes', 'reports'])}>Prendre en charge</Button>}
-          <div className="field"><label htmlFor={'n-' + d.taskId}>Décision (visible du déposant et du membre retenu)</label><textarea id={'n-' + d.taskId} maxLength={1000} value={draft['n-' + d.taskId] || ''} onChange={set('n-' + d.taskId)} disabled={busy}/></div>
+          <div className="field"><label htmlFor={'n-' + d.taskId}>Décision (visible du déposant et du Brigadier retenu)</label><textarea id={'n-' + d.taskId} maxLength={1000} value={draft['n-' + d.taskId] || ''} onChange={set('n-' + d.taskId)} disabled={busy}/></div>
           <Button disabled={busy} onClick={() => act('dispute_update', { taskId: d.taskId, status: 'resolved', note: draft['n-' + d.taskId] || '' }, 'Litige clos. La décision est ajoutée à l’historique de la flemme.', ['disputes', 'reports'])}>Clore le litige</Button>
         </>}
       </div>; }) : <p className="muted">{disputeView === 'todo' ? 'Aucun litige à traiter.' : 'Aucun litige.'}</p>}

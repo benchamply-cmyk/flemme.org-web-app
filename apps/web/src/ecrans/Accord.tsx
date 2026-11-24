@@ -6,10 +6,10 @@ import type { Ctx } from './contexte.ts';
 // Toute modification remet l’accord en brouillon et efface les signatures : chacun relit la nouvelle version.
 export function Accord({ state: { busy }, task, can, draft, field, mutate, validated }: Ctx) {
   if (!task) return null;
-  if (!can.canContract) return <><h1 className="heading">Accord écrit</h1><p className="muted">L’accord se prépare une fois le membre choisi, avant la fin de la tâche.</p></>;
+  if (!can.canContract) return <><h1 className="heading">Accord écrit</h1><p className="muted">L’accord se prépare une fois le Brigadier choisi, avant la fin de la tâche.</p></>;
   const signed = task.contract?.ownerSignedAt || task.contract?.brigadierSignedAt;
   return <><h1 className="heading">{task.contract ? 'Modifier l’accord écrit' : 'Rédiger l’accord écrit'}</h1><p className="card-title">{task.title}</p>
-    {task.agreement && !can.viaFlemme && <p className="muted">Prix convenu : {money(task.agreement.amount)} pour le membre, {money(task.agreement.total)} au total. Il ne change pas ici : c’est celui de la proposition acceptée.</p>}
+    {task.agreement && !can.viaFlemme && <p className="muted">Prix convenu : {money(task.agreement.amount)} pour le Brigadier, {money(task.agreement.total)} au total. Il ne change pas ici : c’est celui de la proposition acceptée.</p>}
     {task.agreement && can.viaFlemme && <><p className="muted">Prix convenu jusqu’ici : {money(task.agreement.amount)} pour la personne qui réalise la mission, {money(task.agreement.total)} au total avec les frais de plateforme. Si vous en avez convenu autrement dans la discussion, modifiez-le ici : le taux des frais reste celui fixé au choix de la proposition.</p>
       {field('Prix convenu de la prestation', 'amount', { numeric: true })}
       {(() => { try { const n = parseMoney(draft.amount || '', true); return n != null ? <Bill amount={n} agreed={{ ...task.agreement, ...priceFor(n, task.agreement) }}/> : null; } catch { return null; } })()}</>}

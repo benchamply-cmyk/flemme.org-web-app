@@ -91,14 +91,14 @@ test('v2 : mode stripe, paiement par carte (pas de simulation locale), versement
   t = { ...t, payment: { method: 'stripe', status: 'authorized', total: 5500, commission: 500, payout: 5000, at } };
   assert.equal(rights(t, owner.id).canPay, false, 'paiement différé en cours');
   t = { ...t, payment: { ...t.payment!, status: 'paid' } };
-  assert.match(paymentStatus(t, money), /^Payé via Flemme par carte .* part du membre versée à la fin de la mission$/);
+  assert.match(paymentStatus(t, money), /^Payé via Flemme par carte .* part du Brigadier versée à la fin de la mission$/);
   t = run(t, owner, 'complete');
   assert.equal(rights(t, owner.id).canPayout, true);
   assert.equal(rights(t, brigadier.id).canPayout, true);
   assert.equal(rights(t, stranger.id).canPayout, false);
   t = { ...t, payment: { ...t.payment!, transferredAt: at } };
   assert.equal(rights(t, owner.id).canPayout, false);
-  assert.match(paymentStatus(t, money), /part du membre versée$/);
+  assert.match(paymentStatus(t, money), /part du Brigadier versée$/);
 });
 
 test('contrat v0.2 : rubriques facultatives, textes proposés, clauses communes', () => {

@@ -151,7 +151,7 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
     event('Candidature modifiée');
   } else if (command === 'agreement_save' || command === 'agreement_submit' || command === 'agreement_sign') {
     if (!owner && chosen?.brigadier.id !== actor.id) throw new Error('Accord inaccessible.');
-    if (t.status !== 'assigned') throw new Error('L’accord se prépare une fois le membre choisi, avant la fin de la tâche.');
+    if (t.status !== 'assigned') throw new Error('L’accord se prépare une fois le Brigadier choisi, avant la fin de la tâche.');
     const c = t.contract;
     if (command === 'agreement_save') {
       if (c?.status === 'signed') throw new Error('Accord déjà signé par les deux parties.');
@@ -229,7 +229,7 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
     q.answer = masquerCoordonnees(text(data.text)); q.answeredAt = at; event('Réponse publique du déposant');
   } else if (command === 'deliver') {
     // Le membre retenu déclare la mission livrée : le déposant confirme, ou le paiement se libère après le délai.
-    if (chosen?.brigadier.id !== actor.id || t.status !== 'assigned') throw new Error('Seul le membre retenu peut déclarer la mission livrée.');
+    if (chosen?.brigadier.id !== actor.id || t.status !== 'assigned') throw new Error('Seul le Brigadier retenu peut déclarer la mission livrée.');
     if ((t.contract || viaFlemme) && !signed) throw new Error('L’accord doit être signé par les deux parties avant la livraison.');
     if (viaFlemme && t.payment?.status !== 'paid') throw new Error('La mission doit être payée via Flemme avant la livraison.');
     if (t.deliveredAt) throw new Error('Mission déjà déclarée livrée.');
@@ -243,7 +243,7 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
     if (viaFlemme && t.payment?.status !== 'paid') throw new Error('La mission doit être payée via Flemme avant d’être déclarée terminée.');
     t.status = 'completed';
     event(auto ? 'Paiement libéré automatiquement · 7 jours sans réponse du déposant après la livraison'
-      : viaFlemme ? 'Mission confirmée terminée par le déposant · paiement libéré pour le membre' : 'Tâche déclarée terminée par le déposant');
+      : viaFlemme ? 'Mission confirmée terminée par le déposant · paiement libéré pour le Brigadier' : 'Tâche déclarée terminée par le déposant');
   } else if (command === 'declare_payment') {
     if (viaFlemme) throw new Error('Cette mission se paie via Flemme.');
     if (!owner || t.status !== 'completed' || t.paymentDeclared) throw new Error('Déclaration impossible.');
@@ -251,7 +251,7 @@ export function applyCommand(task: Task, actor: Actor, command: Command, data: I
   } else if (command === 'confirm_payment') {
     if (viaFlemme) throw new Error('Cette mission se paie via Flemme.');
     if (chosen?.brigadier.id !== actor.id || !t.paymentDeclared || t.paymentConfirmed) throw new Error('Confirmation impossible.');
-    t.paymentConfirmed = true; event('Réception du paiement confirmée par le membre · non vérifiée par une banque');
+    t.paymentConfirmed = true; event('Réception du paiement confirmée par le Brigadier · non vérifiée par une banque');
   } else if (command === 'report') {
     if (!owner && chosen?.brigadier.id !== actor.id) throw new Error('Signalement inaccessible.');
     t.reports.push({ actor, text: text(data.text), at }); event('Désaccord signalé · examen humain demandé');

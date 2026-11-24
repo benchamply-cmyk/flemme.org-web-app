@@ -31,16 +31,16 @@ export function Fiche({ state: { busy, actorId, files }, place, task, can, draft
       {can.canPay && <><p className="note">{PAIEMENT_OBLIGATOIRE}</p>{task.paymentMode === 'stripe'
         ? <Action disabled={busy} onClick={() => openStripe('checkout', task.id, 'signature')}>Payer par carte via Flemme · {money(agreement.total)}</Action>
         : <Action disabled={busy} onClick={() => mutate('pay', {}, 'detail', notices.paid)}>Payer via Flemme · {money(agreement.total)} (simulation)</Action>}</>}
-      {can.canPayout && <Action secondary disabled={busy} onClick={() => payoutStripe(task.id)}>Verser la part du membre · {money(agreement.payout ?? agreement.amount)}</Action>}
+      {can.canPayout && <Action secondary disabled={busy} onClick={() => payoutStripe(task.id)}>Verser la part du Brigadier · {money(agreement.payout ?? agreement.amount)}</Action>}
       {confiance && task.deliveredAt && task.status === 'assigned' && <p className="note">Mission déclarée livrée le {date(task.deliveredAt)}. {can.isOwner
-        ? `Vérifiez le résultat puis confirmez. Sans réponse ni désaccord signalé d’ici le ${date(liberationPossibleLe(task.deliveredAt)).split(' ')[0]}, le membre pourra clôturer et le paiement sera libéré.`
+        ? `Vérifiez le résultat puis confirmez. Sans réponse ni désaccord signalé d’ici le ${date(liberationPossibleLe(task.deliveredAt)).split(' ')[0]}, le Brigadier pourra clôturer et le paiement sera libéré.`
         : `Le déposant confirme, ou vous pourrez clôturer vous-même à partir du ${date(liberationPossibleLe(task.deliveredAt)).split(' ')[0]} si aucun désaccord n’est signalé.`}</p>}
       {confiance && can.canDeliver && <><p className="note">Mission terminée de votre côté ? Déclarez-la livrée : le déposant a {DELAI_LIBERATION_JOURS} jours pour confirmer ou signaler un désaccord.</p>
         <Action disabled={busy} onClick={() => mutate('deliver', {}, 'detail', 'Mission déclarée livrée. Le déposant est invité à confirmer.')}>J’ai terminé la mission</Action></>}
       {confiance && can.canRelease && <Action disabled={busy} onClick={() => mutate('complete', {}, 'detail', 'Mission clôturée : le paiement est libéré.')}>Clôturer la mission et libérer mon paiement</Action>}
       {can.canComplete && <Action disabled={busy} onClick={() => mutate('complete', {})}>{can.viaFlemme ? 'Mission terminée, je libère le paiement' : 'Confirmer la tâche terminée'}</Action>}
       {can.canDeclarePayment && onlinePayment && <Action disabled={busy} onClick={() => openStripe('checkout', task.id)}>Payer en ligne · {money(agreement.total)}</Action>}
-      {can.canDeclarePayment && <Action secondary={onlinePayment} disabled={busy} onClick={() => mutate('declare_payment', {})}>J’ai payé le membre{onlinePayment ? ' en direct' : ''}</Action>}
+      {can.canDeclarePayment && <Action secondary={onlinePayment} disabled={busy} onClick={() => mutate('declare_payment', {})}>J’ai payé le Brigadier{onlinePayment ? ' en direct' : ''}</Action>}
       {can.canConfirmPayment && <Action disabled={busy} onClick={() => mutate('confirm_payment', {})}>Confirmer avoir reçu le paiement</Action>}
       <p className="muted">{task.payment || can.viaFlemme ? paymentStatus(task, money) : <>{paymentStatus(task)}<br/>Commission : à régler · encaissement non connecté</>}</p>
       {(task.contract || can.canContract) && <><h2 className="section-title">Accord écrit</h2>
@@ -49,7 +49,7 @@ export function Fiche({ state: { busy, actorId, files }, place, task, can, draft
             {task.contract.reviewNote && <div className={task.contract.status === 'changes_requested' ? 'alert' : 'notice'} role="status">{task.contract.reviewNote}</div>}
             {CONTRACT_FIELDS.filter(c => task.contract!.terms[c.name]).map(c => <p key={c.name}><span className="strong">{c.label} : </span>{task.contract!.terms[c.name]}</p>)}
             <p className="note">Déposant : {task.contract.ownerSignedAt ? `signé « ${task.contract.ownerSignature} » le ${date(task.contract.ownerSignedAt)}` : 'pas encore signé'}<br/>
-              Membre qui aide : {task.contract.brigadierSignedAt ? `signé « ${task.contract.brigadierSignature} » le ${date(task.contract.brigadierSignedAt)}` : 'pas encore signé'}</p></>}
+              Brigadier : {task.contract.brigadierSignedAt ? `signé « ${task.contract.brigadierSignature} » le ${date(task.contract.brigadierSignedAt)}` : 'pas encore signé'}</p></>}
         {can.canContract && task.contract?.status !== 'signed' && <Action secondary disabled={busy} onClick={() => go('contract')}>{task.contract ? 'Modifier l’accord' : 'Rédiger l’accord'}</Action>}
         {can.canContract && (task.contract?.status === 'draft' || task.contract?.status === 'changes_requested') && <Action disabled={busy} onClick={() => mutate('agreement_submit', {}, 'detail', t => notices.contractSubmitted(t.contract?.status))}>Soumettre l’accord à l’équipe FLEMME</Action>}
         {can.canSign && <><Recap agreed={agreement} cancellation={task.contract?.terms.cancellation}/>

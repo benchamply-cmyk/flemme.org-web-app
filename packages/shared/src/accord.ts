@@ -54,7 +54,7 @@ export const CONTRACT_DEFAULTS: Partial<Record<keyof ContractTerms, string>> = {
 /** Clauses communes à tout accord signé sur Flemme (non modifiables), affichées avant la signature. Reprennent les CGU et CGV. */
 export const CONTRACT_COMMON_CLAUSES = [
   'L’accord engage les deux membres. Flemme fournit l’outil, le contrat type et son contrôle, mais n’est pas partie à l’accord.',
-  'Le paiement de la mission passe par Flemme, en une fois, après la double signature. La part du membre lui est versée à la fin de la mission.',
+  'Le paiement de la mission passe par Flemme, en une fois, après la double signature. La part du Brigadier lui est versée à la fin de la mission.',
   'Les frais de plateforme, affichés avant la signature, sont à la charge du déposant et deviennent dus à la seconde signature.',
   'Toute modification crée une nouvelle version de l’accord et efface les signatures : chacun relit et signe à nouveau.',
   'En cas de désaccord, les membres cherchent d’abord une solution ensemble, puis peuvent signaler le problème à Flemme.',

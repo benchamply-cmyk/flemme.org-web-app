@@ -71,7 +71,7 @@ test('livraison puis libération : déposant à tout moment, membre seul après 
   assert.equal(liberationAutomatique(disputed, later(8)), false);
   assert.throws(() => applyCommand(disputed, member, 'complete', {}, later(8)));
   const done = applyCommand(disputed, owner, 'complete', {}, later(9));
-  assert.match(done.history.at(-1)!.text, /paiement libéré pour le membre/);
+  assert.match(done.history.at(-1)!.text, /paiement libéré pour le Brigadier/);
   assert.equal(visibleTask(t, member).deliveredAt, at);
 });
 test('livraison impossible avant paiement via Flemme', () => {

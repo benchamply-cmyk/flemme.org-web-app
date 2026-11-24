@@ -121,7 +121,7 @@ export function AccueilEspace({ state: { gateway, tasks, actorId, found }, go }:
     </section>
     {enCours.length > 0 && <section aria-labelledby="en-cours"><div className="row"><h2 className="espace-section" id="en-cours">En cours</h2><button type="button" className="lien" onClick={() => go('list', { tab: 'mine' })}>Tout voir</button></div>
       {enCours.slice(0, 4).map(t => <CarteDemande key={t.id} task={t} actorId={actorId} go={go}/>)}</section>}
-    {premium.actif && <a className="lien-discret" href="premium">Flemme Premium · pour les membres qui aident souvent</a>}
+    {premium.actif && <a className="lien-discret" href="premium">Flemme Premium · pour les Brigadiers</a>}
   </div>;
 }
 
