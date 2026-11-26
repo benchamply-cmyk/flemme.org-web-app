@@ -17,7 +17,7 @@ export const notices = {
   draftDeleted: 'Brouillon supprimé.',
   offerSent: 'Proposition envoyée. La demande reste ouverte jusqu’à ce qu’une proposition soit acceptée.',
   applied: (o?: { review?: string }) => o?.review === 'pending'
-    ? 'Proposition envoyée. L’équipe FLEMME la relit avant de la transmettre à la personne qui a publié la demande.' : 'Proposition envoyée. La demande reste ouverte jusqu’à ce qu’une proposition soit acceptée.',
+    ? 'Proposition envoyée. Flemme la vérifie avant de la transmettre à la personne qui a publié la demande.' : 'Proposition envoyée. La demande reste ouverte jusqu’à ce qu’une proposition soit acceptée.',
   contractSaved: 'Accord enregistré. Relisez-le à deux, puis soumettez-le.',
   contractSubmitted: (status?: string) => status === 'pending' ? 'Accord soumis : l’équipe FLEMME le contrôle avant la signature.' : 'Accord prêt à signer.',
   signed: 'Signature enregistrée et horodatée.',

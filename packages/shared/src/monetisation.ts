@@ -18,7 +18,7 @@ export type ModePaiement = 'direct' | 'simulation' | 'stripe';
 export const MODES_PAIEMENT: readonly ModePaiement[] = ['direct', 'simulation', 'stripe'];
 export const modePaiementLabel: Record<ModePaiement, string> = {
   direct: 'Paiement direct déclaratif (ancien parcours)',
-  simulation: 'Paiement via Flemme · simulation, aucun argent réel',
+  simulation: 'Paiement via Flemme · bêta en crédits fondateurs, aucun argent réel',
   stripe: 'Paiement via Flemme · carte bancaire avec Stripe, à la signature',
 };
 /** Un mode inconnu ou absent (flemme créée avant la v2.0.0, serveur pas encore migré) vaut « direct ». */
