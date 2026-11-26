@@ -104,6 +104,17 @@ body.lp .lp-hero { align-items: center; min-height: auto !important; padding-top
 .vc-onglet-btn[aria-selected="true"] { background: #121212; color: #fff; }
 .vc-onglet-btn[aria-selected="false"] { background: #fff; color: var(--g1-texte); border: 1.5px solid var(--g1-texte); }
 
+/* Section Principe / Démo : pas de vert en fond (cartes blanches, barre d'onglets blanche) */
+#demo.vc-modele .lp-arg { background: #fff !important; }
+#demo .vc-demo .vc-onglets { background: #fff; border-bottom-color: var(--g1-filet); }
+
+/* Pastille « La démo » au-dessus de « Essayez et prenez de l’avance » */
+#essai .g1-etiquette-demo { margin: 0 0 14px; width: fit-content; align-self: flex-start; }
+
+/* Inscription : même espace au-dessus que les autres sections, même si le compte à rebours est masqué */
+body.lp #inscription.lp-section { padding-top: 96px; }
+@media (max-width: 640px) { body.lp #inscription.lp-section { padding-top: 64px; } }
+
 /* FAQ : cartes, rond plein menthe */
 .vc-faq summary { font-family: var(--g1-corps); font-weight: 600; }
 
@@ -148,6 +159,149 @@ body.lp .lp-hero { align-items: center; min-height: auto !important; padding-top
 .g1-journal span { font: 13px/1.5 var(--g1-titre); color: var(--g1-accent); }
 .g1-journal .encours { color: #3a8f5e; }
 .g1-journal .avenir { color: var(--g1-doux); }
+
+/* ---------- Trait de démarcation sous les titres de section (commun à toutes les sections) ----------
+   Réglable par variables : --g1-trait-coul, --g1-trait-ep, --g1-trait-larg ;
+   style et animation par html[data-trait-style] et html[data-trait-anim]. Par défaut : trait continu, couleur du texte, 2 px, pleine largeur, figé. */
+.g1-etapes { border-top: 0; }
+.g1-trait {
+  --t-ep: var(--g1-trait-ep, 2px);
+  display: block; width: var(--g1-trait-larg, 100%); max-width: 100%; height: var(--t-ep);
+  margin: 0 0 clamp(22px, 3vw, 30px); background: var(--g1-trait-coul, var(--g1-texte));
+  background-size: 100% 100%; transform-origin: left center;
+  -webkit-mask-repeat: repeat-x; mask-repeat: repeat-x;
+}
+#etapes .g1-trait { margin-bottom: 0; }
+.lp-fin .g1-trait { margin-inline: auto; transform-origin: center; }
+#essai .g1-trait { margin-top: 22px; }
+:is(#faq, #je-patiente, #contact) .g1-trait, #demo > .g1-trait { margin-top: 22px; }
+
+/* Styles */
+html[data-trait-style="masqué"] .g1-trait { display: none; }
+html[data-trait-style="pointillés"] .g1-trait { --t-per: calc(var(--t-ep) * 2 + 4px);
+  -webkit-mask-image: radial-gradient(circle closest-side, #000 92%, transparent 100%); mask-image: radial-gradient(circle closest-side, #000 92%, transparent 100%);
+  -webkit-mask-size: var(--t-per) 100%; mask-size: var(--t-per) 100%; }
+html[data-trait-style="tirets"] .g1-trait { --t-per: 26px;
+  -webkit-mask-image: repeating-linear-gradient(90deg, #000 0 16px, transparent 16px 26px); mask-image: repeating-linear-gradient(90deg, #000 0 16px, transparent 16px 26px);
+  -webkit-mask-size: 26px 100%; mask-size: 26px 100%; }
+html[data-trait-style="barres saccadées"] .g1-trait { --t-per: 56px;
+  -webkit-mask-image: linear-gradient(90deg, #000 0 22px, transparent 22px 28px, #000 28px 34px, transparent 34px 42px, #000 42px 50px, transparent 50px 56px);
+  mask-image: linear-gradient(90deg, #000 0 22px, transparent 22px 28px, #000 28px 34px, transparent 34px 42px, #000 42px 50px, transparent 50px 56px);
+  -webkit-mask-size: 56px 100%; mask-size: 56px 100%; }
+html[data-trait-style="double"] .g1-trait { height: calc(var(--t-ep) * 3);
+  -webkit-mask-image: linear-gradient(#000 0 33.4%, transparent 33.4% 66.6%, #000 66.6%); mask-image: linear-gradient(#000 0 33.4%, transparent 33.4% 66.6%, #000 66.6%);
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
+
+/* Animations */
+@keyframes g1TraitTrace { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes g1TraitFlux { from { background-position: 0% 0; -webkit-mask-position: 0 0; mask-position: 0 0; } to { background-position: 100% 0; -webkit-mask-position: var(--t-per, 0px) 0; mask-position: var(--t-per, 0px) 0; } }
+html:is([data-trait-anim="tracé à l'apparition"], [data-trait-anim="apparition puis mouvement"]) .g1-trait { transform: scaleX(0); transition: transform 1.1s cubic-bezier(.2, .7, .2, 1); }
+html:is([data-trait-anim="tracé à l'apparition"], [data-trait-anim="apparition puis mouvement"]) .g1-trait.vu { transform: scaleX(1); }
+html:is([data-trait-anim="en mouvement"], [data-trait-anim="apparition puis mouvement"]) .g1-trait { background-size: 200% 100%; animation: g1TraitFlux 2.4s linear infinite; }
+html[data-trait-style="pointillés"]:is([data-trait-anim="en mouvement"], [data-trait-anim="apparition puis mouvement"]) .g1-trait,
+html[data-trait-style="tirets"]:is([data-trait-anim="en mouvement"], [data-trait-anim="apparition puis mouvement"]) .g1-trait,
+html[data-trait-style="barres saccadées"]:is([data-trait-anim="en mouvement"], [data-trait-anim="apparition puis mouvement"]) .g1-trait { animation-duration: .9s; }
+@supports (animation-timeline: view()) {
+  html[data-trait-anim="suit le défilement"] .g1-trait { animation: g1TraitTrace linear both; animation-timeline: view(); animation-range: entry 0% cover 40%; }
+}
+@media (prefers-reduced-motion: reduce) { .g1-trait { animation: none !important; transform: none !important; transition: none !important; } }
+
+/* ---------- Titres de section centrés, comme « Comment ça marche » ----------
+   Étiquette, titre, texte d'intro et trait de démarcation centrés ; le contenu des sections garde sa mise en page. */
+#demo .vc-demo-tete, #demo .vc-demo-tete > div, #essai, #categories, #je-patiente, #engagements, #faq, #journal { text-align: center; }
+#demo .vc-demo-tete { justify-items: center; }
+#essai { align-items: center; }
+#essai .g1-etiquette-demo { align-self: center; margin-inline: auto; }
+:is(#je-patiente, #faq) .vc-entete-section { justify-content: center; text-align: center; }
+#faq .vc-faq { margin-left: auto; margin-right: auto; }
+:is(#demo, #essai, #categories, #je-patiente, #engagements, #faq, #journal) :is(.lp-titre, .vc-sous-titre, .lp-intro, .vc-note-demo) { margin-left: auto; margin-right: auto; text-align: center; }
+:is(#categories, #engagements, #journal, #faq) > .lp-etiquette { margin-left: auto; margin-right: auto; }
+:is(#demo, #essai, #categories, #je-patiente, #engagements, #faq, #journal, #etapes, #contact) .g1-trait { margin-left: auto; margin-right: auto; transform-origin: center; }
+/* Le contenu garde son alignement d'origine */
+#categories .g1-categories, #engagements .g1-engagements, #faq .vc-faq, #je-patiente .vc-jeux-grille { text-align: left; }
+#journal .g1-journal { margin-inline: auto; text-align: left; }
+
+/* ---------- Tous les titres de section au même style que « Quatre étapes, pas une de plus. » ---------- */
+body.lp main :is(h2.lp-titre, h3.vc-sous-titre) {
+  font-family: var(--g1-titre) !important; font-weight: 500 !important; font-size: 36px !important;
+  line-height: 1.08 !important; letter-spacing: -.03em !important; max-width: none !important;
+  color: var(--g1-texte); text-transform: none !important; margin-top: 0;
+}
+body.lp main :is(h2.lp-titre, h3.vc-sous-titre) em { font-family: inherit !important; font-weight: 400 !important; font-style: normal !important; }
+/* Même espace sous le titre que « Quatre étapes » (32 px), un peu moins quand un texte d'intro suit */
+body.lp main :is(#demo, #faq, #categories, #engagements, #journal, #etapes) h2.lp-titre { margin-bottom: 32px !important; }
+body.lp main :is(#essai, #je-patiente, #contact, #inscription) :is(h2.lp-titre, h3.vc-sous-titre) { margin-bottom: 14px !important; }
+#demo > .g1-trait, #faq .g1-trait { margin-top: 0 !important; }
+@media (max-width: 640px) { body.lp main :is(h2.lp-titre, h3.vc-sous-titre) { font-size: 28px !important; } }
+
+/* ---------- Titre de la landing : phrases qui se remplacent ---------- */
+.lp-hero-titre .g1-rotation { display: inline-grid; justify-items: center; vertical-align: top; overflow: hidden; padding-bottom: .06em; }
+.g1-rotation > span { grid-area: 1 / 1; white-space: nowrap; opacity: 0; transform: translateY(105%); transition: transform .65s cubic-bezier(.2, .75, .2, 1), opacity .5s ease, filter .5s ease; }
+.g1-rotation > .actif { opacity: 1; transform: none; }
+.g1-rotation > .sortant { opacity: 0; transform: translateY(-105%); }
+html[data-hero-anim="fondu"] .g1-rotation > span { transform: none !important; transition: opacity .8s ease; }
+html[data-hero-anim="flou"] .g1-rotation > span { transform: scale(1.04); filter: blur(10px); }
+html[data-hero-anim="flou"] .g1-rotation > .actif { transform: none; filter: none; }
+html:is([data-hero-anim="machine à écrire"], [data-hero-anim="figé"]) .g1-rotation > span { transform: none; transition: none; filter: none; }
+.g1-rotation.tape > .actif::after { content: ""; display: inline-block; width: .07em; height: .82em; margin-left: .06em; vertical-align: -.04em; background: currentColor; animation: vc-curseur 1s steps(1) infinite; }
+@media (prefers-reduced-motion: reduce) { .g1-rotation > span { transition: none !important; } }
+
+/* ---------- Réglages du panneau : fond de page, couleurs des motifs, titres ----------
+   Actifs seulement quand le panneau pose ses attributs sur <html> ; sans eux, la page garde son style par défaut. */
+html.rg.rg[data-fond-couleur="oui"], html.rg.rg[data-fond-couleur="oui"] body.lp { background: var(--rg-fond-couleur) !important; }
+html[data-motifs="oui"] body.lp { --g1-grain: var(--rg-motif-fond); --rg-decor2: var(--rg-motif-fond-2); }
+html[data-motifs="oui"] body.lp :is(header.lp-hero, header.flemme-chrome-home) { --g1-grain: var(--rg-motif-haut); --rg-decor1: var(--rg-motif-haut-1); --rg-decor2: var(--rg-motif-haut-2); }
+
+/* Titre principal (landing) */
+html.rg[data-th-police="oui"] body.lp h1.lp-hero-titre { font-family: var(--th-police) !important; }
+html.rg[data-th-taille="oui"] body.lp h1.lp-hero-titre { font-size: var(--th-taille) !important; }
+html.rg[data-th-casse="oui"] body.lp h1.lp-hero-titre { text-transform: var(--th-tt) !important; font-variant-caps: var(--th-fv) !important; }
+/* Titres de section */
+html.rg[data-ts-police="oui"] body.lp main :is(h2.lp-titre, h3.vc-sous-titre) { font-family: var(--ts-police) !important; }
+html.rg[data-ts-taille="oui"] body.lp main :is(h2.lp-titre, h3.vc-sous-titre) { font-size: var(--ts-taille) !important; }
+html.rg[data-ts-casse="oui"] body.lp main :is(h2.lp-titre, h3.vc-sous-titre) { text-transform: var(--ts-tt) !important; font-variant-caps: var(--ts-fv) !important; }
+/* Titres de cartes : Principe, étapes, catégories, mini-jeux, engagements, FAQ, annonces de la démo */
+html.rg[data-tc-police="oui"] body.lp :is(.lp-arg b, .g1-etapes h3, .g1-categories b, .vc-jeu-texte b, .g1-engagements h3, .vc-faq summary, .vc-annonce h3) { font-family: var(--tc-police) !important; }
+html.rg[data-tc-taille="oui"] body.lp :is(.lp-arg b, .g1-etapes h3, .g1-categories b, .vc-jeu-texte b, .g1-engagements h3, .vc-faq summary, .vc-annonce h3) { font-size: var(--tc-taille) !important; line-height: 1.25 !important; }
+html.rg[data-tc-casse="oui"] body.lp :is(.lp-arg b, .g1-etapes h3, .g1-categories b, .vc-jeu-texte b, .g1-engagements h3, .vc-faq summary, .vc-annonce h3) { text-transform: var(--tc-tt) !important; font-variant-caps: var(--tc-fv) !important; letter-spacing: normal !important; }
+@media (max-width: 640px) {
+  html.rg[data-th-taille="oui"] body.lp h1.lp-hero-titre { font-size: calc(var(--th-taille) * .65) !important; }
+  html.rg[data-ts-taille="oui"] body.lp main :is(h2.lp-titre, h3.vc-sous-titre) { font-size: calc(var(--ts-taille) * .78) !important; }
+}
+
+/* ---------- Ce que vous pourrez déléguer : présentations supplémentaires des 6 catégories ---------- */
+/* Numérotées : grand numéro, filet au-dessus, sans carte */
+html.rg[data-categories="numérotées"] #categories .g1-categories { counter-reset: g1cat; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 8px 28px; }
+html.rg[data-categories="numérotées"] #categories .g1-carte { counter-increment: g1cat; background: none !important; box-shadow: none !important; border-top: 2px solid var(--g1-texte) !important; padding: 18px 0 22px !important; display: grid; grid-template-columns: 64px 1fr; column-gap: 12px; }
+html.rg[data-categories="numérotées"] #categories .g1-carte::before { content: counter(g1cat, decimal-leading-zero); grid-row: 1 / span 2; font: 500 38px/1 var(--g1-titre); color: var(--g1-accent); letter-spacing: -.04em; }
+/* Avec icônes : pastille menthe et pictogramme au-dessus du titre */
+html.rg[data-categories="avec icônes"] #categories .g1-categories { grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+html.rg[data-categories="avec icônes"] #categories .g1-carte { padding: 24px !important; }
+html.rg[data-categories="avec icônes"] #categories .g1-carte::before { content: ""; display: block; width: 46px; height: 46px; margin-bottom: 16px; background-color: var(--g1-pastille); background-repeat: no-repeat; background-position: center; background-size: 24px 24px; }
+html.rg[data-categories="avec icônes"] #categories .g1-carte:nth-child(1)::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a8f5e' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M15 8.5a4 4 0 1 0 0 7M7.5 11h6M7.5 13.5h6'/%3E%3C/svg%3E"); }
+html.rg[data-categories="avec icônes"] #categories .g1-carte:nth-child(2)::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a8f5e' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2'/%3E%3C/svg%3E"); }
+html.rg[data-categories="avec icônes"] #categories .g1-carte:nth-child(3)::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a8f5e' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='6' cy='6' r='3'/%3E%3Ccircle cx='6' cy='18' r='3'/%3E%3Cpath d='M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12'/%3E%3C/svg%3E"); }
+html.rg[data-categories="avec icônes"] #categories .g1-carte:nth-child(4)::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a8f5e' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z'/%3E%3Cpath d='M14 3v6h6M8 13h8M8 17h5'/%3E%3C/svg%3E"); }
+html.rg[data-categories="avec icônes"] #categories .g1-carte:nth-child(5)::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a8f5e' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8'/%3E%3Ccircle cx='7.5' cy='7.5' r='1.5'/%3E%3C/svg%3E"); }
+html.rg[data-categories="avec icônes"] #categories .g1-carte:nth-child(6)::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233a8f5e' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E"); }
+/* Tableau : une ligne par catégorie, titre à gauche, détail à droite */
+html.rg[data-categories="tableau"] #categories .g1-categories { display: block !important; max-width: 900px; margin: 0 auto; border-top: 1px solid var(--g1-filet); }
+html.rg[data-categories="tableau"] #categories .g1-carte { display: grid; grid-template-columns: minmax(180px, 280px) 1fr; gap: 6px 24px; align-items: baseline; background: none !important; box-shadow: none !important; padding: 18px 0 !important; border-bottom: 1px solid var(--g1-filet) !important; }
+html.rg[data-categories="tableau"] #categories .g1-carte b { margin: 0 !important; font-size: 13px !important; }
+@media (max-width: 640px) { html.rg[data-categories="tableau"] #categories .g1-carte { grid-template-columns: 1fr; } }
+/* Carrousel : défilement horizontal, une carte et demie visible sur mobile */
+html.rg[data-categories="carrousel"] #categories .g1-categories { display: grid !important; grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: minmax(260px, calc((100% - 24px) / 3.2)); overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 4px 22px; gap: 12px; scrollbar-width: thin; }
+html.rg[data-categories="carrousel"] #categories .g1-categories { -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent); mask-image: linear-gradient(90deg, #000 88%, transparent); }
+html.rg[data-categories="carrousel"] #categories .g1-carte { scroll-snap-align: start; }
+@media (max-width: 640px) { html.rg[data-categories="carrousel"] #categories .g1-categories { grid-auto-columns: 72%; } }
+/* Mosaïque : la première catégorie en grand, sur fond sombre */
+html.rg[data-categories="mosaïque"] #categories .g1-categories { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-flow: dense; }
+html.rg[data-categories="mosaïque"] #categories .g1-carte:first-child { grid-column: span 2; grid-row: span 2; background: #121212 !important; padding: 32px !important; display: flex; flex-direction: column; justify-content: flex-end; min-height: 260px; }
+html.rg[data-categories="mosaïque"] #categories .g1-carte:first-child b { font-size: 22px !important; color: #57d68d !important; }
+html.rg[data-categories="mosaïque"] #categories .g1-carte:first-child p { color: #e8ece9 !important; font-size: 17px !important; }
+html.rg[data-categories="mosaïque"] #categories .g1-carte:nth-child(6) { grid-column: 1 / -1; }
+@media (max-width: 900px) { html.rg[data-categories="mosaïque"] #categories .g1-categories { grid-template-columns: repeat(2, minmax(0, 1fr)); } html.rg[data-categories="mosaïque"] #categories .g1-carte:nth-child(6) { grid-column: 1 / -1; } }
+@media (max-width: 520px) { html.rg[data-categories="mosaïque"] #categories .g1-categories { grid-template-columns: 1fr; } html.rg[data-categories="mosaïque"] #categories .g1-carte:first-child { grid-column: auto; grid-row: auto; min-height: 0; } }
 
 @media (max-width: 640px) {
   body.lp .lp-hero { padding-top: 130px !important; padding-bottom: 72px !important; }

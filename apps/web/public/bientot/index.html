@@ -1,5 +1,6 @@
 <!doctype html>
-<html lang="fr">
+<!-- Réglages validés par Ben dans l’aperçu /bientot le 26/11/2026 (PR 111) : attributs et variables posés sur <html>, appliqués par reglages-g1.css et g1.css. -->
+<html lang="fr" class="rg" data-palette="actuel" data-couleurs="perso" data-logo="couleur" data-taille="S" data-casse="majuscules" data-serif="non" data-ruban="chantier incliné" data-ruban-anim="normal" data-ruban-taille="fin" data-ruban-incl="légère" data-ruban-bords="filets" data-ruban-sep="✦" data-ruban-casse="phrase" data-boutons="rectangles" data-jeux="images couleur" data-decor="grain en coin" data-intensite="forte" data-hauteur-decor="tout le haut" data-fond-page="grain léger" data-carte-fond="palette" data-carte-bordure="ombre" data-pastille-perso="oui" data-pastille-forme="rond" data-largeur="normale" data-densite="normale" data-arrondis="aucun" data-heros="centré" data-menu="bulles" data-etiquettes="pastille" data-filets="non" data-fond-alterne="non" data-chantier="non" data-etapes="frise" data-etapes-num="ÉTAPE 1" data-etapes-trait="accent" data-categories="carrousel" data-categories-couleur="texte" data-rebours-fond="clair" data-rebours-taille="normale" data-rebours-cases="carrées" data-rebours-align="centré" data-faq-style="cartes" data-faq-taille="petite" data-faq-icone="carré" data-faq-signe="↓" data-faq-colonnes="une" data-voir-chiffres="non" data-voir-principe="oui" data-voir-demo="oui" data-voir-etapes="oui" data-voir-categories="oui" data-voir-jeux="oui" data-voir-engagements="oui" data-voir-rebours="non" data-voir-beta="oui" data-voir-faq="oui" data-voir-journal="non" data-voir-contact="oui" data-fond-couleur="oui" data-motifs="oui" data-th-police="oui" data-th-taille="oui" data-th-casse="oui" data-ts-police="oui" data-ts-taille="oui" data-ts-casse="oui" data-tc-police="oui" data-tc-taille="oui" data-tc-casse="oui" data-hero-anim="machine à écrire" data-trait-style="continu" data-trait-anim="tracé à l&#x27;apparition" style="--g1-accent: #4dbc7c; --lp-vert: #4dbc7c; --green: #4dbc7c; --g1-texte: #101e2a; --g1-doux: #4c6157; --g1-filet: #dceee3; --g1-pastille: #d7f5e4; --g1-grain: rgba(58,143,94,.35); --g1-titre: &#x27;IBM Plex Mono&#x27;, ui-monospace, Menlo, monospace; --mono: &#x27;IBM Plex Mono&#x27;, ui-monospace, Menlo, monospace; --g1-corps: &#x27;IBM Plex Sans&#x27;, system-ui, sans-serif; --police: &#x27;IBM Plex Sans&#x27;, system-ui, sans-serif; --display: &#x27;IBM Plex Sans&#x27;, system-ui, sans-serif; --pp-police: &#x27;IBM Plex Sans&#x27;, system-ui, sans-serif; --pn-police: &#x27;IBM Plex Sans&#x27;, system-ui, sans-serif; --rg-fond: #ffffff; --rg-alt: #effaf4; --rg-carte: #ffffff; --rg-point: #57d68d; --rg-b1: #121212; --rg-b1t: #ffffff; --rg-b2: #4dbc7c; --rg-b2t: #ffffff; --rg-b2b: #4dbc7c; --rg-ruban: #121212; --rg-ruban-t: #ffffff; --rg-rayure: #57d68d; --rg-decor1: rgba(87,214,141,.55); --rg-decor2: rgba(87,214,141,.45); --rg-pastille-c: #4dbc7c; --rg-pastille-l: 7px; --rg-pastille-h: 7px; --rg-etapes-trait: #4dbc7c; --rg-fond-couleur: linear-gradient(115deg, #ffffff 0%, #eef0ef 16%, #ffffff 31%, #e7eae9 48%, #fbfbfb 63%, #edefee 80%, #ffffff 100%) fixed; --rg-motif-haut: rgba(150,158,155,.3); --rg-motif-haut-1: rgba(195,201,199,.5); --rg-motif-haut-2: rgba(195,201,199,.38); --rg-motif-fond: rgba(150,158,155,.3); --rg-motif-fond-2: rgba(195,201,199,.38); --th-police: &#x27;IBM Plex Sans&#x27;, system-ui, sans-serif; --th-taille: 84px; --th-tt: uppercase; --th-fv: normal; --ts-police: &#x27;IBM Plex Sans&#x27;, system-ui, sans-serif; --ts-taille: 50px; --ts-tt: uppercase; --ts-fv: normal; --tc-police: &#x27;IBM Plex Sans&#x27;, system-ui, sans-serif; --tc-taille: 17px; --tc-tt: uppercase; --tc-fv: normal; --g1-trait-coul: linear-gradient(90deg, #4c5552, #c9cfcc 70%, #eef0ef); --g1-trait-larg: 75%; --g1-trait-ep: 2px;">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -16,6 +17,7 @@
 <link rel="stylesheet" href="vc.css">
 <!-- Aperçu G1 (canevas de refonte, 23/11) : habillage chargé après vc.css -->
 <link rel="stylesheet" href="g1.css">
+<link rel="stylesheet" href="reglages-g1.css">
 
 </head>
 <body class="lp lp-accueil">
@@ -61,10 +63,9 @@
 <!-- 1. Hero : fond chromé menthe et logo en relief de l’accueil preprod ; titre tournant ; jauge du chantier (suggestion). -->
 <header class="lp-hero fond-flemme flemme-chrome-home" data-fond="lumiere" id="haut">
   <div class="lp-hero-contenu">
-    <h1 class="lp-hero-titre" id="titreHero">
-      <span class="lp-rotation"><span class="lp-mot">UNE FLEMME, UNE ANNONCE, UNE MISSION,</span></span>
-      <em>DES SOLUTIONS,</em>
-      <em>(BIENTÔT…)</em>
+    <h1 class="lp-hero-titre" id="titreHero" aria-label="Une flemme, une annonce, une mission, des solutions (bientôt…)">
+      <span class="lp-rotation g1-rotation" aria-hidden="true"><span class="actif">Une flemme,</span><span>Une annonce,</span><span>Une mission,</span></span>
+      <em aria-hidden="true">des solutions, (bientôt…)</em>
     </h1>
     <div class="lp-hero-bas">
       <div>
@@ -97,26 +98,29 @@
   <section class="lp-section lp-teinte vc-modele" id="demo">
     <div class="vc-demo-tete">
       <div>
-        <p class="lp-etiquette">Le principe · la démo</p>
+        <p class="lp-etiquette">Le principe</p>
         <h2 class="lp-titre titre-p">Publier, proposer, <em>s’accorder.</em></h2>
       </div>
     </div>
+    <div class="g1-trait" aria-hidden="true"></div>
     <div class="lp-args vc-args">
-      <article class="lp-arg revele"><span class="vc-arg-num">01 · Publier</span><span class="lp-arg-chiffre">Plateforme</span><b>Annonces libres et sans limites</b><p>Recherches et choix de missions en autonomie.</p></article>
-      <article class="lp-arg revele"><span class="vc-arg-num">02 · Proposer</span><span class="lp-arg-chiffre">Prix flexibles</span><b>Négociations et conversations privées</b><p>Pour un accord sur le prix de la mission.</p></article>
-      <article class="lp-arg revele"><span class="vc-arg-num">03 · S’accorder</span><span class="lp-arg-chiffre">Contrats signés</span><b>Finalisation des conditions et détails de la mission</b><p>Qualité de service et protection des utilisateurs.</p></article>
+      <article class="lp-arg revele"><span class="vc-arg-num">01 · Publier</span><span class="lp-arg-chiffre">CATALOGUE Gratuit</span><b>Annonces et Missions</b><p>Vous êtes libres et autonomes de gérer vos publications d’annonces et/ou vos candidatures d’exécution de missions.</p></article>
+      <article class="lp-arg revele"><span class="vc-arg-num">02 · Proposer</span><span class="lp-arg-chiffre">Prix libre</span><b>Négociation entre Membres</b><p>Vous discutez en privé et fixez ensemble le prix, le délai, les détails et conditions de la mission. Pas de tarifs fixes imposés, chaque service est différent.</p></article>
+      <article class="lp-arg revele"><span class="vc-arg-num">03 · S’accorder</span><span class="lp-arg-chiffre">Accord OFFICIEL</span><b>Signatures des Membres</b><p>Vous finalisez le contrat de prestation, vous signez un accord commun entre 2 membres. Nous vérifions et assurons la qualité et la protection de nos membres, et nous vous aidons si besoin.</p></article>
     </div>
 
     <div class="vc-demo-intro" id="essai">
-      <h3 class="vc-sous-titre">Essayez et <em>prenez de l’avance.</em><sup class="vc-asterisque" aria-hidden="true">*</sup></h3>
+      <p class="lp-etiquette g1-etiquette-demo">La démo</p>
+      <h3 class="vc-sous-titre lp-titre titre-p">Essayez et <em>prenez de l’avance.</em><sup class="vc-asterisque" aria-hidden="true">*</sup></h3>
       <p class="vc-note-demo">* Démo avec des annonces d’exemple. <a href="/connexion">Inscrivez-vous</a> pour garder les vôtres, <a href="#contact">écris-nous</a> vos idées.</p>
+      <div class="g1-trait" aria-hidden="true"></div>
     </div>
 
     <div class="vc-demo revele">
       <div class="vc-onglets" role="tablist" aria-label="Démo">
         <button type="button" class="lp-bouton vc-onglet-btn" role="tab" id="ongletDepot" aria-controls="voletDepot" aria-selected="true">DÉLÉGUER<span class="lp-fleche vc-ico-onglet" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3"/><path d="M2 13a2 2 0 0 1 4 0v2h12v-2a2 2 0 0 1 4 0v5H2z"/><path d="M5 18v2M19 18v2"/></svg></span></button>
         <button type="button" class="lp-bouton vc-onglet-btn" role="tab" id="ongletRecherche" aria-controls="voletRecherche" aria-selected="false">RÉSOUDRE<span class="lp-fleche vc-ico-onglet" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span></button>
-        <span class="vc-demo-note">Démo · rien n’est publié</span>
+        <span class="vc-demo-note">*Démo · rien n’est publié</span>
       </div>
 
       <div class="vc-volet" id="voletDepot" role="tabpanel" aria-labelledby="ongletDepot">
@@ -153,10 +157,12 @@
                 <div class="vc-champ">
                   <span class="vc-leg" id="legCat">Catégorie</span>
                   <div class="vc-puces" role="group" aria-labelledby="legCat" data-groupe="cat">
-                    <button type="button" class="vc-puce" aria-pressed="false" data-val="Maison">Maison</button>
-                    <button type="button" class="vc-puce" aria-pressed="false" data-val="Numérique">Numérique</button>
-                    <button type="button" class="vc-puce" aria-pressed="false" data-val="Démarches">Démarches</button>
-                    <button type="button" class="vc-puce" aria-pressed="false" data-val="Organisation">Organisation</button>
+                    <button type="button" class="vc-puce" aria-pressed="false" data-val="Récupérer de l’argent">Récupérer de l’argent</button>
+                    <button type="button" class="vc-puce" aria-pressed="false" data-val="Appels et relances">Appels et relances</button>
+                    <button type="button" class="vc-puce" aria-pressed="false" data-val="Résilier, changer">Résilier, changer</button>
+                    <button type="button" class="vc-puce" aria-pressed="false" data-val="Papiers">Papiers</button>
+                    <button type="button" class="vc-puce" aria-pressed="false" data-val="Vendre d’occasion">Vendre d’occasion</button>
+                    <button type="button" class="vc-puce" aria-pressed="false" data-val="Autres">Autres</button>
                   </div>
                 </div>
                 <p class="vc-aide">Un seul choix. Vous pourrez la changer tant que l’annonce n’est pas vérifiée.</p>
@@ -215,14 +221,16 @@
       <div class="vc-volet" id="voletRecherche" role="tabpanel" aria-labelledby="ongletRecherche" hidden>
         <div class="vc-recherche">
           <label class="lp-sprite" for="rTexte">Rechercher une flemme</label>
-          <input class="vc-input" id="rTexte" type="search" placeholder="Ex. : meuble, CV, courrier, déménagement…" autocomplete="off">
+          <input class="vc-input" id="rTexte" type="search" placeholder="Ex. : colis, train, frais, résiliation…" autocomplete="off">
         </div>
         <div class="vc-puces" role="group" aria-label="Filtrer" style="margin-top:12px" data-groupe="filtre">
           <button type="button" class="vc-puce" aria-pressed="true" data-val="">Toutes</button>
-          <button type="button" class="vc-puce" aria-pressed="false" data-val="Maison">Maison</button>
-          <button type="button" class="vc-puce" aria-pressed="false" data-val="Numérique">Numérique</button>
-          <button type="button" class="vc-puce" aria-pressed="false" data-val="Démarches">Démarches</button>
-          <button type="button" class="vc-puce" aria-pressed="false" data-val="Organisation">Organisation</button>
+          <button type="button" class="vc-puce" aria-pressed="false" data-val="Récupérer de l’argent">Récupérer de l’argent</button>
+          <button type="button" class="vc-puce" aria-pressed="false" data-val="Appels et relances">Appels et relances</button>
+          <button type="button" class="vc-puce" aria-pressed="false" data-val="Résilier, changer">Résilier, changer</button>
+          <button type="button" class="vc-puce" aria-pressed="false" data-val="Papiers">Papiers</button>
+          <button type="button" class="vc-puce" aria-pressed="false" data-val="Vendre d’occasion">Vendre d’occasion</button>
+          <button type="button" class="vc-puce" aria-pressed="false" data-val="Autres">Autres</button>
           <button type="button" class="vc-puce" aria-pressed="false" data-val="distance" id="filtreDistance">À distance seulement</button>
         </div>
         <p class="vc-compte" aria-live="polite"><b id="rCompte">9</b> <span id="rCompteTxt">flemmes attendent quelqu’un</span> · exemples fictifs</p>
@@ -234,8 +242,9 @@
 
   <!-- G1 · comment ça marche -->
   <section class="g1-sec" id="etapes">
-    <p class="lp-etiquette">Comment ça marche</p>
+    <p class="lp-etiquette">Comment ça marche&#8239;?</p>
     <h2 class="lp-titre titre-p">Quatre étapes, <em>pas une de plus.</em></h2>
+    <div class="g1-trait" aria-hidden="true"></div>
     <ol class="g1-etapes">
       <li><small>ÉTAPE 1</small><h3>Vous publiez</h3><p>Votre flemme en une phrase, le lieu ou « à distance », un budget si vous voulez.</p></li>
       <li><small>ÉTAPE 2</small><h3>On vous propose</h3><p>Des Brigadiers proposent leur aide et posent leurs questions.</p></li>
@@ -248,6 +257,7 @@
   <section class="g1-sec" id="categories">
     <p class="lp-etiquette">Surtout à distance, et tout le reste aussi</p>
     <h2 class="lp-titre titre-p">Ce que vous pourrez <em>déléguer.</em></h2>
+    <div class="g1-trait" aria-hidden="true"></div>
     <div class="g1-categories">
       <div class="g1-carte"><b>RÉCUPÉRER DE L’ARGENT</b><p>Colis perdu, retard de train, frais contestés, remboursement SAV.</p></div>
       <div class="g1-carte"><b>COUPS DE FIL</b><p>Appeler un service client, attendre en ligne, relancer un dossier.</p></div>
@@ -263,6 +273,7 @@
     <div class="vc-entete-section"><p class="lp-etiquette">Pour patienter</p></div>
     <h2 class="lp-titre titre-p">Flemme de <em>patienter</em>&#8239;?</h2>
     <p class="lp-intro">Six mini-jeux pour mesurer votre flemme sans vous fatiguer. Le gagnant est souvent celui qui en fait le moins.</p>
+    <div class="g1-trait" aria-hidden="true"></div>
     <div class="vc-jeux-grille vc-jeux-6">
       <a class="vc-jeu-carte revele" href="je-patiente.html#marche"><svg class="vc-jeu-ico" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true" focusable="false"><defs><linearGradient id="jxmarche" x1="0" y1="0" x2="1" y2="1"><stop offset="0.00" stop-color="#17251d"/><stop offset="1.00" stop-color="#121212"/></linearGradient><linearGradient id="jxmarcheb" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff" stop-opacity=".45"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect width="64" height="64" fill="url(#jxmarche)"/><path d="M26 64L30 26h4l4 38z" fill="#225337"/><path d="M32 30v5M32 41v6M32 53v8" stroke="#d7f5e4" stroke-width="1.6" stroke-linecap="round"/><circle cx="47" cy="17" r="5" fill="#57d68d" opacity=".9"/><path d="M12 44c0-4 3-7 6-7 2 0 3 2 5 3l7 3c3 1 5 2 5 5v2H12z" fill="#fff"/><path d="M12 49h23v3H12z" fill="#57d68d"/><path d="M19 41l2 3M23 42l1.6 2.6" stroke="#121212" stroke-width="1.4" stroke-linecap="round"/><rect width="64" height="64" fill="url(#jxmarcheb)"/></svg><span class="vc-jeu-texte"><span class="vc-meta">Course · sans fin</span><b>La grande marche</b><small>Chaque question vous ralentit… ou pas.</small></span></a>
       <a class="vc-jeu-carte revele" href="je-patiente.html#canape"><svg class="vc-jeu-ico" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true" focusable="false"><defs><linearGradient id="jxcanape" x1="0" y1="0" x2="1" y2="1"><stop offset="0.00" stop-color="#d7f5e4"/><stop offset="1.00" stop-color="#57d68d"/></linearGradient><linearGradient id="jxcanapeb" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff" stop-opacity=".45"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect width="64" height="64" fill="url(#jxcanape)"/><rect x="13" y="24" width="38" height="16" rx="6" fill="#3a8f5e"/><rect x="8" y="31" width="10" height="16" rx="4" fill="#225337"/><rect x="46" y="31" width="10" height="16" rx="4" fill="#225337"/><rect x="16" y="36" width="32" height="10" rx="3" fill="#57d68d"/><path d="M14 47v5M50 47v5" stroke="#121212" stroke-width="3" stroke-linecap="round"/><text x="46" y="20" font-family="Space Grotesk, system-ui, sans-serif" font-weight="700" font-size="12" fill="#121212">z</text><text x="51" y="13" font-family="Space Grotesk, system-ui, sans-serif" font-weight="700" font-size="9" fill="#225337">z</text><rect width="64" height="64" fill="url(#jxcanapeb)"/></svg><span class="vc-jeu-texte"><span class="vc-meta">Immobilité · record</span><b>Le défi du canapé</b><small>Ne touche plus à rien.</small></span></a>
@@ -278,6 +289,7 @@
   <section class="g1-sec" id="engagements">
     <p class="lp-etiquette">Nos engagements</p>
     <h2 class="lp-titre titre-p">Simple, clair, <em>vérifié.</em></h2>
+    <div class="g1-trait" aria-hidden="true"></div>
     <div class="g1-engagements">
       <div><h3>Annonces vérifiées</h3><p>Chaque flemme et chaque proposition est vérifiée avant d’être visible.</p></div>
       <div><h3>Prix libre</h3><p>Le prix se fixe avec le Brigadier. Les frais sont affichés avant de signer.</p></div>
@@ -324,6 +336,7 @@
   <section class="lp-section" id="faq">
     <div class="vc-entete-section"><p class="lp-etiquette">Questions fréquentes</p></div>
     <h2 class="lp-titre titre-p">Les questions <em>qu’on se pose déjà.</em></h2>
+    <div class="g1-trait" aria-hidden="true"></div>
     <div class="vc-faq">
       <details open><summary>Flemme, c’est quoi exactement&#8239;?</summary><p>Une plateforme de mise en relation. Vous publiez une tâche que vous repoussez, des Brigadiers vous proposent de s’en charger, vous fixez le prix et le délai avec votre ou votre Brigadier, puis vous signez tous les deux un accord vérifié par Flemme.</p></details>
       <details><summary>Quand est-ce que ça ouvre&#8239;?</summary><p>La bêta démarre en janvier 2027, sans argent réel. D’ici là, vous pouvez déjà créer votre compte pour en faire partie&#8239;: vous enregistrez vos annonces et vos recherches, et on vous prévient le jour J.</p></details>
@@ -354,6 +367,7 @@
     <p class="lp-etiquette">Une flemme en tête&#8239;?</p>
     <h2 class="lp-titre titre-p">Notez-la quelque part, <em>on arrive bientôt.</em></h2>
     <p class="lp-intro">D’ici là, écrivez-nous&#8239;: on la garde sur notre liste et on vous prévient dès que vous pouvez la publier. Une question ou une idée&#8239;? Même formulaire.</p>
+    <div class="g1-trait" aria-hidden="true"></div>
     <form class="lp-contact-boite revele vc-contact-form" id="formContact" novalidate>
       <div class="vc-contact-tete">
         <p class="vc-contact-mail-ligne"><b class="lp-contact-mail" id="contactMail">bonjour@flemme.org</b> <button type="button" class="vc-lien-copier" id="copier">Copier l’adresse</button><span class="vc-copie-note" id="copieNote" aria-live="polite"></span></p>
@@ -630,14 +644,10 @@
   const dT = $('dTitre'), dD = $('dDesc'), dV = $('dVille'), dB = $('dBudget');
   /* Exemples qui s’écrivent tout seuls, en texte presque transparent, tant que le champ est vide. */
   const exemples = [
-    ['Organiser mon voyage au Portugal, clé en main', 'Une semaine à deux en mai, de Lisbonne à Porto : vols, logements, train et quelques bonnes adresses. Je veux juste faire ma valise.', 'Organisation', 'À distance', ''],
-    ['Monter deux meubles Ikea ce week-end', 'Une armoire Pax et une commode. Tout est livré, il me manque le courage et une visseuse.', 'Maison', 'Sur place', 'Lyon'],
-    ['Comprendre un courrier des impôts', 'Savoir ce qu’on me demande, quoi répondre et avant quelle date. Le courrier fait deux pages.', 'Démarches', 'À distance', ''],
-    ['Trier vingt cartons avant mon déménagement', 'Garder, donner, jeter : on décide ensemble sur place, un samedi matin.', 'Organisation', 'Sur place', 'Nantes'],
-    ['Refaire mon CV en une page', 'Un CV clair et moderne pour postuler dans la logistique. J’ai déjà toutes les infos.', 'Numérique', 'À distance', '']
+    ['Me faire rembourser un colis jamais arrivé', 'Commande de 89 € jamais livrée, le vendeur ne répond plus. Je veux être remboursé en entier.', 'Récupérer de l’argent', 'À distance', '']
   ];
   let ex = 0, frappe = 0;
-  const villesEx = ['Lyon', 'Nantes', 'Lille', 'Bordeaux'];
+  const villesEx = ['Lyon'];
   const taper = () => {
     clearTimeout(frappe);
     const [t, d] = exemples[ex]; let i = 0, j = 0;
@@ -711,8 +721,8 @@
     lance(() => { etapes[2].classList.add('ok'); $('etatAnnonce').textContent = 'En ligne'; $('annonce').classList.remove('vole'); document.dispatchEvent(new CustomEvent('vc:publie')); }, 1800);
     const b = +dB.value || 60;
     const offres = [
-      ['S', 'Sami propose ' + Math.round(b * .9) + ' €', 'Exemple · « J’ai vécu à Lisbonne : itinéraire et réservations en 48 h. »'],
-      ['L', 'Léa propose ' + Math.round(b * 1.1) + ' €', 'Exemple · « Je vous propose 3 options de logement et un carnet de route. »']
+      ['S', 'Sami propose ' + Math.round(b * .9) + ' €', 'Exemple · « Je relance le vendeur et j’ouvre le litige auprès de la plateforme sous 48 h. »'],
+      ['L', 'Léa propose ' + Math.round(b * 1.1) + ' €', 'Exemple · « Je m’occupe du recours bancaire si le vendeur ne rembourse pas. »']
     ];
     offres.forEach((o, k) => lance(() => {
       const d = document.createElement('div'); d.className = 'vc-offre';
@@ -726,15 +736,15 @@
 
   /* ---- Démo : recherche ---- */
   const annonces = [
-    ['Maison', 'Lyon', 'Monter deux meubles Ikea', 'Outils sur place, dans la semaine.', 'À discuter', 'meuble montage ikea bricolage'],
-    ['Numérique', '', 'Mettre en ligne mon annonce de vélo', 'Photos prêtes, il faut le texte et le prix conseillé.', '15 € environ', 'annonce vente vélo leboncoin'],
-    ['Démarches', '', 'Comprendre un courrier de la CAF', 'Savoir quoi répondre et préparer la réponse.', 'À discuter', 'courrier caf administratif lettre'],
-    ['Organisation', 'Bordeaux', 'Trier vingt cartons avant un déménagement', 'Garder, donner, jeter : on décide sur place.', '80 € environ', 'déménagement cartons tri rangement'],
-    ['Numérique', '', 'Refaire mon CV en une page', 'Un CV clair pour postuler en logistique.', '30 € environ', 'cv emploi candidature mise en page'],
-    ['Maison', 'Lille', 'Fixer trois étagères et une tringle', 'Mur en placo, chevilles à prévoir.', 'À discuter', 'étagère bricolage perceuse fixer'],
-    ['Démarches', '', 'Résilier un abonnement de salle de sport', 'Trouver la bonne adresse et rédiger la lettre.', '10 € environ', 'résiliation abonnement lettre sport'],
-    ['Organisation', '', 'Planifier un week-end à Lisbonne', 'Trois options transport et logement comparées.', '25 € environ', 'voyage week-end lisbonne organisation'],
-    ['Maison', 'Marseille', 'Arroser mes plantes pendant dix jours', 'Un passage tous les deux jours, quartier Castellane.', 'À discuter', 'plantes arrosage vacances']
+    ['Récupérer de l’argent', '', 'Me faire rembourser un colis non livré', 'Commande de 89 € jamais arrivée, le vendeur ne répond plus.', '15 € environ', 'colis livraison remboursement vendeur litige'],
+    ['Récupérer de l’argent', '', 'Obtenir l’indemnité d’un train en retard', 'TGV arrivé avec deux heures de retard, billets gardés.', 'À discuter', 'train retard indemnité sncf compensation'],
+    ['Récupérer de l’argent', '', 'Contester des frais bancaires', 'Trois frais d’incident prélevés en un mois, je veux les récupérer.', '20 € environ', 'banque frais contestation prélèvement'],
+    ['Récupérer de l’argent', '', 'Récupérer un remboursement de mutuelle', 'Lunettes et dentiste : deux remboursements jamais reçus.', 'À discuter', 'mutuelle remboursement santé lunettes'],
+    ['Appels et relances', '', 'Relancer mon opérateur pour une panne de box', 'Plus d’internet depuis dix jours, le service client ne rappelle pas.', '25 € environ', 'opérateur box internet panne relance appel'],
+    ['Résilier, changer', '', 'Résilier un abonnement de salle de sport', 'Trouver la bonne adresse et rédiger la lettre.', '10 € environ', 'résiliation abonnement lettre sport'],
+    ['Papiers', '', 'Monter mon dossier d’aide au logement', 'Pièces prêtes, je bloque sur le formulaire en ligne.', '30 € environ', 'aide logement apl caf dossier formulaire'],
+    ['Vendre d’occasion', 'Lille', 'Vendre mon vélo d’occasion', 'Photos, annonce et réponses aux acheteurs.', '15 € environ', 'vente vélo occasion annonce leboncoin'],
+    ['Autres', 'Marseille', 'Arroser mes plantes pendant dix jours', 'Un passage tous les deux jours, quartier Castellane.', 'À discuter', 'plantes arrosage vacances']
   ];
   const sansAccent = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
   const rendre = () => {
@@ -812,5 +822,52 @@
 })();
 </script>
 <script>/* G1 : compte à rebours */(function(){var j=Math.max(0,Math.ceil((new Date('2027-01-04T09:00:00+01:00')-new Date())/864e5));var a=document.getElementById('g1Jours'),b=document.getElementById('g1Semaines');if(a)a.textContent=j;if(b)b.textContent=Math.ceil(j/7);})();</script>
+<script>
+/* Trait de démarcation sous les titres : la classe « vu » est posée quand le trait entre à l'écran
+   (animation « tracé à l'apparition ») et retirée quand il repasse sous l'écran, pour rejouer au défilement. */
+(() => {
+  const traits = [...document.querySelectorAll('.g1-trait')];
+  if (!('IntersectionObserver' in window)) { traits.forEach(t => t.classList.add('vu')); return; }
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('vu');
+    else if (e.boundingClientRect.top > 0) e.target.classList.remove('vu');
+  }), { threshold: .9 });
+  traits.forEach(t => io.observe(t));
+})();
+</script>
+<script>
+/* Titre de la landing : « UNE FLEMME, » → « UNE ANNONCE, » → « UNE MISSION, » se remplacent ; « DES SOLUTIONS, (BIENTÔT…) » reste figé dessous.
+   Effet choisi par html[data-hero-anim] : glissement (par défaut), fondu, flou, machine à écrire, figé. */
+(() => {
+  const r = document.querySelector('.g1-rotation'); if (!r) return;
+  const mots = [...r.children], textes = mots.map(m => m.textContent);
+  const reduit = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const mode = () => document.documentElement.getAttribute('data-hero-anim') || 'glissement';
+  const pause = ms => new Promise(f => setTimeout(f, ms));
+  let i = 0;
+  (async () => {
+    for (;;) {
+      await pause(2400);
+      while (document.hidden) await pause(500);
+      const m = mode();
+      if (reduit || m === 'figé') { mots.forEach((s, k) => { s.classList.toggle('actif', k === 0); s.classList.remove('sortant'); s.textContent = textes[k]; }); r.classList.remove('tape'); i = 0; continue; }
+      const a = mots[i], ia = i; i = (i + 1) % mots.length; const b = mots[i];
+      if (m === 'machine à écrire') {
+        r.classList.add('tape');
+        let t = a.textContent;
+        while (t.length) { t = t.slice(0, -1); a.textContent = t || '\u200b'; await pause(40); }
+        a.classList.remove('actif'); a.textContent = textes[ia];
+        b.textContent = '\u200b'; b.classList.remove('sortant'); b.classList.add('actif');
+        for (const c of textes[i]) { t += c; b.textContent = t; await pause(85); }
+      } else {
+        r.classList.remove('tape');
+        a.classList.remove('actif'); a.classList.add('sortant');
+        b.classList.remove('sortant'); b.classList.add('actif');
+        setTimeout(() => a.classList.remove('sortant'), 750);
+      }
+    }
+  })();
+})();
+</script>
 </body>
 </html>
