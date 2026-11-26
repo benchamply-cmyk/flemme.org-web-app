@@ -6,6 +6,7 @@ Chaque PR ajoute une ligne sous « À venir ». Au gel de preprod, « À venir �
 
 ## À venir
 
+- Règles projet complétées dans `AGENTS.md` (26 nov. 2026, demande de Ben, après le raccourcissement des instructions du projet) : exception « fusionne » écrite par Ben, tags et releases posés par Ben, identifiants Supabase et SQL collé par Ben si le connecteur expire, Stripe, DNS et déplacements ajoutés aux actions soumises à accord, nouvelles sections Méthode et Documents (Drive, nouvel onglet daté), déclencheurs « CHECK UP » (résumé dans le chat) et « FIN + date » (seul déclencheur du mail). Aucune migration.
 
 ## v2.2.0 (candidate) — gel de preprod le 24 nov. 2026
 
