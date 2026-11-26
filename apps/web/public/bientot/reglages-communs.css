@@ -1,0 +1,151 @@
+/* Réglages communs Flemme /bientot (figés le 26/11/2026, PR 111) : partagés par index.html et je-patiente.html.
+   Chargé après reglages-g1.css. Les règles ciblant des sections précises (#demo, #categories…) sont sans effet ailleurs. */
+/* Bandeau de chantier moins incliné et plus large que l'écran, pour que ses bouts ne soient plus rognés (commentaire du 26/11/2026). */
+.vc-ruban-cadre{overflow:hidden}
+/* Bloc contact au style de l'encart « Votre compte Flemme » (commentaire du 26/11/2026) : logo, titre, halo vert, ombre profonde, bouton pleine largeur. */
+#contact .lp-contact-boite.vc-contact-form{position:relative;overflow:hidden;padding:clamp(20px,3vw,32px)!important;background:#fff!important;border:1px solid rgba(58,143,94,.16)!important;box-shadow:0 40px 80px -30px rgba(34,83,55,.4)!important;text-align:left}
+#contact .vc-contact-form::before{content:"";position:absolute;inset:-40% -30% auto auto;width:70%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(87,214,141,.28),transparent 65%);pointer-events:none}
+#contact .vc-contact-form > *{position:relative;z-index:1}
+#contact .vc-contact-tete{display:flex!important;flex-direction:column;align-items:flex-start!important;gap:14px;text-align:left!important;margin-bottom:18px;padding-bottom:0!important;border:0!important}
+#contact .vc-contact-tete h3{margin:0;font-size:1.35rem;line-height:1.2;color:var(--g1-texte)}
+#contact .vc-contact-mail-ligne{display:flex!important;flex-direction:row!important;flex-wrap:wrap;align-items:baseline!important;gap:4px 12px!important;text-align:left!important;margin:0!important}
+#contact .vc-contact-envoi{display:flex!important;flex-direction:column;align-items:stretch!important;gap:12px}
+#contact .vc-contact-envoi .lp-bouton{width:100%;justify-content:center}
+#contact .vc-contact-envoi .vc-contact-note{flex:none!important;text-align:center;margin:0}
+/* Mini-jeux (commentaire du 26/11/2026) : titre et légende toujours visibles en bandeau transparent sur l'image,
+   et les éléments de chaque image s'animent au survol (ou au toucher). */
+.vc-jeux-6 .vc-jeu-texte{opacity:1!important;transform:none!important;inset:auto 0 0 0!important;padding:9px 10px 10px!important;gap:1px!important;background:rgba(18,18,18,.42)!important;-webkit-backdrop-filter:blur(6px) saturate(1.2);backdrop-filter:blur(6px) saturate(1.2);transition:background .3s}
+.vc-jeux-6 .vc-jeu-carte:is(:hover,:focus-visible,.ouvert) .vc-jeu-texte{background:rgba(18,18,18,.68)!important}
+.vc-jeux-6 .vc-jeu-texte .vc-meta{font-size:9.5px!important;letter-spacing:.06em}
+html.rg body.lp .vc-jeux-6 .vc-jeu-texte b{font-size:13px!important;line-height:1.15!important}
+.vc-jeux-6 .vc-jeu-texte small{font-size:11px!important;line-height:1.25!important;color:rgba(255,255,255,.85)!important}
+.vc-jeux-6 .vc-jeu-ico *{transform-box:fill-box;transform-origin:center}
+@keyframes jx-saut{0%,100%{translate:0 0}40%{translate:0 -7px}60%{translate:0 -7px}}
+@keyframes jx-route{from{translate:0 -6px}to{translate:0 6px}}
+@keyframes jx-pouls{0%,100%{scale:1}50%{scale:1.35}}
+@keyframes jx-zzz{0%{translate:0 0;opacity:1}100%{translate:6px -12px;opacity:0}}
+@keyframes jx-ecrase{0%,100%{scale:1 1}50%{scale:1.06 .9}}
+@keyframes jx-chute{0%{translate:0 -14px;opacity:0}30%{opacity:1}100%{translate:0 18px;opacity:0}}
+@keyframes jx-tangue{0%,100%{rotate:0deg}25%{rotate:-5deg}75%{rotate:5deg}}
+@keyframes jx-points{0%,60%,100%{translate:0 0}30%{translate:0 -5px}}
+@keyframes jx-tourne{to{rotate:360deg}}
+@keyframes jx-ondule{0%,100%{translate:0 0}50%{translate:-3px 2px}}
+@keyframes jx-tremble{0%,100%{translate:0 0}25%{translate:-1.5px 1px}50%{translate:1.5px -1px}75%{translate:-1px -1px}}
+@keyframes jx-pop{0%,100%{scale:1}50%{scale:1.4}}
+/* 1 · La grande marche : la route défile, la chaussure sautille, le soleil pulse */
+.vc-jeux-6 .vc-jeu-carte:nth-child(1):is(:hover,:focus-visible,.ouvert) .vc-jeu-ico > :nth-child(4){animation:jx-route .5s linear infinite}
+.vc-jeux-6 .vc-jeu-carte:nth-child(1):is(:hover,:focus-visible,.ouvert) .vc-jeu-ico > :is(:nth-child(6),:nth-child(7),:nth-child(8)){animation:jx-saut .5s ease-in-out infinite}
+.vc-jeux-6 .vc-jeu-carte:nth-child(1):is(:hover,:focus-visible,.ouvert) .vc-jeu-ico > :nth-child(5){animation:jx-pouls 1.2s ease-in-out infinite}
+/* 2 · Le défi du canapé : les « z » s'envolent, le canapé s'affaisse */
+.vc-jeux-6 .vc-jeu-carte:nth-child(2):is(:hover,:focus-visible,.ouvert) .vc-jeu-ico > :nth-child(8){animation:jx-zzz 1.4s ease-out infinite}
+.vc-jeux-6 .vc-jeu-carte:nth-child(2):is(:hover,:focus-visible,.ouvert) .vc-jeu-ico > :nth-child(9){animation:jx-zzz 1.4s .7s ease-out infinite}
+.vc-jeux-6 .vc-jeu-carte:nth-child(2):is(:hover,:focus-visible,.ouvert) .vc-jeu-ico > :is(:nth-child(3),:nth-child(4),:nth-child(5),:nth-child(6)){animation:jx-ecrase 1.6s ease-in-out infinite;transform-origin:50% 100%}
+/* 3 · Attrape les corvées : les corvées tombent, le panier se balance */
+.vc-jeux-6 .vc-jeu-carte:nth-child(3):is(:hover,:focus-visible,.ouvert) .vc-jeu-ico > :nth-child(3){animation:jx-chute 1.1s ease-in infinite}
+.vc-jeux-6 .vc-jeu-carte:nth-child(3):is(:hover,:focus-visible,.ouvert) .vc-jeu-ico > :is(:nth-child(4),:nth-child(5)){animation:jx-chute 1.1s .45s ease-in infinite}
+.vc-jeux-6 .vc-jeu-carte:nth-child(3):is(:hover,:focus-visible,.ouvert) .vc-jeu-ico > :is(:nth-child(7),:nth-child(8),:nth-child(9)){animation:jx-tangue .55s ease-in-out infinite}
+/* 4 · L'excuse parfaite : les points « en train d'écrire » rebondissent, l'étincelle tourne */
+.vc-jeux-6 .vc-jeu-carte:nth-child(4):is(:hover,:focus-visible,.ouvert) .vc-jeu-ico > :nth-child(4){animation:jx-points .9s ease-in-out infinite}
+.vc-jeux-6 .vc-jeu-carte:nth-child(4):is(:hover,:focus-visible,.ouvert) .vc-jeu-ico > :nth-child(5){animation:jx-points .9s .15s ease-in-out infinite}
+.vc-jeux-6 .vc-jeu-carte:nth-child(4):is(:hover,:focus-visible,.ouvert) .vc-jeu-ico > :nth-child(6){animation:jx-points .9s .3s ease-in-out infinite}
+.vc-jeux-6 .vc-jeu-carte:nth-child(4):is(:hover,:focus-visible,.ouvert) .vc-jeu-ico > :nth-child(7){animation:jx-tourne 1.6s linear infinite}
+/* 5 · Le serpent paresseux : il ondule, la nourriture pulse, il s'endort */
+.vc-jeux-6 .vc-jeu-carte:nth-child(5):is(:hover,:focus-visible,.ouvert) .vc-jeu-ico > :is(:nth-child(4),:nth-child(5),:nth-child(6)){animation:jx-ondule 1.8s ease-in-out infinite}
+.vc-jeux-6 .vc-jeu-carte:nth-child(5):is(:hover,:focus-visible,.ouvert) .vc-jeu-ico > :nth-child(7){animation:jx-pop .9s ease-in-out infinite}
+.vc-jeux-6 .vc-jeu-carte:nth-child(5):is(:hover,:focus-visible,.ouvert) .vc-jeu-ico > :nth-child(8){animation:jx-zzz 1.5s ease-out infinite}
+/* 6 · Le démineur de corvées : la mine tremble et ses pointes tournent, les chiffres clignent */
+.vc-jeux-6 .vc-jeu-carte:nth-child(6):is(:hover,:focus-visible,.ouvert) .vc-jeu-ico > :is(:nth-child(10),:nth-child(12)){animation:jx-tremble .18s linear infinite}
+.vc-jeux-6 .vc-jeu-carte:nth-child(6):is(:hover,:focus-visible,.ouvert) .vc-jeu-ico > :nth-child(11){animation:jx-tourne 2s linear infinite}
+.vc-jeux-6 .vc-jeu-carte:nth-child(6):is(:hover,:focus-visible,.ouvert) .vc-jeu-ico > :nth-child(8){animation:jx-pop .8s ease-in-out infinite}
+.vc-jeux-6 .vc-jeu-carte:nth-child(6):is(:hover,:focus-visible,.ouvert) .vc-jeu-ico > :nth-child(9){animation:jx-pop .8s .4s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.vc-jeux-6 .vc-jeu-ico *{animation:none!important}}
+/* Liens et textes d'action : plus de soulignement, seulement en gras, sur tout le site (commentaire du 26/11/2026). */
+html.rg body :is(.vc-lien,a.vc-lien,button.vc-lien,.lp-lien,.vc-lien-copier,.vc-lien-exemple,.vc-note-demo a,.vc-sous-titre a,main p a,main li a,main h3 a){text-decoration:none!important;background:none!important;padding-bottom:0!important;font-weight:700!important;animation:none!important}
+html.rg body :is(.vc-lien,.lp-lien,.vc-lien-copier,.vc-lien-exemple,.vc-note-demo a,.vc-sous-titre a,main p a,main li a,main h3 a):is(:hover,:focus-visible){color:var(--g1-accent,#4dbc7c)!important}
+/* Cartes du principe : pastille en haut, titre, texte ; mêmes hauteurs. */
+#demo .vc-args{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:14px;align-items:stretch}
+#demo .lp-arg.g1-principe{display:flex!important;flex-direction:column;align-items:flex-start;gap:12px;padding:26px 24px!important;text-align:left}
+#demo .lp-arg.g1-principe .lp-arg-chiffre{display:inline-block!important;font:600 11px/1 var(--g1-titre)!important;letter-spacing:.08em!important;text-transform:uppercase!important;color:var(--g1-texte)!important;background:var(--g1-pastille);border-left:3px solid var(--g1-accent);padding:7px 10px!important;margin:0!important}
+#demo .lp-arg.g1-principe b{display:block;margin:4px 0 0!important}
+#demo .lp-arg.g1-principe p{margin:0!important;color:var(--g1-doux);font-size:15px;line-height:1.55}
+/* Texte des boutons en majuscules (commentaire du 26/11/2026). */
+html.rg body :is(.lp-bouton,.vc-nav-cta,.vc-menu-cta,.vc-btn-mini){text-transform:uppercase!important;letter-spacing:.04em!important}
+/* Boutons du menu en majuscules (commentaire du 26/11/2026) : Démo, Patienter, Questions, aussi dans le menu mobile. */
+html.rg body .vc-nav :is(.vc-nav-liens a,.vc-nav-jeu,.vc-menu-liste a){text-transform:uppercase!important;letter-spacing:.04em!important}
+/* Bouton « S'inscrire » du menu aux couleurs du bouton « Essayer la démo » (commentaire du 26/11/2026). */
+html.rg[data-couleurs="perso"] .vc-nav .vc-nav-cta,html.rg[data-couleurs="perso"] .vc-nav .vc-menu-cta{background:var(--rg-b2)!important;color:var(--rg-b2t)!important;border:1.5px solid var(--rg-b2b)!important;box-shadow:none!important}
+html.rg .vc-ruban{transform:rotate(-1deg)!important;width:106%;margin-left:-3%}
+.g1-car-cadre{position:relative}
+.g1-car-btn{position:absolute;z-index:2;top:calc(50% - 9px);translate:0 -50%;display:grid;place-items:center;width:46px;height:46px;padding:0;border:0;background:rgba(255,255,255,.28);color:rgba(16,30,42,.7);cursor:pointer;-webkit-backdrop-filter:blur(10px) saturate(1.3);backdrop-filter:blur(10px) saturate(1.3);box-shadow:0 6px 18px -8px rgba(16,30,42,.25);transition:background .2s,color .2s,box-shadow .2s}
+.g1-car-btn[hidden]{display:none!important}
+.g1-car-prec{left:-6px}
+.g1-car-suiv{right:-6px}
+.g1-car-btn:is(:hover,:active,:focus-visible){background:rgba(16,30,42,.9);color:#fff;box-shadow:0 8px 22px -8px rgba(16,30,42,.45)}
+.g1-car-btn:focus-visible{outline:2px solid var(--g1-accent,#4dbc7c);outline-offset:2px}
+@media (max-width:640px){.g1-car-prec{left:4px}.g1-car-suiv{right:4px}}
+html.rg[data-categories="carrousel"] #categories .g1-categories{scroll-behavior:smooth}
+/* Flèches du carrousel : sans fond, seule la flèche est visible (commentaire du 26/11/2026). */
+.g1-car-btn{background:none!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;color:var(--g1-texte,#101e2a)!important;opacity:.4;transition:opacity .2s,color .2s,translate .2s}
+.g1-car-btn:is(:hover,:active,:focus-visible){background:none!important;box-shadow:none!important;opacity:1;color:var(--g1-accent,#4dbc7c)!important}
+.g1-car-btn svg{width:26px;height:16px}
+.g1-car-cadre .g1-car-btn{top:calc(50% - 52px)!important}
+@media (min-width:1100px){.g1-car-prec{left:-52px!important}.g1-car-suiv{right:-52px!important}}
+.g1-car-btn svg path{stroke-width:2.2}
+
+/* Harmonisation « Filet vert » (proposition B choisie le 26/11/2026) : Le principe, Ce que vous pourrez déléguer,
+   Comment ça marche et Nos engagements partagent la même présentation : pas de carte, un trait vert à gauche,
+   titre en majuscules et texte gris, alignés à gauche. */
+#demo .vc-args,#etapes .g1-etapes,#engagements .g1-engagements{display:grid!important;gap:28px!important;border:0!important;text-align:left!important}
+#demo .vc-args{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))!important}
+#etapes .g1-etapes,#engagements .g1-engagements{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))!important}
+html.rg body.lp :is(#demo .lp-arg.g1-principe,#categories .g1-carte,#etapes .g1-etapes li,#engagements .g1-engagements > div){background:transparent!important;box-shadow:none!important;border:0!important;border-left:2px solid var(--g1-accent)!important;border-radius:0!important;padding:4px 0 4px 18px!important;text-align:left!important;box-sizing:border-box}
+html.rg body.lp :is(#demo .lp-arg.g1-principe b,#categories .g1-carte b,#etapes .g1-etapes h3,#engagements .g1-engagements h3){display:block;margin:0 0 8px!important;font:600 17px/1.25 var(--tc-police)!important;text-transform:uppercase!important;letter-spacing:normal!important;color:var(--g1-texte)!important}
+html.rg body.lp :is(#demo .lp-arg.g1-principe p,#categories .g1-carte p,#etapes .g1-etapes p,#engagements .g1-engagements p){margin:0!important;font-size:15px!important;line-height:1.55!important;color:var(--g1-doux)!important;text-align:left!important}
+html.rg body.lp #demo .lp-arg.g1-principe .lp-arg-chiffre{background:none!important;border:0!important;padding:0!important;color:var(--g1-accent)!important}
+html.rg body.lp #demo .lp-arg.g1-principe{gap:8px!important}
+/* Proposition 1 (26/11/2026) : titre, puis sous-titre vert, puis texte court. */
+html.rg body.lp main #demo .lp-arg.g1-principe b{margin:0!important}
+html.rg body.lp main #demo .lp-arg.g1-principe{flex-direction:row!important;flex-wrap:wrap;align-items:baseline!important;column-gap:12px!important;row-gap:10px!important}
+html.rg body.lp main #demo .lp-arg.g1-principe p{flex-basis:100%}
+html.rg body.lp main #demo .lp-arg.g1-principe .lp-arg-chiffre{margin:0!important;font:700 12px/1.2 var(--g1-titre)!important;letter-spacing:.08em!important;text-transform:uppercase!important;color:var(--g1-doux)!important}
+html.rg[data-categories="carrousel"] #categories .g1-categories{gap:28px!important;-webkit-mask-image:none!important;mask-image:none!important}
+/* Cartes en verre dépoli transparent + filet vert à gauche (choix de Ben, 26/11/2026). */
+html.rg body.lp main section :is(#demo .lp-arg.g1-principe,#categories .g1-carte,#etapes .g1-etapes li,#engagements .g1-engagements > div){background:rgba(255,255,255,.42)!important;-webkit-backdrop-filter:blur(14px) saturate(1.4)!important;backdrop-filter:blur(14px) saturate(1.4)!important;border:1px solid rgba(255,255,255,.85)!important;border-left:1px solid rgba(255,255,255,.85)!important;box-shadow:0 10px 30px -14px rgba(16,30,42,.22),inset 0 1px 0 rgba(255,255,255,.9)!important;padding:24px!important}
+/* Reflet vert en coin et ombre profonde, comme l'encart « Votre compte Flemme » (essai du 26/11/2026). */
+html.rg body.lp main section :is(#demo .lp-arg.g1-principe,#categories .g1-carte,#etapes .g1-etapes li,#engagements .g1-engagements > div){position:relative;overflow:hidden;isolation:isolate;box-shadow:0 22px 44px -26px rgba(34,83,55,.24),inset 0 1px 0 rgba(255,255,255,.9)!important}
+html.rg body.lp main section :is(#demo .lp-arg.g1-principe,#categories .g1-carte,#etapes .g1-etapes li,#engagements .g1-engagements > div)::after{content:"";position:absolute;z-index:-1;inset:-45% -35% auto auto;width:75%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(87,214,141,.15),transparent 65%);pointer-events:none}
+html body main :is(#demo .vc-args,#etapes .g1-etapes,#engagements .g1-engagements){gap:16px!important}
+html.rg[data-categories="carrousel"] body main #categories .g1-categories{gap:16px!important;padding:4px 40px 110px!important;margin:0 -40px -110px!important;scroll-padding-inline:40px;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 40px,#000 calc(100% - 40px),transparent 100%)!important;mask-image:linear-gradient(90deg,transparent 0,#000 40px,#000 calc(100% - 40px),transparent 100%)!important}
+/* Décor dynamique : grain de points dessiné sur un canvas fixe, révélé au fil du défilement (script plus bas). */
+.g1-grain-scroll{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+html.rg[data-decor] header.flemme-chrome-home::after{opacity:0!important}
+/* Premier écran (commentaire du 26/11/2026) : hero + bandeau de chantier occupent exactement la hauteur de l'écran,
+   quel que soit l'appareil ; la section « Le principe » commence juste en dessous. */
+html.rg body.lp header.lp-hero#haut{box-sizing:border-box!important;min-height:calc(100vh - var(--ruban-h, 64px))!important;min-height:calc(100svh - var(--ruban-h, 64px))!important;display:flex!important;flex-direction:column;justify-content:center;margin-bottom:0!important;padding-top:clamp(84px,11vh,150px)!important;padding-bottom:clamp(28px,5vh,80px)!important}
+html.rg body.lp .vc-ruban-cadre{margin-top:0!important;margin-bottom:0!important}
+/* Étiquettes de section (« Le principe », « Comment ça marche ? »…) : beaucoup plus petites, fond transparent (commentaire du 26/11/2026). */
+html.rg body.lp :is(main section,header) .lp-etiquette{background:transparent!important;border:0!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;padding:0!important;min-height:0!important;height:auto!important;font-size:10px!important;line-height:1.2!important;letter-spacing:.14em!important;gap:6px!important}
+html.rg body.lp :is(main section,header) .lp-etiquette::before{width:5px!important;height:5px!important}
+/* Rythme vertical homogène (demande de Ben, 26/11/2026) : même espace entre toutes les sections,
+   et mêmes écarts étiquette → titre → intro → trait → contenu dans chaque section. */
+:root{--esp-sec:128px;--esp-bloc:80px;--esp-contenu:40px;--esp-trait:24px;--esp-etiq:14px}
+@media (max-width:640px){:root{--esp-sec:88px;--esp-bloc:56px;--esp-contenu:28px;--esp-trait:20px;--esp-etiq:12px}}
+html.rg body.lp main > :is(section,div.g1-sec){padding-top:calc(var(--esp-sec) / 2)!important;padding-bottom:calc(var(--esp-sec) / 2)!important;margin-top:0!important;margin-bottom:0!important}
+html.rg body.lp main section :is(.vc-demo-tete,.vc-entete-section){margin:0!important;padding:0!important}
+html.rg body.lp :is(main section,header) .lp-etiquette{margin:0 0 var(--esp-etiq)!important}
+html.rg body.lp main section :is(h2.lp-titre,h3.vc-sous-titre){margin:0!important}
+html.rg body.lp main section .lp-intro{margin:var(--esp-etiq) auto 0!important}
+html.rg body.lp main section .vc-note-demo{margin:10px 0 0!important}
+html.rg body.lp main section .g1-trait{margin-top:var(--esp-trait)!important;margin-bottom:var(--esp-contenu)!important}
+html.rg body.lp main section .g1-trait + *{margin-top:0!important}
+html.rg body.lp main section .lp-intro + .g1-trait{margin-top:calc(var(--esp-trait) + 8px)!important}
+html.rg body.lp main section > :last-child{margin-bottom:0!important}
+html.rg body.lp main #demo .vc-demo-intro{margin:var(--esp-bloc) 0 0!important;padding:0!important}
+html.rg body.lp main #demo .vc-demo-intro + .vc-demo{margin-top:0!important}
+html.rg body.lp main #demo .vc-demo-intro{display:block!important;text-align:center}
+html.rg body.lp main #essai .g1-etiquette-demo{margin:0 auto var(--esp-etiq)!important}
+/* Même largeur pour tous les traits sous les titres, et pour tous les blocs de contenu. */
+html.rg body.lp main section .g1-trait{width:min(var(--g1-trait-larg,75%),760px)!important;margin-left:auto!important;margin-right:auto!important}
+html.rg body.lp main :is(#demo .vc-args,#demo .vc-demo,#categories .g1-car-cadre,#etapes .g1-etapes,#engagements .g1-engagements,#je-patiente .vc-jeux-grille,#inscription .vc-inscription){max-width:1088px;margin-left:auto!important;margin-right:auto!important;box-sizing:border-box}
+html.rg body.lp main #inscription .vc-preuves{margin:var(--esp-trait) 0 0!important}
+html.rg body.lp main #je-patiente > .lp-bouton{margin-top:var(--esp-contenu)!important}
