@@ -13,7 +13,7 @@ export function Accord({ state: { busy }, task, can, draft, field, mutate, valid
     {task.agreement && can.viaFlemme && <><p className="muted">Prix convenu jusqu’ici : {money(task.agreement.amount)} pour la personne qui réalise la mission, {money(task.agreement.total)} au total avec les frais de plateforme. Si vous en avez convenu autrement dans la discussion, modifiez-le ici : le taux des frais reste celui fixé au choix de la proposition.</p>
       {field('Prix convenu de la prestation', 'amount', { numeric: true })}
       {(() => { try { const n = parseMoney(draft.amount || '', true); return n != null ? <Bill amount={n} agreed={{ ...task.agreement, ...priceFor(n, task.agreement) }}/> : null; } catch { return null; } })()}</>}
-    <p className="note">Écrivez ensemble ce que chacun attend. Flemme le vérifie avant la signature ; une personne de l’équipe le relit en cas d’alerte, ou sur demande depuis « Aide ».</p>
+    <p className="note">Écrivez ensemble ce que chacun attend. Une personne de l’équipe Flemme le relit avant la signature.</p>
     {CONTRACT_FIELDS.map(c => field(c.label, c.name, { multiline: c.max > 200, max: c.max, hint: c.hint }))}
     <div className="note"><span className="strong">Clauses communes à tout accord Flemme</span><ul>{CONTRACT_COMMON_CLAUSES.map(c => <li key={c}>{c}</li>)}</ul></div>
     {signed && <p className="alert" role="status">Une signature a déjà été donnée : enregistrer une modification l’annule, et les deux parties devront signer la nouvelle version.</p>}

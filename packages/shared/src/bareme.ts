@@ -59,9 +59,15 @@ export function lignesBareme(bareme = BAREME_FRAIS): { tranche: string; taux: st
 export const BAREME_RESUME = 'Des frais de plateforme dégressifs, à la charge de la personne qui délègue : 15 % jusqu’à 30 €, 10 % de 30 à 100 €, 8 % de 100 à 300 €, 6 % au-delà, 2 € au minimum. Chaque taux ne s’applique qu’à la part du prix comprise dans sa tranche.';
 
 /** Bêta sans argent réel : les crédits fondateurs (décision de Ben du 23/11/2026). */
+/** Paramètres validés par Ben le 26/11/2026 (arbitrage A-02). Montants en centimes. */
 export const CREDITS_FONDATEURS = {
   nom: 'crédits fondateurs',
-  resume: 'Pendant la bêta, aucun argent réel ne circule : les missions se paient en crédits fondateurs (1 crédit = 1 € fictif). Ils sont gratuits, plafonnés, ne s’achètent pas, ne s’échangent pas et ne seront jamais convertis en euros. À l’ouverture des paiements réels, ils deviennent des réductions sur les frais Flemme.',
+  soldeInitial: 150,            // crédits offerts à l'inscription à la bêta
+  valeurFictive: 100,           // 1 crédit = 1 € fictif pendant la bêta
+  reductionParCredit: 10,       // à l'ouverture : 1 crédit = 0,10 € de réduction sur les frais Flemme
+  plafondReduction: 2000,       // 20 € de réduction au plus par membre
+  validiteMois: 12,
+  resume: 'Pendant la bêta, aucun argent réel ne circule : les missions se paient en crédits fondateurs (1 crédit = 1 € fictif). Vous en recevez 150 à l’inscription, et Flemme recharge votre compte sur demande. Ils sont gratuits, ne s’achètent pas, ne s’échangent pas et ne seront jamais convertis en euros. À l’ouverture des paiements réels, le solde devient une réduction sur les frais Flemme (1 crédit = 0,10 €, 20 € au plus, valable 12 mois).',
 } as const;
 
 /** Familles mises en avant dans les exemples et la communication (les autres demandes restent acceptées). */
@@ -96,10 +102,11 @@ export const ACTIVITES_RESERVEES_PROS = [
   'Sécurité, gardiennage, et autres métiers à diplôme (coiffure, traduction assermentée, diagnostics immobiliers).',
 ] as const;
 
-/** Assistance humaine sur l'accord (§5 de l'analyse v0.2) : prix en centimes, gratuite pendant la bêta. */
-export const ASSISTANCE_ACCORD = [
-  { id: 'alerte', nom: 'Vérification sur alerte', prix: 0, detail: 'Quand la vérification automatique repère un problème, ou au-delà de 150 €, une personne de l’équipe relit l’accord.' },
-  { id: 'relecture', nom: 'Relecture Flemme', prix: 490, detail: 'Sur demande : une personne de l’équipe relit l’accord et propose des corrections écrites, sous 48 h ouvrées.' },
-  { id: 'accompagne', nom: 'Accord accompagné', prix: 990, detail: 'Sur demande : 15 à 20 minutes d’échange avec vous deux pour construire l’accord, sous 72 h ouvrées.' },
-] as const;
+/** Assistance humaine sur l'accord (décision de Ben du 26/11/2026, arbitrages A-04 et A-07) : chaque accord est relu
+ *  par une personne de l'équipe, sans frais ; l'accord accompagné est une option payante dont le prix reste à fixer
+ *  (9,90 € ou 14,90 €) : `prix: null` tant qu'il n'est pas décidé. Prix en centimes. */
+export const ASSISTANCE_ACCORD: readonly { id: string; nom: string; prix: number | null; detail: string }[] = [
+  { id: 'relecture', nom: 'Relecture par l’équipe', prix: 0, detail: 'Chaque accord est relu par une personne de l’équipe avant la signature, quel que soit son montant.' },
+  { id: 'accompagne', nom: 'Accord accompagné', prix: null, detail: 'Sur demande : 15 à 20 minutes d’échange avec vous deux pour construire l’accord, sous 72 h ouvrées. Option payante, prix affiché avant de la demander.' },
+];
 export const ASSISTANCE_LIMITE = 'Il s’agit d’aide administrative : vérifier que l’accord est complet, clair et cohérent. Ce n’est jamais un conseil juridique.';

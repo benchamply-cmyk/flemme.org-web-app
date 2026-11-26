@@ -24,5 +24,5 @@ const esc = (t: string) => t.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;
 const remplir = (id: string, html: string) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
 remplir('listeInterdites', ACTIVITES_INTERDITES.map(a => `<li>${esc(a)}</li>`).join(''));
 remplir('listeReservees', ACTIVITES_RESERVEES_PROS.map(a => `<li>${esc(a)}</li>`).join(''));
-remplir('assistanceListe', ASSISTANCE_ACCORD.map(a => `<div class="carte"><b>${esc(a.nom)} · ${a.prix ? esc(money(a.prix)) : 'inclus'}</b><p class="doux">${esc(a.detail)}</p></div>`).join(''));
-out('assistanceLimite', ASSISTANCE_LIMITE + ' Pendant la bêta, la relecture et l’accord accompagné sont gratuits.');
+remplir('assistanceListe', ASSISTANCE_ACCORD.map(a => `<div class="carte"><b>${esc(a.nom)} · ${a.prix === null ? 'option payante' : a.prix ? esc(money(a.prix)) : 'inclus'}</b><p class="doux">${esc(a.detail)}</p></div>`).join(''));
+out('assistanceLimite', ASSISTANCE_LIMITE);

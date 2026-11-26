@@ -1,6 +1,7 @@
 // Lot 4 du parcours complet : pièces jointes, photo de profil, assistant (réponses prédéfinies) et aide humaine.
 // Mêmes règles que supabase/migrations/20261104150000_flemme_v2_fichiers_aide.sql ; le serveur refait chaque contrôle.
 import type { Actor, Input } from './domain.ts';
+import { CREDITS_FONDATEURS } from './bareme.ts';
 
 export type FileItem = { id: string; name: string; mime: string; size: number; path: string; owner: Actor; at: string };
 /** Fichier à envoyer : un File du navigateur, ou tout objet équivalent (mobile). */
@@ -60,9 +61,9 @@ export const FAQ: { id: string; question: string; keywords: string[]; answer: st
   { id: 'accord', topic: 'mission', question: 'À quoi sert l’accord écrit ?', keywords: ['accord', 'contrat', 'signer', 'signature', 'conditions'],
     answer: 'Après le choix d’une proposition, vous écrivez ensemble le périmètre, le résultat attendu, le délai, l’annulation et la confidentialité, et vous ajustez le prix si vous l’avez renégocié. Flemme le vérifie automatiquement (une personne de l’équipe le relit en cas d’alerte), puis chacun le signe (acceptation simple et horodatée). Toute modification crée une nouvelle version à signer de nouveau.' },
   { id: 'relecture', topic: 'mission', question: 'Puis-je faire relire mon accord par une personne ?', keywords: ['relecture', 'relire', 'humain', 'assistance', 'accompagne', 'aide', 'accord'],
-    answer: 'Oui. Au-delà de la vérification automatique, vous pouvez demander une « Relecture Flemme » (4,90 €, sous 48 h ouvrées) ou un « Accord accompagné » (9,90 €, 15 à 20 minutes d’échange). Pendant la bêta, ces options sont gratuites. C’est de l’aide administrative, jamais un conseil juridique.' },
+    answer: 'Oui, toujours : chaque accord est relu par une personne de l’équipe avant la signature, sans frais. Si vous voulez de l’aide pour l’écrire, vous pouvez demander un « Accord accompagné » (15 à 20 minutes d’échange), une option payante dont le prix est affiché avant de la demander. C’est de l’aide administrative, jamais un conseil juridique.' },
   { id: 'credits', topic: 'paiement', question: 'Que sont les crédits fondateurs ?', keywords: ['credit', 'credits', 'fondateur', 'beta', 'jeton', 'fictif', 'argent'],
-    answer: 'Pendant la bêta, aucun argent réel ne circule : les missions se paient en crédits fondateurs (1 crédit = 1 € fictif). Ils sont gratuits et plafonnés, ne s’achètent pas, ne s’échangent pas et ne seront jamais convertis en euros. À l’ouverture des paiements réels, ils deviennent des réductions sur les frais Flemme.' },
+    answer: CREDITS_FONDATEURS.resume },
   { id: 'interdit', topic: 'securite', question: 'Quelles demandes sont interdites ?', keywords: ['interdit', 'interdite', 'autorise', 'professionnel', 'reglemente', 'statut', 'logement', 'immobilier'],
     answer: 'Tout ce qui est illégal ou frauduleux, la triche aux examens, l’usage des identifiants d’un autre, les services sexuels, les prêts d’argent et les tâches dangereuses. Certaines activités sont réservées aux professionnels : droit, comptabilité, assurance et crédit, immobilier, voyages, santé, travaux réglementés, transport de personnes, garde d’enfants. Pour un logement, un Brigadier peut chercher et sélectionner des annonces, mais c’est vous qui contactez les propriétaires. La liste complète est dans « Comment ça marche ».' },
   { id: 'litige', topic: 'securite', question: 'Ça se passe mal, que faire ?', keywords: ['probleme', 'litige', 'signaler', 'desaccord', 'arnaque', 'comportement', 'annuler'],
