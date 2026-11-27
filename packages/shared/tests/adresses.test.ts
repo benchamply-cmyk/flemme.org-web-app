@@ -88,3 +88,11 @@ test('adresses : mêmes écrans dans l’app mobile (liens profonds)', () => {
   for (const u of ['flemme-mobile://lien?code=abc', 'https://exemple.org/mes-demandes', 'http://flemme.org/mes-demandes', 'https://flemme.org/faq', '', null])
     assert.equal(lireLien(u), null, String(u));
 });
+
+test('adresses : /bientot/mon-espace ouvre Mon espace en version bêta (27/11/2026)', () => {
+  assert.deepEqual(lireAdresse('/bientot/mon-espace'), { screen: 'home' });
+  assert.deepEqual(lireAdresse('/bientot/mon-espace/'), { screen: 'home' });
+  assert.equal(lireAdresse('/bientot/'), null, '/bientot reste la page statique');
+  assert.equal(lireAdresse('/bientot/je-patiente.html'), null);
+  assert.equal(estAdresseApp('/bientot/mon-espace'), true);
+});
