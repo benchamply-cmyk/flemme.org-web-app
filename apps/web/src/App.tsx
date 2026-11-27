@@ -24,6 +24,7 @@ import { Profil } from './ecrans/Profil.tsx';
 import { Signalement } from './ecrans/Signalement.tsx';
 import { BientotDisponible, useFlag } from './flags/useFlag.tsx';
 import { AccueilEspace, Messages, Onglets, Reglages, useNonLus } from './ecrans/Espace.tsx';
+import { PRE_BETA } from '../../../packages/shared/src/espace.ts';
 
 // Coque web de l’app : navigation, formulaire en cours et choix de l’écran.
 // Règles, état et textes partagés : packages/shared. Écrans : src/ecrans. Pendant mobile : apps/mobile/App.tsx.
@@ -122,7 +123,7 @@ export default function App() {
   // Feature flags (src/flags) : Mon espace et le formulaire « Déléguer » peuvent être éteints depuis /admin.
   const monEspace = useFlag('espace.mon_espace'), deleguer = useFlag('formulaires.deleguer');
   // Refonte de Mon espace (v2.1.0) : onglets, accueil « À faire maintenant », messagerie, profil et réglages (src/ecrans/Espace.tsx).
-  const refonte = useFlag('espace.refonte').actif, nonLus = useNonLus(tasks, actorId);
+  const refonte = useFlag('espace.refonte').actif, nonLus = useNonLus(tasks, actorId), preBeta = useFlag('espace.pre_beta').actif;
   const ctx: Ctx = {
     state, place, draft, task, offer, can: rights(task, actorId), field, choice, go, mutate, keepDraft,
     fill: values => setDraft(d => ({ ...d, ...values })),
@@ -166,6 +167,7 @@ export default function App() {
       {connecte && refonte && <Onglets place={place} go={go} nonLus={nonLus}/>}
       {connecte && refonte && ['detail', 'offer', 'review', 'edit', 'contract', 'report', 'profile', 'help', 'new'].includes(screen) && <div className="app-nav"><Action secondary onClick={back}>{backLabel(screen)}</Action></div>}
       {connecte && !refonte && <div className="app-nav">{screen !== 'home' && <Action secondary onClick={back}>{backLabel(screen)}</Action>}{screen !== 'account' && <button type="button" className="btn small secondary" onClick={() => go('account')}>Mon compte</button>}{screen !== 'help' && <button type="button" className="btn small secondary" data-beta-feature="aide" onClick={() => go('help')}>Aide en ligne</button>}</div>}
+      {connecte && preBeta && <p className="bandeau-pre-beta" role="note">{PRE_BETA.bandeau}</p>}
       {!!error && <div role="alert" className="alert">{error}</div>}
       {!!notice && <p aria-live="polite" className="notice">{notice}</p>}
       {content}

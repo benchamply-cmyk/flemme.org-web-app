@@ -6,11 +6,15 @@ import type { Ctx } from './contexte.ts';
 import { FORMULES, titreAvecFormule, type Formule } from '../formules.ts';
 import { reprendreBrouillon } from '../site/brouillon.ts';
 import { useEffect } from 'react';
+import { PRE_BETA } from '../../../../packages/shared/src/espace.ts';
+import { useFlag } from '../flags/useFlag.tsx';
 
 // Dépôt d’une demande (écran « new », éventuellement repris d’un brouillon) et modification (écran « edit »).
 // Les contrôles sont ceux de packages/shared/src/parcours.ts, refaits par le serveur.
 export function NouvelleFlemme({ state: { busy }, place, task, draft, field, choice, mutate, validated, keepDraft, fill }: Ctx) {
   const editing = place.screen === 'edit' && !!task;
+  // Pré-bêta (flag espace.pre_beta) : la demande est gardée en brouillon sur le compte, publiée à la bêta.
+  const preBeta = useFlag('espace.pre_beta').actif && !editing;
   // Demande commencée sans compte sur la page Déléguer de la vitrine : reprise une fois, à l’ouverture du formulaire
   // (après connexion ou création du compte). La formule de l’adresse (?formule=) est remise si la connexion l’a effacée.
   useEffect(() => {
@@ -58,8 +62,11 @@ export function NouvelleFlemme({ state: { busy }, place, task, draft, field, cho
     <p className="muted">Voici les informations qui pourront être visibles sur votre fiche.</p>
     <div className="card apercu-demande" aria-label="Aperçu de votre fiche publique"><span className="row"><span className="tag">{label(CATEGORIES, draft.category) || 'Catégorie à choisir'}</span><span className="strong">{budget}</span></span><span className="card-title">{draft.title ? titreAvecFormule(draft.title, formule) : 'Titre à compléter'}</span><span className="muted">{[lieu, draft.deadline ? (draft.deadline === 'autre' ? draft.deadlineNote : label(DEADLINES, draft.deadline)) : 'Délai à discuter'].filter(Boolean).join(' · ')}</span>{draft.details && <span>{draft.details}</span>}</div>
     <p className="note">Sans expiration. {commissionNote()} Votre demande reste privée jusqu’à sa relecture par l’équipe FLEMME, qui peut vous demander une correction. Cette relecture ne garantit pas le résultat.</p>
-    <p className="note">N’ajoute pas d’informations sensibles dans le titre ni la description : vous pourrez transmettre les détails utiles en privé.</p>
-    <Action disabled={busy} onClick={send}>{editing ? 'Renvoyer ma demande' : 'Envoyer ma demande'}</Action>
-    {!editing && <Action secondary disabled={busy} onClick={() => session.saveDraft({ id: place.draftId, kind: 'task', fields: fields() }, d => keepDraft(d.id))}>Enregistrer le brouillon</Action>}
+    <p className="note">N’ajoutez pas d’informations sensibles dans le titre ni la description : vous pourrez transmettre les détails utiles en privé.</p>
+    {preBeta ? <>
+      <p className="note">{PRE_BETA.noteDemande}</p>
+      <Action disabled={busy} onClick={() => session.saveDraft({ id: place.draftId, kind: 'task', fields: fields() }, d => { keepDraft(d.id); session.notify(PRE_BETA.enregistree); })}>{PRE_BETA.enregistrer}</Action>
+    </> : <Action disabled={busy} onClick={send}>{editing ? 'Renvoyer ma demande' : 'Envoyer ma demande'}</Action>}
+    {!editing && !preBeta && <Action secondary disabled={busy} onClick={() => session.saveDraft({ id: place.draftId, kind: 'task', fields: fields() }, d => keepDraft(d.id))}>Enregistrer le brouillon</Action>}
   </>;
 }

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { SearchFilter, Task } from '../../../../packages/shared/src/index.ts';
 import { CATEGORIES, budgetLabel, date, money, partition, price, taskStatus } from '../../../../packages/shared/src/index.ts';
-import { ETAPES, avancement, derniereActivite, etapeAtteinte, prochaineAction, remplissageProfil } from '../../../../packages/shared/src/espace.ts';
+import { ETAPES, PRE_BETA, avancement, derniereActivite, etapeAtteinte, prochaineAction, remplissageProfil } from '../../../../packages/shared/src/espace.ts';
 import { session } from '../session.ts';
 import { useFlag } from '../flags/useFlag.tsx';
 import type { Ctx, Place } from './contexte.ts';
@@ -101,7 +101,7 @@ function CarteDemande({ task: t, actorId, go }: { task: Task; actorId: string; g
 
 /** Accueil : « À faire maintenant », raccourcis et demandes en cours. */
 export function AccueilEspace({ state: { gateway, tasks, actorId, found }, go }: Ctx) {
-  const premium = useFlag('espace.premium'), confiance = useFlag('espace.confiance').actif;
+  const premium = useFlag('espace.premium'), confiance = useFlag('espace.confiance').actif, preBeta = useFlag('espace.pre_beta').actif;
   const { own, helping, available } = partition(tasks, actorId);
   const aFaire = [...own, ...helping].map(t => ({ t, a: prochaineAction(t, actorId, { confiance }) })).filter(x => x.a);
   const enCours = [...own, ...helping].filter(t => t.status !== 'completed' && !aFaire.some(x => x.t.id === t.id));
@@ -111,13 +111,13 @@ export function AccueilEspace({ state: { gateway, tasks, actorId, found }, go }:
     <header className="espace-entete"><div><p className="note">{new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</p><h1 className="espace-titre">Bonjour {prenom}</h1></div></header>
     <section aria-labelledby="a-faire"><h2 className="espace-section" id="a-faire">À faire maintenant{aFaire.length ? ` · ${aFaire.length}` : ''}</h2>
       {aFaire.length ? aFaire.map(({ t, a }) => <button type="button" key={t.id} className="carte-espace a-faire" onClick={() => go('detail', { taskId: t.id })}>
-        <span className="carte-action">{a}</span><span className="carte-titre">{t.title}</span><span className="note">{t.owner.id === actorId ? 'Ta demande' : 'Ta mission'} · {avancement(t)}</span></button>)
+        <span className="carte-action">{a}</span><span className="carte-titre">{t.title}</span><span className="note">{t.owner.id === actorId ? 'Votre demande' : 'Votre mission'} · {avancement(t)}</span></button>)
         : <p className="muted">Rien à faire pour l’instant. Vous serez prévenu ici dès qu’une offre ou un message arrive.</p>}
       {nouvelles > 0 && <button type="button" className="carte-espace alerte" onClick={() => go('list', { tab: 'find' })}><span className="carte-titre">{nouvelles} nouvelle{nouvelles > 1 ? 's' : ''} demande{nouvelles > 1 ? 's' : ''} pour vos alertes</span><span className="carte-action">Voir ›</span></button>}
     </section>
     <section className="tuiles" aria-label="Raccourcis">
-      <button type="button" className="tuile fonce" onClick={() => go('new', { tab: 'mine', draftId: undefined })}><span className="tuile-titre">Déléguer</span><span className="note">Publier une demande</span></button>
-      <button type="button" className="tuile" onClick={() => go('list', { tab: 'find' })}><span className="tuile-titre">Résoudre</span><span className="note">Trouver une flemme</span></button>
+      <button type="button" className="tuile fonce" onClick={() => go('new', { tab: 'mine', draftId: undefined })}><span className="tuile-titre">Déléguer</span><span className="note">{preBeta ? PRE_BETA.tuileDeleguer : 'Publier une demande'}</span></button>
+      <button type="button" className="tuile" onClick={() => go('list', { tab: 'find' })}><span className="tuile-titre">Résoudre</span><span className="note">{preBeta ? PRE_BETA.tuileResoudre : 'Trouver une flemme'}</span></button>
     </section>
     {enCours.length > 0 && <section aria-labelledby="en-cours"><div className="row"><h2 className="espace-section" id="en-cours">En cours</h2><button type="button" className="lien" onClick={() => go('list', { tab: 'mine' })}>Tout voir</button></div>
       {enCours.slice(0, 4).map(t => <CarteDemande key={t.id} task={t} actorId={actorId} go={go}/>)}</section>}
@@ -127,13 +127,14 @@ export function AccueilEspace({ state: { gateway, tasks, actorId, found }, go }:
 
 /** Mes demandes : « Je délègue » et « J’aide », avec filtres d’état et brouillons. */
 export function MesDemandes({ state: { tasks, actorId, busy, drafts, more }, go }: Ctx) {
+  const preBeta = useFlag('espace.pre_beta').actif;
   const { own, helping } = partition(tasks, actorId);
   const [cote, setCote] = useState<'delegue' | 'aide'>(() => own.length || !helping.length ? 'delegue' : 'aide');
   const [etat, setEtat] = useState<'tous' | 'actives' | 'terminees'>('tous');
   const liste = (cote === 'delegue' ? own : helping).filter(t => etat === 'tous' || (etat === 'terminees') === (t.status === 'completed'));
   const brouillons = drafts.filter(d => d.kind === (cote === 'delegue' ? 'task' : 'offer'));
   return <>
-    <div className="row"><h1 className="espace-titre">Mes flemmes</h1><button type="button" className="btn small" onClick={() => go('new', { draftId: undefined })}>＋ Déléguer</button></div>
+    <div className="row"><h1 className="espace-titre">Mes flemmes</h1><button type="button" className="btn small" onClick={() => go('new', { draftId: undefined })}>{preBeta ? '＋ Préparer' : '＋ Déléguer'}</button></div>
     <div className="segments" role="tablist" aria-label="Côté">
       <button type="button" role="tab" aria-selected={cote === 'delegue'} onClick={() => setCote('delegue')}>Je délègue · {own.length}</button>
       <button type="button" role="tab" aria-selected={cote === 'aide'} onClick={() => setCote('aide')}>J’aide · {helping.length}</button>
@@ -141,8 +142,8 @@ export function MesDemandes({ state: { tasks, actorId, busy, drafts, more }, go 
     <div className="puces" role="group" aria-label="Filtrer">{([['tous', 'Toutes'], ['actives', 'En cours'], ['terminees', 'Terminées']] as const).map(([v, l]) =>
       <button type="button" key={v} className="puce" aria-pressed={etat === v} onClick={() => setEtat(v)}>{l}</button>)}</div>
     {liste.length ? liste.map(t => <CarteDemande key={t.id} task={t} actorId={actorId} go={go}/>)
-      : <p className="muted">{cote === 'delegue' ? 'Aucune demande ici. Qu’aimeriez-vous déléguer ?' : 'Aucune mission ici. Trouvez une demande dans l’onglet Trouver.'}</p>}
-    {brouillons.length > 0 && <><h2 className="espace-section">Brouillons</h2>{brouillons.map(d => <div key={d.id} className="carte-espace brouillon">
+      : <p className="muted">{cote === 'delegue' ? (preBeta ? 'Aucune demande publiée : à la bêta, vous publierez celles que vous avez préparées.' : 'Aucune demande ici. Qu’aimeriez-vous déléguer ?') : 'Aucune mission ici. Trouvez une demande dans l’onglet Trouver.'}</p>}
+    {brouillons.length > 0 && <><h2 className="espace-section">{preBeta && cote === 'delegue' ? PRE_BETA.mesDemandes : 'Brouillons'}</h2>{brouillons.map(d => <div key={d.id} className="carte-espace brouillon">
       <span className="carte-titre">{d.kind === 'task' ? d.fields.title || 'Brouillon sans titre' : tasks.find(t => t.id === d.taskId)?.title || 'Proposition'}</span>
       <span className="note">Enregistré le {date(d.updatedAt)} · visible de vous seul</span>
       <span className="row"><button type="button" className="btn small" disabled={busy} onClick={() => d.kind === 'task' ? go('new', { draftId: d.id }) : go('detail', { taskId: d.taskId || '', draftId: d.id })}>Reprendre</button><button type="button" className="btn small secondary" disabled={busy} onClick={() => session.deleteDraft(d.id)}>Supprimer</button></span></div>)}</>}
@@ -214,6 +215,17 @@ export function FiltresRapides({ f, run }: { f: SearchFilter; run: (next: Search
     const [k, v] = Object.entries(p.filtre)[0] as [keyof SearchFilter, string], actif = f[k] === v;
     return <button type="button" key={p.libelle} className="puce" aria-pressed={actif} onClick={() => run({ ...f, [k]: actif ? '' : v })}>{p.libelle}</button>;
   })}</div>;
+}
+
+/** Trouver en pré-bêta : pas de liste, mais filtres et alertes pour préparer ses recherches. */
+export function TrouverPreBeta() {
+  const [f, setF] = useState<SearchFilter>({});
+  return <>
+    <h1 className="espace-titre">{PRE_BETA.trouverTitre}</h1>
+    <p className="muted">{PRE_BETA.trouver}</p>
+    <FiltresRapides f={f} run={setF}/>
+    <Alertes f={f} run={setF}/>
+  </>;
 }
 
 /** Bandeau « Créer l’alerte » pour les filtres en cours, et liste des alertes. */
