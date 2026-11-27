@@ -42,7 +42,8 @@ export const FLAGS = {
     description: 'Éteint : la connexion et Mon espace affichent « bientôt disponible ».' },
   // Refonte de Mon espace (v2.1.0, 18/11/2026) : barre d’onglets, accueil « À faire maintenant », frise, comparaison des offres,
   // messagerie en bulles, filtres rapides et alertes, profil et réglages. Allumée hors prod ; éteinte = ancien Mon espace.
-  'espace.refonte': { domaine: 'Mon espace', libelle: 'Nouveau Mon espace', type: 'lancement', defaut: { local: 'tous', beta: 'tous', preprod: 'tous', prod: 'off' }, creeLe: '2026-11-18',
+  'espace.refonte': { domaine: 'Mon espace', libelle: 'Nouveau Mon espace', type: 'lancement', defaut: partout('tous'), creeLe: '2026-11-18',
+    // 27/11/2026 (Ben, mode pré-bêta) : allumé aussi en prod, l’ancien Mon espace ne sert plus que de repli.
     description: 'Allumé : nouveau Mon espace (onglets, À faire, frise, offres comparées, messagerie, alertes). Éteint : ancien Mon espace.' },
   'espace.aide': { domaine: 'Mon espace', libelle: 'Aide dans l’app', type: 'lancement', defaut: partout('tous'), creeLe: '2026-11-16', retraitPrevu: '2026-12-31',
     description: 'Éteint : masque les accès à l’aide humaine dans l’app.' },
@@ -56,7 +57,13 @@ export const FLAGS = {
   'espace.confiance': { domaine: 'Mon espace', libelle: 'Questions publiques et livraison', type: 'lancement',
     defaut: { local: 'tous', beta: 'off', preprod: 'off', prod: 'off' }, creeLe: '2026-11-18', retraitPrevu: '2027-01-31',
     description: 'Allumé : questions publiques sous les demandes, bouton « mission livrée » et libération automatique après 7 jours. Éteint : masqués.' },
-  'espace.premium': { domaine: 'Mon espace', libelle: 'Liens Premium', type: 'lancement', defaut: partout('tous'), creeLe: '2026-11-16',
+  // Pré-bêta (27/11/2026, choix de Ben) : jusqu’à la bêta de janvier 2027, rien n’est public. On crée son compte, son profil,
+  // ses demandes (gardées en brouillon côté serveur) et ses recherches ; publier, proposer son aide et signer attendent la bêta.
+  // Revérifié en base par flemme_v2.flag_guard (migration 20261127120000) quand la ligne prod est réglée sur « tous » dans /admin.
+  'espace.pre_beta': { domaine: 'Mon espace', libelle: 'Mode pré-bêta', type: 'lancement', defaut: { local: 'off', beta: 'off', preprod: 'off', prod: 'tous' }, creeLe: '2026-11-27', retraitPrevu: '2027-01-31',
+    description: 'Allumé : demandes enregistrées pour la bêta sans être publiées, liste des demandes fermée, propositions et accords refusés par la base. Éteint : parcours complet.' },
+  // Premium gelé jusqu’après la bêta (A-03, 26/11/2026) : liens masqués en prod par défaut.
+  'espace.premium': { domaine: 'Mon espace', libelle: 'Liens Premium', type: 'lancement', defaut: { local: 'tous', beta: 'tous', preprod: 'tous', prod: 'off' }, creeLe: '2026-11-16',
     description: 'Éteint : masque les liens vers la page Premium (gelée jusqu’à 10 clients payants).' },
   'design.theme': { domaine: 'Design et visuel', libelle: 'Thème du site', type: 'variante', defaut: partout('tous'), valeurs: ['clair', 'nuit', 'papier'], creeLe: '2026-11-16',
     description: 'Thème appliqué à tous les visiteurs. Un testeur peut encore le changer pour lui dans /beta.' },

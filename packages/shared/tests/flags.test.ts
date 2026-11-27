@@ -65,3 +65,12 @@ test('modèle affiché : ouvert partout par défaut (18/11/2026), réglable dans
   assert.equal(resoudreFlags('prod', [{ key: 'modele.version', state: 'tous', value: 'hybride' }], false)['modele.version'].valeur, 'hybride');
   assert.equal(resoudreFlags('preprod', [{ key: 'modele.version', state: 'tous', value: 'autre' }], false)['modele.version'].valeur, 'ouvert', 'valeur hors liste : défaut de l’environnement');
 });
+
+test('mode pré-bêta (27/11/2026) : actif en prod seulement, nouveau Mon espace partout, Premium masqué en prod', () => {
+  assert.equal(resoudreFlags('prod', null, false)['espace.pre_beta'].actif, true);
+  for (const env of ['local', 'beta', 'preprod'] as const) assert.equal(resoudreFlags(env, null, false)['espace.pre_beta'].actif, false, env);
+  assert.equal(resoudreFlags('prod', [{ key: 'espace.pre_beta', state: 'off', value: null }], false)['espace.pre_beta'].actif, false, 'ouverture de la bêta depuis /admin');
+  assert.equal(resoudreFlags('prod', null, false)['espace.refonte'].actif, true);
+  assert.equal(resoudreFlags('prod', null, false)['espace.premium'].actif, false);
+  assert.equal(resoudreFlags('preprod', null, false)['espace.premium'].actif, true);
+});

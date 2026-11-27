@@ -6,7 +6,7 @@ import { session } from '../session.ts';
 import { Action } from '../ui.tsx';
 import type { Ctx } from './contexte.ts';
 import { useFlag } from '../flags/useFlag.tsx';
-import { Alertes, FiltresRapides, MesDemandes } from './Espace.tsx';
+import { Alertes, FiltresRapides, MesDemandes, TrouverPreBeta } from './Espace.tsx';
 
 export function TaskCard({ task: t, actorId, onOpen }: { task: Task; actorId: string; onOpen: () => void }) {
   const pending = t.owner.id === actorId && t.review && t.review !== 'published';
@@ -15,8 +15,10 @@ export function TaskCard({ task: t, actorId, onOpen }: { task: Task; actorId: st
 }
 export function Listes(ctx: Ctx) {
   const { state: { tasks, actorId, busy, more, drafts }, place, go } = ctx;
-  const refonte = useFlag('espace.refonte').actif;
+  const refonte = useFlag('espace.refonte').actif, preBeta = useFlag('espace.pre_beta').actif;
   if (refonte && place.tab === 'mine') return <MesDemandes {...ctx}/>;
+  // Pré-bêta : la liste des demandes reste fermée jusqu’à la bêta de janvier 2027.
+  if (preBeta && place.tab !== 'mine') return <TrouverPreBeta/>;
   const { own, helping, available } = partition(tasks, actorId);
   const card = (t: Task) => <TaskCard key={t.id} task={t} actorId={actorId} onOpen={() => go('detail', { taskId: t.id })}/>;
   const reload = <>{more && <Action secondary disabled={busy} onClick={() => session.loadMore()}>Voir plus de demandes</Action>}<Action secondary disabled={busy} onClick={() => session.refresh()}>↻ Actualiser</Action></>;
@@ -27,7 +29,7 @@ export function Listes(ctx: Ctx) {
   if (place.tab === 'mine') return <><h1 className="heading">Vos demandes et vos propositions</h1><p className="muted">Retrouvez ce que vous avez délégué et l’aide que vous avez proposée.</p>
     <Action onClick={() => go('new', { draftId: undefined })}>＋ Déléguer ma flemme</Action>
     {todo.length > 0 && <><h2 className="section-title">À faire</h2>
-      {todo.map(({ t, next }) => <button type="button" key={t.id} className="card todo" onClick={() => go('detail', { taskId: t.id })}><span className="card-title">{t.title}</span><span className="strong">{next}</span><span className="note">{t.owner.id === actorId ? 'Ta demande' : 'Ta proposition'} · {taskStatus[t.status]}</span></button>)}</>}
+      {todo.map(({ t, next }) => <button type="button" key={t.id} className="card todo" onClick={() => go('detail', { taskId: t.id })}><span className="card-title">{t.title}</span><span className="strong">{next}</span><span className="note">{t.owner.id === actorId ? 'Votre demande' : 'Votre proposition'} · {taskStatus[t.status]}</span></button>)}</>}
     {taskDrafts.length > 0 && <><h2 className="section-title">Mes brouillons</h2>
       {taskDrafts.map(d => <div className="card" key={d.id}><span className="card-title">{d.fields.title || 'Brouillon sans titre'}</span><span className="note">Enregistré le {date(d.updatedAt)} · visible de vous seul</span>
         <span className="row"><button type="button" className="btn small" disabled={busy} onClick={() => go('new', { draftId: d.id })}>Reprendre</button><button type="button" className="btn small secondary" disabled={busy} onClick={() => session.deleteDraft(d.id)}>Supprimer</button></span></div>)}</>}
@@ -101,7 +103,7 @@ function Recherche({ state: { busy, found, filter }, card, fallback, skip }: Ctx
     </div>}
     {select('Trier par', 'sort', SORTS, '')}
     {found && <p className="note" aria-live="polite">{found.total === 0 ? 'Aucune demande avec ces filtres.' : found.total + ' demande(s) trouvée(s)'}</p>}
-    {list.length ? list.map(card) : !found && <p className="muted">Aucune nouvelle demande pour l’instant. Actualise la liste un peu plus tard.</p>}
+    {list.length ? list.map(card) : !found && <p className="muted">Aucune nouvelle demande pour l’instant. Actualisez la liste un peu plus tard.</p>}
     {found?.total === 0 && active > 0 && <><p className="muted">Essayez d’élargir la zone ou d’afficher les tâches à distance.</p><button type="button" className="btn secondary" disabled={busy} onClick={() => run({ sort: f.sort })}>Effacer les filtres</button></>}
     {found?.nextCursor && <button type="button" className="btn secondary" disabled={busy} onClick={() => session.search(filter, true)}>Voir plus de demandes</button>}
     <button type="button" className="btn secondary" disabled={busy} onClick={() => session.search(filter)}>↻ Actualiser</button>

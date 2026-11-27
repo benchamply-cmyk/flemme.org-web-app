@@ -45,3 +45,13 @@ Branche courte depuis `preprod`, code derrière un flag `off` par défaut en pro
 ## Flag `espace.refonte` (v2.1.0)
 
 Ajouté le 18/11/2026 pour la refonte de Mon espace (barre d’onglets, accueil « À faire maintenant », frise, comparaison des offres, messagerie, alertes, profil et réglages). Allumé en local, beta et preprod, éteint en prod : la promotion de la v2.1.0 n’affiche le nouveau Mon espace en production que si Ben l’allume dans /admin › Fonctionnalités. Éteint, l’ancien Mon espace reste en place. Code : `apps/web/src/ecrans/Espace.tsx`, logique partagée `packages/shared/src/espace.ts`.
+
+Le 27/11/2026 (mode pré-bêta, choix de Ben), le défaut passe à « tous » en prod aussi : le nouveau Mon espace est celui qu’on ouvre en production depuis /bientot.
+
+## Flag `espace.pre_beta` (27/11/2026)
+
+Ajouté le 27/11/2026, quand Ben a choisi le mode pré-bêta pour Mon espace en production : jusqu’à la bêta de janvier 2027, rien n’est public. Défaut : « tous » en prod, « off » en local, beta et preprod (le parcours complet reste testable en preprod ; on peut y allumer le flag dans /admin pour voir la prod).
+
+- Écran (allumé) : bandeau « Bêta en janvier 2027 », « Enregistrer pour la bêta » remplace « Envoyer ma demande » (la demande est gardée en brouillon sur le compte, `flemme_v2.drafts`), l’onglet Trouver n’affiche plus de liste mais les filtres et les alertes, « Prêtes pour la bêta » dans Demandes.
+- Base : la migration `20261127120000_flemme_v2_pre_beta.sql` complète `flemme_v2.flag_guard`. Quand la ligne `espace.pre_beta` de l’environnement serveur vaut « tous », la base refuse `create`, `apply`, `apply_edit`, `ask`, `agreement_save`, `agreement_submit`, `agreement_sign` et `pay` aux membres (pas à l’équipe). Sans ligne, la base ne bloque rien : **à la promotion, Ben règle le flag sur « Tout le monde » en prod dans /admin**, pour que la base suive l’écran.
+- Ouvrir la bêta : /admin › Fonctionnalités › « Mode pré-bêta » → Éteint en prod. Retrait du flag prévu après la bêta (31/01/2027).

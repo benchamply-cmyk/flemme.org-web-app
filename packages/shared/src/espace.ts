@@ -70,3 +70,16 @@ export function remplissageProfil(p: { avatar?: string | null; name?: string; bi
   const faits = items.filter(i => i.ok).length;
   return { faits, total: items.length, pourcent: Math.round(faits / items.length * 100), manquants: items.filter(i => !i.ok).map(i => i.label) };
 }
+
+/** Mode pré-bêta (flag espace.pre_beta, choix de Ben du 27/11/2026) : textes de Mon espace jusqu’à la bêta de janvier 2027. */
+export const PRE_BETA = {
+  bandeau: 'Bêta en janvier 2027. D’ici là, rien n’est publié : préparez vos demandes et vos recherches, elles vous attendent ici.',
+  enregistrer: 'Enregistrer pour la bêta',
+  noteDemande: 'Votre demande reste privée : elle est gardée sur votre compte et vous la publierez en un clic à l’ouverture de la bêta, en janvier 2027. Pendant la bêta, aucun argent réel : les missions se paient en crédits fondateurs.',
+  enregistree: 'Demande enregistrée pour la bêta. Vous la retrouvez dans Demandes et vous la publierez à l’ouverture, en janvier 2027.',
+  mesDemandes: 'Prêtes pour la bêta',
+  trouverTitre: 'Les demandes arrivent en janvier',
+  trouver: 'Les demandes des autres membres seront visibles à l’ouverture de la bêta, en janvier 2027. Choisissez dès maintenant ce qui vous intéresse et créez une alerte : elle vous signalera les nouvelles demandes sur votre accueil.',
+  tuileDeleguer: 'Préparer une demande',
+  tuileResoudre: 'Choisir mes recherches',
+} as const;
