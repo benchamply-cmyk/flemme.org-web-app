@@ -15,8 +15,9 @@ const pages = ['index', 'services', 'deleguer', 'concept', 'faq', 'contact', 'pr
 // En-tête et pied de page de la vitrine, écrits une fois dans src/site et insérés dans chaque page au build.
 const morceau = (nom: string) => readFileSync(fileURLToPath(new URL(`./src/site/${nom}.html`, import.meta.url)), 'utf8').trim();
 // Habillage G1 (24/11/2026, comme /bientot) : polices IBM Plex Mono et IBM Plex Sans ajoutées à chaque page ; styles dans src/site/g1.css.
-const policesG1 = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">';
-const avecPolicesG1 = (html: string) => html.includes('IBM+Plex+Mono') ? html : html.replace('</head>', policesG1 + '\n</head>');
+// Depuis le 27/11/2026 (RGPD) : polices hébergées sur flemme.org (public/fonts/polices.css), plus aucun appel à Google Fonts.
+const policesG1 = '<link rel="stylesheet" href="/fonts/polices.css">';
+const avecPolicesG1 = (html: string) => html.includes('/fonts/polices.css') ? html : html.replace('</head>', policesG1 + '\n</head>');
 const habillage = { name: 'flemme-habillage', transformIndexHtml: (html: string) => remplacerPrix(avecPolicesG1(html).replace('<!--#entete-->', morceau('entete')).replace('<!--#pied-->', morceau('pied'))
   // Catalogue des services (src/site/catalogue.ts, seule source des prix) : complet sur /services, une carte par famille sur l’accueil.
   .replace('<!--#catalogue-->', htmlCatalogue()).replace('<!--#catalogue-moments-->', htmlMoments()).replace('<!--#catalogue-points-->', htmlPoints())
