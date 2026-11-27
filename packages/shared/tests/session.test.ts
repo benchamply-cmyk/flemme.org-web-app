@@ -124,3 +124,20 @@ test('mot de passe oublié et nom affiché', async () => {
   await s.login('u@example.com', 'motdepasse-long', () => {});
   await s.updateProfile('Ben', () => {}); assert.equal(s.getState().gateway!.actor.name, 'Ben'); assert.equal(s.getState().notice, 'Nom affiché mis à jour.');
 });
+
+test('recherches enregistrées (27/11/2026) : sur le compte de démo, cinq au plus, consultation discrète', async () => {
+  const { DemoGateway } = await import('../src/gateway.ts');
+  let saved: unknown = null;
+  const g = new DemoGateway(null, async s => { saved = s; });
+  assert.deepEqual(await g.searches(), []);
+  const a = await g.saveSearch({ id: 'r1', filter: { category: 'administratif', sort: 'prix' }, label: 'Administratif', seenAt: '2026-11-27T00:00:00.000Z' });
+  assert.equal(a.filter.sort, undefined, 'le tri n’est pas gardé');
+  await g.saveSearch({ id: 'r1', filter: { category: 'administratif' }, label: 'Administratif', seenAt: '2026-12-01T00:00:00.000Z' });
+  assert.equal((await g.searches()).length, 1);
+  assert.equal((await g.searches())[0].seenAt, '2026-12-01T00:00:00.000Z');
+  for (const i of [2, 3, 4, 5]) await g.saveSearch({ id: 'r' + i, filter: { q: 'cv' + i }, label: 'cv' + i, seenAt: '' });
+  await assert.rejects(g.saveSearch({ id: 'r6', filter: { q: 'trop' }, label: 'trop', seenAt: '' }), /Cinq recherches au plus/);
+  await g.deleteSearch('r1');
+  assert.equal((await g.searches()).length, 4);
+  assert.ok(saved, 'état de démo enregistré');
+});

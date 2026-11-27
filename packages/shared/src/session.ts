@@ -2,7 +2,7 @@ import type { Actor, Command, Input, Task } from './domain.ts';
 import { DemoGateway, RemoteGateway, newId } from './gateway.ts';
 import type { AuthLinkOptions, DemoState, Gateway, TokenStorage } from './gateway.ts';
 import { notices } from './textes.ts';
-import type { SavedDraft, SearchFilter, SearchPage } from './parcours.ts';
+import type { SavedDraft, SavedSearch, SearchFilter, SearchPage } from './parcours.ts';
 import type { Profile } from './accord.ts';
 import type { FileItem, HelpRequest, Upload } from './aide.ts';
 
@@ -17,6 +17,8 @@ export type SessionState = {
   busy: boolean; ready: boolean; error: string; notice: string;
   /** Brouillons de la personne connectée (demandes et candidatures). */
   drafts: SavedDraft[];
+  /** Recherches enregistrées sur le compte (alertes de l’onglet Trouver). */
+  searches: SavedSearch[];
   /** Résultats de « Résoudre une flemme » pour les filtres `filter` (null : pas encore cherché). */
   found: SearchPage | null; filter: SearchFilter;
   /** Dernier profil public ouvert (le sien ou celui d’un autre membre). */
@@ -43,7 +45,7 @@ const shortPassword = 'Choisissez un mot de passe d’au moins 12 caractères.';
 export class FlemmeSession {
   readonly remote: boolean;
   private options: SessionOptions;
-  private state: SessionState = { gateway: null, actorId: '', tasks: [], more: null, recovering: false, busy: false, ready: false, error: '', notice: '', drafts: [], found: null, filter: {}, profile: null, files: {}, help: null };
+  private state: SessionState = { gateway: null, actorId: '', tasks: [], more: null, recovering: false, busy: false, ready: false, error: '', notice: '', drafts: [], searches: [], found: null, filter: {}, profile: null, files: {}, help: null };
   private listeners = new Set<() => void>();
   private locked = false;
   // Identifiant de requête réutilisé tant que la même action est retentée : un double envoi ne crée rien en double.
@@ -75,7 +77,7 @@ export class FlemmeSession {
     this.set({ tasks: cursor ? [...old, ...page.tasks.filter(t => !old.some(v => v.id === t.id))] : page.tasks, more: page.nextCursor });
     // Les brouillons sont secondaires : une base sans la migration parcours (action « drafts » inconnue)
     // ne doit jamais empêcher d’afficher les flemmes.
-    if (!cursor) this.set({ drafts: await g.drafts().catch(() => []) });
+    if (!cursor) this.set({ drafts: await g.drafts().catch(() => []), searches: await g.searches().catch(() => []) });
   }
   async initialize() {
     await this.execute(async () => {
@@ -150,7 +152,7 @@ export class FlemmeSession {
   async logout(done: () => void) {
     await this.execute(async () => {
       try { await this.remoteGateway().logout(); }
-      finally { this.pending = null; this.set({ actorId: '', tasks: [], more: null, drafts: [], found: null, filter: {}, profile: null, files: {}, help: null }); done(); }
+      finally { this.pending = null; this.set({ actorId: '', tasks: [], more: null, drafts: [], searches: [], found: null, filter: {}, profile: null, files: {}, help: null }); done(); }
     });
   }
   /** Démo locale : changer de personnage pour tester les deux côtés d’une mission. */
@@ -236,6 +238,25 @@ export class FlemmeSession {
     await this.execute(async () => {
       await g.deleteDraft(id);
       this.set({ drafts: this.state.drafts.filter(d => d.id !== id), notice: notices.draftDeleted });
+    });
+  }
+  /** Enregistre une recherche (nouvelle si `id` est absent) ; `seenAt` absent = vue maintenant. */
+  async saveSearch(search: { id?: string; filter: SearchFilter; label: string; seenAt?: string }, quiet = false) {
+    const g = this.state.gateway;
+    if (!g) return;
+    const run = async () => {
+      const saved = await g.saveSearch({ id: search.id || newId(), filter: search.filter, label: search.label, seenAt: search.seenAt || new Date().toISOString() });
+      this.set({ searches: [saved, ...this.state.searches.filter(s => s.id !== saved.id)] });
+    };
+    // Mise à jour discrète (consultation d’une alerte) : sans verrou ni message, une erreur ne gêne pas l’écran.
+    if (quiet) await run().catch(() => {}); else await this.execute(run);
+  }
+  async deleteSearch(id: string) {
+    const g = this.state.gateway;
+    if (!g) return;
+    await this.execute(async () => {
+      await g.deleteSearch(id);
+      this.set({ searches: this.state.searches.filter(s => s.id !== id) });
     });
   }
   /** Crée une flemme ou applique une action. `done` reçoit la flemme à jour, avant l’affichage du message. */

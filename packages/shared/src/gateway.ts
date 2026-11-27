@@ -1,6 +1,6 @@
 import { applyCommand, createTask, visibleTask } from './domain.ts';
 import type { Actor, Command, Input, Task } from './domain.ts';
-import type { SavedDraft, SearchFilter, SearchPage } from './parcours.ts';
+import type { SavedDraft, SavedSearch, SearchFilter, SearchPage } from './parcours.ts';
 import { searchTasks } from './parcours.ts';
 import type { Profile } from './accord.ts';
 import type { FileItem, HelpRequest, Upload } from './aide.ts';
@@ -25,6 +25,10 @@ export interface Gateway {
   drafts(): Promise<SavedDraft[]>;
   saveDraft(draft: Omit<SavedDraft, 'updatedAt'>): Promise<SavedDraft>;
   deleteDraft(id: string): Promise<void>;
+  /** Recherches enregistrées sur le compte (alertes de l’onglet Trouver), cinq au plus. */
+  searches(): Promise<SavedSearch[]>;
+  saveSearch(search: Omit<SavedSearch, 'createdAt'>): Promise<SavedSearch>;
+  deleteSearch(id: string): Promise<void>;
   /** Profil public d’un membre (le sien si `userId` est absent) : présentation, compétences, missions et avis. */
   profile(userId?: string): Promise<Profile>;
   saveProfile(data: Input): Promise<Profile>;
@@ -50,7 +54,7 @@ export function seed(): Task[] {
     createTask('demo-cv', demoActors[1], { title: 'Remettre mon CV au propre', details: 'Une page à remettre en forme. Le contenu est déjà rédigé.', place: 'À distance', budget: null }, at)];
 }
 export type DemoProfile = { bio: string | null; skills: string[]; experience: string | null };
-export type DemoState = { version: 1; tasks: Task[]; requests: Record<string, Task>; drafts?: (SavedDraft & { ownerId: string })[]; profiles?: Record<string, DemoProfile>;
+export type DemoState = { version: 1; tasks: Task[]; requests: Record<string, Task>; drafts?: (SavedDraft & { ownerId: string })[]; searches?: (SavedSearch & { ownerId: string })[]; profiles?: Record<string, DemoProfile>;
   help?: (HelpRequest & { ownerId: string })[] };
 export class DemoGateway implements Gateway {
   actor = demoActors[0];
@@ -101,6 +105,23 @@ export class DemoGateway implements Gateway {
   }
   async deleteDraft(id: string) {
     await this.saveDrafts((this.state.drafts || []).filter(x => x.id !== id || x.ownerId !== this.actor.id));
+  }
+  async searches(): Promise<SavedSearch[]> {
+    return (this.state.searches || []).filter(s => s.ownerId === this.actor.id).map(({ ownerId: _, ...s }) => s).reverse();
+  }
+  private async saveSearches(searches: DemoState['searches']) {
+    const next: DemoState = { ...this.state, searches };
+    await this.persist(next); this.state = next;
+  }
+  async saveSearch(s: Omit<SavedSearch, 'createdAt'>): Promise<SavedSearch> {
+    const all = this.state.searches || [], old = all.find(x => x.id === s.id && x.ownerId === this.actor.id);
+    if (!old && all.filter(x => x.ownerId === this.actor.id).length >= 5) throw new Error('Cinq recherches au plus : supprimez-en une avant d’en créer une autre');
+    const saved: SavedSearch = { ...s, filter: { ...s.filter, sort: undefined }, createdAt: old?.createdAt || new Date().toISOString() };
+    await this.saveSearches([...all.filter(x => x !== old), { ...saved, ownerId: this.actor.id }]);
+    return saved;
+  }
+  async deleteSearch(id: string) {
+    await this.saveSearches((this.state.searches || []).filter(x => x.id !== id || x.ownerId !== this.actor.id));
   }
   async profile(userId = this.actor.id): Promise<Profile> {
     const who = demoActors.find(a => a.id === userId);
@@ -301,6 +322,9 @@ export class RemoteGateway implements Gateway {
   async drafts(): Promise<SavedDraft[]> { return (await this.rpc('drafts', null, {}, null)).drafts; }
   async saveDraft(d: Omit<SavedDraft, 'updatedAt'>): Promise<SavedDraft> { return (await this.rpc('draft_save', null, d, null)).draft; }
   async deleteDraft(id: string) { await this.rpc('draft_delete', null, { id }, null); }
+  async searches(): Promise<SavedSearch[]> { return (await this.rpc('searches', null, {}, null)).searches; }
+  async saveSearch(s: Omit<SavedSearch, 'createdAt'>): Promise<SavedSearch> { return (await this.rpc('search_save', null, s, null)).search; }
+  async deleteSearch(id: string) { await this.rpc('search_delete', null, { id }, null); }
   async profile(userId?: string): Promise<Profile> { return (await this.rpc('profile_get', null, userId ? { userId } : {}, null)).profile; }
   async saveProfile(data: Input): Promise<Profile> {
     const p: Profile = (await this.rpc('profile_save', null, data, null)).profile;
