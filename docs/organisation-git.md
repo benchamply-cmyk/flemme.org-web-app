@@ -38,6 +38,7 @@ En bref : deux branches permanentes, un numéro de version à chaque mise en pro
 | mise en relation ouverte (#91, #92, #93, #94) | `v2.0.0` | à la promotion (candidate `v2.0.0-rc.1` en preprod, gel du 18/11/2026, pas de promotion prévue) |
 | confiance, refonte de Mon espace, textes de l'accueil, modèle ouvert hors prod, page /bientot, prod renvoyée vers /bientot (#96, #97, #98, #99, #101, #102) | `v2.1.0` | à la promotion (candidates `v2.1.0-rc.1`, gel du 18/11/2026, et `v2.1.0-rc.2`, gel du 21/11/2026) |
 | pages légales SASU, style G1 sur /bientot puis sur tout le site, contenu v2.0.0-rc.1 avec le haut d'accueil v2.1.0-rc.1, vouvoiement, « Brigadier », modèle bêta en crédits fondateurs et accord relu par l'équipe, /bientot figé, règles projet (#107, #108, #109, #110, #111, #112) | `v2.2.0` | à la promotion (candidate `v2.2.0-rc.1`, gel du 27/11/2026) |
+| Mon espace version bêta : mode pré-bêta, recherches enregistrées, /bientot/mon-espace (#114, #115, #116) | `v2.3.0` | à la promotion (candidate `v2.3.0-rc.1`, gel du 27/11/2026) |
 
 Les anciens tags `v6.*` et `V5.9000-archive` sont conservés comme anciens noms ; les nouveaux tags sont posés sur les mêmes commits.
 
