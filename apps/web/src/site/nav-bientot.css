@@ -1,0 +1,45 @@
+/* Menu de /bientot dans Mon espace en version bêta (27/11/2026). Valeurs relevées sur /bientot (v2.2.0-rc.1,
+   menu « bulles », variante c) : apps/web/public/bientot/vc.css, lignes .vc-nav, .vc-logo-bloc, .vc-menu-btn. */
+body.mode-beta .app-bandeau { display: none; }
+body.mode-beta #root { padding-top: 92px; }
+.nb-nav { position: fixed; z-index: 50; top: calc(14px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 12px; max-width: calc(100% - 32px); box-sizing: border-box;
+  font: 16px/1.55 'IBM Plex Sans', system-ui, sans-serif; color: #101e2a; }
+.nb-logo-bloc, .nb-bulle, .nb-menu-btn { background: rgba(255,255,255,.4); -webkit-backdrop-filter: blur(14px) saturate(1.5); backdrop-filter: blur(14px) saturate(1.5); border-radius: 999px; }
+.nb-logo-bloc { display: inline-flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 1px; line-height: 1; padding: 4px 12px 4px 8px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.8), 6px 8px 18px -8px rgba(58,143,94,.55); }
+.nb-logo { display: inline-flex; align-items: center; height: 26px; padding-left: 34px; color: #101e2a; text-decoration: none;
+  background: url('/bientot/marque/flemme-ruban.svg') 2px 50% / 28px auto no-repeat; font: 600 21px/1 'IBM Plex Mono', ui-monospace, Menlo, monospace; letter-spacing: -.01em; }
+.nb-badge { margin-left: 34px; padding: 3px 7px; border-radius: 999px; background: #d7f5e4; color: #225337; white-space: nowrap;
+  font: 500 8.5px/1 'IBM Plex Mono', ui-monospace, Menlo, monospace; letter-spacing: .12em; text-transform: uppercase; }
+.nb-badge i { display: inline-block; width: 5px; height: 5px; margin-right: 5px; border-radius: 1px; background: #4dbc7c; vertical-align: 1px; animation: nb-pouls 1.6s ease-in-out infinite; }
+@keyframes nb-pouls { 50% { opacity: .35; } }
+.nb-bulle, .nb-cta { display: inline-flex; align-items: center; height: 42px; padding: 0 14px; box-sizing: border-box; text-decoration: none; white-space: nowrap;
+  font: 500 14px/1 'IBM Plex Sans', system-ui, sans-serif; letter-spacing: .04em; text-transform: uppercase; transition: background .2s, transform .2s; }
+.nb-bulle { color: #101e2a; box-shadow: inset 0 0 0 1px rgba(255,255,255,.85), inset 0 1px 0 #fff, 6px 8px 18px -8px rgba(58,143,94,.55); }
+.nb-bulle:hover, .nb-bulle:focus-visible { background: #fff; transform: translateY(-1px); }
+.nb-cta { color: #fff; font-weight: 600; background: #4dbc7c; border: 1px solid #4dbc7c; border-radius: 999px; }
+.nb-cta:hover, .nb-cta:focus-visible { background: #3a8f5e; border-color: #3a8f5e; }
+.nb-menu-btn, .nb-menu-liste { display: none; }
+@media (max-width: 760px) {
+  .nb-large { display: none !important; }
+  .nb-menu-btn { display: inline-flex; align-items: center; justify-content: center; width: 50px; height: 50px; padding: 0; border: 0; cursor: pointer; color: #121212;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.8), 6px 8px 18px -8px rgba(58,143,94,.55); }
+  .nb-carres { display: grid; grid-template-columns: repeat(2, 7px); gap: 4px; transition: transform .5s cubic-bezier(.5,1.6,.4,1); }
+  .nb-carres i { width: 7px; height: 7px; border-radius: 2px; background: #121212; transition: transform .5s cubic-bezier(.5,1.6,.4,1), border-radius .4s ease, background .3s ease; }
+  .nb-carres i:nth-child(2), .nb-carres i:nth-child(3) { background: #3a8f5e; }
+  .nb-menu-btn[aria-expanded="true"] .nb-carres { transform: rotate(45deg); }
+  .nb-menu-btn[aria-expanded="true"] .nb-carres i { border-radius: 50%; }
+  .nb-menu-btn[aria-expanded="true"] .nb-carres i:nth-child(1) { transform: translate(-2px, -2px); }
+  .nb-menu-btn[aria-expanded="true"] .nb-carres i:nth-child(2) { transform: translate(2px, -2px); background: #57d68d; }
+  .nb-menu-btn[aria-expanded="true"] .nb-carres i:nth-child(3) { transform: translate(-2px, 2px); background: #57d68d; }
+  .nb-menu-btn[aria-expanded="true"] .nb-carres i:nth-child(4) { transform: translate(2px, 2px); }
+  .nb-menu-liste:not([hidden]) { display: flex; flex-direction: column; gap: 6px; position: absolute; top: calc(100% + 10px); right: 0; min-width: 210px; padding: 8px; border-radius: 22px;
+    background: rgba(255,255,255,.82); -webkit-backdrop-filter: blur(20px) saturate(1.5); backdrop-filter: blur(20px) saturate(1.5); border: 1px solid rgba(255,255,255,.8);
+    box-shadow: 0 18px 40px rgba(34,83,55,.18); animation: nb-ouvre .25s ease both; }
+  .nb-menu-liste a { display: flex; align-items: center; height: 44px; padding: 0 16px; border-radius: 999px; background: #fff; color: #101e2a; font: 500 15px/1 'IBM Plex Sans', system-ui, sans-serif; text-decoration: none; box-shadow: inset 0 0 0 1px rgba(18,18,18,.08); }
+  .nb-menu-liste a:hover, .nb-menu-liste a:focus-visible { box-shadow: inset 0 0 0 1.5px #3a8f5e; }
+  .nb-menu-liste a.nb-menu-cta { background: #121212; color: #fff; font-weight: 600; justify-content: center; }
+}
+@keyframes nb-ouvre { from { opacity: 0; transform: translateY(-6px) scale(.97); } }
+@media (prefers-reduced-motion: reduce) { .nb-badge i, .nb-carres, .nb-carres i, .nb-menu-liste:not([hidden]) { animation: none; transition: none; } }

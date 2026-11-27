@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { adresse, backLabel, contractFields, footer, lireAdresse, money, rights, taskFields } from '../../../packages/shared/src/index.ts';
+import { ADRESSE_BETA, adresse, backLabel, contractFields, footer, lireAdresse, money, rights, taskFields } from '../../../packages/shared/src/index.ts';
 import type { Adresse, Command, Input, Option, Screen, Task } from '../../../packages/shared/src/index.ts';
 import { onlinePayment, session, useSession } from './session.ts';
 import { Action } from './ui.tsx';
@@ -23,6 +23,7 @@ import { Offre } from './ecrans/Offre.tsx';
 import { Profil } from './ecrans/Profil.tsx';
 import { Signalement } from './ecrans/Signalement.tsx';
 import { BientotDisponible, useFlag } from './flags/useFlag.tsx';
+import { NavBientot } from './site/NavBientot.tsx';
 import { AccueilEspace, Messages, Onglets, Reglages, useNonLus } from './ecrans/Espace.tsx';
 import { PRE_BETA } from '../../../packages/shared/src/espace.ts';
 
@@ -44,7 +45,9 @@ function placeDe(a: Adresse, from: Place): Place {
 function retenirCategorie(category: string | undefined) {
   if (category) try { sessionStorage.setItem('flemme.filtre', JSON.stringify({ category })); } catch { /* stockage bloqué */ }
 }
-const adresseDe = (p: Place) => adresse(p);
+// Arrivée par /bientot/mon-espace (boutons de /bientot) : l’accueil de l’espace garde cette adresse, et l’écran passe en version bêta.
+const entreeBeta = location.pathname.replace(/\/+$/, '') === ADRESSE_BETA;
+const adresseDe = (p: Place) => entreeBeta && p.screen === 'home' ? ADRESSE_BETA : adresse(p);
 // Écrans ouverts depuis la fiche d’une flemme : combien de pas pour y revenir.
 const aboveDetail: Partial<Record<Screen, number>> = { offer: 1, review: 2, report: 1, edit: 1, contract: 1 };
 // Formulaire prérempli à l’ouverture d’un écran : modification d’une demande ou reprise d’un brouillon.
@@ -124,6 +127,8 @@ export default function App() {
   const monEspace = useFlag('espace.mon_espace'), deleguer = useFlag('formulaires.deleguer');
   // Refonte de Mon espace (v2.1.0) : onglets, accueil « À faire maintenant », messagerie, profil et réglages (src/ecrans/Espace.tsx).
   const refonte = useFlag('espace.refonte').actif, nonLus = useNonLus(tasks, actorId), preBeta = useFlag('espace.pre_beta').actif;
+  // Version bêta de l’écran (entrée par /bientot ou mode pré-bêta) : textes du compte bêta, sans le pied de page de la vitrine.
+  const beta = entreeBeta || preBeta;
   const ctx: Ctx = {
     state, place, draft, task, offer, can: rights(task, actorId), field, choice, go, mutate, keepDraft,
     fill: values => setDraft(d => ({ ...d, ...values })),
@@ -134,7 +139,7 @@ export default function App() {
   let content: ReactNode;
   if (!monEspace.actif) content = <BientotDisponible titre="Mon espace"/>;
   else if (!ready) content = <p className="muted" role="status">Chargement…</p>;
-  else if (session.remote && (!gateway || !actorId)) content = <Connexion {...ctx}/>;
+  else if (session.remote && (!gateway || !actorId)) content = <Connexion {...ctx} beta={beta}/>;
   else if (!gateway) content = <><h1 className="heading">Chargement interrompu</h1><Action onClick={() => session.initialize()}>Réessayer sans effacer mes données</Action></>;
   else if (recovering && session.remote) content = <MotDePasse {...ctx}/>;
   else if (screen === 'account') content = refonte ? <Reglages {...ctx}><Compte {...ctx}/></Reglages> : <Compte {...ctx}/>;
@@ -153,6 +158,8 @@ export default function App() {
   else content = <Fiche key={visit} {...ctx}/>;
 
   const connecte = actorId !== '';
+  // Version bêta : le menu de /bientot remplace la barre de navigation du site (demande de Ben du 27/11/2026).
+  useEffect(() => { document.body.classList.toggle('mode-beta', beta); }, [beta]);
   // Barre de navigation commune au site (src/site/entete.html, insérée dans app.html) : « Connexion » devient « Mon espace ».
   useEffect(() => {
     // Ne remplace que le mot (pas l’icône ni la pastille du mot qui glisse, comme sur les autres pages).
@@ -163,6 +170,7 @@ export default function App() {
     });
   }, [connecte]);
   return <>
+    {beta && <NavBientot connecte={connecte}/>}
     <main ref={main} tabIndex={-1} className={'app ecran-' + screen + (refonte && connecte ? ' refonte' : '')} aria-busy={busy}>
       {connecte && refonte && <Onglets place={place} go={go} nonLus={nonLus}/>}
       {connecte && refonte && ['detail', 'offer', 'review', 'edit', 'contract', 'report', 'profile', 'help', 'new'].includes(screen) && <div className="app-nav"><Action secondary onClick={back}>{backLabel(screen)}</Action></div>}
@@ -173,8 +181,8 @@ export default function App() {
       {content}
       {busy && <p className="muted" role="status">En cours…</p>}
     </main>
-    <p className="foot">{footer(session.remote, onlinePayment)}</p>
-    {/* Nouveau Mon espace : le grand pied de page de la vitrine laisse la place à la barre d’onglets. */}
-    {!(refonte && connecte) && <div dangerouslySetInnerHTML={{ __html: pied }}/>}
+    {!beta && <p className="foot">{footer(session.remote, onlinePayment)}</p>}
+    {/* Nouveau Mon espace : le grand pied de page de la vitrine laisse la place à la barre d’onglets. Version bêta : pas de pied (27/11/2026, Ben). */}
+    {!(refonte && connecte) && !beta && <div dangerouslySetInnerHTML={{ __html: pied }}/>}
   </>;
 }

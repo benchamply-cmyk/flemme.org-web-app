@@ -115,3 +115,7 @@ button.carte-espace:hover { border-color: var(--e-vert); box-shadow: 0 6px 18px 
 
 /* Mode pré-bêta (flag espace.pre_beta, 27/11/2026) : rappel discret en haut de Mon espace. */
 .bandeau-pre-beta { margin: 0 0 14px; padding: 10px 14px; border: 1px solid var(--ink, #111); background: var(--e-vert-clair, #e3f6ec); font-size: 13px; line-height: 1.4; }
+
+/* Compte bêta (entrée par /bientot/mon-espace, 27/11/2026) : astérisque du titre et précision sur l’environnement bêta. */
+.connexion-beta .asterisque { color: var(--e-vert, #4dbc7c); margin-left: 2px; }
+.connexion-beta .note-beta { margin-top: 18px; padding: 10px 14px; border-left: 3px solid var(--e-vert, #4dbc7c); background: var(--e-vert-clair, #e3f6ec); }

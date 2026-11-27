@@ -146,6 +146,13 @@
 # Espace connecté : une adresse par écran, la même sur le site et dans l'app mobile
 # (plan d'adresses validé par Ben le 14/11/2026, table dans packages/shared/src/adresses.ts).
 # Netlify sert app.html sans changer l'adresse ; l'app lit le chemin et ouvre le bon écran.
+# Mon espace ouvert depuis /bientot (boutons S’inscrire, Créer mon compte, Se connecter) : version bêta de l’écran
+# (demande de Ben du 27/11/2026). Pas de fichier à cette adresse : la règle sert app.html.
+[[redirects]]
+  from = "/bientot/mon-espace"
+  to = "/app.html"
+  status = 200
+
 [[redirects]]
   from = "/mon-espace"
   to = "/app.html"

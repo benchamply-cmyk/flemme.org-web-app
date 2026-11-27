@@ -16,6 +16,7 @@ import type { Screen, Tab } from './ecrans.ts';
 //   /flemme/:id/proposition/:offre   une proposition ; …/accepter : récapitulatif avant d’accepter
 //   /compte, /profil, /profil/:id, /aide
 //   /paiement/ok, /paiement/annule   retour de Stripe
+//   /bientot/mon-espace              Mon espace ouvert depuis /bientot (compte bêta, demande de Ben du 27/11/2026)
 
 export type Formule = 'autre' | 'devis';
 export type Paiement = 'ok' | 'annule';
@@ -26,7 +27,9 @@ export type Adresse = {
 };
 
 /** Débuts d’adresse servis par l’app (règles Netlify, serveur de développement). */
-export const PREFIXES_APP = ['/mon-espace', '/connexion', '/mes-demandes', '/messages', '/flemmes', '/deleguer/nouvelle', '/flemme', '/compte', '/profil', '/aide', '/paiement'] as const;
+/** Entrée de Mon espace depuis la page /bientot (boutons S’inscrire, Créer mon compte, Se connecter) : version bêta de l’écran. */
+export const ADRESSE_BETA = '/bientot/mon-espace';
+export const PREFIXES_APP = [ADRESSE_BETA, '/mon-espace', '/connexion', '/mes-demandes', '/messages', '/flemmes', '/deleguer/nouvelle', '/flemme', '/compte', '/profil', '/aide', '/paiement'] as const;
 
 const id = (s: string | undefined) => s && /^[\w-]{1,80}$/.test(s) ? decodeURIComponent(s) : '';
 const formuleDe = (v: string | null): Formule | undefined => v === 'autre' || v === 'devis' ? v : undefined;
@@ -55,6 +58,7 @@ export function lireAdresse(chemin: string, requete = '', ancre = ''): Adresse |
   if (p === '/app.html' || p === '/app') return ANCIENNES[ancre] ?? { screen: 'home' };
   switch (s[0]) {
     case 'mon-espace': return s.length === 1 ? { screen: 'home' } : null;
+    case 'bientot': return s.length === 2 && s[1] === 'mon-espace' ? { screen: 'home' } : null;
     case 'connexion': return s.length === 1 || (s.length === 2 && s[1] === 'mot-de-passe') ? { screen: 'home' } : null;
     case 'mes-demandes': return s.length === 1 ? { screen: 'list', tab: 'mine' } : null;
     case 'messages': return s.length === 1 ? { screen: 'list', tab: 'messages' } : null;
