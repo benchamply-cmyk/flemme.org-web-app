@@ -24,7 +24,7 @@ import { Profil } from './ecrans/Profil.tsx';
 import { Signalement } from './ecrans/Signalement.tsx';
 import { BientotDisponible, useFlag } from './flags/useFlag.tsx';
 import { NavBientot } from './site/NavBientot.tsx';
-import { AccueilEspace, Messages, Onglets, Reglages, useNonLus } from './ecrans/Espace.tsx';
+import { AccueilEspace, Messages, Onglets, Reglages, reprendreAlertesLocales, useNonLus } from './ecrans/Espace.tsx';
 import { PRE_BETA } from '../../../packages/shared/src/espace.ts';
 
 // Coque web de l’app : navigation, formulaire en cours et choix de l’écran.
@@ -160,6 +160,8 @@ export default function App() {
   const connecte = actorId !== '';
   // Version bêta : le menu de /bientot remplace la barre de navigation du site (demande de Ben du 27/11/2026).
   useEffect(() => { document.body.classList.toggle('mode-beta', beta); }, [beta]);
+  // Alertes gardées dans ce navigateur avant le 27/11/2026 : reprises une fois sur le compte après connexion.
+  useEffect(() => { if (connecte && ready) void reprendreAlertesLocales(state.searches); }, [connecte, ready]);
   // Barre de navigation commune au site (src/site/entete.html, insérée dans app.html) : « Connexion » devient « Mon espace ».
   useEffect(() => {
     // Ne remplace que le mot (pas l’icône ni la pastille du mot qui glisse, comme sur les autres pages).

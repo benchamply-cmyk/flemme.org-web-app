@@ -42,6 +42,8 @@ export const reviewLabel: Record<Review, string> = {
 };
 
 /** Brouillon enregistré sur le compte : une demande (kind « task ») ou une candidature (kind « offer »). */
+/** Recherche enregistrée sur le compte (alerte de l’onglet Trouver) : filtres, libellé et dernière consultation. */
+export type SavedSearch = { id: string; filter: SearchFilter; label: string; seenAt: string; createdAt: string };
 export type SavedDraft = { id: string; kind: 'task' | 'offer'; taskId: string | null; fields: Record<string, string>; updatedAt: string };
 export const TASK_FIELDS = ['title', 'details', 'category', 'deadline', 'deadlineNote', 'amount', 'budgetRange', 'mode', 'place', 'address'] as const;
 

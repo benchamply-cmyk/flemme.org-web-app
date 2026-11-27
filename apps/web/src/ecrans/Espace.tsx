@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
-import type { SearchFilter, Task } from '../../../../packages/shared/src/index.ts';
+import type { SavedSearch, SearchFilter, Task } from '../../../../packages/shared/src/index.ts';
 import { CATEGORIES, budgetLabel, date, money, partition, price, taskStatus } from '../../../../packages/shared/src/index.ts';
 import { ETAPES, PRE_BETA, avancement, derniereActivite, etapeAtteinte, prochaineAction, remplissageProfil } from '../../../../packages/shared/src/espace.ts';
 import { session } from '../session.ts';
@@ -13,9 +13,18 @@ import './espace.css';
 // Écrans : barre d’onglets, accueil « À faire maintenant », mes demandes, frise, comparaison des offres,
 // messagerie, filtres rapides et alertes, profil et réglages.
 
-// ——— Stockage local (navigateur) : discussions lues et alertes. Rien n’est envoyé au serveur. ———
+// ——— Stockage local (navigateur) : discussions lues. Rien n’est envoyé au serveur. ———
+// Les alertes de l’onglet Trouver sont enregistrées sur le compte depuis le 27/11/2026 (recherches enregistrées) ;
+// l’ancienne clé locale CLE_ALERTES n’est plus lue que pour reprendre ses alertes une fois sur le compte.
 const CLE_LUS = 'flemme.espace.lus.v1', CLE_ALERTES = 'flemme.espace.alertes.v1';
 type Alerte = { id: string; filtre: SearchFilter; libelle: string; vuLe: string };
+/** Reprend une fois les alertes gardées dans ce navigateur (avant le 27/11/2026) sur le compte, puis les efface d’ici. */
+export async function reprendreAlertesLocales(dejaSurLeCompte: SavedSearch[]) {
+  const locales = lire<Alerte[]>(CLE_ALERTES, []);
+  if (!locales.length) return;
+  for (const a of locales.slice(-5)) if (!dejaSurLeCompte.some(s => memeFiltre(s.filter, a.filtre))) await session.saveSearch({ filter: { ...a.filtre, sort: undefined }, label: a.libelle, seenAt: a.vuLe }, true);
+  try { localStorage.removeItem(CLE_ALERTES); } catch { /* stockage bloqué */ }
+}
 function lire<T>(cle: string, defaut: T): T { try { const v = localStorage.getItem(cle); return v ? JSON.parse(v) as T : defaut; } catch { return defaut; } }
 function ecrire(cle: string, v: unknown) { try { localStorage.setItem(cle, JSON.stringify(v)); } catch { /* stockage bloqué : rien de grave */ } dispatchEvent(new Event('flemme-espace')); }
 function useStockage<T>(cle: string, defaut: T): T {
@@ -100,12 +109,12 @@ function CarteDemande({ task: t, actorId, go }: { task: Task; actorId: string; g
 }
 
 /** Accueil : « À faire maintenant », raccourcis et demandes en cours. */
-export function AccueilEspace({ state: { gateway, tasks, actorId, found }, go }: Ctx) {
+export function AccueilEspace({ state: { gateway, tasks, actorId, found, searches }, go }: Ctx) {
   const premium = useFlag('espace.premium'), confiance = useFlag('espace.confiance').actif, preBeta = useFlag('espace.pre_beta').actif;
   const { own, helping, available } = partition(tasks, actorId);
   const aFaire = [...own, ...helping].map(t => ({ t, a: prochaineAction(t, actorId, { confiance }) })).filter(x => x.a);
   const enCours = [...own, ...helping].filter(t => t.status !== 'completed' && !aFaire.some(x => x.t.id === t.id));
-  const nouvelles = useNouvellesAlertes([...available, ...(found?.tasks || [])], actorId);
+  const nouvelles = useNouvellesAlertes([...available, ...(found?.tasks || [])], actorId, searches);
   const prenom = (gateway?.actor.name || '').split(' ')[0];
   return <div className="espace-accueil">
     <header className="espace-entete"><div><p className="note">{new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</p><h1 className="espace-titre">Bonjour {prenom}</h1></div></header>
@@ -230,29 +239,28 @@ export function TrouverPreBeta() {
 
 /** Bandeau « Créer l’alerte » pour les filtres en cours, et liste des alertes. */
 export function Alertes({ f, run }: { f: SearchFilter; run: (next: SearchFilter) => void }) {
-  const alertes = useStockage<Alerte[]>(CLE_ALERTES, []);
-  const existe = alertes.some(a => memeFiltre(a.filtre, f)), vide = !Object.entries(f).some(([k, v]) => v && k !== 'sort');
-  const creer = () => ecrire(CLE_ALERTES, [...alertes, { id: String(Date.now()), filtre: { ...f, sort: undefined }, libelle: libelleFiltre(f), vuLe: new Date().toISOString() }].slice(-5));
+  const { searches: alertes, busy } = session.getState();
+  const existe = alertes.some(a => memeFiltre(a.filter, f)), vide = !Object.entries(f).some(([k, v]) => v && k !== 'sort'), plein = alertes.length >= 5;
+  const creer = () => session.saveSearch({ filter: { ...f, sort: undefined }, label: libelleFiltre(f) });
   return <>
-    {!vide && !existe && <div className="bandeau-alerte"><span>Être prévenu des nouvelles demandes : {libelleFiltre(f)}</span><button type="button" className="btn small" onClick={creer}>Créer l’alerte</button></div>}
-    {alertes.length > 0 && <details className="mes-alertes"><summary>Mes alertes · {alertes.length}</summary><ul>{alertes.map(a => <li key={a.id} className="row">
-      <button type="button" className="lien" onClick={() => { ecrire(CLE_ALERTES, alertes.map(x => x.id === a.id ? { ...x, vuLe: new Date().toISOString() } : x)); run({ ...a.filtre, sort: f.sort }); }}>{a.libelle}</button>
-      <button type="button" className="lien" onClick={() => ecrire(CLE_ALERTES, alertes.filter(x => x.id !== a.id))}>Supprimer<span className="sr"> l’alerte {a.libelle}</span></button></li>)}</ul>
-      <p className="note">Alertes gardées dans ce navigateur : les nouvelles demandes sont signalées sur votre accueil. Pas encore d’e-mail ni de notification.</p></details>}
+    {!vide && !existe && <div className="bandeau-alerte"><span>{plein ? 'Cinq alertes au plus : supprimez-en une pour suivre ' : 'Être prévenu des nouvelles demandes : '}{libelleFiltre(f)}</span>{!plein && <button type="button" className="btn small" disabled={busy} onClick={creer}>Créer l’alerte</button>}</div>}
+    {alertes.length > 0 && <details className="mes-alertes" open={vide || undefined}><summary>Mes alertes · {alertes.length}</summary><ul>{alertes.map(a => <li key={a.id} className="row">
+      <button type="button" className="lien" onClick={() => { void session.saveSearch({ id: a.id, filter: a.filter, label: a.label }, true); run({ ...a.filter, sort: f.sort }); }}>{a.label}</button>
+      <button type="button" className="lien" disabled={busy} onClick={() => session.deleteSearch(a.id)}>Supprimer<span className="sr"> l’alerte {a.label}</span></button></li>)}</ul>
+      <p className="note">Alertes enregistrées sur votre compte : vous les retrouvez sur tous vos appareils, et les nouvelles demandes sont signalées sur votre accueil. Pas encore d’e-mail ni de notification.</p></details>}
   </>;
 }
 const correspond = (t: Task, f: SearchFilter) => (!f.category || t.category === f.category) && (!f.mode || t.mode === f.mode || t.mode === 'les_deux')
   && (!f.q || (t.title + ' ' + t.details).toLowerCase().includes(f.q.toLowerCase())) && (!f.place || t.place.toLowerCase().includes(f.place.toLowerCase()));
-function useNouvellesAlertes(tasks: Task[], actorId: string) {
-  const alertes = useStockage<Alerte[]>(CLE_ALERTES, []);
+function useNouvellesAlertes(tasks: Task[], actorId: string, alertes: SavedSearch[]) {
   const vues = new Set<string>();
-  for (const a of alertes) for (const t of tasks) if (t.owner.id !== actorId && t.status === 'open' && t.createdAt > a.vuLe && correspond(t, a.filtre)) vues.add(t.id);
+  for (const a of alertes) for (const t of tasks) if (t.owner.id !== actorId && t.status === 'open' && t.createdAt > a.seenAt && correspond(t, a.filter)) vues.add(t.id);
   return vues.size;
 }
 
 // ——— Profil et réglages ———
 /** Onglet Profil : en-tête, taux de remplissage, chiffres et réglages ; la suite du compte (paiements, abonnement, démo) dessous. */
-export function Reglages({ state: { gateway, actorId, profile, tasks }, go, children }: Ctx & { children: ReactNode }) {
+export function Reglages({ state: { gateway, actorId, profile, tasks, searches }, go, children }: Ctx & { children: ReactNode }) {
   const premium = useFlag('espace.premium');
   useEffect(() => { if (actorId && profile?.id !== actorId) void session.openProfile(actorId); }, [actorId]);
   if (!gateway) return null;
@@ -272,7 +280,7 @@ export function Reglages({ state: { gateway, actorId, profile, tasks }, go, chil
       <div><span className="chiffre">{p?.rating != null ? String(p.rating).replace('.', ',') : '–'}</span><span className="note">note · {p?.reviews.length ?? 0} avis</span></div></section>
     <ul className="reglages">
       {ligne('Mon profil public', 'Nom, présentation, avis', () => go('profile', { userId: undefined }))}
-      {ligne('Mes alertes de demandes', String(lire<Alerte[]>(CLE_ALERTES, []).length || 'Aucune'), () => go('list', { tab: 'find' }))}
+      {ligne('Mes alertes de demandes', String(searches.length || 'Aucune'), () => go('list', { tab: 'find' }))}
       {premium.actif && <li><a className="reglage" href="premium"><span>Flemme Premium</span><span className="note">Découvrir ›</span></a></li>}
       {ligne('Aide et contact', '', () => go('help'))}
     </ul>
