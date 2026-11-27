@@ -254,6 +254,13 @@ export class RemoteGateway implements Gateway {
   }
   async restore() { if (!(await this.tokens.get())) return false; await this.refresh(); await this.loadMe(); return true; }
   async updateProfile(displayName: string) { this.actor = (await this.rpc('update_profile', null, { displayName }, null)).profile; }
+  /** Supprime le compte et ses données (migration 20261127140000) : fichiers du bucket d’abord, puis le compte ; la session locale est effacée. */
+  async deleteAccount(confirmation: string) {
+    const { paths } = await this.call('flemme_compte_fichiers', {}) as { paths: string[] };
+    for (const path of paths) await this.storage('DELETE', 'object/flemme-fichiers/' + path).catch(() => {});
+    await this.call('flemme_supprimer_compte', { p_confirmation: confirmation });
+    await this.tokens.clear(); this.access = ''; this.expires = 0; this.actor = { id: '', name: '' };
+  }
   private async refresh() {
     if (!this.refreshing) this.refreshing = (async () => {
       const token = await this.tokens.get(); if (!token) throw new Error('Connectez-vous pour continuer.');

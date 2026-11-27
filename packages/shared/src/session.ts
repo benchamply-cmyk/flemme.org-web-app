@@ -155,6 +155,13 @@ export class FlemmeSession {
       finally { this.pending = null; this.set({ actorId: '', tasks: [], more: null, drafts: [], searches: [], found: null, filter: {}, profile: null, files: {}, help: null }); done(); }
     });
   }
+  /** Suppression définitive du compte et de ses données ; `done` n’est appelé qu’en cas de succès. */
+  async deleteAccount(confirmation: string, done: () => void) {
+    await this.execute(async () => {
+      await this.remoteGateway().deleteAccount(confirmation);
+      this.pending = null; this.set({ actorId: '', tasks: [], more: null, drafts: [], searches: [], found: null, filter: {}, profile: null, files: {}, help: null, notice: notices.accountDeleted }); done();
+    });
+  }
   /** Démo locale : changer de personnage pour tester les deux côtés d’une mission. */
   async switchActor(actor: Actor, done: () => void) {
     const g = this.state.gateway;
